@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\User;
+use App\Rol;
 
 class LoginController extends Controller
 {
@@ -35,5 +37,63 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function showLoginForm() 
+    {
+        return view('auth.login'); 
+    }
+
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return redirect('/home');
+    }
+
+    public function login(Request $request) //Pendiente de revisión y mejora
+    {
+        $usuario = User::where('email', $request->input('email'))->first();
+
+        if ($usuario)
+        {
+            //dd($usuario);
+            $fecha = substr(now(), 0, 19);
+
+            if ($usuario->user_estado == 1 ) 
+            {
+                $credenciales = $request->only('email', 'password');
+
+                if (Auth::attempt($credenciales)) 
+                {
+
+                    //credenciales correctas
+
+                    Auth::login($usuario, true);
+
+                    Session::put('activo', true);
+
+                    return redirect('home');
+
+                } else {
+                    //credenciales incorrectas
+                    flash('Datos ingresados no son válidos.')->error();
+                    return redirect('/home');
+                }
+
+            } else {
+                flash('Usuario inactivo, por favor contacte con el administrador.')->error();
+                return redirect('/home');
+
+            }
+        }
+
+         else{
+            //el email del usuario no se encuentra en la BD
+            flash('Datos ingresados no son válidos.')->error();
+            return redirect('/home');
+         }
     }
 }
