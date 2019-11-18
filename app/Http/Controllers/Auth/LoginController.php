@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\User;
 use App\Rol;
+use Auth;
+use session;
 
 class LoginController extends Controller
 {
@@ -39,9 +41,9 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function showLoginForm() 
+    public function showLoginForm()
     {
-        return view('auth.login'); 
+        return view('auth.login');
     }
 
     public function logout(Request $request)
@@ -62,11 +64,11 @@ class LoginController extends Controller
             //dd($usuario);
             $fecha = substr(now(), 0, 19);
 
-            if ($usuario->user_estado == 1 ) 
+            if ($usuario->user_estado == 1 )
             {
                 $credenciales = $request->only('email', 'password');
 
-                if (Auth::attempt($credenciales)) 
+                if (Auth::attempt($credenciales))
                 {
 
                     //credenciales correctas
