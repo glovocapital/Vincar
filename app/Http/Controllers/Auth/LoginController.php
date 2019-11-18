@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\User;
 use App\Rol;
 use Auth;
-use session;
+use Session;
 
 class LoginController extends Controller
 {
