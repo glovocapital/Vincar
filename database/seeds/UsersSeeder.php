@@ -32,7 +32,7 @@ class UsersSeeder extends Seeder
             'user_rut'          =>  '12999888-5',
             'user_cargo'        => 'Desarrollador',
             'user_estado'       => '1',
-            'email'			    =>  'desarro@glovocapital.com',
+            'email'			    =>  'desarrollo@glovocapital.com',
             'user_telefono'     =>  '3233300232',
             'password' 		    => bcrypt('123456'),
             'rol_id'            => '1',
