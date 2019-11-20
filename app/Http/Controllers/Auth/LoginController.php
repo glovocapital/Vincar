@@ -59,7 +59,6 @@ class LoginController extends Controller
     public function login(Request $request) //Pendiente de revisión y mejora
     {
         $usuario = User::where('email', $request->input('email'))->first();
-
         if ($usuario)
         {
             //dd($usuario);
