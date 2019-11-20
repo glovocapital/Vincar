@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTipoProveedorsTable extends Migration
+class CreateTipoProveedoresTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTipoProveedorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tipo__proveedors', function (Blueprint $table) {
+        Schema::create('tipo_proveedores', function (Blueprint $table) {
             $table->bigIncrements('tipo_proveedor_id');
             $table->string('tipo_proveedor_desc');
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateTipoProveedorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tipo__proveedors');
+        Schema::dropIfExists('tipo_proveedores');
     }
 }
