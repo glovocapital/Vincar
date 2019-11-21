@@ -8,6 +8,7 @@ use App\User;
 use App\Rol;
 use Auth;
 use Session;
+use flash;
 
 class LoginController extends Controller
 {

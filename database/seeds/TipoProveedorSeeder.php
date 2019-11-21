@@ -11,7 +11,7 @@ class TipoProveedorSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tipo__proveedors')->insert([
+        DB::table('tipo_proveedores')->insert([
         	'tipo_proveedor_desc' => 'Servicios de Desarrollo',
     	]);
     }
