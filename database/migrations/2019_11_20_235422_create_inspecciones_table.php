@@ -16,12 +16,6 @@ class CreateInspeccionesTable extends Migration
         Schema::create('inspecciones', function (Blueprint $table) {
             $table->bigIncrements('inspeccion_id');
             $table->date('inspeccion_fecha');
-            $table->string('vin_patente');
-            $table->string('vin_modelo');
-            $table->string('vin_marca');
-            $table->string('vin_color');
-            $table->string('vin_motor');
-            $table->string('vin_segmento');
             $table->unsignedBigInteger('vin_id');
             $table->foreign('vin_id')->references('vin_id')->on('vins');
             $table->unsignedBigInteger('responsable_id');
