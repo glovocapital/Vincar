@@ -27,7 +27,7 @@ class AddSubcategoriaIdToPiezasTable extends Migration
     public function down()
     {
         Schema::table('piezas', function (Blueprint $table) {
-            $table->dropForeign('piezas_pieza_subcategoria_pieza_id_foreign');
+            $table->dropForeign('piezas_subcategoria_pieza_id_foreign');
             $table->dropColumn('subcategoria_pieza_id');
         });
     }
