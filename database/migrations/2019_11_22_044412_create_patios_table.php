@@ -16,10 +16,10 @@ class CreatePatiosTable extends Migration
         Schema::create('patios', function (Blueprint $table) {
             $table->bigIncrements('patio_id');
             $table->string('patio_nombre');
-            $table->string('patio_direccion');
             $table->string('patio_bloques');
             $table->string('patio_coord_lat');
             $table->string('patio_coord_lon');
+            $table->string('patio_direccion');
             $table->timestamps();
         });
     }
