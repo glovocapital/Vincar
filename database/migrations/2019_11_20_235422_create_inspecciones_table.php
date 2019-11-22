@@ -26,7 +26,7 @@ class CreateInspeccionesTable extends Migration
             $table->foreign('vin_estado_inventario_id')->references('vin_estado_inventario_id')->on('vin_estado_inventarios');
             $table->unsignedBigInteger('vin_sub_estado_inventario_id');
             $table->foreign('vin_sub_estado_inventario_id')->references('vin_sub_estado_inventario_id')->on('vin_sub_estado_inventarios');
-            $table->boolean('inspeccion_dano');
+            $table->boolean('inspeccion_dano')->default(false);
             $table->timestamps();
         });
     }

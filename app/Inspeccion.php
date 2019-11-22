@@ -16,4 +16,50 @@ class Inspeccion extends Model
     protected $fillable = [
         'inspeccion_fecha', 'inspeccion_dano'
     ];
+
+    public function tieneDano(){
+        $this->inspeccion_dano = true;
+
+        $this->save();
+    }
+
+    public function hasResponsable(){
+        $responsable = User::find($this->responsable_id);
+
+        return $responsable;
+    }
+
+    public function hasCliente(){
+        $cliente = User::find($this->cliente_id);
+
+        return $cliente;
+    }
+
+    public function oneVin()
+    {
+        $vin = Vin::find($this->vin_id);
+        return $vin;
+    }
+
+    public function oneVin()
+    {
+        $vin = Vin::find($this->vin_id);
+        return $vin;
+    }
+
+    public function oneVinEstadoInventario()
+    {
+        $estadoInventario = DB::table('vin_estado_inventarios')
+            ->where('vin_estado_inventario_id', $this->vin_estado_inventario_id)
+            ->first();
+        return $estadoInventario;
+    }
+
+    public function oneVinSubEstadoInventario()
+    {
+        $subEstadoInventario = DB::table('vin_sub_estado_inventarios')
+            ->where('vin_sub_estado_inventario_id', $this->vin_sub_estado_inventario_id)
+            ->first();
+        return $subEstadoInventario;
+    }
 }
