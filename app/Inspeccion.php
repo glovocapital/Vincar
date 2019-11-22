@@ -41,12 +41,6 @@ class Inspeccion extends Model
         return $vin;
     }
 
-    public function oneVin()
-    {
-        $vin = Vin::find($this->vin_id);
-        return $vin;
-    }
-
     public function oneVinEstadoInventario()
     {
         $estadoInventario = DB::table('vin_estado_inventarios')
