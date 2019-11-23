@@ -3,9 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use User;
-use VinEstadoInventario;
-use VinSubEstadoInventario;
 
 class Vin extends Model
 {
@@ -20,10 +17,8 @@ class Vin extends Model
         'vin_patente', 'vin_modelo', 'vin_marca', 'vin_color', 'vin_motor', 'vin_segmento', 'vin_fec_ingreso'
     ];
 
-    public function hasUser($user_id){
-        $user = User::find($user_id);
-
-        return $user;
+    public function oneUser($user_id){
+        return $this->hasOne(User::class, 'user_id', 'user_id');;
     }
 
     public function oneVinEstadoInventario()

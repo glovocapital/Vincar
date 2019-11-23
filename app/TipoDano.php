@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Tipo_dano extends Model
+class TipoDano extends Model
 {
     protected $primaryKey = 'tipo_dano_id';
 

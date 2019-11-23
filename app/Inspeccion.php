@@ -17,28 +17,23 @@ class Inspeccion extends Model
         'inspeccion_fecha', 'inspeccion_dano'
     ];
 
-    public function tieneDano(){
+    public function marcarDano(){
         $this->inspeccion_dano = true;
 
         $this->save();
     }
 
-    public function hasResponsable(){
-        $responsable = User::find($this->responsable_id);
-
-        return $responsable;
+    public function oneResponsable(){
+        return $this->hasOne(User::class, 'user_id', 'responsable_id');
     }
 
-    public function hasCliente(){
-        $cliente = User::find($this->cliente_id);
-
-        return $cliente;
+    public function oneCliente(){
+        return $this->hasOne(User::class, 'user_id', 'cliente_id');
     }
 
     public function oneVin()
     {
-        $vin = Vin::find($this->vin_id);
-        return $vin;
+        return $this->hasOne(Vin::class, 'vin_id', 'vin_id');
     }
 
     public function oneVinEstadoInventario()

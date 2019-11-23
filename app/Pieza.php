@@ -24,4 +24,21 @@ class Pieza extends Model
 
         return $subArea;
     }
+
+    public function belongsToSubcategoriaPieza(){
+        $subcategoriaPieza = DB::table('subcategoria_piezas')
+            ->where('subcategoria_pieza_id', $this->subcategoria_pieza_id)
+            ->first();
+
+        return $subcategoriaPieza;
+    }
+
+    public function belongsToCategoriaPieza(){
+        $subcategoria = $this->belongsToSubcategoriaPieza();
+        $categoriaPieza = DB::table('categoria_piezas')
+            ->where('categoria_pieza_id', $subcategoria->categoria_pieza_id)
+            ->first();
+
+        return $subcategoriaPieza;
+    }
 }
