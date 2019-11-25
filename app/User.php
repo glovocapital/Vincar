@@ -20,6 +20,7 @@ class User extends Authenticatable
      *
      * @var array
      */
+
     protected $fillable = [
         'user_nombre', 'user_apellido', 'user_rut', 'user_cargo', 'email', 'password'
     ];
@@ -55,6 +56,11 @@ class User extends Authenticatable
     public function oneRol()
     {
         return $this->hasOne(rol::class, 'rol_id', 'rol_id');
+    }
+
+    public function oneEmpresa()
+    {
+        return $this->belongsTo(empresa::class, 'empresa_id', 'empresa_id');
     }
 
 

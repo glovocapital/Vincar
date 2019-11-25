@@ -81,6 +81,7 @@ class LoginController extends Controller
 
                 } else {
                     //credenciales incorrectas
+                   // dd('555');
                     flash('Datos ingresados no son válidos.')->error();
                     return redirect('/home');
                 }

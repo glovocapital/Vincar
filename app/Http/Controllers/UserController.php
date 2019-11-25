@@ -18,19 +18,20 @@ class UserController extends Controller
      */
     public function index()
     {
-        //$users = \App\User::all();
-        $users = DB::table('users')
+        $usuarios = \App\User::all();
+
+        /*$usuarios = DB::table('users')
             ->select()
             ->where('email','!=','jadcve@gmail.com')
             ->Where('email','!=','crox.sanchez@gmail.com')
             ->Where('email','!=','asthar2010@gmail.com')
             ->paginate(10);
-
-        $roles = DB::table('rol')
+*/
+        $roles = DB::table('roles')
             ->select('rol_id', 'rol_desc')
             ->pluck('rol_desc', 'rol_id');
 
-        return view('users.index', compact('users', 'roles'));
+        return view('usuarios.index', compact('roles','usuarios'));
     }
 
     /**
@@ -40,11 +41,17 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = DB::table('rol')
+
+        $roles = DB::table('roles')
             ->select('rol_id', 'rol_desc')
             ->pluck('rol_desc', 'rol_id');
 
-        return view('users.create', compact('roles'));
+        $empresa = DB::table('empresas')
+            ->select('empresa_id', 'empresa_razon_social')
+            ->pluck('empresa_razon_social', 'empresa_id');
+
+
+        return view('usuarios.create', compact('roles','empresa'));
     }
 
     /**
@@ -56,29 +63,44 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user = new \App\User();
 
-        $user->user_nombre = $request->user_nombre;
-        $user->user_apellido = $request->user_apellido;
-        $user->user_rut = $request->user_rut;
-        $user->user_cargo = $request->user_cargo;
-        
-        if (isset($request->user_estado)){
-            $user->user_estado = $request->user_estado;
-        }
-        
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        
-        if (isset($request->rol_id)){
-            $user->rol_id = $request->rol_id;
-        }
+        $validate = DB::table('users')->where('email', $request->user_email)->exists();
 
-        $user->empresa_id = $request->empresa_id;
+        if($validate == true)
+        {
+            flash('El usuario '.$request->usu_email.'  ya existe en la base de datos')->warning();
+            return redirect('/usuarios');
+        } else
 
-        $user->save();
+        DB::beginTransaction();
+        try {
+            $user = new \App\User();
+            $user->user_nombre = $request->user_nombre;
+            $user->user_apellido = $request->user_apellido;
+            $user->user_rut = $request->user_rut;
+            $user->user_cargo = $request->user_cargo;
+            $user->user_estado = 1;
+            $user->email = $request->user_email;
+            $user->password = Hash::make($request->user_password);
+            $request->rol_id = $request->rol_id;
+            $user->telefono = $request->user_telefono;
+            $user->empresa_id = $request->empresa_id;
+            $user->save();
 
-        return redirect('users');
+        DB::commit();
+        flash('El usuario ha sido creado correctamente.')->success();
+        return redirect('usuarios');
+        }catch (\Exception $e) {
+
+
+            DB::rollback();
+
+            flash('Error al crear usuario.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('usuarios');
+    }
+
+
     }
 
     /**
@@ -95,7 +117,7 @@ class UserController extends Controller
             ->select('rol_id', 'rol_desc')
             ->pluck('rol_desc', 'rol_id');
 
-        return view('users.edit', compact('user', 'roles'));
+        return view('usuarios.edit', compact('user', 'roles'));
     }
 
     /**
@@ -113,72 +135,22 @@ class UserController extends Controller
         $user->user_apellido = $request->user_apellido;
         $user->user_rut = $request->user_rut;
         $user->user_cargo = $request->user_cargo;
-        
+
         $user->user_estado = $request->user_estado;
-        
+
         $user->email = $request->email;
-        
+
         if ($request->password != ''){
             $user->password = Hash::make($request->password);
         }
-        
+
         $user->rol_id = $request->rol_id;
 
         $user->empresa_id = $request->empresa_id;
 
         $user->save();
 
-        return redirect('users');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function editUserRol($id)
-    {
-        $user = \App\User::findOrfail($id);
-        $roles = DB::table('rol')
-            ->select('rol_id', 'rol_desc')
-            ->pluck('rol_desc', 'rol_id');
-
-        return view('users.edit', compact('user', 'roles'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function updateUserRol(Request $request)
-    {
-        $user = \App\User::findOrfail($request->user_id);
-
-        $user->user_nombre = $request->user_nombre;
-        $user->user_apellido = $request->user_apellido;
-        $user->user_rut = $request->user_rut;
-        $user->user_cargo = $request->user_cargo;
-        
-        $user->user_estado = $request->user_estado;
-        
-        $user->email = $request->email;
-        
-        if ($request->password != ''){
-            $user->password = Hash::make($request->password);
-        }
-        
-        $user->rol_id = $request->rol_id;
-
-        $user->empresa_id = $request->empresa_id;
-
-        $user->save();
-
-        return redirect('users');
+        return redirect('usuarios');
     }
 
 
@@ -191,11 +163,11 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-       
+
         $user = \App\User::findOrfail($id);
 
         $user->delete();
 
-        return redirect('users');
+        return redirect('usuarios');
     }
 }
