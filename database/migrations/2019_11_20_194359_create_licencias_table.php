@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateConductoresTable extends Migration
+class CreateLicenciasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,19 @@ class CreateConductoresTable extends Migration
      */
     public function up()
     {
-        Schema::create('conductores', function (Blueprint $table) {
-            $table->bigIncrements('conductor_id');
-
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('user_id')->on('users');
-
+        Schema::create('licencias', function (Blueprint $table) {
+            $table->bigIncrements('licencia_id');
+            
+            $table->string('licencia_nro_documento');
+            $table->string('licencia_fecha_expedicion');
+            $table->string('licencia_fecha_vencimiento');
+            
             $table->unsignedBigInteger('tipo_licencia_id');
             $table->foreign('tipo_licencia_id')->references('tipo_licencia_id')->on('tipo_licencias');
-
-            $table->string('conductor_fecha_vencimineto');
+            
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('user_id')->on('users');
+            
             $table->timestamps();
         });
     }
@@ -34,6 +37,6 @@ class CreateConductoresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('conductores');
+        Schema::dropIfExists('licencias');
     }
 }
