@@ -58,7 +58,7 @@ class User extends Authenticatable
         return $this->hasOne(rol::class, 'rol_id', 'rol_id');
     }
 
-    public function oneEmpresa()
+    public function belongsToEmpresa()
     {
         return $this->belongsTo(empresa::class, 'empresa_id', 'empresa_id');
     }

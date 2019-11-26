@@ -18,7 +18,7 @@ class DanoPieza extends Model
     ];
 
     public function belongsToInspeccion(){
-        return $this->belongsTo(Inspeccion::class);
+        return $this->belongsTo(Inspeccion::class, 'inspeccion_id', 'inspeccion_id');
     }
 
     public function onePieza(){

@@ -18,10 +18,10 @@ class Licencia extends Model
     ];
     
     public function oneTipoLicencia (){
-        return $this->hasOne(TipoLicencia::class, 'tipo_licencia_id');;
+        return $this->hasOne(TipoLicencia::class, 'tipo_licencia_id');
     }
 
     public function belongsToUser (){
-        return $this->belongsTo(User::class);;
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 }

@@ -18,6 +18,6 @@ class Camion extends Model
     ];
 
     public function oneEmpresa (){
-        return $this->hasOne(Empresa::class, 'empresa_id', 'empresa_id');;
+        return $this->hasOne(Empresa::class, 'empresa_id', 'empresa_id');
     }
 }
