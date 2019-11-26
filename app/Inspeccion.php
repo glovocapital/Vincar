@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Inspeccion extends Model
 {
     protected $primaryKey = 'inspeccion_id';
+    protected $table = 'inspecciones';
 
     /**
      * The attributes that are mass assignable.

@@ -14,7 +14,7 @@ class DetalleTour extends Model
      * @var array
      */
     protected $fillable = [
-        'detalle_tour_descripcion', 'detalle_tour_fecha_expedicion', 'detalle_tour_fecha_vencimiento'
+        'detalle_tour_descripcion', 'detalle_tour_fec_inicio', 'detalle_tour_fec_fin'
     ];
     
     public function belongsToTour (){
