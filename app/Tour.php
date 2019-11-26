@@ -44,3 +44,4 @@ class Tour extends Model
     public function oneVin (){
         return $this->hasOne(Vin::class, 'vin_id', 'vin_id');
     }
+}
