@@ -7,10 +7,24 @@ use App\User;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Middleware\PreventBackHistory;
+use App\Http\Middleware\CheckSession;
+use Illuminate\Support\Facades\Crypt;
 
 
 class UserController extends Controller
 {
+
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(PreventBackHistory::class);
+        $this->middleware(CheckSession::class);
+    }
+
+
+
     /**
      * Display a listing of the resource.
      *
@@ -66,37 +80,46 @@ class UserController extends Controller
 
         $validate = DB::table('users')->where('email', $request->user_email)->exists();
 
+
+
         if($validate == true)
         {
             flash('El usuario '.$request->usu_email.'  ya existe en la base de datos')->warning();
             return redirect('/usuarios');
-        } else
+        }
+        elseif($request->user_pass != $request->user_pass_confirmation)
+        {
+            flash('Las contraseñas ingresadas no coinciden')->warning();
+            return redirect('/usuarios');
+        }else
+
 
         DB::beginTransaction();
         try {
-            $user = new \App\User();
+
+            $user = new User();
             $user->user_nombre = $request->user_nombre;
             $user->user_apellido = $request->user_apellido;
             $user->user_rut = $request->user_rut;
             $user->user_cargo = $request->user_cargo;
             $user->user_estado = 1;
             $user->email = $request->user_email;
-            $user->password = Hash::make($request->user_password);
-            $request->rol_id = $request->rol_id;
-            $user->telefono = $request->user_telefono;
+            $user->password = $request->user_pass;
+            $user->rol_id = $request->rol_id;
+            $user->user_telefono = $request->user_telefono;
             $user->empresa_id = $request->empresa_id;
             $user->save();
 
         DB::commit();
         flash('El usuario ha sido creado correctamente.')->success();
         return redirect('usuarios');
-        }catch (\Exception $e) {
 
+        }catch (\Exception $e) {
 
             DB::rollback();
 
             flash('Error al crear usuario.')->error();
-            //flash($e->getMessage())->error();
+           // flash($e->getMessage())->error();
             return redirect('usuarios');
     }
 
@@ -112,12 +135,19 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = \App\User::findOrfail($id);
-        $roles = DB::table('rol')
+        $id =  Crypt::decrypt($id);
+        $usuario = User::findOrfail($id);
+
+        $roles = DB::table('roles')
             ->select('rol_id', 'rol_desc')
             ->pluck('rol_desc', 'rol_id');
 
-        return view('usuarios.edit', compact('user', 'roles'));
+        $empresa = DB::table('empresas')
+            ->select('empresa_id', 'empresa_razon_social')
+            ->pluck('empresa_razon_social', 'empresa_id');
+
+
+        return view('usuarios.edit', compact('usuario', 'roles','empresa'));
     }
 
     /**

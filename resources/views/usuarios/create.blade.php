@@ -70,8 +70,8 @@
 
                 <div class="form-group">
                     <div class="row">
-                        <label for="user_tlf" class="col-sm-3">Teléfono </label>
-                        {!! Form::text('user_tlf', null, ['placeholder'=>'Telefono', 'class'=>'form-control col-sm-9']) !!}
+                        <label for="user_telefono" class="col-sm-3">Teléfono </label>
+                        {!! Form::text('user_telefono', null, ['placeholder'=>'Telefono', 'class'=>'form-control col-sm-9']) !!}
                     </div>
                 </div>
 

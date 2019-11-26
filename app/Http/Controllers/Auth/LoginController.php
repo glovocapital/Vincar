@@ -61,8 +61,6 @@ class LoginController extends Controller
         $usuario = User::where('email', $request->input('email'))->first();
         if ($usuario)
         {
-            //dd($usuario);
-            $fecha = substr(now(), 0, 19);
 
             if ($usuario->user_estado == 1 )
             {
@@ -81,14 +79,14 @@ class LoginController extends Controller
 
                 } else {
                     //credenciales incorrectas
-                   // dd('555');
+
                     flash('Datos ingresados no son válidos.')->error();
-                    return redirect('/home');
+                    return redirect('/');
                 }
 
             } else {
                 flash('Usuario inactivo, por favor contacte con el administrador.')->error();
-                return redirect('/home');
+                return redirect('/');
 
             }
         }
@@ -96,7 +94,7 @@ class LoginController extends Controller
          else{
             //el email del usuario no se encuentra en la BD
             flash('Datos ingresados no son válidos.')->error();
-            return redirect('/home');
+            return redirect('/');
          }
     }
 }
