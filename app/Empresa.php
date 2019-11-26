@@ -27,7 +27,7 @@ class Empresa extends Model
     }
 
     public function manyCamiones (){
-        return $this->hasMany(Camion::class, 'empresa_id');
+        return $this->hasMany(Camion::class);
     }
 
     public function oneTipoProveedor ($tipo_proveedor_id){

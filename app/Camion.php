@@ -17,7 +17,7 @@ class Camion extends Model
         'camion_patente', 'camion_modelo', 'camion_marca', 'camion_anio', 'camion_capacidad',
     ];
 
-    public function oneEmpresa (){
-        return $this->hasOne(Empresa::class, 'empresa_id', 'empresa_id');
+    public function belongsToEmpresa (){
+        return $this->belongsTo(Empresa::class, 'empresa_id', 'empresa_id');
     }
 }
