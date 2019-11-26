@@ -16,6 +16,8 @@ class CreateDetalleToursTable extends Migration
         Schema::create('detalle_tours', function (Blueprint $table) {
             $table->bigIncrements('detalle_tour_id');
 
+            $table->string('detalle_tour_descripcion');
+
             $table->unsignedBigInteger('salida_destino_id');
             $table->foreign('salida_destino_id')->references('destino_id')->on('destinos');
 

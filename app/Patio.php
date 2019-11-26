@@ -18,6 +18,6 @@ class Patio extends Model
     ];
     
     public function manyUbicPatios(){
-        return $this->hasMany(UbicPatio::class, 'patio_id');
+        return $this->hasMany(UbicPatio::class);
     }
 }

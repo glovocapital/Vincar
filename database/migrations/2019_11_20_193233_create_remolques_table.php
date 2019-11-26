@@ -16,9 +16,14 @@ class CreateRemolquesTable extends Migration
         Schema::create('remolques', function (Blueprint $table) {
             $table->bigIncrements('remolque_id');
             $table->string('remolque_patente');
+            $table->string('remolque_modelo');
             $table->string('remolque_marca');
             $table->integer('remolque_anio');
-            $table->string('remolque_modelo');
+            $table->integer('remolque_capacidad');
+
+            $table->unsignedBigInteger('empresa_id');
+            $table->foreign('empresa_id')->references('empresa_id')->on('empresas')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

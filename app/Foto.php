@@ -18,6 +18,6 @@ class Foto extends Model
     ];
 
     public function belongsToDanoPieza(){
-        return $this->belongsTo(DanoPieza::class);
+        return $this->belongsTo(DanoPieza::class, 'dano_pieza_id', 'dano_pieza_id');
     }
 }
