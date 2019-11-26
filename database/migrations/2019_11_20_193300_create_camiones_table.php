@@ -20,8 +20,10 @@ class CreateCamionesTable extends Migration
             $table->string('camion_marca');
             $table->integer('camion_anio');
             $table->integer('camion_capacidad');
+
             $table->unsignedBigInteger('empresa_id');
             $table->foreign('empresa_id')->references('empresa_id')->on('empresas')->onDelete('cascade');
+            
             $table->timestamps();
         });
     }
