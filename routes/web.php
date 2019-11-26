@@ -45,11 +45,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador']], function () {
 Route::get('usuarios', 'UserController@index')->name('usuarios.index');
 Route::get('usuarios/create','UserController@create')->name('usuarios.create');
 Route::get('usuarios/{id}/edit','UserController@edit')->name('usuarios.edit');
-
 Route::post('usuarios','UserController@store')->name('usuarios.store');
-
 Route::patch('usuarios/{id}/update','UserController@update')->name('usuarios.update');
 Route::get('usuarios/{id}/delete','UserController@destroy')->name('usuarios.destroy');
-Route::post('desactivarUsuario', 'UserController@desactivarUsuario');
 
 });

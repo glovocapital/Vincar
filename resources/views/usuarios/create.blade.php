@@ -42,7 +42,13 @@
                 <div class="form-group">
                     <div class="row">
                         <label for="user_pass" class="col-sm-3">Contraseña <strong>*</strong></label>
-                        {{ Form::password('user_pass',array('placeholder'=>'Contraseña','class' => 'form-control col-sm-9', 'pattern' => '^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$' ,'required')) }}
+                        {{ Form::password('user_pass',array('placeholder'=>'Contraseña','class' => 'form-control col-sm-9', 'required')) }}
+
+                        @if ($errors->has('user_pass'))
+                            <span class="invalid-feedback" role="alert">
+                                <script>{{ $errors->first('user_pass') }}</script>
+                            </span>
+                        @endif
                     </div>
                 </div>
 
@@ -50,7 +56,7 @@
                 <div class="form-group">
                     <div class="row">
                         <label for="user_pass_rep" class="col-sm-3">Repita Contraseña <strong>*</strong></label>
-                        {{ Form::password('user_pass_confirmation',array('placeholder'=>'Repita la contraseña','class' => 'form-control col-sm-9', 'pattern' => '^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$' ,'required')) }}
+                        {{ Form::password('user_pass_confirmation',array('placeholder'=>'Repita la contraseña','class' => 'form-control col-sm-9', 'required')) }}
                     </div>
                 </div>
 

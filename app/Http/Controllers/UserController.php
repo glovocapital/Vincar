@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\CheckSession;
 use Illuminate\Support\Facades\Crypt;
+use App\Http\Requests\CrearUsuarioRequest;
+use App\Http\Requests\EditarUsuarioRequest;
 
 
 class UserController extends Controller
@@ -75,7 +77,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CrearUsuarioRequest $request)
     {
 
         $validate = DB::table('users')->where('email', $request->user_email)->exists();
@@ -104,7 +106,7 @@ class UserController extends Controller
             $user->user_cargo = $request->user_cargo;
             $user->user_estado = 1;
             $user->email = $request->user_email;
-            $user->password = $request->user_pass;
+            $user->password = bcrypt($request->user_pass);
             $user->rol_id = $request->rol_id;
             $user->user_telefono = $request->user_telefono;
             $user->empresa_id = $request->empresa_id;
@@ -121,7 +123,7 @@ class UserController extends Controller
             flash('Error al crear usuario.')->error();
            // flash($e->getMessage())->error();
             return redirect('usuarios');
-    }
+        }
 
 
     }
@@ -157,30 +159,41 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $user = \App\User::findOrfail($request->user_id);
 
-        $user->user_nombre = $request->user_nombre;
-        $user->user_apellido = $request->user_apellido;
-        $user->user_rut = $request->user_rut;
-        $user->user_cargo = $request->user_cargo;
 
-        $user->user_estado = $request->user_estado;
+        $user_id =  Crypt::decrypt($id);
 
-        $user->email = $request->email;
+        DB::beginTransaction();
+        try {
+            $user = User::findOrfail($user_id);
+            $user->user_nombre = $request->user_nombre;
+            $user->user_apellido = $request->user_apellido;
+            $user->user_rut = $request->user_rut;
+            $user->user_cargo = $request->user_cargo;
+            $user->email = $request->user_email;
+            if ($request->user_pass != ''){
+                $user->password = bcrypt($request->user_pass);
+            }
+            $user->rol_id = $request->rol_id;
+            $user->empresa_id = $request->empresa_id;
+            $user->user_telefono = $request->user_telefono;
+            $user->user_cargo = $request->user_cargo;
+            $user->save();
 
-        if ($request->password != ''){
-            $user->password = Hash::make($request->password);
+            DB::commit();
+
+            flash('Los datos del usuario han sido modificado correctamente.')->success();
+            return redirect('usuarios');
+
+        }catch (\Exception $e) {
+
+            DB::rollback();
+            flash('Error al actualizar los datos del usuario.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('usuarios');
         }
-
-        $user->rol_id = $request->rol_id;
-
-        $user->empresa_id = $request->empresa_id;
-
-        $user->save();
-
-        return redirect('usuarios');
     }
 
 
@@ -194,10 +207,19 @@ class UserController extends Controller
     public function destroy($id)
     {
 
-        $user = \App\User::findOrfail($id);
+        $user_id =  Crypt::decrypt($id);
+        DB::beginTransaction();
+        try {
+            $user = User::findOrfail($user_id)->delete();
+            DB::commit();
+            flash('Los datos del usuario han sido eliminados satisfactoriamente.')->success();
+            return redirect('usuarios');
+        }catch (\Exception $e) {
 
-        $user->delete();
-
-        return redirect('usuarios');
+            DB::rollback();
+            flash('Error al intentar eliminar los datos del usuario.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('usuarios');
+        }
     }
 }

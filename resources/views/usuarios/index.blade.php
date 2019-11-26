@@ -33,26 +33,20 @@
                             <td><small>{{ $us->user_nombre . ' ' . $us->user_apellido }}</small></td>
                             <td><small>{{ $us->email }}</small></td>
                             <td><small>{{ $us->oneRol->rol_desc }}</small></td>
-                            <td><small>{{ $us->oneEmpresa->empresa_razon_social }}</small></td>
+                            <td><small>{{ $us->belongsToEmpresa->empresa_razon_social }}</small></td>
 
 
                             <td>
                                 <small>
                                     <a href="{{ route('usuarios.edit',  Crypt::encrypt($us->user_id)) }}" class="btn-empresa"><i class="far fa-edit"></i></a>
                                 </small>
-
-
-
+                                <small>
+                                        <a href = "{{ route('usuarios.destroy', Crypt::encrypt($us->user_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
+                                        </a>
+                                </small>
                             </td>
-                            <!--
-                            <td>
-                                <div class="center">
-                                    <input type="checkbox" {{ ($us->usu_estado == 1) ? "checked" : "" }} data-toggle="toggle" data-on="Activo" data-off="Inactivo" data-onstyle="success" data-offstyle="danger" h="{{ $us->id }}" value="{{ $us->usu_estado }}" class="desactivarUsuario">
 
-                                </div>
 
-                            </td>
-                            -->
                         </tr>
 
                     @endforeach
