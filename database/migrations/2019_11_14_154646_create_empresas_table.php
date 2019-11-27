@@ -23,7 +23,7 @@ class CreateEmpresasTable extends Migration
             $table->string('empresa_telefono_contacto');
             $table->boolean('empresa_es_proveedor');
             $table->unsignedBigInteger('pais_id');
-            $table->foreign('pais_id')->references('pais_id')->on('pais');
+            $table->foreign('pais_id')->references('pais_id')->on('paises');
             $table->unsignedBigInteger('tipo_proveedor_id')->nullable();
             $table->foreign('tipo_proveedor_id')->references('tipo_proveedor_id')->on('tipo_proveedores');
             $table->timestamps();

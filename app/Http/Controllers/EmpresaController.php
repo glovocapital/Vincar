@@ -38,7 +38,7 @@ class EmpresaController extends Controller
      */
     public function create()
     {
-        $pais = DB::table('pais')
+        $pais = DB::table('paises')
             ->select('pais_id', 'pais_nombre')
             ->pluck('pais_nombre', 'pais_id');
 

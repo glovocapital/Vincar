@@ -51,7 +51,7 @@
                 <div class="form-group">
                     <div class="row">
                         <label for="empresa_id" class="col-sm-3">Tipo de proveedor <strong>*</strong></label>
-                        {!! Form::select('empresa_id', $tipo_proveedor, null,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                        {!! Form::select('tipo_proveedor', $tipo_proveedor, null,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                     </div>
                 </div>
 
@@ -63,10 +63,15 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="row">
-                        <label for="usu_nombre_cargo" class="col-sm-3">Cargo </label>
-                        {!! Form::text('usu_nombre_cargo', null, ['placeholder'=>'Nombre del cargo', 'class'=>'form-control col-sm-9']) !!}
-                    </div>
+                        <label for="emp_estado">Es proveedor? <strong>*</strong></label>
+                          {!! Form::checkbox('empresa_es_proveedor', 1, null, ['class' => 'form-control col-sm-9', 'data-toggle' => 'toggle', 'data-on' => 'Si', 'data-off' => 'No', 'data-onstyle' => 'success', 'data-offstyle' => 'danger', 'checked', 'data-style' => 'float-right']) !!}
+                </div>
+
+                <div class="form-group">
+                        <div class="row">
+                            <label for="empresa_id" class="col-sm-3">Tipo de proveedor <strong>*</strong></label>
+                            {!! Form::select('tipo_proveedor', $tipo_proveedor, null,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                        </div>
                 </div>
 
                 <div class="text-center pb-5">
