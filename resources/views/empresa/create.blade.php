@@ -62,17 +62,26 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                        <label for="emp_estado">Es proveedor? <strong>*</strong></label>
-                          {!! Form::checkbox('empresa_es_proveedor', 1, null, ['class' => 'form-control col-sm-9', 'data-toggle' => 'toggle', 'data-on' => 'Si', 'data-off' => 'No', 'data-onstyle' => 'success', 'data-offstyle' => 'danger', 'checked', 'data-style' => 'float-right']) !!}
-                </div>
 
                 <div class="form-group">
-                        <div class="row">
-                            <label for="empresa_id" class="col-sm-3">Tipo de proveedor <strong>*</strong></label>
-                            {!! Form::select('tipo_proveedor', $tipo_proveedor, null,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                        </div>
+                    <div class="row">
+                        <label for="usu_tlf" class="col-sm-3">Es proveedor? </label>
+                        <select name="tipo" onchange="d1(this)" class="form-control col-sm-9">
+                            <option value="0">Seleccionar</option>
+                            <option value="1">Si</option>
+                            <option value='2'>No</option>
+                        </select>
+                    </div>
                 </div>
+
+                <div class="form-group" id="bloque_archivo">
+                    <div class="row">
+                        <label for="empresa_id" class="col-sm-3">Tipo de proveedor <strong>*</strong></label>
+                        {!! Form::select('tipo_proveedor', $tipo_proveedor, null,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                    </div>
+                </div>
+
+
 
                 <div class="text-center pb-5">
                     {!! Form::submit('Registrar Empresa ', ['class' => 'btn btn-primary block full-width m-b']) !!}
@@ -85,6 +94,27 @@
             </div>
         </div>
 @stop
+
+<!--Funcion para ocultar y mostrar input segun seleccion-->
+<script language="javascript" type="text/javascript">
+    function d1(selectTag){
+    if(selectTag.value == '0')
+    {
+        $('#bloque_archivo').hide();
+        document.getElementById('archivo').disabled = true;
+    }else if(selectTag.value == '1')
+    {
+        $('#bloque_archivo').show();
+
+     document.getElementById('archivo').disabled = false;
+    }else if(selectTag.value == '2')
+    {
+        $('#bloque_archivo').hide();
+        document.getElementById('archivo').disabled = true;
+    }
+    }
+    </script>
+<!--Fin Funcion para ocultar y mostrar input segun seleccion-->
 
 
 
