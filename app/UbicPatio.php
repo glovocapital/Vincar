@@ -26,4 +26,8 @@ class UbicPatio extends Model
     public function onePatio(){
         return $this->hasOne(Patio::class, 'patio_id', 'patio_id');
     }
+    
+    public function oneVin(){
+        return $this->hasOne(Vin::class, 'vin_id', 'vin_id');
+    }
 }

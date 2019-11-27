@@ -19,6 +19,8 @@ class CreateDetalleToursTable extends Migration
             $table->string('detalle_tour_descripcion');
             $table->date('detalle_tour_fec_inicio')->nullable();
             $table->date('detalle_tour_fec_fin')->nullable();
+            $table->boolean('detalle_tour_entregado');
+            $table->text('detalle_tour_observaciones');
 
             $table->unsignedBigInteger('salida_destino_id');
             $table->foreign('salida_destino_id')->references('destino_id')->on('destinos');

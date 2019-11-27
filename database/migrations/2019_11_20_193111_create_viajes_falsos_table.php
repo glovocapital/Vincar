@@ -15,8 +15,16 @@ class CreateViajesFalsosTable extends Migration
     {
         Schema::create('viajes_falsos', function (Blueprint $table) {
             $table->bigIncrements('viaje_falso_id');
+            $table->date('viaje_falso_fecha');
+            $table->bigIncrements('viaje_falso_id');
+
+            $table->unsignedBigInteger('camion_id');
+            $table->foreign('camion_id')->references('camion_id')->on('camiones');
+            $table->unsignedBigInteger('conductor_id');
+            $table->foreign('conductor_id')->references('user_id')->on('users');
             $table->unsignedBigInteger('empresa_id');
             $table->foreign('empresa_id')->references('empresa_id')->on('empresas');
+            
             $table->timestamps();
         });
     }

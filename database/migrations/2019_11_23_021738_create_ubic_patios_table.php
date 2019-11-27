@@ -19,6 +19,8 @@ class CreateUbicPatiosTable extends Migration
             $table->string('ubic_patio_fila');
             $table->string('ubic_patio_columna');
             $table->boolean('ubic_patio_ocupada')->default(false);
+            $table->unsignedBigInteger('vin_id')->nullable()->default(null);
+            $table->foreign('vin_id')->references('vin_id')->on('vins');
             $table->unsignedBigInteger('patio_id');
             $table->foreign('patio_id')->references('patio_id')->on('patios');
             $table->timestamps();
