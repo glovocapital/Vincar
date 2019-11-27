@@ -34,15 +34,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $usuarios = \App\User::all();
+        $usuarios = User::all();
 
-        /*$usuarios = DB::table('users')
-            ->select()
-            ->where('email','!=','jadcve@gmail.com')
-            ->Where('email','!=','crox.sanchez@gmail.com')
-            ->Where('email','!=','asthar2010@gmail.com')
-            ->paginate(10);
-*/
+
         $roles = DB::table('roles')
             ->select('rol_id', 'rol_desc')
             ->pluck('rol_desc', 'rol_id');

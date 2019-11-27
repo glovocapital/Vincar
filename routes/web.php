@@ -49,4 +49,13 @@ Route::post('usuarios','UserController@store')->name('usuarios.store');
 Route::patch('usuarios/{id}/update','UserController@update')->name('usuarios.update');
 Route::get('usuarios/{id}/delete','UserController@destroy')->name('usuarios.destroy');
 
+Route::get('empresa', 'EmpresaController@index')->name('empresa.index');
+Route::get('empresa/create','EmpresaController@create')->name('empresa.create');
+Route::get('empresa/{id}/edit','EmpresaController@edit')->name('empresa.edit');
+Route::post('empresa','EmpresaController@store')->name('empresa.store');
+Route::patch('empresa/{id}/update','EmpresaController@update')->name('empresa.update');
+Route::get('empresa/{id}/delete','EmpresaController@destroy')->name('empresa.destroy');
+
+
+
 });
