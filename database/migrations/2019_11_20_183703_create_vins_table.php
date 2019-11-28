@@ -15,6 +15,7 @@ class CreateVinsTable extends Migration
     {
         Schema::create('vins', function (Blueprint $table) {
             $table->bigIncrements('vin_id');
+            $table->string('vin_codigo')->unique();
             $table->string('vin_patente');
             $table->string('vin_modelo');
             $table->string('vin_marca');
