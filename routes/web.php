@@ -81,6 +81,15 @@ Route::post('proveedor','TipoProveedorController@store')->name('proveedor.store'
 Route::patch('proveedor/{id}/update','TipoProveedorController@update')->name('proveedor.update');
 Route::get('proveedor/{id}/delete','TipoProveedorController@destroy')->name('proveedor.destroy');
 
+//ruta mantenedor destinos
+Route::get('destinos', 'DestinoController@index')->name('destinos.index');
+Route::get('destinos/create','DestinoController@create')->name('destinos.create');
+Route::get('destinos/{id}/edit','DestinoController@edit')->name('destinos.edit');
+Route::post('destinos','DestinoController@store')->name('destinos.store');
+Route::patch('destinos/{id}/update','DestinoController@update')->name('destinos.update');
+Route::get('destinos/{id}/delete','DestinoController@destroy')->name('destinos.destroy');
+
+
 
 
 });

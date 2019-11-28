@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Empresa Editar')
+@section('title','Tipo de Proveedor Editar')
 @section('content')
 
         <div class="ibox float-e-margins">

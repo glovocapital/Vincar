@@ -1,23 +1,23 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Tipo_Proveedor;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\CheckSession;
 use Illuminate\Support\Facades\Crypt;
 use DB;
+use App\Destino;
 
 use Illuminate\Http\Request;
 
-class TipoProveedorController extends Controller
+class DestinoController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
         $this->middleware(PreventBackHistory::class);
         $this->middleware(CheckSession::class);
     }
-
 
     /**
      * Display a listing of the resource.
@@ -26,8 +26,8 @@ class TipoProveedorController extends Controller
      */
     public function index()
     {
-        $proveedores = Tipo_Proveedor::all();
-        return view('tipoproveedor.index', compact('proveedores'));
+        $destino = Destino::all();
+        return view('destinos.index', compact('destino'));
     }
 
     /**
@@ -37,7 +37,7 @@ class TipoProveedorController extends Controller
      */
     public function create()
     {
-        return view('tipoproveedor.create');
+        return view('destinos.create');
     }
 
     /**
@@ -48,31 +48,35 @@ class TipoProveedorController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = DB::table('tipo_proveedores')->where('tipo_proveedor_desc', $request->tipo_proveedor_desc)->exists();
+        $validate = DB::table('destinos')
+        ->where('destino_nombre', $request->destino_nombre)
+        ->orWhere('destino_codigo', $request->destino_codigo)
+        ->exists();
 
         if($validate == true)
         {
-            flash('El Tipo de Servicio '.$request->tipo_proveedor_desc.'  ya existe en la base de datos')->warning();
-            return redirect('/proveedor');
+            flash('El nombre del destino '.$request->destino_nombre.' o el código del destino '.$request->destino_código.'  ya existe en la base de datos')->warning();
+            return redirect('/destinos');
         }else
 
         try {
 
-            $proveedor = new Tipo_Proveedor();
-            $proveedor->tipo_proveedor_desc = $request->tipo_proveedor_desc;
-            $proveedor->save();
+            $destino = new Destino();
+            $destino->destino_nombre = $request->destino_nombre;
+            $destino->destino_codigo = $request->destino_codigo;
+            $destino->save();
 
 
-            flash('El Proveedor se creo correctamente.')->success();
-            return redirect('proveedor');
+            flash('El Destino se creo correctamente.')->success();
+            return redirect('destinos');
 
         }catch (\Exception $e) {
 
 
 
-            flash('Error al crear el Proveedor.')->error();
-           flash($e->getMessage())->error();
-            return redirect('proveedor');
+            flash('Error al crear el Destino.')->error();
+           //flash($e->getMessage())->error();
+            return redirect('destinos');
         }
     }
 
@@ -95,10 +99,10 @@ class TipoProveedorController extends Controller
      */
     public function edit($id)
     {
-        $proveedor_id =  Crypt::decrypt($id);
-        $proveedor = Tipo_Proveedor::findOrfail($proveedor_id);
+        $destino_id =  Crypt::decrypt($id);
+        $destino = Destino::findOrfail($destino_id);
 
-        return view('tipoproveedor.edit', compact('proveedor'));
+        return view('destinos.edit', compact('destino'));
     }
 
     /**
@@ -110,22 +114,23 @@ class TipoProveedorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $proveedor_id =  Crypt::decrypt($id);
-        $proveedor =  Tipo_Proveedor::findOrfail($proveedor_id);
+        $destino_id =  Crypt::decrypt($id);
+        $destino =  Destino::findOrfail($destino_id);
 
         try {
 
-            $proveedor->tipo_proveedor_desc = $request->tipo_proveedor_desc;
-            $proveedor->save();
+            $destino->destino_codigo = $request->destino_codigo;
+            $destino->destino_nombre = $request->destino_nombre;
+            $destino->save();
 
-            flash('El tipo de proveedor se actualizó correctamente.')->success();
-            return redirect('proveedor');
+            flash('El destino se actualizó correctamente.')->success();
+            return redirect('destinos');
 
         }catch (\Exception $e) {
 
-            flash('Error al actualizar el tipo de proveedor.')->error();
+            flash('Error al actualizar el destino.')->error();
            //flash($e->getMessage())->error();
-            return redirect('proveedor');
+            return redirect('destinos');
         }
     }
 
@@ -137,19 +142,19 @@ class TipoProveedorController extends Controller
      */
     public function destroy($id)
     {
-        $proveedor_id =  Crypt::decrypt($id);
+        $destino_id =  Crypt::decrypt($id);
 
         try {
-            $proveedor = Tipo_Proveedor::findOrfail($proveedor_id)->delete();
+            $destino = Destino::findOrfail($destino_id)->delete();
 
-            flash('Los datos del tipo de proveedor han sido eliminados satisfactoriamente.')->success();
-            return redirect('proveedor');
+            flash('Los datos del destino han sido eliminados satisfactoriamente.')->success();
+            return redirect('destinos');
         }catch (\Exception $e) {
 
 
-            flash('Error al intentar eliminar los datos del tipo de proveedor.')->error();
+            flash('Error al intentar eliminar los datos del destino.')->error();
             //flash($e->getMessage())->error();
-            return redirect('proveedor');
+            return redirect('destinos');
         }
     }
 }

@@ -16,7 +16,9 @@ class CreateDestinosTable extends Migration
         Schema::create('destinos', function (Blueprint $table) {
             $table->bigIncrements('destino_id');
             $table->string('destino_nombre');
+            $table->string('destino_codigo');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
