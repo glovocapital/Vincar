@@ -56,6 +56,13 @@ Route::post('empresa','EmpresaController@store')->name('empresa.store');
 Route::patch('empresa/{id}/update','EmpresaController@update')->name('empresa.update');
 Route::get('empresa/{id}/delete','EmpresaController@destroy')->name('empresa.destroy');
 
+Route::get('vin', 'VinController@index')->name('vin.index');
+Route::get('vin/create','VinController@create')->name('vin.create');
+Route::get('vin/{id}/edit','VinController@edit')->name('vin.edit');
+Route::post('vin','VinController@store')->name('vin.store');
+Route::patch('vin/{id}/update','VinController@update')->name('vin.update');
+Route::get('vin/{id}/delete','VinController@destroy')->name('vin.destroy');
+
 
 
 });
