@@ -63,6 +63,13 @@ Route::post('vin','VinController@store')->name('vin.store');
 Route::patch('vin/{id}/update','VinController@update')->name('vin.update');
 Route::get('vin/{id}/delete','VinController@destroy')->name('vin.destroy');
 
+Route::get('pais', 'PaisController@index')->name('pais.index');
+Route::get('pais/create','PaisController@create')->name('pais.create');
+Route::get('pais/{id}/edit','PaisController@edit')->name('pais.edit');
+Route::post('pais','PaisController@store')->name('pais.store');
+Route::patch('pais/{id}/update','PaisController@update')->name('pais.update');
+Route::get('pais/{id}/delete','PaisController@destroy')->name('pais.destroy');
+
 
 
 });

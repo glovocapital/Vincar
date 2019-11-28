@@ -17,6 +17,7 @@ class CreatePaisesTable extends Migration
             $table->bigIncrements('pais_id');
             $table->string('pais_nombre');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

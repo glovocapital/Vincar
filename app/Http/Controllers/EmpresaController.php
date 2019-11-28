@@ -64,7 +64,7 @@ class EmpresaController extends Controller
     {
 
 
-        $validate = DB::table('empresas')->where('empresa_rut', $request->empres_rut)->exists();
+        $validate = DB::table('empresas')->where('empresa_rut', $request->empresa_rut)->exists();
 
         if($validate == true)
         {
@@ -190,7 +190,7 @@ class EmpresaController extends Controller
            flash($e->getMessage())->error();
             return redirect('empresa');
         }
-        dd($request);
+
     }
 
     /**
