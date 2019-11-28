@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
         $this->call(PaisSeeder::class);
         $this->call(EmpresaSeeder::class);
         $this->call(UsersSeeder::class);
+        $this->call(VinEstadoInventarioSeeder::class);
+        $this->call(VinSubEstadoInventarioSeeder::class);
         // $this->call(UsersTableSeeder::class);
     }
 }
