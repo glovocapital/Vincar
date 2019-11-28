@@ -63,7 +63,6 @@ class EmpresaController extends Controller
     public function store(Request $request)
     {
 
-
         $validate = DB::table('empresas')->where('empresa_rut', $request->empresa_rut)->exists();
 
         if($validate == true)
@@ -72,7 +71,7 @@ class EmpresaController extends Controller
             return redirect('/empresa');
         }else
 
-        DB::beginTransaction();
+
         try {
 
             $empresa = new Empresa();
@@ -95,16 +94,13 @@ class EmpresaController extends Controller
 
             $empresa->save();
 
-            DB::commit();
             flash('La empresa se creo correctamente.')->success();
             return redirect('empresa');
 
         }catch (\Exception $e) {
 
-            DB::rollback();
-
             flash('Error al crear la empresa.')->error();
-           flash($e->getMessage())->error();
+           //flash($e->getMessage())->error();
             return redirect('empresa');
         }
     }
@@ -154,9 +150,9 @@ class EmpresaController extends Controller
     {
         $empresa_id =  Crypt::decrypt($id);
         $empresa =  Empresa::findOrfail($empresa_id);
-         // dd($request);
 
-        DB::beginTransaction();
+
+
         try {
 
             $empresa->empresa_rut = $request->empresa_rut;
@@ -178,16 +174,13 @@ class EmpresaController extends Controller
 
             $empresa->save();
 
-            DB::commit();
             flash('La empresa se actualizó correctamente.')->success();
             return redirect('empresa');
 
         }catch (\Exception $e) {
 
-            DB::rollback();
-
             flash('Error al actualizar la empresa.')->error();
-           flash($e->getMessage())->error();
+           //flash($e->getMessage())->error();
             return redirect('empresa');
         }
 
@@ -202,15 +195,14 @@ class EmpresaController extends Controller
     public function destroy($id)
     {
         $empresa_id =  Crypt::decrypt($id);
-        DB::beginTransaction();
+
         try {
             $empresa = Empresa::findOrfail($empresa_id)->delete();
-            DB::commit();
+
             flash('Los datos de la empresa han sido eliminados satisfactoriamente.')->success();
             return redirect('empresa');
         }catch (\Exception $e) {
 
-            DB::rollback();
             flash('Error al intentar eliminar los datos de la empresa.')->error();
             //flash($e->getMessage())->error();
             return redirect('empresa');

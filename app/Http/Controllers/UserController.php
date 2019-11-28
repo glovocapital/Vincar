@@ -89,8 +89,6 @@ class UserController extends Controller
             return redirect('/usuarios');
         }else
 
-
-        DB::beginTransaction();
         try {
 
             $user = new User();
@@ -106,13 +104,12 @@ class UserController extends Controller
             $user->empresa_id = $request->empresa_id;
             $user->save();
 
-        DB::commit();
         flash('El usuario ha sido creado correctamente.')->success();
         return redirect('usuarios');
 
         }catch (\Exception $e) {
 
-            DB::rollback();
+
 
             flash('Error al crear usuario.')->error();
            // flash($e->getMessage())->error();
@@ -159,7 +156,7 @@ class UserController extends Controller
 
         $user_id =  Crypt::decrypt($id);
 
-        DB::beginTransaction();
+
         try {
             $user = User::findOrfail($user_id);
             $user->user_nombre = $request->user_nombre;
@@ -176,14 +173,12 @@ class UserController extends Controller
             $user->user_cargo = $request->user_cargo;
             $user->save();
 
-            DB::commit();
-
             flash('Los datos del usuario han sido modificado correctamente.')->success();
             return redirect('usuarios');
 
         }catch (\Exception $e) {
 
-            DB::rollback();
+
             flash('Error al actualizar los datos del usuario.')->error();
             //flash($e->getMessage())->error();
             return redirect('usuarios');
@@ -202,15 +197,15 @@ class UserController extends Controller
     {
 
         $user_id =  Crypt::decrypt($id);
-        DB::beginTransaction();
+
         try {
             $user = User::findOrfail($user_id)->delete();
-            DB::commit();
+
             flash('Los datos del usuario han sido eliminados satisfactoriamente.')->success();
             return redirect('usuarios');
         }catch (\Exception $e) {
 
-            DB::rollback();
+
             flash('Error al intentar eliminar los datos del usuario.')->error();
             //flash($e->getMessage())->error();
             return redirect('usuarios');

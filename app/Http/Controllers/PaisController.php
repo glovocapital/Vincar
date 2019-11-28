@@ -11,6 +11,14 @@ use DB;
 
 class PaisController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(PreventBackHistory::class);
+        $this->middleware(CheckSession::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -48,23 +56,22 @@ class PaisController extends Controller
             return redirect('/pais');
         }else
 
-        DB::beginTransaction();
+
         try {
 
             $pais = new Pais();
             $pais->pais_nombre = $request->pais_nombre;
             $pais->save();
 
-            DB::commit();
             flash('El País se creo correctamente.')->success();
             return redirect('pais');
 
         }catch (\Exception $e) {
 
-            DB::rollback();
+
 
             flash('Error al crear el País.')->error();
-           flash($e->getMessage())->error();
+           //flash($e->getMessage())->error();
             return redirect('pais');
         }
     }
@@ -106,23 +113,18 @@ class PaisController extends Controller
         $pais_id =  Crypt::decrypt($id);
         $pais =  Pais::findOrfail($pais_id);
 
-
-        DB::beginTransaction();
         try {
 
             $pais->pais_nombre = $request->pais_nombre;
             $pais->save();
 
-            DB::commit();
             flash('El país se actualizó correctamente.')->success();
             return redirect('pais');
 
         }catch (\Exception $e) {
 
-            DB::rollback();
-
             flash('Error al actualizar el páis.')->error();
-           flash($e->getMessage())->error();
+            //flash($e->getMessage())->error();
             return redirect('pais');
         }
     }
@@ -136,15 +138,15 @@ class PaisController extends Controller
     public function destroy($id)
     {
         $pais_id =  Crypt::decrypt($id);
-        DB::beginTransaction();
+
         try {
             $pais = Pais::findOrfail($pais_id)->delete();
-            DB::commit();
+
             flash('Los datos del pais han sido eliminados satisfactoriamente.')->success();
             return redirect('pais');
         }catch (\Exception $e) {
 
-            DB::rollback();
+
             flash('Error al intentar eliminar los datos del  pais.')->error();
             //flash($e->getMessage())->error();
             return redirect('pais');

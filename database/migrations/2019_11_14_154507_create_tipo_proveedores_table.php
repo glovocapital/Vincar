@@ -17,6 +17,7 @@ class CreateTipoProveedoresTable extends Migration
             $table->bigIncrements('tipo_proveedor_id');
             $table->string('tipo_proveedor_desc');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
