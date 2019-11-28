@@ -6,6 +6,7 @@
             <div class="ibox-title">
                 <h5>Crear Empresas</h5>
             </div>
+
             <hr class="mb-4">
             <div class="ibox-content col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 mt-4">
                 {!! Form::open(['route'=> 'empresa.store', 'method'=>'POST']) !!}
@@ -50,23 +51,25 @@
 
                 <div class="form-group">
                     <div class="row">
-                        <label for="empresa_id" class="col-sm-3">Tipo de proveedor <strong>*</strong></label>
-                        {!! Form::select('tipo_proveedor', $tipo_proveedor, null,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                        <label for="empresa_telefono" class="col-sm-3">Teléfono </label>
+                        {!! Form::text('empresa_telefono', null, ['placeholder'=>'Telefono', 'class'=>'form-control col-sm-9']) !!}
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="row">
-                        <label for="usu_tlf" class="col-sm-3">Teléfono </label>
-                        {!! Form::text('usu_tlf', null, ['placeholder'=>'Telefono', 'class'=>'form-control col-sm-9']) !!}
+                        <label for="usu_tlf" class="col-sm-3">Contacto de la empresa </label>
+                        {!! Form::text('empresa_contacto', null, ['placeholder'=>'Nombre de contacto', 'class'=>'form-control col-sm-9']) !!}
                     </div>
                 </div>
+
+
 
 
                 <div class="form-group">
                     <div class="row">
                         <label for="usu_tlf" class="col-sm-3">Es proveedor? </label>
-                        <select name="tipo" onchange="d1(this)" class="form-control col-sm-9">
+                        <select name="es_proveedor" onchange="d1(this)" class="form-control col-sm-9">
                             <option value="0">Seleccionar</option>
                             <option value="1">Si</option>
                             <option value='2'>No</option>

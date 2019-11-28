@@ -44,7 +44,7 @@
 
                             <td>
                                 <small>
-                                    <a href="{{ route('empresa.edit', Crypt::encrypt($emp->id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
+                                    <a href="{{ route('empresa.edit', Crypt::encrypt($emp->empresa_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
                                 </small>
 
                             </td>
