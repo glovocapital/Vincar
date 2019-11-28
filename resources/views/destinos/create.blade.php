@@ -38,26 +38,7 @@
         </div>
 @stop
 
-<!--Funcion para ocultar y mostrar input segun seleccion-->
-<script language="javascript" type="text/javascript">
-    function d1(selectTag){
-    if(selectTag.value == '0')
-    {
-        $('#bloque_archivo').hide();
-        document.getElementById('archivo').disabled = true;
-    }else if(selectTag.value == '1')
-    {
-        $('#bloque_archivo').show();
 
-     document.getElementById('archivo').disabled = false;
-    }else if(selectTag.value == '2')
-    {
-        $('#bloque_archivo').hide();
-        document.getElementById('archivo').disabled = true;
-    }
-    }
-    </script>
-<!--Fin Funcion para ocultar y mostrar input segun seleccion-->
 
 
 

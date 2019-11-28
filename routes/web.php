@@ -89,6 +89,14 @@ Route::post('destinos','DestinoController@store')->name('destinos.store');
 Route::patch('destinos/{id}/update','DestinoController@update')->name('destinos.update');
 Route::get('destinos/{id}/delete','DestinoController@destroy')->name('destinos.destroy');
 
+//ruta mantenedor destinos
+Route::get('camiones', 'CamionesController@index')->name('camiones.index');
+Route::get('camiones/create','CamionesController@create')->name('camiones.create');
+Route::get('camiones/{id}/edit','CamionesController@edit')->name('camiones.edit');
+Route::post('camiones','CamionesController@store')->name('camiones.store');
+Route::patch('camiones/{id}/update','CamionesController@update')->name('camiones.update');
+Route::get('camiones/{id}/delete','CamionesController@destroy')->name('camiones.destroy');
+
 
 
 
