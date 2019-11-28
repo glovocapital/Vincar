@@ -22,68 +22,63 @@
                             <label for="empresa_nombre" class="col-sm-3">Razón Social <strong>*</strong></label>
                       {!! Form::text('empresa_nombre', $empresa->empresa_razon_social, ['placeholder'=>'Nombre o razón social de la empresa', 'class'=>'form-control col-sm-9', 'required']) !!}
                     </div>
-                 </div>
+                </div>
 
-                 <div class="form-group">
+                <div class="form-group">
                         <div class="row">
-                          <label for="user_rut" class="col-sm-3">Rut del usuario <strong>*</strong></label>
-                          {!! Form::text('user_rut', $usuario->user_rut, ['placeholder'=>'Rut del usuario', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            <label for="empresa_giro" class="col-sm-3">Rubro o giro de la empresa <strong>*</strong></label>
+                            {!! Form::text('empresa_giro', $empresa->empresa_giro, ['placeholder'=>'Rut del usuario', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
-                     </div>
+                </div>
 
                 <div class="form-group">
                     <div class="row">
-                      <label for="user_email" class="col-sm-3">Email del usuario <strong>*</strong></label>
-                      {!! Form::text('user_email', $usuario->email, ['class'=>'form-control col-sm-9', 'placeholder'=>'Email']) !!}
+                        <label for="empresa_direccion" class="col-sm-3">Dirección <strong>*</strong></label>
+                        {!! Form::text('empresa_direccion', $empresa->empresa_direccion, ['placeholder'=>'Dirección de la empresa', 'class'=>'form-control col-sm-9', 'required']) !!}
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="row">
-                        <label for="password" class="col-sm-3">Contraseña <strong>*</strong></label>
-                        <input id="user_pass" type="password" class="form-control col-sm-9{{ $errors->has('user_pass') ? ' is-invalid' : '' }}" name="user_pass">
-                        @if ($errors->has('user_pass'))
-                            <span class="invalid-feedback" role="alert">
-                                <script>{{ $errors->first('user_pass') }}</script>
-                            </span>
-                        @endif
+                        <label for="pais_id" class="col-sm-3">Pais <strong>*</strong></label>
+                        {!! Form::select('pais_id', $pais, $empresa->pais_id,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="row">
-                    <label for="password-confirm" class="col-sm-3">Repita Contraseña <strong>*</strong></label>
-                    <input id="user_pass-confirm" type="password" class="form-control col-sm-9" name="user_pass_confirmation">
-                    </div>
-                 </div>
-
-                <div class="form-group">
-                    <div class="row">
-                      <label for="emp_id" class="col-sm-3">Empresa <strong>*</strong></label>
-                      {!! Form::select('empresa_id', $empresa, $usuario->empresa_id,['class'=>'form-control col-sm-9', 'required'=>'required', 'onchange' => 'cambiarSubrubro(this)']) !!}
+                        <label for="empresa_telefono_contacto" class="col-sm-3">Número de contacto <strong>*</strong></label>
+                        {!! Form::text('empresa_telefono_contacto', $empresa->empresa_telefono_contacto, ['placeholder'=>'Número de contacto', 'class'=>'form-control col-sm-9', 'required']) !!}
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="row">
-                      <label for="user_tlf" class="col-sm-3">Teléfono </label>
-                      {!! Form::text('user_telefono', $usuario->user_telefono, ['placeholder'=>'Telefono', 'class'=>'form-control col-sm-9']) !!}
+                            <label for="empresa_nombre_contacto" class="col-sm-3">Nombre de contacto <strong>*</strong></label>
+                            {!! Form::text('empresa_nombre_contacto', $empresa->empresa_nombre_contacto, ['placeholder'=>'Número de contacto', 'class'=>'form-control col-sm-9', 'required']) !!}
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <div class="row">
-                      <label for="user_cargo" class="col-sm-3">Cargo </label>
-                      {!! Form::text('user_cargo', $usuario->user_cargo, ['placeholder'=>'Nombre del cargo', 'class'=>'form-control col-sm-9']) !!}
+                        <div class="row">
+                            <label for="usu_tlf" class="col-sm-3">Es proveedor? </label>
+                            <select name="es_proveedor" onchange="d1(this)" class="form-control col-sm-9">
+                                <option value="0">Seleccionar</option>
+                                <option value="1">Si</option>
+                                <option value='2'>No</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="row">
-                      <label for="rol_id" class="col-sm-3">Rol <strong>*</strong></label>
-                      {!! Form::select('rol_id', $roles, $usuario->rol_id,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                    <div class="form-group" id="bloque_archivo">
+                        <div class="row">
+                            <label for="empresa_id" class="col-sm-3">Tipo de proveedor <strong>*</strong></label>
+                            {!! Form::select('tipo_proveedor', $tipo_proveedor, $empresa->tipo_proveedor_id,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                        </div>
                     </div>
-                </div>
+
+
+
 
                 <div class="text-center pb-5">
                     {!! Form::submit('Actualizar usuario', ['class' => 'btn btn-primary block full-width m-b']) !!}
@@ -97,3 +92,23 @@
         </div>
 @stop
 
+<!--Funcion para ocultar y mostrar input segun seleccion-->
+<script language="javascript" type="text/javascript">
+    function d1(selectTag){
+    if(selectTag.value == '0')
+    {
+        $('#bloque_archivo').hide();
+        document.getElementById('archivo').disabled = true;
+    }else if(selectTag.value == '1')
+    {
+        $('#bloque_archivo').show();
+
+     document.getElementById('archivo').disabled = false;
+    }else if(selectTag.value == '2')
+    {
+        $('#bloque_archivo').hide();
+        document.getElementById('archivo').disabled = true;
+    }
+    }
+    </script>
+<!--Fin Funcion para ocultar y mostrar input segun seleccion-->

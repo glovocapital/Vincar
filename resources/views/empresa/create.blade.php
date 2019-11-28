@@ -51,15 +51,15 @@
 
                 <div class="form-group">
                     <div class="row">
-                        <label for="empresa_telefono" class="col-sm-3">Teléfono </label>
-                        {!! Form::text('empresa_telefono', null, ['placeholder'=>'Telefono', 'class'=>'form-control col-sm-9']) !!}
+                        <label for="empresa_telefono_contacto" class="col-sm-3">Teléfono </label>
+                        {!! Form::text('empresa_telefono_contacto', null, ['placeholder'=>'Telefono', 'class'=>'form-control col-sm-9']) !!}
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="row">
-                        <label for="usu_tlf" class="col-sm-3">Contacto de la empresa </label>
-                        {!! Form::text('empresa_contacto', null, ['placeholder'=>'Nombre de contacto', 'class'=>'form-control col-sm-9']) !!}
+                        <label for="empresa_nombre_contacto" class="col-sm-3">Contacto de la empresa </label>
+                        {!! Form::text('empresa_nombre_contacto', null, ['placeholder'=>'Nombre de contacto', 'class'=>'form-control col-sm-9']) !!}
                     </div>
                 </div>
 

@@ -81,8 +81,8 @@ class EmpresaController extends Controller
             $empresa->empresa_giro = $request->empresa_giro;
             $empresa->pais_id = $request->pais_id;
             $empresa->empresa_direccion = $request->empresa_direccion;
-            $empresa->empresa_nombre_contacto = $request->empresa_contacto;
-            $empresa->empresa_telefono_contacto = $request->empresa_telefono;
+            $empresa->empresa_nombre_contacto = $request->empresa_nombre_contacto;
+            $empresa->empresa_telefono_contacto = $request->empresa_telefono_contacto;
             if($request->es_proveedor == 1)
             {
                 $empresa->empresa_es_proveedor = 1;
@@ -152,7 +152,45 @@ class EmpresaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $empresa_id =  Crypt::decrypt($id);
+        $empresa =  Empresa::findOrfail($empresa_id);
+         // dd($request);
+
+        DB::beginTransaction();
+        try {
+
+            $empresa->empresa_rut = $request->empresa_rut;
+            $empresa->empresa_razon_social = $request->empresa_nombre;
+            $empresa->empresa_giro = $request->empresa_giro;
+            $empresa->pais_id = $request->pais_id;
+            $empresa->empresa_direccion = $request->empresa_direccion;
+            $empresa->empresa_nombre_contacto = $request->empresa_nombre_contacto;
+            $empresa->empresa_telefono_contacto = $request->empresa_telefono_contacto;
+            if($request->es_proveedor == 1)
+            {
+                $empresa->empresa_es_proveedor = 1;
+                $empresa->tipo_proveedor_id = $request->tipo_proveedor;
+            }else
+            {
+                $empresa->empresa_es_proveedor = 0;
+                $empresa->tipo_proveedor_id = NULL;
+            }
+
+            $empresa->save();
+
+            DB::commit();
+            flash('La empresa se actualizó correctamente.')->success();
+            return redirect('empresa');
+
+        }catch (\Exception $e) {
+
+            DB::rollback();
+
+            flash('Error al actualizar la empresa.')->error();
+           flash($e->getMessage())->error();
+            return redirect('empresa');
+        }
+        dd($request);
     }
 
     /**
@@ -163,6 +201,19 @@ class EmpresaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $empresa_id =  Crypt::decrypt($id);
+        DB::beginTransaction();
+        try {
+            $empresa = Empresa::findOrfail($empresa_id)->delete();
+            DB::commit();
+            flash('Los datos de la empresa han sido eliminados satisfactoriamente.')->success();
+            return redirect('empresa');
+        }catch (\Exception $e) {
+
+            DB::rollback();
+            flash('Error al intentar eliminar los datos de la empresa.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('empresa');
+        }
     }
 }
