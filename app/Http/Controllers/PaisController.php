@@ -37,7 +37,7 @@ class PaisController extends Controller
      */
     public function create()
     {
-        return view('pais.create');
+        return view('pais.index');
     }
 
     /**

@@ -45,9 +45,9 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="empresa" class="nav-link">
                   <i class="far nav-icon"></i>
-                  <p>Cliente</p>
+                  <p>Empresas</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -63,11 +63,17 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="destinos" class="nav-link">
                   <i class="far nav-icon"></i>
                   <p>Destinos</p>
                 </a>
               </li>
+              <li class="nav-item">
+                    <a href="pais" class="nav-link">
+                      <i class="far nav-icon"></i>
+                      <p>Paises</p>
+                    </a>
+                  </li>
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far nav-icon"></i>

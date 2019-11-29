@@ -30,8 +30,18 @@ class EmpresaController extends Controller
      */
     public function index()
     {
+        $pais = DB::table('paises')
+            ->select('pais_id', 'pais_nombre')
+            ->pluck('pais_nombre', 'pais_id');
+
+        $tipo_proveedor = DB::table('tipo_proveedores')
+            ->select('tipo_proveedor_id','tipo_proveedor_desc')
+            ->pluck('tipo_proveedor_desc','tipo_proveedor_id');
+
+
+
         $empresa = Empresa::all();
-        return view('empresa.index', compact('empresa'));
+        return view('empresa.index', compact('empresa', 'pais', 'tipo_proveedor'));
     }
 
     /**
@@ -49,7 +59,7 @@ class EmpresaController extends Controller
             ->select('tipo_proveedor_id','tipo_proveedor_desc')
             ->pluck('tipo_proveedor_desc','tipo_proveedor_id');
 
-        return view('empresa.create', compact('pais','tipo_proveedor'));
+        return view('empresa.index', compact('pais','tipo_proveedor'));
 
 
     }
