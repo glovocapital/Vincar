@@ -79,7 +79,7 @@
             <!-- Message End -->
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+          <a href="#" class="dropdown-item dropdown-footer">Ver todos los mensajes</a>
         </div>
       </li>
       <!-- Notifications Dropdown Menu -->
