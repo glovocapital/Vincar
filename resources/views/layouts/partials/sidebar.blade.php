@@ -2,10 +2,9 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="home" class="brand-link">
-      <img src="adminlte/dist/img/AdminLTELogo.png"
+      <img src="adminlte/dist/img/Logo-Vincar.jpg"
            alt="Logo Vincar"
-           class="brand-image img-circle elevation-3"
-           style="opacity: .8">
+           class="brand-image img-size-256 elevation-3">
       <span class="brand-text font-weight-light">Vincar</span>
       <h5>Cloud Warehouse & Transport</h5>
     </a>
