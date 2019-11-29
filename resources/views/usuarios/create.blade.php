@@ -90,10 +90,6 @@
 
 
 
-
-
-
-
                 <div class="text-center pb-5">
                     {!! Form::submit('Registrar usuarios', ['class' => 'btn btn-primary block full-width m-b']) !!}
                     {!! Form::close() !!}

@@ -70,9 +70,9 @@
                         </div>
                     </div>
                 </div>
+<br />
 
-
-                    <div class="text-center pb-5">
+                <div class="text-right pb-5">
                         {!! Form::submit('Registrar Empresa ', ['class' => 'btn btn-primary block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>

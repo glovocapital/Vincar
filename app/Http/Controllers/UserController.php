@@ -37,11 +37,16 @@ class UserController extends Controller
         $usuarios = User::all();
 
 
+        $empresa = DB::table('empresas')
+        ->select('empresa_id', 'empresa_razon_social')
+        ->pluck('empresa_razon_social', 'empresa_id');
+
+
         $roles = DB::table('roles')
             ->select('rol_id', 'rol_desc')
             ->pluck('rol_desc', 'rol_id');
 
-        return view('usuarios.index', compact('roles','usuarios'));
+        return view('usuarios.index', compact('roles','usuarios', 'empresa'));
     }
 
     /**
@@ -61,7 +66,7 @@ class UserController extends Controller
             ->pluck('empresa_razon_social', 'empresa_id');
 
 
-        return view('usuarios.create', compact('roles','empresa'));
+        return view('usuarios.index', compact('roles','empresa'));
     }
 
     /**
