@@ -37,7 +37,7 @@ class DestinoController extends Controller
      */
     public function create()
     {
-        return view('destinos.create');
+        return view('destinos.index');
     }
 
     /**

@@ -2,66 +2,130 @@
 @section('title','Camiones index')
 @section('content')
 
-@section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('home') }}">Inicio</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Camiones</li>
-@endsection
 
-<div class="row">
-    <div class="col-lg-12">
+<div class="col-lg-12">
         <div class="ibox float-e-margins">
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title">Nuevo Camión</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                        </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {!! Form::open(['route'=> 'camiones.store', 'method'=>'POST']) !!}
 
-            <div class="ibox-title">
-                <h4>Listado de Camiones</h4>
-            </div>
-            <hr class="mb-4">
-            <div class="col-lg-12 pb-3 pt-2">
-                <a href="{{  route('camiones.create') }}" class = 'btn btn-primary'>Crear Camión</a>
-            </div>
+                            <div class="form-group">
+                                    <label for="camion_patente" class="col-sm-3">Patente <strong>*</strong></label>
+                                    {!! Form::text('camion_patente', null, ['placeholder'=>'Patente', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
 
-            <div class="table-responsive">
-                <table class="table table-hover" id="dataTableCamion" width="100%" cellspacing="0">
-                    <thead>
-	                    <tr>
-                            <th>Patente</th>
-                            <th>Marca</th>
-                            <th>Modelo</th>
-                            <th>Año</th>
+                            <div class="form-group">
+                                <label for="camion_anio" class="col-sm-3">Año <strong>*</strong></label>
+                                {!! Form::number('camion_anio', null, ['placeholder'=>'Año', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
 
-                            <th>Empresa</th>
-	                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($camion as $p)
+                        </div>
 
-                        <tr>
-                            <td><small>{{ $p->camion_patente }}</small></td>
-                            <td><small>{{ $p->camion_marca }}</small></td>
-                            <td><small>{{ $p->camion_modelo }}</small></td>
-                            <td><small>{{ $p->camion_anio }}</small></td>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                    <label for="camion_marca" class="col-sm-3">Marca <strong>*</strong></label>
+                                    {!! Form::text('camion_marca', null, ['placeholder'=>'Marca', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
 
-                            <td><small>{{ $p->belongsToEmpresa->empresa_razon_social }}</small></td>
+                            <div class="form-group">
+                                <label for="empresa_id" class="col-sm-3">Empresa <strong>*</strong></label>
+                                {!! Form::select('empresa_id', $empresa, null,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            </div>
 
-                            <td>
-                                <small>
-                                    <a href="{{ route('camiones.edit', Crypt::encrypt($p->camion_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
-                                </small>
-                                <small>
-                                        <a href = "{{ route('camiones.destroy', Crypt::encrypt($p->camion_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
-                                        </a>
-                                </small>
-                            </td>
+                        </div>
 
-                        </tr>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                    <label for="camion_modelo" class="col-sm-3">Modelo <strong>*</strong></label>
+                                    {!! Form::text('camion_modelo', null, ['placeholder'=>'Modelo', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
+                        </div>
+                    </div>
 
-                    @endforeach
-                    </tbody>
-                </table>
+                    <div class="text-right pb-5">
+                        {!! Form::submit('Registrar Camión ', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                        {!! Form::close() !!}
+                    </div>
 
-            </div>
+                    <div class="text-center texto-leyenda">
+                        <p><strong>*</strong> Campos obligatorios</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+
+
+
+    <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="card card-default">
+                    <div class="card-header">
+                        <h3 class="card-title">Listado de Camiones</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                    <!--   <div class="col-lg-12 pb-3 pt-2">
+                                <a href="{{  route('camiones.create') }}" class = 'btn btn-primary'>Crear Camión</a>
+                            </div>
+                    -->
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="dataTableCamion" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Patente</th>
+                                    <th>Marca</th>
+                                    <th>Modelo</th>
+                                    <th>Año</th>
+
+                                    <th>Empresa</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($camion as $p)
+
+                                <tr>
+                                    <td><small>{{ $p->camion_patente }}</small></td>
+                                    <td><small>{{ $p->camion_marca }}</small></td>
+                                    <td><small>{{ $p->camion_modelo }}</small></td>
+                                    <td><small>{{ $p->camion_anio }}</small></td>
+
+                                    <td><small>{{ $p->belongsToEmpresa->empresa_razon_social }}</small></td>
+
+                                    <td>
+                                        <small>
+                                            <a href="{{ route('camiones.edit', Crypt::encrypt($p->camion_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
+                                        </small>
+                                        <small>
+                                                <a href = "{{ route('camiones.destroy', Crypt::encrypt($p->camion_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
+                                                </a>
+                                        </small>
+                                    </td>
+
+                                </tr>
+
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
 @stop
 
 <script>

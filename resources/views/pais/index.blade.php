@@ -22,7 +22,7 @@
                             {!! Form::text('pais_nombre', null, ['placeholder'=>'Nombre del País', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
                     </div>
-                    <div class="text-center pb-5">
+                    <div class="text-right pb-5">
                         {!! Form::submit('Registrar País ', ['class' => 'btn btn-primary block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>

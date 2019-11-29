@@ -12,7 +12,8 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-                <hr class="mb-4">
+            <div class="card-body">
+
                 <div class="ibox-content col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 mt-4">
                     {!! Form::open(['route'=> ['pais.update', Crypt::encrypt($pais->pais_id)], 'method'=>'PATCH']) !!}
                     <div class="form-group">
@@ -22,7 +23,7 @@
                         </div>
                     </div>
 
-                    <div class="text-center pb-5">
+                    <div class="text-right pb-5">
                         {!! Form::submit('Actualizar País', ['class' => 'btn btn-primary block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>
@@ -31,6 +32,7 @@
                         <p><strong>*</strong> Campos obligatorios</p>
                     </div>
                 </div>
+            </div>
         </div>
     </div>
 </div>

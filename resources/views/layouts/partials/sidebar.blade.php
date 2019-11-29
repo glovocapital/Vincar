@@ -87,7 +87,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="proveedor" class="nav-link">
                   <i class="far nav-icon"></i>
                   <p>Productos y Servicios</p>
                 </a>
@@ -126,7 +126,7 @@
                   <i class="far nav-icon"></i>
                   <p>Tareas</p>
                 </a>
-              </li>              
+              </li>
             </ul>
           </li>
         </ul>

@@ -18,8 +18,12 @@ class CamionesController extends Controller
      */
     public function index()
     {
+        $empresa = DB::table('empresas')
+        ->select('empresa_id', 'empresa_razon_social')
+        ->pluck('empresa_razon_social', 'empresa_id');
+
         $camion = Camion::all();
-        return view('camion.index', compact('camion'));
+        return view('camion.index', compact('camion','empresa'));
     }
 
     /**
@@ -29,12 +33,14 @@ class CamionesController extends Controller
      */
     public function create()
     {
+
+        $camion = Camion::all();
         $empresa = DB::table('empresas')
             ->select('empresa_id', 'empresa_razon_social')
             ->pluck('empresa_razon_social', 'empresa_id');
 
 
-        return view('camion.create', compact('empresa'));
+        return view('camion.index', compact('empresa', 'camion'));
     }
 
     /**

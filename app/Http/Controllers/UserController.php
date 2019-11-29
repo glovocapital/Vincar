@@ -12,6 +12,7 @@ use App\Http\Middleware\CheckSession;
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Requests\CrearUsuarioRequest;
 use App\Http\Requests\EditarUsuarioRequest;
+use App\Rol;
 
 
 class UserController extends Controller
