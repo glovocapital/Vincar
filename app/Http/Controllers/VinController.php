@@ -29,21 +29,12 @@ class VinController extends Controller
     public function index()
     {
         $vins = Vin::all();
-        return view('vin.index', compact('vins'));
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
-            ->orderBy('user_id')
-            ->pluck('user_nombres', 'user_id')
-            ->all();
-        
+        ->orderBy('user_id')
+        ->pluck('user_nombres', 'user_id')
+        ->all();
+
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
             ->pluck('empresa_razon_social', 'empresa_id')
@@ -58,7 +49,36 @@ class VinController extends Controller
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
 
-        return view('vin.create', compact('users','empresas', 'estadosInventario', 'subEstadosInventario'));
+        return view('vin.index', compact('vins','users','empresas', 'estadosInventario', 'subEstadosInventario'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
+            ->orderBy('user_id')
+            ->pluck('user_nombres', 'user_id')
+            ->all();
+
+        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
+            ->orderBy('empresa_id')
+            ->pluck('empresa_razon_social', 'empresa_id')
+            ->all();
+
+        $estadosInventario = DB::table('vin_estado_inventarios')
+            ->select('vin_estado_inventario_id', 'vin_estado_inventario_desc')
+            ->pluck('vin_estado_inventario_desc', 'vin_estado_inventario_id');
+
+        $subEstadosInventario = DB::table('vin_sub_estado_inventarios')
+            ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
+            ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
+
+
+        return view('vin.index', compact('users','empresas', 'estadosInventario', 'subEstadosInventario'));
     }
 
     /**
@@ -131,7 +151,7 @@ class VinController extends Controller
             ->orderBy('user_id')
             ->pluck('user_nombres', 'user_id')
             ->all();
-        
+
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
             ->pluck('empresa_razon_social', 'empresa_id')
@@ -196,10 +216,10 @@ class VinController extends Controller
     public function destroy($id)
     {
         $vin_id =  Crypt::decrypt($id);
-        
+
         try {
             $vin = Vin::findOrfail($vin_id)->delete();
-            
+
             flash('Los datos del VIN han sido eliminados satisfactoriamente.')->success();
             return redirect('vin');
         }catch (\Exception $e) {
