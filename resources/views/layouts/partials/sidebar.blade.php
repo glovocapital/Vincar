@@ -39,19 +39,19 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="usuarios" class="nav-link">
+                <a class="nav-link" href="{{ route('usuarios.index') }}">
                   <i class="far nav-icon"></i>
                   <p>Usuarios</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="empresa" class="nav-link">
+                <a class="nav-link" href="{{ route('empresa.index') }}">
                   <i class="far nav-icon"></i>
-                  <p>Empresas</p>
+                  <p>Clientes</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="camiones" class="nav-link">
+                <a class="nav-link" href="{{ route('camiones.index') }}">
                   <i class="far nav-icon"></i>
                   <p>Camiones</p>
                 </a>
@@ -63,14 +63,15 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="destinos" class="nav-link">
-                  <i class="far nav-icon"></i>
+                    <a class="nav-link" href="{{ route('destinos.index') }}">
+              <i class="far nav-icon"></i>
                   <p>Destinos</p>
                 </a>
               </li>
+
               <li class="nav-item">
-                    <a href="pais" class="nav-link">
-                      <i class="far nav-icon"></i>
+                <a class="nav-link" href="{{ route('pais.index') }}">
+                    <i class="far nav-icon"></i>
                       <p>Paises</p>
                     </a>
                   </li>
@@ -87,7 +88,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="proveedor" class="nav-link">
+                    <a class="nav-link" href="{{ route('proveedor.index') }}">
                   <i class="far nav-icon"></i>
                   <p>Productos y Servicios</p>
                 </a>
@@ -116,7 +117,8 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="vin" class="nav-link">
+                    <a class="nav-link" href="{{ route('vin.index') }}">
+
                   <i class="far nav-icon"></i>
                   <p>Vins</p>
                 </a>
