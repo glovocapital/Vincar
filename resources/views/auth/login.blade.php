@@ -5,12 +5,17 @@
     <div class="row justify-content-center">
 
         <div class="col-md-8">
+            
             <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
-
-
-
-
+                <div class="custom-class">
+                    <img src="img/logo-128x128.png"
+                        alt="Logo Vincar"
+                        class="brand-image-xs img-responsive"
+                        style="opacity: .8">
+                    <h5>Vincar - Login</h5>
+                    <span class="brand-text font-weight-light">Cloud Warehouse & Transport</span>
+                </div>
+                
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
