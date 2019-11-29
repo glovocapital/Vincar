@@ -18,7 +18,9 @@
           <img src="adminlte/dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
+        @if(AUTH::check())
           <a href="#" class="d-block">{{Auth::user()->user_nombre.' '.Auth::user()->user_apellido}}</a>
+        @endif
         </div>
       </div>
 
