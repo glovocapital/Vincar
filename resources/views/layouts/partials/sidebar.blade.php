@@ -1,7 +1,7 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="#" class="brand-link">
+    <a href="home" class="brand-link">
       <img src="adminlte/dist/img/AdminLTELogo.png"
            alt="Logo Vincar"
            class="brand-image img-circle elevation-3"
@@ -15,8 +15,7 @@
       <!-- Sidebar user (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-                <link rel="shortcut icon" href="{{ asset('adminlte/dist/img/user2-160x160.jpg') }}" type="image/x-icon">
-
+          <img src="adminlte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <a href="#" class="d-block">{{Auth::user()->user_nombre.' '.Auth::user()->user_apellido}}</a>
@@ -50,7 +49,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="camiones" class="nav-link">
                   <i class="far nav-icon"></i>
                   <p>Camiones</p>
                 </a>
