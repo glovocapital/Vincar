@@ -1,12 +1,10 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="home" class="brand-link">
-      <img src="adminlte/dist/img/AdminLTELogo.png"
-           alt="Logo Vincar"
-           class="brand-image img-circle elevation-3"
-           style="opacity: .8">
-      <span class="brand-text font-weight-light">Vincar</span>
+    <a class="brand-link brand-image img-circle elevation-3 opacity: .8 brand-text font-weight-light" href="{{route('home')}}">
+
+
+      <span class="">Vincar</span>
       <h6>Cloud Warehouse & Transport</h6>
     </a>
 
@@ -43,9 +41,9 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="empresa" class="nav-link">
                   <i class="far nav-icon"></i>
-                  <p>Cliente</p>
+                  <p>Empresas</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -61,11 +59,17 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="destinos" class="nav-link">
                   <i class="far nav-icon"></i>
                   <p>Destinos</p>
                 </a>
               </li>
+              <li class="nav-item">
+                    <a href="pais" class="nav-link">
+                      <i class="far nav-icon"></i>
+                      <p>Paises</p>
+                    </a>
+                  </li>
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far nav-icon"></i>
