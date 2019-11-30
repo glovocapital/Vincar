@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Vin extends Model
 {
@@ -17,7 +18,7 @@ class Vin extends Model
         'vin_patente', 'vin_modelo', 'vin_marca', 'vin_color', 'vin_motor', 'vin_segmento', 'vin_fec_ingreso'
     ];
 
-    public function oneUser($user_id){
+    public function oneUser(){
         return $this->hasOne(User::class, 'user_id', 'user_id');
     }
 
@@ -26,7 +27,8 @@ class Vin extends Model
         $estadoInventario = DB::table('vin_estado_inventarios')
             ->where('vin_estado_inventario_id', $this->vin_estado_inventario_id)
             ->first();
-        return $estadoInventario;
+            
+        return $estadoInventario->vin_estado_inventario_desc;
     }
 
     public function oneVinSubEstadoInventario()
@@ -34,6 +36,6 @@ class Vin extends Model
         $subEstadoInventario = DB::table('vin_sub_estado_inventarios')
             ->where('vin_sub_estado_inventario_id', $this->vin_sub_estado_inventario_id)
             ->first();
-        return $subEstadoInventario;
+        return $subEstadoInventario->vin_sub_estado_inventario_desc;
     }
 }

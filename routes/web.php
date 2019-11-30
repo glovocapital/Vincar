@@ -64,6 +64,8 @@ Route::get('vin/{id}/edit','VinController@edit')->name('vin.edit');
 Route::post('vin','VinController@store')->name('vin.store');
 Route::patch('vin/{id}/update','VinController@update')->name('vin.update');
 Route::get('vin/{id}/delete','VinController@destroy')->name('vin.destroy');
+Route::get('vin/obtener_usuarios_empresa/{id_empresa}', ['as' => 'vin.clientes', 'uses' => 'VinController@empresa']);
+Route::get('vin/obtener_sub_estados/{id_estado_inventario}', ['as' => 'vin.sub_estados', 'uses' => 'VinController@estadoInventario']);
 
 //Rutas mantenedor país
 Route::get('pais', 'PaisController@index')->name('pais.index');

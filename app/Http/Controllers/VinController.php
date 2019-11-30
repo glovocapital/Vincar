@@ -48,8 +48,10 @@ class VinController extends Controller
             ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
+        $usuario = null;
 
-        return view('vin.index', compact('vins','users','empresas', 'estadosInventario', 'subEstadosInventario'));
+
+        return view('vin.index', compact('vins','users','empresas', 'estadosInventario', 'subEstadosInventario', 'usuario'));
     }
 
     /**
@@ -59,6 +61,8 @@ class VinController extends Controller
      */
     public function create()
     {
+        // $vins = Vin::all();
+
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
             ->pluck('user_nombres', 'user_id')
@@ -78,7 +82,78 @@ class VinController extends Controller
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
 
-        return view('vin.index', compact('users','empresas', 'estadosInventario', 'subEstadosInventario'));
+        return view('vin.create', compact(/*'vins', */'users','empresas', 'estadosInventario', 'subEstadosInventario'));
+    }
+
+    public function empresa(Request $request, $id_empresa){
+	    try {
+            $empresa_id = Crypt::decrypt($id_empresa);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        if ($request->ajax()){
+            $users = DB::table('users')
+                ->where('users.user_estado', '=', 1)
+                ->where('users.deleted_at', '=', null)
+                ->where('users.empresa_id', '=', $empresa_id)
+                ->select(DB::raw("CONCAT(users.user_nombre,' ',users.user_apellido) AS user_nombres"), 'users.user_id')
+                ->orderBy('users.user_id')
+                ->pluck('user_nombres', 'users.user_id');
+                
+            $ids = DB::table('users')
+                ->where('users.user_estado', '=', 1)
+                ->where('users.deleted_at', '=', null)
+                ->where('users.empresa_id', '=', $empresa_id)
+                ->select(DB::raw("CONCAT(users.user_nombre,' ',users.user_apellido) AS user_nombres"), 'users.user_id')
+                ->orderBy('users.user_id')
+                ->pluck('users.user_id', 'user_nombres');
+                
+            return response()->json([
+                'success' => true,
+                'message' => "Data de usuarios por empresa disponible",
+                'ids' => $ids,
+                'users' => $users,
+            ]);
+        }
+    }
+
+    public function estadoInventario(Request $request, $id_estado_inventario){
+	    try {
+            $estado_inventario_id = Crypt::decrypt($id_estado_inventario);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        if ($request->ajax()){
+            if($estado_inventario_id == 4 || $estado_inventario_id == 5){
+                $subEstados = DB::table('vin_sub_estado_inventarios')
+                    ->where('vin_sub_estado_inventarios.vin_estado_inventario_id', '=', $estado_inventario_id)
+                    ->select('vin_sub_estado_inventarios.vin_sub_estado_inventario_id', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_desc')
+                    ->orderBy('vin_sub_estado_inventarios.vin_sub_estado_inventario_id')
+                    ->pluck('vin_sub_estado_inventarios.vin_sub_estado_inventario_desc', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_id');
+                    
+                $ids = DB::table('vin_sub_estado_inventarios')
+                    ->where('vin_sub_estado_inventarios.vin_estado_inventario_id', '=', $estado_inventario_id)
+                    ->select('vin_sub_estado_inventarios.vin_sub_estado_inventario_id', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_desc')
+                    ->orderBy('vin_sub_estado_inventarios.vin_sub_estado_inventario_id')
+                    ->pluck('vin_sub_estado_inventarios.vin_sub_estado_inventario_id', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_desc');
+
+                return response()->json([
+                    'success' => true,
+                    'message' => "Data de Sub Estados de Inventario disponible",
+                    'ids' => $ids,
+                    'subEstados' => $subEstados,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => true,
+                    'message' => "No hay data de inventario para esta opción",
+                    'ids' => null,
+                    'subEstados' => null,
+                ]);
+            }
+        }
     }
 
     /**
