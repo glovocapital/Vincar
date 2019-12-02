@@ -48,10 +48,7 @@ class VinController extends Controller
             ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
-        $usuario = null;
-
-
-        return view('vin.index', compact('vins','users','empresas', 'estadosInventario', 'subEstadosInventario', 'usuario'));
+        return view('vin.index', compact('vins','users','empresas', 'estadosInventario', 'subEstadosInventario'));
     }
 
     /**
@@ -172,21 +169,24 @@ class VinController extends Controller
             return redirect('/vin');
         }else
 
+        $id_estado_inventario =  Crypt::decrypt($request->vin_estado_inventario_id);
+        
         try {
 
             $vin = new Vin();
+
             $vin->vin_codigo = $request->vin_codigo;
             $vin->vin_patente = $request->vin_patente;
-            $vin->vin_modelo = $request->vin_modelo;
             $vin->vin_marca = $request->vin_marca;
+            $vin->vin_modelo = $request->vin_modelo;
             $vin->vin_color = $request->vin_color;
             $vin->vin_motor = $request->vin_motor;
             $vin->vin_segmento = $request->vin_segmento;
             $vin->vin_fec_ingreso = $request->vin_fec_ingreso;
-            $vin->user_id = $request->user_id;
-            $vin->vin_estado_inventario_id = $request->vin_estado_inventario_id;
+            $vin->user_id = (int)$request->user_id;
+            $vin->vin_estado_inventario_id = $id_estado_inventario;
             $vin->vin_sub_estado_inventario_id = $request->vin_sub_estado_inventario_id;
-
+            
             $vin->save();
 
             flash('El VIN se registró correctamente.')->success();
@@ -222,6 +222,8 @@ class VinController extends Controller
         $vin_id =  Crypt::decrypt($id);
         $vin = Vin::findOrfail($vin_id);
 
+        $user = User::find($vin->user_id)->first();
+
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
             ->pluck('user_nombres', 'user_id')
@@ -240,7 +242,7 @@ class VinController extends Controller
             ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
-        return view('vin.edit', compact('vin', 'users','empresas', 'estadosInventario', 'subEstadosInventario'));
+        return view('vin.edit', compact('vin', 'user', 'users','empresas', 'estadosInventario', 'subEstadosInventario'));
     }
 
     /**
@@ -255,18 +257,20 @@ class VinController extends Controller
         $vin_id =  Crypt::decrypt($id);
         $vin = Vin::findOrfail($vin_id);
 
+        $id_estado_inventario =  Crypt::decrypt($request->vin_estado_inventario_id);
+
         try {
 
             $vin->vin_codigo = $request->vin_codigo;
             $vin->vin_patente = $request->vin_patente;
-            $vin->vin_modelo = $request->vin_modelo;
             $vin->vin_marca = $request->vin_marca;
+            $vin->vin_modelo = $request->vin_modelo;
             $vin->vin_color = $request->vin_color;
             $vin->vin_motor = $request->vin_motor;
             $vin->vin_segmento = $request->vin_segmento;
             $vin->vin_fec_ingreso = $request->vin_fec_ingreso;
-            $vin->user_id = $request->user_id;
-            $vin->vin_estado_inventario_id = $request->vin_estado_inventario_id;
+            $vin->user_id = (int)$request->user_id;
+            $vin->vin_estado_inventario_id = $id_estado_inventario;
             $vin->vin_sub_estado_inventario_id = $request->vin_sub_estado_inventario_id;
 
             $vin->save();

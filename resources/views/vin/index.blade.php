@@ -161,7 +161,11 @@
                             <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
                             <td><small>{{ $vin->oneUser->user_nombre.' '.$vin->oneUser->user_apellido }}</small></td>
                             <td><small>{{ $vin->oneVinEstadoInventario() }}</small></td>
+                            @if($vin->vin_sub_estado_inventario_id != null)
                             <td><small>{{ $vin->oneVinSubEstadoInventario() }}</small></td>
+                            @else
+                            <td><small></small></td>
+                            @endif
 
                             <td>
                                 <small>

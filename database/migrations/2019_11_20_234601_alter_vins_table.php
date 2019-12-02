@@ -16,7 +16,8 @@ class AlterVinsTable extends Migration
         Schema::table('vins', function (Blueprint $table) {
             $table->unsignedBigInteger('vin_estado_inventario_id');
             $table->foreign('vin_estado_inventario_id')->references('vin_estado_inventario_id')->on('vin_estado_inventarios');
-            $table->unsignedBigInteger('vin_sub_estado_inventario_id');
+            // $table->string('vin_sub_estado_inventario_id')->nullable();
+            $table->unsignedBigInteger('vin_sub_estado_inventario_id')->nullable();
             $table->foreign('vin_sub_estado_inventario_id')->references('vin_sub_estado_inventario_id')->on('vin_sub_estado_inventarios');
         });
     }
