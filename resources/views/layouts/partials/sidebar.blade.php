@@ -1,8 +1,8 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{ route('home') }}" class="brand-link">
-      <img src="adminlte/dist/img/logo-128x128.png"
+    <a href="home" class="brand-link">
+      <img src="{{ asset('adminlte/dist/img/logo-128x128.png') }}"
            alt="Logo Vincar"
            class="brand-image img-circle elevation-3"
            style="opacity: .8">
@@ -15,7 +15,6 @@
       <!-- Sidebar user (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-
           <img src="adminlte/dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">

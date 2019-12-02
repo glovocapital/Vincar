@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
    @include('layouts.partials.head')
-   <link rel="stylesheet" href="css/custom.css">
+   <link rel="stylesheet" href="{{URL::asset('css/custom.css')}}">
 </head>
 <body class="hold-transition">
 <!-- Site wrapper -->
