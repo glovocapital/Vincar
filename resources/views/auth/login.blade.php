@@ -18,7 +18,7 @@
                                 class="brand-image-xs img-responsive"
                                 style="opacity: .8"
                                 height="100%"
-                                width="50%">
+                                width="70%">
                         </div>
 
                         <div class="form-group row">

@@ -15,7 +15,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4" id="wrapper_1">
                                 {!! Form::open(['route'=> 'vin.store', 'method'=>'POST']) !!}
 
                             <div class="form-group">
@@ -40,7 +40,7 @@
 
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4" id="wrapper_2">
                             
                             <div class="form-group">
                                     <label for="vin_color" >Color <strong>*</strong></label>
@@ -63,7 +63,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">                            
+                        <div class="col-md-4" id="wrapper_3">                            
                             <div class="form-group" id="bloque_archivo">
                                 <label for="empresa_id" >Empresa <strong>*</strong></label>
                                 {{-- {!! Form::select('empresa_id', $empresas, null,['placeholder'=>'Seleccionar Empresa', 'class'=>'form-control col-sm-9 select-empresa', 'required'=>'required']) !!} --}}
