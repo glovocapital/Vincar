@@ -67,7 +67,7 @@ class UserController extends Controller
             ->pluck('empresa_razon_social', 'empresa_id');
 
 
-        return view('usuarios.index', compact('roles','empresa'));
+        return view('usuarios.create', compact('roles','empresa'));
     }
 
     /**
