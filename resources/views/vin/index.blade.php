@@ -91,7 +91,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" id="bloque_sub_estado" style="display: none">
                                 <label for="vin_sub_estado_inventario_id" >Sub-Estado de Inventario <strong>*</strong></label>
                                 {!! Form::select('vin_sub_estado_inventario_id', ['placeholder' => 'Seleccione Sub Estado de Inventario'], null,['id' => 'vin_sub_estado_inventario_id', 'class'=>'form-control']) !!}
                                 {{-- {!! Form::select('vin_sub_estado_inventario_id', $subEstadosInventario, null,['class'=>'form-control col-sm-9']) !!} --}}
@@ -247,6 +247,16 @@
             $(".select-estado-inventario").change(function (e) {
 
                 e.preventDefault();
+                
+                if($(".select-estado-inventario option:selected").text() == "Disponible para la venta" || $(".select-estado-inventario option:selected").text() == "No disponible para la venta")
+                {
+                    //alert($(".select-estado-inventario option:selected").text());
+
+                    $('#bloque_sub_estado').show();
+                }else
+                {
+                    $('#bloque_sub_estado').hide();
+                }
 
                 var id = $(this).val();
 
