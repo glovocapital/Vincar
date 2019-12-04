@@ -26,6 +26,7 @@
 @include('layouts.partials.footer')
 @include('layouts.partials.control-sidebar')
 @include('layouts.partials.footer-scripts')
+@yield('sidebar-scripts')
 @yield('local-scripts')
 </body>
 </html>
