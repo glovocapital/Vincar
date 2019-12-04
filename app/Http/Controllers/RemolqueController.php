@@ -1,17 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Middleware\PreventBackHistory;
-use App\Http\Middleware\CheckSession;
-use Illuminate\Support\Facades\Crypt;
-use DB;
-use App\Camion;
 
 use Illuminate\Http\Request;
+use App\Http\Middleware\PreventBackHistory;
+use App\Http\Middleware\CheckSession;
+use App\Remolque;
+use Illuminate\Support\Facades\Crypt;
+use DB;
 
-class CamionesController extends Controller
+class RemolqueController extends Controller
 {
-
 
     public function __construct()
     {
@@ -31,8 +30,8 @@ class CamionesController extends Controller
         ->select('empresa_id', 'empresa_razon_social')
         ->pluck('empresa_razon_social', 'empresa_id');
 
-        $camion = Camion::all();
-        return view('camion.index', compact('camion','empresa'));
+        $remolque = Remolque::all();
+        return view('remolque.index', compact('remolque','empresa'));
     }
 
     /**
@@ -42,14 +41,14 @@ class CamionesController extends Controller
      */
     public function create()
     {
+        $remolque = Remolque::all();
 
-        $camion = Camion::all();
         $empresa = DB::table('empresas')
             ->select('empresa_id', 'empresa_razon_social')
             ->pluck('empresa_razon_social', 'empresa_id');
 
 
-        return view('camion.index', compact('empresa', 'camion'));
+        return view('remolque.index', compact('remolque', 'camion'));
     }
 
     /**
@@ -60,28 +59,28 @@ class CamionesController extends Controller
      */
     public function store(Request $request)
     {
-
         try {
 
-            $camion = new Camion();
+            $remolque = new Remolque();
 
-            $camion->camion_patente = $request->camion_patente;
-            $camion->camion_modelo = $request->camion_modelo;
-            $camion->camion_marca = $request->camion_marca;
-            $camion->camion_anio = $request->camion_anio;
-            $camion->empresa_id = $request->empresa_id;
+            $remolque->remolque_patente = $request->remolque_patente;
+            $remolque->remolque_modelo = $request->remolque_modelo;
+            $remolque->remolque_marca = $request->remolque_marca;
+            $remolque->remolque_anio = $request->remolque_anio;
+            $remolque->remolque_capacidad = $request->remolque_capacidad;
+            $remolque->empresa_id = $request->empresa_id;
 
 
-            $camion->save();
+            $remolque->save();
 
-            flash('La camión se creo correctamente.')->success();
-            return redirect('camiones');
+            flash('El remolque se creo correctamente.')->success();
+            return redirect('remolque');
 
         }catch (\Exception $e) {
 
-            flash('Error al crear el camión.')->error();
-           flash($e->getMessage())->error();
-            return redirect('camiones');
+            flash('Error al crear el remolque.')->error();
+           //flash($e->getMessage())->error();
+            return redirect('remolque');
         }
     }
 
@@ -104,14 +103,15 @@ class CamionesController extends Controller
      */
     public function edit($id)
     {
-        $camion_id =  Crypt::decrypt($id);
-        $camiones = Camion::findOrfail($camion_id);
+        $remolque_id =  Crypt::decrypt($id);
+        $remolque = Remolque::findOrfail($remolque_id);
 
         $empresa = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
         ->pluck('empresa_razon_social', 'empresa_id');
 
-        return view('camion.edit', compact('camiones', 'empresa'));
+        return view('remolque.edit', compact('remolque', 'empresa'));
+
     }
 
     /**
@@ -123,30 +123,31 @@ class CamionesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $camion_id =  Crypt::decrypt($id);
-        $camion =  Camion::findOrfail($camion_id);
+        //dd($request);
+        $remolque_id =  Crypt::decrypt($id);
+        $remolque =  Remolque::findOrfail($remolque_id);
 
         try {
 
-            $camion->camion_patente = $request->camion_patente;
-            $camion->camion_modelo = $request->camion_modelo;
-            $camion->camion_marca = $request->camion_marca;
-            $camion->camion_anio = $request->camion_anio;
-            $camion->empresa_id = $request->empresa_id;
+            $remolque->remolque_patente = $request->remolque_patente;
+            $remolque->remolque_modelo = $request->remolque_modelo;
+            $remolque->remolque_marca = $request->remolque_marca;
+            $remolque->remolque_anio = $request->remolque_anio;
+            $remolque->empresa_id = $request->empresa_id;
+            $remolque->remolque_capacidad = $request->remolque_capacidad;
 
 
-            $camion->save();
+            $remolque->save();
 
-            flash('La camión se edito correctamente.')->success();
-            return redirect('camiones');
+            flash('Los datos del remolque se editaron correctamente.')->success();
+            return redirect('remolque');
 
         }catch (\Exception $e) {
 
-            flash('Error al editar el camión.')->error();
-           flash($e->getMessage())->error();
-            return redirect('camiones');
+            flash('Error al editar el remolque.')->error();
+           //flash($e->getMessage())->error();
+            return redirect('remolque');
         }
-
 
     }
 
@@ -158,16 +159,16 @@ class CamionesController extends Controller
      */
     public function destroy($id)
     {
-        $camion_id =  Crypt::decrypt($id);
+        $remolque_id =  Crypt::decrypt($id);
 
         try {
-            $camion = Camion::findOrfail($camion_id)->delete();
+            $remolque = Remolque::findOrfail($remolque_id)->delete();
 
-            flash('Los datos del camión han sido eliminados satisfactoriamente.')->success();
+            flash('Los datos del remolque  han sido eliminados satisfactoriamente.')->success();
             return redirect('camiones');
         }catch (\Exception $e) {
 
-            flash('Error al intentar eliminar los datos del Camión.')->error();
+            flash('Error al intentar eliminar los datos del remolque.')->error();
             //flash($e->getMessage())->error();
             return redirect('camiones');
         }

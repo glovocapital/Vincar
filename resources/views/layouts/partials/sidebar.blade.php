@@ -56,6 +56,13 @@
                 <p>Camiones</p>
               </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('remolque.index') }}">
+                  <i class="far nav-icon"></i>
+                  <p>Remolques</p>
+                </a>
+              </li>
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far nav-icon"></i>
@@ -157,7 +164,7 @@ $(document).ready(function () {
   const currentLink = [...allLinks].filter(e => {
     return e.href == url;
   });
- 
+
   currentLink[0].classList.add("active")
   currentLink[0].closest(".nav-treeview").style.display="block";
   currentLink[0].closest(".has-treeview").classList.add("active");

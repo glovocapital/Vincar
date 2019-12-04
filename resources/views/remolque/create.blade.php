@@ -36,7 +36,7 @@
                 <div class="form-group">
                     <div class="row">
                         <label for="camion_anio" class="col-sm-3">Año <strong>*</strong></label>
-                        {!! Form::number('camion_anio','2020', ['min' => '1980','placeholder'=>'Año', 'class'=>'form-control col-sm-9', 'required']) !!}
+                        {!! Form::number('camion_anio', null, ['placeholder'=>'Año', 'class'=>'form-control col-sm-9', 'required']) !!}
                     </div>
                 </div>
 

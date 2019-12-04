@@ -38,7 +38,7 @@
 
                             <div class="form-group">
                                 <label for="empresa_id" >Empresa <strong>*</strong></label>
-                                {!! Form::select('empresa_id', $empresa, $camiones->empresa_razon_social, ['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                                {!! Form::select('empresa_id', $empresa, $camiones->empresa_id, ['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                             </div>
 
                         </div>

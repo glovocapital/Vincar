@@ -20,4 +20,6 @@ class Remolque extends Model
     public function belongsToEmpresa (){
         return $this->belongsTo(Empresa::class, 'empresa_id', 'empresa_id');
     }
+
+
 }
