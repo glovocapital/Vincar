@@ -15,7 +15,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4" id="wrapper_1">
                                 {!! Form::open(['route'=> 'vin.store', 'method'=>'POST']) !!}
 
                             <div class="form-group">
@@ -40,7 +40,7 @@
 
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4" id="wrapper_2">
                             
                             <div class="form-group">
                                     <label for="vin_color" >Color <strong>*</strong></label>
@@ -63,7 +63,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">                            
+                        <div class="col-md-4" id="wrapper_3">                            
                             <div class="form-group" id="bloque_archivo">
                                 <label for="empresa_id" >Empresa <strong>*</strong></label>
                                 {{-- {!! Form::select('empresa_id', $empresas, null,['placeholder'=>'Seleccionar Empresa', 'class'=>'form-control col-sm-9 select-empresa', 'required'=>'required']) !!} --}}
@@ -91,7 +91,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" id="bloque_sub_estado" style="display: none">
                                 <label for="vin_sub_estado_inventario_id" >Sub-Estado de Inventario <strong>*</strong></label>
                                 {!! Form::select('vin_sub_estado_inventario_id', ['placeholder' => 'Seleccione Sub Estado de Inventario'], null,['id' => 'vin_sub_estado_inventario_id', 'class'=>'form-control']) !!}
                                 {{-- {!! Form::select('vin_sub_estado_inventario_id', $subEstadosInventario, null,['class'=>'form-control col-sm-9']) !!} --}}
@@ -171,7 +171,10 @@
                                 <small>
                                     <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
                                 </small>
-
+                                <small>
+                                        <a href = "{{ route('vin.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
+                                        </a>
+                                </small>
                             </td>
 
                         </tr>
@@ -244,6 +247,16 @@
             $(".select-estado-inventario").change(function (e) {
 
                 e.preventDefault();
+                
+                if($(".select-estado-inventario option:selected").text() == "Disponible para la venta" || $(".select-estado-inventario option:selected").text() == "No disponible para la venta")
+                {
+                    //alert($(".select-estado-inventario option:selected").text());
+
+                    $('#bloque_sub_estado').show();
+                }else
+                {
+                    $('#bloque_sub_estado').hide();
+                }
 
                 var id = $(this).val();
 

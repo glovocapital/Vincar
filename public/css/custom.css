@@ -1,9 +1,5 @@
-body {
+body.login {
     background-image: url(../img/background_home.png);
-}
-
-.custom-class {
-    text-align: center;
 }
 
 .bg-gradient-primary {

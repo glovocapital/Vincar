@@ -72,6 +72,7 @@ class EmpresaController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request);
 
         $validate = DB::table('empresas')->where('empresa_rut', $request->empresa_rut)->exists();
 

@@ -23,6 +23,18 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="empresa_nombre" >Razón Social <strong>*</strong></label>
+                            {!! Form::text('empresa_nombre', null, ['placeholder'=>'Nombre o Razón Social', 'class'=>'form-control col-sm-9', 'required']) !!}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pais_id" >Pais <strong>*</strong></label>
+                            {!! Form::select('pais_id', $pais, null,['placeholder'=>'Seleccionar País', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
                             <label for="empresa_direccion" >Dirección <strong>*</strong></label>
                             {!! Form::text('empresa_direccion', null, ['placeholder'=>'Dirección', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
@@ -31,42 +43,32 @@
                             <label for="empresa_telefono_contacto" >Teléfono </label>
                             {!! Form::text('empresa_telefono_contacto', null, ['placeholder'=>'Telefono', 'class'=>'form-control col-sm-9']) !!}
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="empresa_nombre_contacto" >Contacto de la empresa </label>
+                            {!! Form::text('empresa_nombre_contacto', null, ['placeholder'=>'Nombre de contacto', 'class'=>'form-control col-sm-9']) !!}
+                        </div>
                     </div>
 
                     <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="empresa_nombre" >Razón Social <strong>*</strong></label>
-                            {!! Form::text('empresa_nombre', null, ['placeholder'=>'Nombre o Razón Social', 'class'=>'form-control col-sm-9', 'required']) !!}
-                        </div>
                         <div class="form-group">
                             <label for="empresa_giro" >Giro <strong>*</strong></label>
                             {!! Form::text('empresa_giro', null, ['placeholder'=>'Giro de la empresa', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label for="usu_tlf" >Es proveedor? </label>
-                            <select name="es_proveedor" onchange="d1(this)" class="form-control col-sm-9">
-                                <option value="0">Seleccionar</option>
-                                <option value="1">Si</option>
-                                <option value='2'>No</option>
-                            </select>
+                            <label for="es_proveedor" >Es proveedor? </label>
+                            <label>Sí</label>
+                            <input type="radio" name="es_proveedor" id="si_es_proveedor" onchange="d1(this)" value="true" />
+                            {{-- {!! Form::radio('es_proveedor', 'true'); !!} --}}
+                            <label>No</label>
+                            <input type="radio" name="es_proveedor" id="no_es_proveedor" onchange="d1(this)" value="false" checked />
+                            {{-- {!! Form::radio('es_proveedor', 'false', true); !!} --}}
                         </div>
 
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="pais_id" >Pais <strong>*</strong></label>
-                            {!! Form::select('pais_id', $pais, null,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="empresa_nombre_contacto" >Contacto de la empresa </label>
-                            {!! Form::text('empresa_nombre_contacto', null, ['placeholder'=>'Nombre de contacto', 'class'=>'form-control col-sm-9']) !!}
-                        </div>
-                        <div class="form-group" id="bloque_archivo">
+                        <div class="form-group" name="bloque" id="bloque_archivo" style="display: none">
                             <label for="empresa_id" >Tipo de proveedor <strong>*</strong></label>
-                            {!! Form::select('tipo_proveedor', $tipo_proveedor, null,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            {!! Form::select('tipo_proveedor', $tipo_proveedor, null,['placeholder'=>'Seleccione Tipo de Proveedor', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                         </div>
                     </div>
                 </div>
@@ -149,23 +151,21 @@
 
 
 <!--Funcion para ocultar y mostrar input segun seleccion-->
+@section('local-scripts')
 <script language="javascript" type="text/javascript">
-    function d1(selectTag){
-    if(selectTag.value == '0')
-    {
-        $('#bloque_archivo').hide();
-        document.getElementById('archivo').disabled = true;
-    }else if(selectTag.value == '1')
-    {
-        $('#bloque_archivo').show();
+   
+    function d1(button){
+        if(button.value == 'false')
+        {
+            $('#bloque_archivo').hide();
+            // document.getElementById('archivo').disabled = true;
+        }else if(button.value == 'true')
+        {
+            $('#bloque_archivo').show();
 
-     document.getElementById('archivo').disabled = false;
-    }else if(selectTag.value == '2')
-    {
-        $('#bloque_archivo').hide();
-        document.getElementById('archivo').disabled = true;
-    }
+        // document.getElementById('archivo').disabled = false;
+        }
     }
     </script>
 <!--Fin Funcion para ocultar y mostrar input segun seleccion-->
-
+@endsection
