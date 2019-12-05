@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(VinSubEstadoInventarioSeeder::class);
         $this->call(TipoDanoSeeder::class);
         $this->call(GravedadSeeder::class);
+        $this->call(PiezaSubAreaSeeder::class);
         // $this->call(UsersTableSeeder::class);
     }
 }
