@@ -95,9 +95,21 @@
               </a>
             </li>
             <li class="nav-item">
-                  <a class="nav-link" href="{{ route('proveedor.index') }}">
+                <a class="nav-link" href="{{ route('proveedor.index') }}">
+              <i class="far nav-icon"></i>
+              <p>Tipo Proveedor</p>
+            </a>
+          </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('productos.index') }}">
+              <i class="far nav-icon"></i>
+              <p>Productos</p>
+            </a>
+          </li>
+            <li class="nav-item">
+                  <a class="nav-link" href="{{ route('servicios.index') }}">
                 <i class="far nav-icon"></i>
-                <p>Productos y Servicios</p>
+                <p>Servicios</p>
               </a>
             </li>
             <li class="nav-item">

@@ -11,7 +11,7 @@ use App\Empresa;
 use App\Http\Requests\EmpresaRequest;
 use App\Tipo_Proveedor;
 use Illuminate\Support\Facades\Crypt;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 
 class EmpresaController extends Controller
@@ -72,7 +72,7 @@ class EmpresaController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
+
 
         $validate = DB::table('empresas')->where('empresa_rut', $request->empresa_rut)->exists();
 

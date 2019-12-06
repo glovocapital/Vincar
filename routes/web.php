@@ -117,6 +117,22 @@ Route::post('remolque','RemolqueController@store')->name('remolque.store');
 Route::patch('remolque/{id}/update','RemolqueController@update')->name('remolque.update');
 Route::get('remolque/{id}/delete','RemolqueController@destroy')->name('remolque.destroy');
 
+//ruta mantenedor de productos
+Route::get('productos', 'ProductoController@index')->name('productos.index');
+Route::get('productos/create','ProductoController@create')->name('productos.create');
+Route::get('productos/{id}/edit','ProductoController@edit')->name('productos.edit');
+Route::post('productos','ProductoController@store')->name('productos.store');
+Route::patch('productos/{id}/update','ProductoController@update')->name('productos.update');
+Route::get('productos/{id}/delete','ProductoController@destroy')->name('productos.destroy');
+
+//ruta mantenedor de servicios
+Route::get('servicios', 'ServicioController@index')->name('servicios.index');
+Route::get('servicios/create','ServicioController@create')->name('servicios.create');
+Route::get('servicios/{id}/edit','ServicioController@edit')->name('servicios.edit');
+Route::post('servicios','ServicioController@store')->name('servicios.store');
+Route::patch('servicios/{id}/update','ServicioController@update')->name('servicios.update');
+Route::get('servicios/{id}/delete','ServicioController@destroy')->name('servicios.destroy');
+
 
 
 });

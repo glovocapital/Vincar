@@ -37,7 +37,6 @@ class UserController extends Controller
     {
         $usuarios = User::all();
 
-
         $empresa = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
         ->pluck('empresa_razon_social', 'empresa_id');

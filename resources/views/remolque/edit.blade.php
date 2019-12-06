@@ -51,7 +51,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="remolque_modelo" >Modelo <strong>*</strong></label>
+                                <label for="remolque_modelo" >Capacidad <strong>*</strong></label>
                                 {!! Form::number('remolque_capacidad', $remolque->remolque_capacidad, ['min' => '0','placeholder'=>'Modelo', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
 
