@@ -19,6 +19,10 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersSeeder::class);
         $this->call(VinEstadoInventarioSeeder::class);
         $this->call(VinSubEstadoInventarioSeeder::class);
+        $this->call(MarcaSeeder::class);
+        $this->call(DivisaSeeder::class);
+        $this->call(ValorAsociadoSeeder::class);
+
         // $this->call(UsersTableSeeder::class);
     }
 }

@@ -34,11 +34,13 @@
                             <div class="form-group">
                                     <label for="remolque_marca" class="col-sm-3">Marca <strong>*</strong></label>
                                     {!! Form::text('remolque_marca', null, ['placeholder'=>'Marca', 'class'=>'form-control col-sm-9', 'required']) !!}
+
                             </div>
 
                             <div class="form-group">
                                 <label for="empresa_id" class="col-sm-3">Empresa <strong>*</strong></label>
-                                {!! Form::select('empresa_id', $empresa, null,['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                                {!! Form::select('empresa_id', $empresa, null,['placeholder'=>'Empresa','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+
                             </div>
 
                         </div>
