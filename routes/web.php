@@ -67,6 +67,16 @@ Route::get('vin/{id}/delete','VinController@destroy')->name('vin.destroy');
 Route::get('vin/obtener_usuarios_empresa/{id_empresa}', ['as' => 'vin.clientes', 'uses' => 'VinController@empresa']);
 Route::get('vin/obtener_sub_estados/{id_estado_inventario}', ['as' => 'vin.sub_estados', 'uses' => 'VinController@estadoInventario']);
 
+//Rutas mantenedor inspeccion
+Route::get('inspeccion', 'InspeccionController@index')->name('inspeccion.index');
+Route::get('inspeccion/create','InspeccionController@create')->name('inspeccion.create');
+Route::get('inspeccion/{id}/edit','InspeccionController@edit')->name('inspeccion.edit');
+Route::post('inspeccion','InspeccionController@store')->name('inspeccion.store');
+Route::patch('inspeccion/{id}/update','InspeccionController@update')->name('inspeccion.update');
+Route::get('inspeccion/{id}/delete','InspeccionController@destroy')->name('inspeccion.destroy');
+Route::get('inspeccion/obtener_usuarios_empresa/{id_empresa}', ['as' => 'inspeccion.clientes', 'uses' => 'InspeccionController@empresa']);
+Route::get('inspeccion/obtener_sub_estados/{id_estado_inventario}', ['as' => 'inspeccion.sub_estados', 'uses' => 'InspeccionController@estadoInventario']);
+
 //Rutas mantenedor país
 Route::get('pais', 'PaisController@index')->name('pais.index');
 Route::get('pais/create','PaisController@create')->name('pais.create');
