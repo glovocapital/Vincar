@@ -82,7 +82,7 @@
                     </div>
                 </div>
                 <div class="text-right pb-5" id="boton_inspeccion">
-                    {!! Form::submit('Registrar Inspección', ['id'=>'1', 'class' => 'btn btn-primary block full-width m-b']) !!}
+                    {!! Form::submit('Registrar Inspección', ['id'=>'submit_1', 'class' => 'btn btn-primary block full-width m-b']) !!}
                     {{-- {!! Form::close() !!} --}}
                 </div>
 
@@ -133,7 +133,7 @@
                         </div>
                         <div class="form-group">
                                 <label for="user_id" >Pieza <strong>*</strong></label>
-                                {!! Form::select('pieza_id', ['placeholder' => 'Seleccione la pieza'], null, ['id' => 'pieza_id', 'class' => 'form-control']) !!}
+                                {!! Form::select('pieza_id', $piezas, null, ['placeholder' => 'Seleccione la pieza', 'id' => 'pieza_id', 'class' => 'form-control']) !!}
                         </div>
                     </div>
 
@@ -169,7 +169,7 @@
                 </div>
                 <div class="text-right pb-5" id="boton_inspeccion_dano">
                     {!! Form::button('Anexar Fotos', ['id'=>'btn-fotos', 'class' => 'btn btn-info block full-width m-b']) !!}
-                    {!! Form::submit('Registrar Inspección', 'id'=>'2', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                    {!! Form::submit('Registrar Inspección', ['id'=>'submit_2', 'class' => 'btn btn-primary block full-width m-b']) !!}
                     {{-- {!! Form::close() !!} --}}
                 </div>
 
@@ -235,7 +235,7 @@
                 </div>
 
                 <div class="text-right pb-5" id="boton_inspeccion_dano_fotos">
-                    {!! Form::submit('Registrar Inspección', ['id'=>'3', 'class' => 'btn btn-primary block full-width m-b']) !!}
+                    {!! Form::submit('Registrar Inspección', ['id'=>'submit_3', 'class' => 'btn btn-primary block full-width m-b']) !!}
                     {!! Form::close() !!}
                 </div>
 
