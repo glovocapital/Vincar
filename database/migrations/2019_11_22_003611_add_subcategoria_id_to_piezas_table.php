@@ -14,7 +14,7 @@ class AddSubcategoriaIdToPiezasTable extends Migration
     public function up()
     {
         Schema::table('piezas', function (Blueprint $table) {
-            $table->unsignedBigInteger('subcategoria_pieza_id');
+            $table->unsignedBigInteger('subcategoria_pieza_id')->nullable();
             $table->foreign('subcategoria_pieza_id')->references('subcategoria_pieza_id')->on('subcategoria_piezas');
         });
     }

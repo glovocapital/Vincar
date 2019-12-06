@@ -24,6 +24,8 @@ class CreateDanoPiezasTable extends Migration
             $table->foreign('tipo_dano_id')->references('tipo_dano_id')->on('tipo_danos');
             $table->unsignedBigInteger('gravedad_id');
             $table->foreign('gravedad_id')->references('gravedad_id')->on('gravedades');
+            $table->unsignedBigInteger('pieza_sub_area_id')->nullable();
+            $table->foreign('pieza_sub_area_id')->references('pieza_sub_area_id')->on('pieza_sub_areas');
             $table->timestamps();
         });
     }
