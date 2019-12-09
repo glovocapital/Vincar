@@ -83,7 +83,7 @@
                   </a>
                 </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="inspeccion" class="nav-link">
                 <i class="far nav-icon"></i>
                 <p>Daños y Faltantes</p>
               </a>

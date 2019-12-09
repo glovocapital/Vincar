@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Inspeccion extends Model
 {
@@ -42,7 +43,8 @@ class Inspeccion extends Model
         $estadoInventario = DB::table('vin_estado_inventarios')
             ->where('vin_estado_inventario_id', $this->vin_estado_inventario_id)
             ->first();
-        return $estadoInventario;
+
+        return $estadoInventario->vin_estado_inventario_desc;;
     }
 
     public function oneVinSubEstadoInventario()
@@ -50,6 +52,7 @@ class Inspeccion extends Model
         $subEstadoInventario = DB::table('vin_sub_estado_inventarios')
             ->where('vin_sub_estado_inventario_id', $this->vin_sub_estado_inventario_id)
             ->first();
-        return $subEstadoInventario;
+
+        return $subEstadoInventario->vin_sub_estado_inventario_desc;
     }
 }
