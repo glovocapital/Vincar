@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
         $this->call(TipoDanoSeeder::class);
         $this->call(GravedadSeeder::class);
         $this->call(PiezaSubAreaSeeder::class);
+        $this->call(CategoriaPiezaSeeder::class);
+        $this->call(SubcategoriaPiezaSeeder::class);
+        $this->call(PiezaSeeder::class);
         $this->call(MarcaSeeder::class);
         $this->call(DivisaSeeder::class);
         $this->call(ValorAsociadoSeeder::class);

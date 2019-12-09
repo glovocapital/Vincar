@@ -14,6 +14,9 @@
                 </div>
             </div>
             <div class="card-body">
+                <div class="row">
+                    <a href="{{ route('inspeccion.create') }}" class = 'btn btn-primary'>Crear nueva Inspección</a>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
                         <thead>
@@ -46,10 +49,10 @@
 
                                 <td>
                                     <small>
-                                        <a href="{{ route('inspeccion.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
+                                        <a href="{{ route('inspeccion.edit', Crypt::encrypt($inspeccion->vin_id)) }}" class="btn-inspeccion"  title="Editar"><i class="far fa-edit"></i></a>
                                     </small>
                                     <small>
-                                            <a href = "{{ route('inspeccion.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
+                                            <a href = "{{ route('inspeccion.destroy', Crypt::encrypt($inspeccion->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-inspeccion"><i class="far fa-trash-alt"></i>
                                             </a>
                                     </small>
                                 </td>

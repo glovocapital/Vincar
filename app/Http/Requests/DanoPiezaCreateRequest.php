@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CrearVinRequest extends FormRequest
+class DanoPiezaCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class CrearVinRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,10 @@ class CrearVinRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'dano_pieza_observaciones' => 'required',
+            'pieza_id' => 'required',
+            'tipo_dano_id' => 'required',
+            'gravedad_id' => 'required',
         ];
     }
 }

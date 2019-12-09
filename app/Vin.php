@@ -36,6 +36,7 @@ class Vin extends Model
         $subEstadoInventario = DB::table('vin_sub_estado_inventarios')
             ->where('vin_sub_estado_inventario_id', $this->vin_sub_estado_inventario_id)
             ->first();
+            
         return $subEstadoInventario->vin_sub_estado_inventario_desc;
     }
 }

@@ -14,7 +14,7 @@ class DanoPieza extends Model
      * @var array
      */
     protected $fillable = [
-        'dano_pieza_observaciones', 'dano_pieza_dano'
+        'dano_pieza_observaciones', 'inspeccion_id', 'pieza_id', 'tipo_dano_id', 'gravedad_id', 'pieza_sub_area_id'
     ];
 
     public function belongsToInspeccion(){

@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Inspeccion;
 use Illuminate\Http\Request;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\CheckSession;
-use Auth;
+use App\Inspeccion;
+use App\DanoPieza;
+use App\Foto;
 use App\Empresa;
+use App\Http\Requests\InspeccionCreateRequest;
 use App\User;
 use App\Vin;
+use DateTime;
 use Illuminate\Support\Facades\Crypt;
+use Auth;
 use DB;
 
 class InspeccionController extends Controller
@@ -120,15 +124,183 @@ class InspeccionController extends Controller
         return view('inspeccion.create', compact('responsable', 'responsable_nombres', 'users', 'vins','empresas', 'estadosInventario', 'subEstadosInventario', 'tipoDanos', 'gravedades', 'subAreas', 'piezaCategorias', 'piezaSubCategorias', 'piezas'));
     }
 
+    // Continuar a partir de acá para arreglar el manejo de Categorías, Subcategorías y piezas.
+
+    public function empresa(Request $request, $id_empresa){
+	    try {
+            $empresa_id = Crypt::decrypt($id_empresa);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        if ($request->ajax()){
+            $users = DB::table('users')
+                ->where('users.user_estado', '=', 1)
+                ->where('users.deleted_at', '=', null)
+                ->where('users.empresa_id', '=', $empresa_id)
+                ->select(DB::raw("CONCAT(users.user_nombre,' ',users.user_apellido) AS user_nombres"), 'users.user_id')
+                ->orderBy('users.user_id')
+                ->pluck('user_nombres', 'users.user_id');
+                
+            $ids = DB::table('users')
+                ->where('users.user_estado', '=', 1)
+                ->where('users.deleted_at', '=', null)
+                ->where('users.empresa_id', '=', $empresa_id)
+                ->select(DB::raw("CONCAT(users.user_nombre,' ',users.user_apellido) AS user_nombres"), 'users.user_id')
+                ->orderBy('users.user_id')
+                ->pluck('users.user_id', 'user_nombres');
+                
+            return response()->json([
+                'success' => true,
+                'message' => "Data de usuarios por empresa disponible",
+                'ids' => $ids,
+                'users' => $users,
+            ]);
+        }
+    }
+
+    public function estadoInventario(Request $request, $id_estado_inventario){
+	    try {
+            $estado_inventario_id = Crypt::decrypt($id_estado_inventario);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        if ($request->ajax()){
+            if($estado_inventario_id == 4 || $estado_inventario_id == 5){
+                $subEstados = DB::table('vin_sub_estado_inventarios')
+                    ->where('vin_sub_estado_inventarios.vin_estado_inventario_id', '=', $estado_inventario_id)
+                    ->select('vin_sub_estado_inventarios.vin_sub_estado_inventario_id', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_desc')
+                    ->orderBy('vin_sub_estado_inventarios.vin_sub_estado_inventario_id')
+                    ->pluck('vin_sub_estado_inventarios.vin_sub_estado_inventario_desc', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_id');
+                    
+                $ids = DB::table('vin_sub_estado_inventarios')
+                    ->where('vin_sub_estado_inventarios.vin_estado_inventario_id', '=', $estado_inventario_id)
+                    ->select('vin_sub_estado_inventarios.vin_sub_estado_inventario_id', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_desc')
+                    ->orderBy('vin_sub_estado_inventarios.vin_sub_estado_inventario_id')
+                    ->pluck('vin_sub_estado_inventarios.vin_sub_estado_inventario_id', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_desc');
+
+                return response()->json([
+                    'success' => true,
+                    'message' => "Data de Sub Estados de Inventario disponible",
+                    'ids' => $ids,
+                    'subEstados' => $subEstados,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => true,
+                    'message' => "No hay data de inventario para esta opción",
+                    'ids' => null,
+                    'subEstados' => null,
+                ]);
+            }
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(InspeccionCreateRequest $request)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $datosInspeccion = $request->input('inspeccion');
+
+            $id_vin_estado_inventario = Crypt::decrypt($datosInspeccion['vin_estado_inventario_id']);
+
+            $inspeccion = new Inspeccion();
+            $inspeccion->inspeccion_fecha = $datosInspeccion['inspeccion_fecha'];
+            $inspeccion->responsable_id = $datosInspeccion['responsable_id'];
+            $inspeccion->vin_id = $datosInspeccion['vin_id'];
+            $inspeccion->cliente_id = $datosInspeccion['cliente_id'];
+            $inspeccion->inspeccion_dano = $datosInspeccion['inspeccion_dano'];
+            $inspeccion->vin_estado_inventario_id = $id_vin_estado_inventario;
+            $inspeccion->vin_sub_estado_inventario_id = $datosInspeccion['vin_sub_estado_inventario_id'];
+
+            if($inspeccion->save()){
+                $vin = Vin::find($datosInspeccion['vin_id']);
+                $vin->vin_estado_inventario_id = $inspeccion->vin_estado_inventario_id;
+                if(isset($inspeccion->vin_sub_estado_inventario_id)){
+                    $vin->vin_sub_estado_inventario_id = $inspeccion->vin_sub_estado_inventario_id;
+                }
+                $vin->save();
+
+                if ($request->input('submit_2') !== null) {
+                    try {
+    
+                        $datosDanoPieza = $request->input('dano_pieza');
+                        $danoPieza = new DanoPieza();
+                        $danoPieza->pieza_id = $datosDanoPieza['pieza_id'];
+                        $danoPieza->tipo_dano_id = $datosDanoPieza['tipo_dano_id'];
+                        $danoPieza->gravedad_id = $datosDanoPieza['gravedad_id'];
+                        $danoPieza->pieza_sub_area_id = $datosDanoPieza['pieza_sub_area_id'];
+                        $danoPieza->dano_pieza_observaciones = $datosDanoPieza['dano_pieza_observaciones'];
+                        $danoPieza->inspeccion_id = $inspeccion->inspeccion_id;
+    
+                        $danoPieza->save();
+    
+                        DB::commit();
+                        return redirect()->route('inspeccion')->with('success', 'Inspección y Daño Registrados Exitosamente.');
+                    } catch (\Throwable $th) {
+                        DB::rollBack();
+                        return redirect()->route('inspeccion.create')->with('error-msg', 'Error anexando daño de pieza. Inspección no almacenada');
+                    }
+                } elseif ($request->input('submit_3') !== null){
+                    try {
+                        
+                        $datosDanoPieza = $request->input('dano_pieza');
+                        $danoPieza = new DanoPieza();
+                        $danoPieza->pieza_id = $datosDanoPieza['pieza_id'];
+                        $danoPieza->tipo_dano_id = $datosDanoPieza['tipo_dano_id'];
+                        $danoPieza->gravedad_id = $datosDanoPieza['gravedad_id'];
+                        $danoPieza->pieza_sub_area_id = $datosDanoPieza['pieza_sub_area_id'];
+                        $danoPieza->dano_pieza_observaciones = $datosDanoPieza['dano_pieza_observaciones'];
+                        $danoPieza->inspeccion_id = $inspeccion->inspeccion_id;
+                        $danoPieza->save();
+                        
+                        $datosFoto = $request->input('foto');
+                        $foto = new Foto();
+                        $foto->foto_fecha = $datosFoto['foto_fecha'];
+                        $foto->foto_descripcion = $datosFoto['foto_descripcion'];
+                        $foto->foto_ubic_archivo = "fotos/";
+                        $foto->foto_coord_lat = $datosFoto['foto_coord_lat'];
+                        $foto->foto_coord_lon = $datosFoto['foto_coord_lon'];
+                        $foto->dano_pieza_id = $danoPieza->dano_pieza_id;
+                        $foto->save();
+                        
+                        $fotoArchivo = $request->file('foto_nombre_archivo');
+                        $extensionFoto = $fotoArchivo->extension();
+                        $path = $fotoArchivo->storeAs(
+                            'fotos',
+                            "foto de inspeccion ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+                        );
+                        
+                        $foto1 = Foto::find($foto->foto_id);
+                        
+                        $foto1->foto_ubic_archivo = $path;
+                        
+                        $foto1->save();
+                        
+                        DB::commit();
+                        return redirect()->route('inspeccion')->with('success', 'Inspección, Daño y fotografía Registrados Exitosamente.');
+                    } catch (\Throwable $th) {
+                        DB::rollBack();
+                        return redirect()->route('inspeccion.create')->with('error-msg', 'Error anexando fotografía. Inspección no almacenada');
+                    }
+                }
+                DB::commit();
+                return redirect()->route('inspeccion')->with('success', 'Inspección Registrada Exitosamente.');
+            } else {
+                DB::rollBack();
+                return redirect()->route('inspeccion.create')->with('error-msg', 'Error. Inspección no almacenada');
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('inspeccion.create')->with('error-msg', 'Error. Inspección no almacenada');
+        }     
     }
 
     /**

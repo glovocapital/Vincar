@@ -18,18 +18,18 @@
                         {!! Form::open(['route'=> 'inspeccion.store', 'method'=>'POST', 'files' => true]) !!}
                         <div class="form-group">
                             <label for="inspeccion_fecha" >Fecha de Inspección <strong>*</strong></label>
-                            {!! Form::date('inspeccion_fecha', null, ['placeholder'=>'Fecha de Ingreso', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            {!! Form::date('inspeccion[inspeccion_fecha]', now('America/Santiago'), ['placeholder'=>'Fecha de Ingreso', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
 
                         <div class="form-group">
                                 <label for="responsable_id" >Responsable de la Inspección <strong>*</strong></label>
                                 {!! Form::text(null, $responsable_nombres, ['class'=>'form-control col-sm-9', 'disabled']) !!}
-                                {!! Form::hidden('responsable_id', $responsable->user_id) !!}
+                                {!! Form::hidden('inspeccion[responsable_id]', $responsable->user_id) !!}
                         </div>
                   
                         <div class="form-group">
                                 <label for="vin_id" >Código VIN <strong>*</strong></label>
-                                {!! Form::select('vin_id', $vins, null, ['placeholder'=>'Seleccione el Código', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                {!! Form::select('inspeccion[vin_id]', $vins, null, ['placeholder'=>'Seleccione el Código', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
                     </div>
 
@@ -46,8 +46,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="user_id" >Seleccionar Cliente <strong>*</strong></label>
-                            {!! Form::select('user_id', ['placeholder' => 'Seleccione el Cliente'], null, ['id' => 'user_id', 'class' => 'form-control']) !!}
+                            <label for="cliente_id" >Seleccionar Cliente <strong>*</strong></label>
+                            {!! Form::select('inspeccion[cliente_id]', ['placeholder' => 'Seleccione el Cliente'], null, ['id' => 'cliente_id', 'class' => 'form-control']) !!}
                             {{-- {!! Form::select('user_id', $users, null,['id' => 'cliente', 'placeholder'=>'Seleccionar Cliente', 'class'=>'form-control col-sm-9 select-cliente', 'required'=>'required']) !!} --}}
                         </div>
 
@@ -55,10 +55,10 @@
                             <label for="inspeccion_dano" >¿Hay daño qué reportar?<strong>*</strong></label>
                             <br />
                             <label>Sí</label>
-                            <input type="radio" name="inspeccion_dano" id="si_hay_dano" onchange="d1(this)" value="true" />
+                            <input type="radio" name="inspeccion[inspeccion_dano]" id="si_hay_dano" onchange="d1(this)" value="true" />
                             <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span>
                             <label>No</label>
-                            <input type="radio" name="inspeccion_dano" id="no_hay_dano" onchange="d1(this)" value="false" checked />
+                            <input type="radio" name="inspeccion[inspeccion_dano]" id="no_hay_dano" onchange="d1(this)" value="false" checked />
                         </div>
                     </div>
 
@@ -66,7 +66,7 @@
                         <div class="form-group">
                             <label for="vin_estado_inventario_id" >Estado de Inventario <strong>*</strong></label>
                             {{-- {!! Form::select('vin_estado_inventario_id', $estadosInventario, null,['class'=>'form-control col-sm-9']) !!} --}}
-                            <select name="vin_estado_inventario_id" id="estado-inventario" class="form-control select-estado-inventario">
+                            <select name="inspeccion[vin_estado_inventario_id]" id="estado-inventario" class="form-control select-estado-inventario">
                                 <option value="" selected>Seleccione Estado de Inventario</option>
                             @foreach($estadosInventario as $k => $v)
                                 <option value="{!! Crypt::encrypt($k) !!}">{{$v}}</option>
@@ -76,13 +76,14 @@
 
                         <div class="form-group" id="bloque_sub_estado" style="display: none">
                             <label for="vin_sub_estado_inventario_id" >Sub-Estado de Inventario <strong>*</strong></label>
-                            {!! Form::select('vin_sub_estado_inventario_id', ['placeholder' => 'Seleccione Sub Estado de Inventario'], null,['id' => 'vin_sub_estado_inventario_id', 'class'=>'form-control']) !!}
+                            {!! Form::select('inspeccion[vin_sub_estado_inventario_id]', ['placeholder' => 'Seleccione Sub Estado de Inventario'], null,['id' => 'vin_sub_estado_inventario_id', 'class'=>'form-control']) !!}
                             {{-- {!! Form::select('vin_sub_estado_inventario_id', $subEstadosInventario, null,['class'=>'form-control col-sm-9']) !!} --}}
                         </div>
                     </div>
                 </div>
                 <div class="text-right pb-5" id="boton_inspeccion">
-                    {!! Form::submit('Registrar Inspección', ['id'=>'1', 'class' => 'btn btn-primary block full-width m-b']) !!}
+                    <button name="submit_1" value="1" type="submit" class="btn btn-primary block full-width m-b">Registrar Inspección</button>
+                    {{-- {!! Form::submit('Registrar Inspección', ['name'=>'submit_1', 'value'=>'1', 'class' => 'btn btn-primary block full-width m-b']) !!} --}}
                     {{-- {!! Form::close() !!} --}}
                 </div>
 
@@ -113,7 +114,7 @@
                         </div>
                         <div class="form-group">
                             <label for="pieza_categoria_id" >Categoría de Pieza <strong>*</strong></label>
-                            {{-- {!! Form::select('pieza_categoria_id', $piezaCategorias, null,['placeholder'=>'Seleccionar Categoría', 'class'=>'form-control col-sm-9 select-empresa', 'required'=>'required']) !!} --}}
+                            {{-- {!! Form::select('pieza_categoria_id', $piezaCategorias, null,['placeholder'=>'Seleccionar Categoría', 'class'=>'form-control col-sm-9 select-empresa']) !!} --}}
                             <select name="pieza_categoria_id" id="pieza-categoria" class="form-control select-categoria">
                                 <option value="" selected>Seleccione la Categoría</option>
                             @foreach($piezaCategorias as $k => $v)
@@ -122,9 +123,9 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="empresa_id" >Sub-Categoría <strong>*</strong></label>
-                            {{-- {!! Form::select('empresa_id', $empresas, null,['placeholder'=>'Seleccionar Sub-Categoría', 'class'=>'form-control col-sm-9 select-empresa', 'required'=>'required']) !!} --}}
-                            <select name="pieza_subcategoria_id" id="empresa" class="form-control select-empresa">
+                            <label for="pieza_subcategoria_id" >Sub-Categoría <strong>*</strong></label>
+                            {{-- {!! Form::select('empresa_id', $empresas, null,['placeholder'=>'Seleccionar Sub-Categoría', 'class'=>'form-control col-sm-9 select-empresa']) !!} --}}
+                            <select name="pieza_subcategoria_id" id="pieza-subcategotia" class="form-control select-subcategoria">
                                 <option value="" selected>Seleccionar Sub-Categoría</option>
                             @foreach($piezaSubCategorias as $k => $v)
                                 <option value="{!! Crypt::encrypt($k) !!}">{{$v}}</option>
@@ -132,8 +133,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                                <label for="user_id" >Pieza <strong>*</strong></label>
-                                {!! Form::select('pieza_id', ['placeholder' => 'Seleccione la pieza'], null, ['id' => 'pieza_id', 'class' => 'form-control']) !!}
+                                <label for="pieza_id" >Pieza <strong>*</strong></label>
+                                {!! Form::select('dano_pieza[pieza_id]', $piezas, null, ['placeholder' => 'Seleccione la pieza', 'id' => 'pieza_id', 'class' => 'form-control']) !!}
                         </div>
                     </div>
 
@@ -144,32 +145,33 @@
 
                         <div class="form-group">
                             <label for="tipo_dano_id" >Tipo de daño <strong>*</strong></label>
-                            {!! Form::select('tipo_dano_id', $tipoDanos, null,['placeholder'=>'Seleccione Tipo de Daño', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            {!! Form::select('dano_pieza[tipo_dano_id]', $tipoDanos, null,['placeholder'=>'Seleccione Tipo de Daño', 'class'=>'form-control col-sm-9']) !!}
                         </div>
 
                         <div class="form-group">
                             <label for="gravedad_id" >Gravedad <strong>*</strong></label>
-                            {!! Form::select('gravedad_id', $gravedades, null,['placeholder'=>'Seleccione Gravedad del Daño', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            {!! Form::select('dano_pieza[gravedad_id]', $gravedades, null,['placeholder'=>'Seleccione Gravedad del Daño', 'class'=>'form-control col-sm-9']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label for="gravedad_id" >Sub Área Afectada <strong>*</strong></label>
-                            {!! Form::select('pieza_sub_area_id', $subAreas, null,['placeholder'=>'Seleccionar Sub Área', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            <label for="pieza_sub_area_id" >Sub Área Afectada <strong>*</strong></label>
+                            {!! Form::select('dano_pieza[pieza_sub_area_id]', $subAreas, null,['placeholder'=>'Seleccionar Sub Área', 'class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
 
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="dano_pieza_observaciones" >Observaciones del daño <strong>*</strong></label>
-                            {!! Form::textarea('dano_pieza_observaciones', null, ['placeholder'=>'Colocar observaciones', 'class'=>'form-control col-sm-9']) !!}
+                            {!! Form::textarea('dano_pieza[dano_pieza_observaciones]', null, ['placeholder'=>'Colocar observaciones', 'class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
 
                     
                 </div>
                 <div class="text-right pb-5" id="boton_inspeccion_dano">
-                    {!! Form::button('Anexar Fotos', ['id'=>'btn-fotos', 'class' => 'btn btn-info block full-width m-b']) !!}
-                    {!! Form::submit('Registrar Inspección', 'id'=>'2', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                    {!! Form::button('Anexar Foto', ['id'=>'btn-fotos', 'class' => 'btn btn-info block full-width m-b']) !!}
+                    <button name="submit_2" value="2" type="submit" class="btn btn-primary block full-width m-b">Registrar Inspección</button>
+                    {{-- {!! Form::submit('Registrar Inspección', ['name'=>'submit_2', 'value'=>'2', 'class' => 'btn btn-primary block full-width m-b']) !!} --}}
                     {{-- {!! Form::close() !!} --}}
                 </div>
 
@@ -181,12 +183,12 @@
     </div>
 </div>
 
-<!-- Anexar Fotografías a la Inspección -->
+<!-- Anexar Fotografía a la Inspección -->
 <div class="col-lg-12" id="bloque_fotos" style="display: none">
     <div class="ibox float-e-margins">
         <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">Anexar Fotografías</h3>
+                <h3 class="card-title">Anexar Fotografía</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -201,10 +203,12 @@
 
                         <div class="form-group">
                             <label for="">Fecha</label>
+                            {!! Form::date('foto[foto_fecha]', now('America/Santiago'), ['placeholder'=>'Fecha de la foto', 'class'=>'form-control col-sm-9']) !!}
                         </div>
 
                         <div class="form-group">
                             <label for="">Descripción</label>
+                            {!! Form::text('foto[foto_descripcion]', null, ['placeholder'=>'Descripción Foto', 'class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
                     
@@ -215,10 +219,12 @@
 
                         <div class="form-group">
                             <label for="">Latitud</label>
+                            {!! Form::text('foto[foto_coord_lat]', null, ['placeholder'=>'Latitud', 'class'=>'form-control col-sm-9']) !!}
                         </div>
 
                         <div class="form-group">
                             <label for="">Longitud</label>
+                            {!! Form::text('foto[foto_coord_lon]', null, ['placeholder'=>'Longitud', 'class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
 
@@ -235,7 +241,8 @@
                 </div>
 
                 <div class="text-right pb-5" id="boton_inspeccion_dano_fotos">
-                    {!! Form::submit('Registrar Inspección', ['id'=>'3', 'class' => 'btn btn-primary block full-width m-b']) !!}
+                    <button name="submit_3" value="3" type="submit" class="btn btn-primary block full-width m-b">Registrar Inspección</button>
+                    {{-- {!! Form::submit('Registrar Inspección', ['name'=>'submit_3', 'value'=>'3', 'class' => 'btn btn-primary block full-width m-b']) !!} --}}
                     {!! Form::close() !!}
                 </div>
 
@@ -308,18 +315,16 @@
                             return e1;
                         });
 
-                        $("#user_id").html("<option value=''>Seleccione el Cliente</option>");
+                        $("#cliente_id").html("<option value=''>Seleccione el Cliente</option>");
                         for (var i = 0; i < arr_ids.length; i++){
-                            $("#user_id").append("<option value='" + arr_ids[i] + "'>" + arr_users[i] + "</option>");
-
+                            $("#cliente_id").append("<option value='" + arr_ids[i] + "'>" + arr_users[i] + "</option>");
                         }
-
 
                     }).fail(function () {
                         alert('Error: Respuesta de datos inválida');
                     });
                 }else{
-                    $("#user_id").html("<option value=''>Seleccione el Cliente</option>");
+                    $("#cliente_id").html("<option value=''>Seleccione el Cliente</option>");
                 }
 
 
