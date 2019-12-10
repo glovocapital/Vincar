@@ -83,7 +83,7 @@
                   </a>
                 </li>
             <li class="nav-item">
-              <a href="inspeccion" class="nav-link">
+              <a href="{{ route('inspeccion.index') }}" class="nav-link">
                 <i class="far nav-icon"></i>
                 <p>Daños y Faltantes</p>
               </a>

@@ -124,17 +124,17 @@
                         </div>
                         <div class="form-group">
                             <label for="pieza_subcategoria_id" >Sub-Categoría <strong>*</strong></label>
-                            {{-- {!! Form::select('empresa_id', $empresas, null,['placeholder'=>'Seleccionar Sub-Categoría', 'class'=>'form-control col-sm-9 select-empresa']) !!} --}}
-                            <select name="pieza_subcategoria_id" id="pieza-subcategotia" class="form-control select-subcategoria">
+                            {!! Form::select('pieza_subcategoria_id', ['placeholder' => 'Seleccionar Sub-Categoría'], null,['id'=>'pieza-subcategoria', 'class'=>'form-control select-subcategoria']) !!}
+                            <!-- <select name="pieza_subcategoria_id" id="pieza-subcategoria" class="form-control select-subcategoria">
                                 <option value="" selected>Seleccionar Sub-Categoría</option>
                             @foreach($piezaSubCategorias as $k => $v)
                                 <option value="{!! Crypt::encrypt($k) !!}">{{$v}}</option>
                             @endforeach
-                            </select>
+                            </select> -->
                         </div>
                         <div class="form-group">
                                 <label for="pieza_id" >Pieza <strong>*</strong></label>
-                                {!! Form::select('dano_pieza[pieza_id]', $piezas, null, ['placeholder' => 'Seleccione la pieza', 'id' => 'pieza_id', 'class' => 'form-control']) !!}
+                                {!! Form::select('dano_pieza[pieza_id]', ['placeholder' => 'Seleccione la pieza'], null, ['id' => 'pieza_id', 'class' => 'form-control']) !!}
                         </div>
                     </div>
 
@@ -391,6 +391,101 @@
                 /**/
 
             });
+
+            $(".select-categoria").change(function (e) {
+
+                e.preventDefault();
+
+                var id = $(this).val();
+
+                if (id != ''){
+
+                    var url = "/inspeccion/obtener_subcategorias_pieza/";
+                    
+                    $.get(url + id, id, function (res) {
+                        //Validar primero si algo salió mal
+                        if(!res.success){
+                            alert(
+                                "Error inesperado al solicitar la información.\n\n" +
+                                "MENSAJE DEL SISTEMA:\n" +
+                                res.message + "\n\n"
+                            );
+                            return;  // Finaliza el intento de obtener
+                        }
+
+                        var arr_ids = $.map(res.ids, function (e1) {
+                            return e1;
+                        });
+
+                        var arr_subcategorias = $.map(res.subcategorias, function (e1) {
+                            return e1;
+                        });
+
+                        $("#pieza-subcategoria").html("<option value=''>Seleccionar Sub-Categoría</option>");
+                        for (var i = 0; i < arr_ids.length; i++){
+                            $("#pieza-subcategoria").append("<option value='" + arr_ids[i] + "'>" + arr_subcategorias[i] + "</option>");
+                        }
+
+                    }).fail(function () {
+                        alert('Error: Respuesta de datos inválida');
+                    });
+                }else{
+                    $("#pieza-subcategoria").html("<option value=''>Seleccionar Sub-Categoría</option>");
+                }
+
+
+
+                /**/
+
+            });
+
+
+            $(".select-subcategoria").change(function (e) {
+
+                e.preventDefault();
+
+                var id = $(this).val();
+
+                if (id != ''){
+
+                    var url = "/inspeccion/obtener_piezas/";
+                    
+                    $.get(url + id, id, function (res) {
+                        //Validar primero si algo salió mal
+                        if(!res.success){
+                            alert(
+                                "Error inesperado al solicitar la información.\n\n" +
+                                "MENSAJE DEL SISTEMA:\n" +
+                                res.message + "\n\n"
+                            );
+                            return;  // Finaliza el intento de obtener
+                        }
+
+                        var arr_ids = $.map(res.ids, function (e1) {
+                            return e1;
+                        });
+
+                        var arr_piezas = $.map(res.piezas, function (e1) {
+                            return e1;
+                        });
+
+                        $("#pieza_id").html("<option value=''>Seleccione la pieza</option>");
+                        for (var i = 0; i < arr_ids.length; i++){
+                            $("#pieza_id").append("<option value='" + arr_ids[i] + "'>" + arr_piezas[i] + "</option>");
+                        }
+
+                    }).fail(function () {
+                        alert('Error: Respuesta de datos inválida');
+                    });
+                }else{
+                    $("#pieza_id").html("<option value=''>Seleccione la pieza</option>");
+                }
+
+
+
+                /**/
+
+                });
         });
     </script>
 @endsection
