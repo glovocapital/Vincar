@@ -73,15 +73,16 @@ class EmpresaController extends Controller
     public function store(Request $request)
     {
 
-
-        $validate = DB::table('empresas')->where('empresa_rut', $request->empresa_rut)->exists();
-
+        $validate = DB::table('empresas')
+            ->where('empresa_rut', $request->empresa_rut)
+            ->where('deleted_at', '=', null)
+            ->exists();
+            
         if($validate == true)
         {
             flash('El rut '.$request->empresa_rut.'  ya existe en la base de datos')->warning();
             return redirect('/empresa');
         }else
-
 
         try {
 
@@ -93,16 +94,17 @@ class EmpresaController extends Controller
             $empresa->empresa_direccion = $request->empresa_direccion;
             $empresa->empresa_nombre_contacto = $request->empresa_nombre_contacto;
             $empresa->empresa_telefono_contacto = $request->empresa_telefono_contacto;
-            if($request->es_proveedor == 1)
+            
+            if($request->es_proveedor == "true")
             {
-                $empresa->empresa_es_proveedor = 1;
+                $empresa->empresa_es_proveedor = true;
                 $empresa->tipo_proveedor_id = $request->tipo_proveedor;
             }else
             {
-                $empresa->empresa_es_proveedor = 0;
+                $empresa->empresa_es_proveedor = false;
                 $empresa->tipo_proveedor_id = NULL;
             }
-
+            
             $empresa->save();
 
             flash('La empresa se creo correctamente.')->success();

@@ -67,8 +67,8 @@
                         </div>
 
                         <div class="form-group" name="bloque" id="bloque_archivo" style="display: none">
-                            <label for="empresa_id" >Tipo de proveedor <strong>*</strong></label>
-                            {!! Form::select('tipo_proveedor', $tipo_proveedor, null,['placeholder'=>'Seleccione Tipo de Proveedor', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            <label for="tipo_proveedor_id" >Tipo de proveedor <strong>*</strong></label>
+                            {!! Form::select('tipo_proveedor_id', $tipo_proveedor, null,['placeholder'=>'Seleccione Tipo de Proveedor', 'class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
                 </div>
@@ -119,6 +119,7 @@
                         </thead>
                         <tbody>
                         @foreach($empresa as $emp)
+                            @if(!$emp->empresa_es_proveedor)
                             <tr>
                                 <td><small>{{ $emp->empresa_razon_social }}</small></td>
                                 <td><small>{{ $emp->empresa_giro }}</small></td>
@@ -136,6 +137,7 @@
                                     </small>
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>
