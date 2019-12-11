@@ -126,74 +126,63 @@ class InspeccionController extends Controller
 
     // Continuar a partir de acá para arreglar el manejo de Categorías, Subcategorías y piezas.
 
-    public function empresa(Request $request, $id_empresa){
-	    try {
-            $empresa_id = Crypt::decrypt($id_empresa);
+    public function subcategorias(Request $request, $id_categoria){
+        try {
+            $categoria_id = Crypt::decrypt($id_categoria);
         } catch (DecryptException $e) {
             abort(404);
         }
-
+        
         if ($request->ajax()){
-            $users = DB::table('users')
-                ->where('users.user_estado', '=', 1)
-                ->where('users.deleted_at', '=', null)
-                ->where('users.empresa_id', '=', $empresa_id)
-                ->select(DB::raw("CONCAT(users.user_nombre,' ',users.user_apellido) AS user_nombres"), 'users.user_id')
-                ->orderBy('users.user_id')
-                ->pluck('user_nombres', 'users.user_id');
-                
-            $ids = DB::table('users')
-                ->where('users.user_estado', '=', 1)
-                ->where('users.deleted_at', '=', null)
-                ->where('users.empresa_id', '=', $empresa_id)
-                ->select(DB::raw("CONCAT(users.user_nombre,' ',users.user_apellido) AS user_nombres"), 'users.user_id')
-                ->orderBy('users.user_id')
-                ->pluck('users.user_id', 'user_nombres');
-                
+            $subcategorias = DB::table('subcategoria_piezas')
+                ->where('subcategoria_piezas.categoria_pieza_id', '=', $categoria_id)
+                ->select('subcategoria_piezas.subcategoria_pieza_desc', 'subcategoria_piezas.subcategoria_pieza_id')
+                ->orderBy('subcategoria_piezas.subcategoria_pieza_id')
+                ->pluck('subcategoria_piezas.subcategoria_pieza_desc', 'subcategoria_piezas.subcategoria_pieza_id');
+            
+            $ids = DB::table('subcategoria_piezas')
+                ->where('subcategoria_piezas.categoria_pieza_id', '=', $categoria_id)
+                ->select('subcategoria_piezas.subcategoria_pieza_desc', 'subcategoria_piezas.subcategoria_pieza_id')
+                ->orderBy('subcategoria_piezas.subcategoria_pieza_id')
+                ->pluck('subcategoria_piezas.subcategoria_pieza_id', 'subcategoria_piezas.subcategoria_pieza_desc');
+ 
             return response()->json([
                 'success' => true,
-                'message' => "Data de usuarios por empresa disponible",
+                'message' => "Data de subcategorías de piezas por cada categoría disponible",
                 'ids' => $ids,
-                'users' => $users,
+                'subcategorias' => $subcategorias,
             ]);
         }
     }
 
-    public function estadoInventario(Request $request, $id_estado_inventario){
-	    try {
-            $estado_inventario_id = Crypt::decrypt($id_estado_inventario);
-        } catch (DecryptException $e) {
-            abort(404);
-        }
+    public function piezas(Request $request, $id_subcategoria){
+	    // try {
+        //     $subcategoria_id = Crypt::decrypt($id_subcategoria);
+        // } catch (DecryptException $e) {
+        //     abort(404);
+        // }
 
-        if ($request->ajax()){
-            if($estado_inventario_id == 4 || $estado_inventario_id == 5){
-                $subEstados = DB::table('vin_sub_estado_inventarios')
-                    ->where('vin_sub_estado_inventarios.vin_estado_inventario_id', '=', $estado_inventario_id)
-                    ->select('vin_sub_estado_inventarios.vin_sub_estado_inventario_id', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_desc')
-                    ->orderBy('vin_sub_estado_inventarios.vin_sub_estado_inventario_id')
-                    ->pluck('vin_sub_estado_inventarios.vin_sub_estado_inventario_desc', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_id');
-                    
-                $ids = DB::table('vin_sub_estado_inventarios')
-                    ->where('vin_sub_estado_inventarios.vin_estado_inventario_id', '=', $estado_inventario_id)
-                    ->select('vin_sub_estado_inventarios.vin_sub_estado_inventario_id', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_desc')
-                    ->orderBy('vin_sub_estado_inventarios.vin_sub_estado_inventario_id')
-                    ->pluck('vin_sub_estado_inventarios.vin_sub_estado_inventario_id', 'vin_sub_estado_inventarios.vin_sub_estado_inventario_desc');
+        $subcategoria_id = $id_subcategoria;
 
-                return response()->json([
-                    'success' => true,
-                    'message' => "Data de Sub Estados de Inventario disponible",
-                    'ids' => $ids,
-                    'subEstados' => $subEstados,
-                ]);
-            } else {
-                return response()->json([
-                    'success' => true,
-                    'message' => "No hay data de inventario para esta opción",
-                    'ids' => null,
-                    'subEstados' => null,
-                ]);
-            }
+        if ($request->ajax()){            
+            $piezas = DB::table('piezas')
+                ->where('piezas.subcategoria_pieza_id', '=', $subcategoria_id)
+                ->select('piezas.pieza_id', 'piezas.pieza_descripcion')
+                ->orderBy('piezas.pieza_id')
+                ->pluck('piezas.pieza_descripcion', 'piezas.pieza_id');
+            
+            $ids = DB::table('piezas')
+                ->where('piezas.subcategoria_pieza_id', '=', $subcategoria_id)
+                ->select('piezas.pieza_id', 'piezas.pieza_descripcion')
+                ->orderBy('piezas.pieza_id')
+                ->pluck('piezas.pieza_id', 'piezas.pieza_descripcion');
+
+            return response()->json([
+                'success' => true,
+                'message' => "Data de piezas disponible",
+                'ids' => $ids,
+                'piezas' => $piezas,
+            ]);
         }
     }
 
@@ -243,7 +232,7 @@ class InspeccionController extends Controller
                         $danoPieza->save();
     
                         DB::commit();
-                        return redirect()->route('inspeccion')->with('success', 'Inspección y Daño Registrados Exitosamente.');
+                        return redirect()->route('inspeccion.index')->with('success', 'Inspección y Daño Registrados Exitosamente.');
                     } catch (\Throwable $th) {
                         DB::rollBack();
                         return redirect()->route('inspeccion.create')->with('error-msg', 'Error anexando daño de pieza. Inspección no almacenada');
@@ -285,14 +274,14 @@ class InspeccionController extends Controller
                         $foto1->save();
                         
                         DB::commit();
-                        return redirect()->route('inspeccion')->with('success', 'Inspección, Daño y fotografía Registrados Exitosamente.');
+                        return redirect()->route('inspeccion.index')->with('success', 'Inspección, Daño y fotografía Registrados Exitosamente.');
                     } catch (\Throwable $th) {
                         DB::rollBack();
                         return redirect()->route('inspeccion.create')->with('error-msg', 'Error anexando fotografía. Inspección no almacenada');
                     }
                 }
                 DB::commit();
-                return redirect()->route('inspeccion')->with('success', 'Inspección Registrada Exitosamente.');
+                return redirect()->route('inspeccion.index')->with('success', 'Inspección Registrada Exitosamente.');
             } else {
                 DB::rollBack();
                 return redirect()->route('inspeccion.create')->with('error-msg', 'Error. Inspección no almacenada');

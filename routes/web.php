@@ -74,8 +74,8 @@ Route::get('inspeccion/{id}/edit','InspeccionController@edit')->name('inspeccion
 Route::post('inspeccion','InspeccionController@store')->name('inspeccion.store');
 Route::patch('inspeccion/{id}/update','InspeccionController@update')->name('inspeccion.update');
 Route::get('inspeccion/{id}/delete','InspeccionController@destroy')->name('inspeccion.destroy');
-Route::get('inspeccion/obtener_usuarios_empresa/{id_empresa}', ['as' => 'inspeccion.clientes', 'uses' => 'InspeccionController@empresa']);
-Route::get('inspeccion/obtener_sub_estados/{id_estado_inventario}', ['as' => 'inspeccion.sub_estados', 'uses' => 'InspeccionController@estadoInventario']);
+Route::get('inspeccion/obtener_subcategorias_pieza/{id_categoria}', ['as' => 'inspeccion.subcategorias', 'uses' => 'InspeccionController@subcategorias']);
+Route::get('inspeccion/obtener_piezas/{id_subcategoria}', ['as' => 'inspeccion.piezas', 'uses' => 'InspeccionController@piezas']);
 
 //Rutas mantenedor país
 Route::get('pais', 'PaisController@index')->name('pais.index');
