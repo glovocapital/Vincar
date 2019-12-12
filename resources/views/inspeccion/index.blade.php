@@ -66,13 +66,13 @@
                                     <td><small>{{ $dano->oneFoto->foto_ubic_archivo }}</small></td>
                                     <td>
                                         <small>
-                                            <a href="{{ route('inspeccion.create_dano', Crypt::encrypt($inspeccion->inspeccion_id)) }}" class="btn-inspeccion"  title="Añadir Daño"><i class="far fa-plus-square"></i></a>
+                                            <a href="{{ route('inspeccion.create_dano', Crypt::encrypt($dano->dano_pieza_id)) }}" class="btn-dano"  title="Añadir Daño"><i class="far fa-plus-square"></i></a>
                                         </small>
                                         <small>
-                                            <a href="{{ route('inspeccion.edit', Crypt::encrypt($inspeccion->inspeccion_id)) }}" class="btn-inspeccion"  title="Editar"><i class="far fa-edit"></i></a>
+                                            <a href="{{ route('inspeccion.edit_dano', Crypt::encrypt($dano->dano_pieza_id)) }}" class="btn-dano"  title="Editar"><i class="far fa-edit"></i></a>
                                         </small>
                                         <small>
-                                            <a href = "{{ route('inspeccion.destroy', Crypt::encrypt($inspeccion->inspeccion_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-inspeccion"><i class="far fa-trash-alt"></i></a>
+                                            <a href = "{{ route('inspeccion.destroy_dano', Crypt::encrypt($dano->dano_pieza_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-dano"><i class="far fa-trash-alt"></i></a>
                                         </small>
                                     </td>
                                 </tr>

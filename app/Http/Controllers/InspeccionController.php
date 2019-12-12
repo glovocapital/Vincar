@@ -450,9 +450,49 @@ class InspeccionController extends Controller
      * @param  \App\Inspeccion  $inspeccion
      * @return \Illuminate\Http\Response
      */
-    public function edit(Inspeccion $inspeccion)
+    public function edit($id)
     {
         //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Inspeccion  $inspeccion
+     * @return \Illuminate\Http\Response
+     */
+    public function editDano($id_dano_pieza)
+    {
+        $dano_pieza_id =  Crypt::decrypt($id_dano_pieza);
+        $dano = DanoPieza::find($dano_pieza_id);
+
+        $fotos = Foto::where('dano_pieza_id', $dano_pieza_id)->get();
+
+        $tipoDanos = DB::table('tipo_danos')
+            ->select('tipo_dano_id', 'tipo_dano_descripcion')
+            ->pluck('tipo_dano_descripcion', 'tipo_dano_id');
+        
+        $gravedades = DB::table('gravedades')
+            ->select('gravedad_id', 'gravedad_descripcion')
+            ->pluck('gravedad_descripcion', 'gravedad_id');
+
+        $subAreas = DB::table('pieza_sub_areas')
+            ->select('pieza_sub_area_id', 'pieza_sub_area_desc')
+            ->pluck('pieza_sub_area_desc', 'pieza_sub_area_id');
+        
+        $piezaCategorias = DB::table('categoria_piezas')
+            ->select('categoria_pieza_id', 'categoria_pieza_desc')
+            ->pluck('categoria_pieza_desc', 'categoria_pieza_id');
+        
+        $piezaSubCategorias = DB::table('subcategoria_piezas')
+            ->select('subcategoria_pieza_id', 'subcategoria_pieza_desc')
+            ->pluck('subcategoria_pieza_desc', 'subcategoria_pieza_id');
+
+        $piezas = DB::table('piezas')
+            ->select('pieza_id', 'pieza_descripcion')
+            ->pluck('pieza_descripcion', 'pieza_id');
+
+        return view('inspeccion.edit_dano', compact('dano', 'fotos', 'tipoDanos', 'gravedades','subAreas', 'piezaCategorias', 'piezaSubCategorias', 'piezas'));
     }
 
     /**
@@ -468,12 +508,35 @@ class InspeccionController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Inspeccion  $inspeccion
+     * @return \Illuminate\Http\Response
+     */
+    public function updateDano(Request $request, Inspeccion $inspeccion)
+    {
+        //
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Inspeccion  $inspeccion
      * @return \Illuminate\Http\Response
      */
     public function destroy(Inspeccion $inspeccion)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Inspeccion  $inspeccion
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyDano(Inspeccion $inspeccion)
     {
         //
     }
