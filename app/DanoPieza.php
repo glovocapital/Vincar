@@ -1,7 +1,8 @@
 <?php
 
 namespace App;
-;
+
+use DB;
 use Illuminate\Database\Eloquent\Model;
 
 class DanoPieza extends Model
@@ -34,7 +35,19 @@ class DanoPieza extends Model
         $gravedad = DB::table('gravedades')
         ->where('gravedad_id', $this->gravedad_id)
         ->first();
-        return $gravedad;
+        return $gravedad->gravedad_descripcion;
+    }
+
+    public function oneSubArea()
+    {
+        $subArea = DB::table('pieza_sub_areas')
+        ->where('pieza_sub_area_id', $this->pieza_sub_area_id)
+        ->first();
+        return $subArea->pieza_sub_area_desc;
+    }
+
+    public function oneFoto(){
+        return $this->hasOne(Foto::class, 'dano_pieza_id', 'dano_pieza_id');
     }
     
     public function manyFotos(){

@@ -9,6 +9,7 @@ use App\Inspeccion;
 use App\DanoPieza;
 use App\Foto;
 use App\Empresa;
+use App\Http\Requests\DanoPiezaCreateRequest;
 use App\Http\Requests\InspeccionCreateRequest;
 use App\User;
 use App\Vin;
@@ -60,8 +61,19 @@ class InspeccionController extends Controller
         $subEstadosInventario = DB::table('vin_sub_estado_inventarios')
             ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
+        
+        $danosArray = []; 
+        foreach($inspecciones as $inspeccion){
+            $danos = DanoPieza::where('inspeccion_id', $inspeccion->inspeccion_id)
+                ->get();
+            foreach($danos as $dano){
+                array_push($danosArray, $dano);
+            }
+        }
 
-        return view('inspeccion.index', compact('responsable', 'responsable_nombres', 'inspecciones', 'vins','users','empresas', 'estadosInventario', 'subEstadosInventario'));
+        // dd($danosArray);
+
+        return view('inspeccion.index', compact('responsable', 'responsable_nombres', 'inspecciones', 'vins','users','empresas', 'estadosInventario', 'subEstadosInventario', 'danosArray'));
     }
 
     /**
@@ -280,8 +292,6 @@ class InspeccionController extends Controller
                         return redirect()->route('inspeccion.create')->with('error-msg', 'Error anexando fotografía. Inspección no almacenada');
                     }
                 }
-                DB::commit();
-                return redirect()->route('inspeccion.index')->with('success', 'Inspección Registrada Exitosamente.');
             } else {
                 DB::rollBack();
                 return redirect()->route('inspeccion.create')->with('error-msg', 'Error. Inspección no almacenada');
@@ -290,6 +300,137 @@ class InspeccionController extends Controller
             DB::rollBack();
             return redirect()->route('inspeccion.create')->with('error-msg', 'Error. Inspección no almacenada');
         }     
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeDano(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            
+            if ($request->input('submit_2') !== null) {
+                try {
+                    $datosDanoPieza = $request->input('dano_pieza');
+                    $danoPieza = new DanoPieza();
+                    $danoPieza->pieza_id = $datosDanoPieza['pieza_id'];
+                    $danoPieza->tipo_dano_id = $datosDanoPieza['tipo_dano_id'];
+                    $danoPieza->gravedad_id = $datosDanoPieza['gravedad_id'];
+                    $danoPieza->pieza_sub_area_id = $datosDanoPieza['pieza_sub_area_id'];
+                    $danoPieza->dano_pieza_observaciones = $datosDanoPieza['dano_pieza_observaciones'];
+                    $danoPieza->inspeccion_id = $inspeccion->inspeccion_id;
+
+                    $danoPieza->save();
+
+                    DB::commit();
+                    return redirect()->route('inspeccion.index')->with('success', 'Inspección y Daño Registrados Exitosamente.');
+                } catch (\Throwable $th) {
+                    DB::rollBack();
+                    return redirect()->route('inspeccion.create')->with('error-msg', 'Error anexando daño de pieza. Inspección no almacenada');
+                }
+            } elseif ($request->input('submit_3') !== null){
+
+                try {
+                    
+                    $datosDanoPieza = $request->input('dano_pieza');
+                    $danoPieza = new DanoPieza();
+                    $danoPieza->pieza_id = $datosDanoPieza['pieza_id'];
+                    $danoPieza->tipo_dano_id = $datosDanoPieza['tipo_dano_id'];
+                    $danoPieza->gravedad_id = $datosDanoPieza['gravedad_id'];
+                    $danoPieza->pieza_sub_area_id = $datosDanoPieza['pieza_sub_area_id'];
+                    $danoPieza->dano_pieza_observaciones = $datosDanoPieza['dano_pieza_observaciones'];
+                    $danoPieza->inspeccion_id = $request->inspeccion_id;
+                    $danoPieza->save();
+                    
+                    $datosFoto = $request->input('foto');
+                    $foto = new Foto();
+                    $foto->foto_fecha = $datosFoto['foto_fecha'];
+                    $foto->foto_descripcion = $datosFoto['foto_descripcion'];
+                    $foto->foto_ubic_archivo = "fotos/";
+                    $foto->foto_coord_lat = $datosFoto['foto_coord_lat'];
+                    $foto->foto_coord_lon = $datosFoto['foto_coord_lon'];
+                    $foto->dano_pieza_id = $danoPieza->dano_pieza_id;
+                    $foto->save();
+                    
+                    $fotoArchivo = $request->file('foto_nombre_archivo');
+                    $extensionFoto = $fotoArchivo->extension();
+                    
+                    $path = $fotoArchivo->storeAs(
+                        'fotos',
+                        "foto de inspeccion ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+                    );
+                    
+                    $foto1 = Foto::find($foto->foto_id);
+                    
+                    $foto1->foto_ubic_archivo = $path;
+                    
+                    $foto1->save();
+                    
+                    DB::commit();
+                    return redirect()->route('inspeccion.index')->with('success', 'Inspección, Daño y fotografía Registrados Exitosamente.');
+                } catch (\Throwable $th) {
+                    DB::rollBack();
+                    return redirect()->route('inspeccion.create')->with('error-msg', 'Error anexando fotografía. Inspección no almacenada');
+                }
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('inspeccion.create')->with('error-msg', 'Error. Inspección no almacenada');
+        }     
+    }
+    
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createDano($id_inspeccion)
+    {
+        try {
+            $inspeccion_id = Crypt::decrypt($id_inspeccion);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        $inspeccion = Inspeccion::find($inspeccion_id);
+
+        $responsable = Auth::user();
+        $responsable_nombres = $responsable->user_nombre.' '.$responsable->user_apellido;
+
+        $vin = Vin::find($inspeccion->vin_id);
+
+        $cliente = User::find($inspeccion->cliente_id);
+        $cliente_nombres = $cliente->user_nombre.' '.$cliente->user_apellido;
+
+        $tipoDanos = DB::table('tipo_danos')
+            ->select('tipo_dano_id', 'tipo_dano_descripcion')
+            ->pluck('tipo_dano_descripcion', 'tipo_dano_id');
+        
+        $gravedades = DB::table('gravedades')
+            ->select('gravedad_id', 'gravedad_descripcion')
+            ->pluck('gravedad_descripcion', 'gravedad_id');
+
+        $subAreas = DB::table('pieza_sub_areas')
+            ->select('pieza_sub_area_id', 'pieza_sub_area_desc')
+            ->pluck('pieza_sub_area_desc', 'pieza_sub_area_id');
+        
+        $piezaCategorias = DB::table('categoria_piezas')
+            ->select('categoria_pieza_id', 'categoria_pieza_desc')
+            ->pluck('categoria_pieza_desc', 'categoria_pieza_id');
+        
+        $piezaSubCategorias = DB::table('subcategoria_piezas')
+            ->select('subcategoria_pieza_id', 'subcategoria_pieza_desc')
+            ->pluck('subcategoria_pieza_desc', 'subcategoria_pieza_id');
+
+        $piezas = DB::table('piezas')
+            ->select('pieza_id', 'pieza_descripcion')
+            ->pluck('pieza_descripcion', 'pieza_id');
+
+        return view('inspeccion.create_dano', compact('inspeccion', 'responsable', 'responsable_nombres', 'vin', 'cliente_nombres','tipoDanos', 'gravedades', 'subAreas', 'piezaCategorias', 'piezaSubCategorias', 'piezas'));
     }
 
     /**

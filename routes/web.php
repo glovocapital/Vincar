@@ -70,8 +70,10 @@ Route::get('vin/obtener_sub_estados/{id_estado_inventario}', ['as' => 'vin.sub_e
 //Rutas mantenedor inspeccion
 Route::get('inspeccion', 'InspeccionController@index')->name('inspeccion.index');
 Route::get('inspeccion/create','InspeccionController@create')->name('inspeccion.create');
+Route::get('inspeccion/create_dano/{id_inspeccion}','InspeccionController@createDano')->name('inspeccion.create_dano');
 Route::get('inspeccion/{id}/edit','InspeccionController@edit')->name('inspeccion.edit');
 Route::post('inspeccion','InspeccionController@store')->name('inspeccion.store');
+Route::post('inspeccion/store_dano','InspeccionController@storeDano')->name('inspeccion.store_dano');
 Route::patch('inspeccion/{id}/update','InspeccionController@update')->name('inspeccion.update');
 Route::get('inspeccion/{id}/delete','InspeccionController@destroy')->name('inspeccion.destroy');
 Route::get('inspeccion/obtener_subcategorias_pieza/{id_categoria}', ['as' => 'inspeccion.subcategorias', 'uses' => 'InspeccionController@subcategorias']);
