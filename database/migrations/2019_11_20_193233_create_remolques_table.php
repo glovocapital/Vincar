@@ -20,6 +20,9 @@ class CreateRemolquesTable extends Migration
             $table->string('remolque_marca');
             $table->integer('remolque_anio');
             $table->integer('remolque_capacidad');
+            $table->date('remolque_fecha_revision');
+            $table->date('remolque_fecha_circulacion');
+            $table->string('remolque_foto_documentos')->nullable();
 
             $table->unsignedBigInteger('empresa_id');
             $table->foreign('empresa_id')->references('empresa_id')->on('empresas')->onDelete('cascade');

@@ -15,7 +15,6 @@ class PaisController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(PreventBackHistory::class);
         $this->middleware(CheckSession::class);
     }
 

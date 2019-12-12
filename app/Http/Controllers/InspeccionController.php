@@ -37,7 +37,7 @@ class InspeccionController extends Controller
 
         $responsable = Auth::user();
         $responsable_nombres = $responsable->user_nombre.' '.$responsable->user_apellido;
-        
+
         $vins = Vin::select('vin_id', 'vin_codigo')
             ->orderBy('vin_id')
             ->pluck('vin_codigo', 'vin_id')
@@ -100,7 +100,7 @@ class InspeccionController extends Controller
         $tipoDanos = DB::table('tipo_danos')
             ->select('tipo_dano_id', 'tipo_dano_descripcion')
             ->pluck('tipo_dano_descripcion', 'tipo_dano_id');
-        
+
         $gravedades = DB::table('gravedades')
             ->select('gravedad_id', 'gravedad_descripcion')
             ->pluck('gravedad_descripcion', 'gravedad_id');
@@ -108,11 +108,11 @@ class InspeccionController extends Controller
         $subAreas = DB::table('pieza_sub_areas')
             ->select('pieza_sub_area_id', 'pieza_sub_area_desc')
             ->pluck('pieza_sub_area_desc', 'pieza_sub_area_id');
-        
+
         $piezaCategorias = DB::table('categoria_piezas')
             ->select('categoria_pieza_id', 'categoria_pieza_desc')
             ->pluck('categoria_pieza_desc', 'categoria_pieza_id');
-        
+
         $piezaSubCategorias = DB::table('subcategoria_piezas')
             ->select('subcategoria_pieza_id', 'subcategoria_pieza_desc')
             ->pluck('subcategoria_pieza_desc', 'subcategoria_pieza_id');
@@ -132,20 +132,20 @@ class InspeccionController extends Controller
         } catch (DecryptException $e) {
             abort(404);
         }
-        
+
         if ($request->ajax()){
             $subcategorias = DB::table('subcategoria_piezas')
                 ->where('subcategoria_piezas.categoria_pieza_id', '=', $categoria_id)
                 ->select('subcategoria_piezas.subcategoria_pieza_desc', 'subcategoria_piezas.subcategoria_pieza_id')
                 ->orderBy('subcategoria_piezas.subcategoria_pieza_id')
                 ->pluck('subcategoria_piezas.subcategoria_pieza_desc', 'subcategoria_piezas.subcategoria_pieza_id');
-            
+
             $ids = DB::table('subcategoria_piezas')
                 ->where('subcategoria_piezas.categoria_pieza_id', '=', $categoria_id)
                 ->select('subcategoria_piezas.subcategoria_pieza_desc', 'subcategoria_piezas.subcategoria_pieza_id')
                 ->orderBy('subcategoria_piezas.subcategoria_pieza_id')
                 ->pluck('subcategoria_piezas.subcategoria_pieza_id', 'subcategoria_piezas.subcategoria_pieza_desc');
- 
+
             return response()->json([
                 'success' => true,
                 'message' => "Data de subcategorías de piezas por cada categoría disponible",
@@ -164,13 +164,13 @@ class InspeccionController extends Controller
 
         $subcategoria_id = $id_subcategoria;
 
-        if ($request->ajax()){            
+        if ($request->ajax()){
             $piezas = DB::table('piezas')
                 ->where('piezas.subcategoria_pieza_id', '=', $subcategoria_id)
                 ->select('piezas.pieza_id', 'piezas.pieza_descripcion')
                 ->orderBy('piezas.pieza_id')
                 ->pluck('piezas.pieza_descripcion', 'piezas.pieza_id');
-            
+
             $ids = DB::table('piezas')
                 ->where('piezas.subcategoria_pieza_id', '=', $subcategoria_id)
                 ->select('piezas.pieza_id', 'piezas.pieza_descripcion')
@@ -219,7 +219,7 @@ class InspeccionController extends Controller
 
                 if ($request->input('submit_2') !== null) {
                     try {
-    
+
                         $datosDanoPieza = $request->input('dano_pieza');
                         $danoPieza = new DanoPieza();
                         $danoPieza->pieza_id = $datosDanoPieza['pieza_id'];
@@ -228,9 +228,9 @@ class InspeccionController extends Controller
                         $danoPieza->pieza_sub_area_id = $datosDanoPieza['pieza_sub_area_id'];
                         $danoPieza->dano_pieza_observaciones = $datosDanoPieza['dano_pieza_observaciones'];
                         $danoPieza->inspeccion_id = $inspeccion->inspeccion_id;
-    
+
                         $danoPieza->save();
-    
+
                         DB::commit();
                         return redirect()->route('inspeccion.index')->with('success', 'Inspección y Daño Registrados Exitosamente.');
                     } catch (\Throwable $th) {
@@ -239,7 +239,7 @@ class InspeccionController extends Controller
                     }
                 } elseif ($request->input('submit_3') !== null){
                     try {
-                        
+
                         $datosDanoPieza = $request->input('dano_pieza');
                         $danoPieza = new DanoPieza();
                         $danoPieza->pieza_id = $datosDanoPieza['pieza_id'];
@@ -249,7 +249,7 @@ class InspeccionController extends Controller
                         $danoPieza->dano_pieza_observaciones = $datosDanoPieza['dano_pieza_observaciones'];
                         $danoPieza->inspeccion_id = $inspeccion->inspeccion_id;
                         $danoPieza->save();
-                        
+
                         $datosFoto = $request->input('foto');
                         $foto = new Foto();
                         $foto->foto_fecha = $datosFoto['foto_fecha'];
@@ -259,20 +259,20 @@ class InspeccionController extends Controller
                         $foto->foto_coord_lon = $datosFoto['foto_coord_lon'];
                         $foto->dano_pieza_id = $danoPieza->dano_pieza_id;
                         $foto->save();
-                        
+
                         $fotoArchivo = $request->file('foto_nombre_archivo');
                         $extensionFoto = $fotoArchivo->extension();
                         $path = $fotoArchivo->storeAs(
                             'fotos',
                             "foto de inspeccion ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
                         );
-                        
+
                         $foto1 = Foto::find($foto->foto_id);
-                        
+
                         $foto1->foto_ubic_archivo = $path;
-                        
+
                         $foto1->save();
-                        
+
                         DB::commit();
                         return redirect()->route('inspeccion.index')->with('success', 'Inspección, Daño y fotografía Registrados Exitosamente.');
                     } catch (\Throwable $th) {
@@ -289,7 +289,7 @@ class InspeccionController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->route('inspeccion.create')->with('error-msg', 'Error. Inspección no almacenada');
-        }     
+        }
     }
 
     /**

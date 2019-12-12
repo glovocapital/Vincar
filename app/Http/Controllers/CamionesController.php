@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Middleware\PreventBackHistory;
-use App\Http\Middleware\CheckSession;
+
 use Illuminate\Support\Facades\Crypt;
 use DB;
+use Illuminate\Support\Facades\Auth;
 use App\Camion;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Http\Request;
 
@@ -13,12 +14,7 @@ class CamionesController extends Controller
 {
 
 
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware(PreventBackHistory::class);
-        $this->middleware(CheckSession::class);
-    }
+
 
     /**
      * Display a listing of the resource.
@@ -27,6 +23,8 @@ class CamionesController extends Controller
      */
     public function index()
     {
+
+
         $empresa = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
         ->pluck('empresa_razon_social', 'empresa_id');
@@ -60,6 +58,13 @@ class CamionesController extends Controller
      */
     public function store(Request $request)
     {
+        $fotoCamion = $request->file('camion_foto_documento');
+        $extensionFoto = $fotoCamion->extension();
+        $path = $fotoCamion->storeAs(
+            'documentosCamion',
+            "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+        );
+
 
         try {
 
@@ -69,8 +74,10 @@ class CamionesController extends Controller
             $camion->camion_modelo = $request->camion_modelo;
             $camion->camion_marca = $request->camion_marca;
             $camion->camion_anio = $request->camion_anio;
+            $camion->camion_fecha_circulacion = $request->camion_fecha_circulacion;
+            $camion->camion_fecha_revision = $request->camion_fecha_revision;
             $camion->empresa_id = $request->empresa_id;
-
+            $camion->camion_foto_documentos = $path;
 
             $camion->save();
 
@@ -80,9 +87,27 @@ class CamionesController extends Controller
         }catch (\Exception $e) {
 
             flash('Error al crear el camión.')->error();
-           flash($e->getMessage())->error();
+            //flash($e->getMessage())->error();
             return redirect('camiones');
         }
+    }
+
+    public function download($id)
+    {
+        $camion_id =  Crypt::decrypt($id);
+        $camiones = Camion::findOrfail($camion_id);
+        $name = $camiones->camion_foto_documentos;
+        if(!is_null($name))
+        {
+            return Storage::download("$name");
+
+        }else{
+            flash('No se encontro documentación asociada al camión.')->error();
+            return redirect('camiones');
+
+        }
+
+
     }
 
     /**
@@ -126,12 +151,16 @@ class CamionesController extends Controller
         $camion_id =  Crypt::decrypt($id);
         $camion =  Camion::findOrfail($camion_id);
 
+
+
         try {
 
             $camion->camion_patente = $request->camion_patente;
             $camion->camion_modelo = $request->camion_modelo;
             $camion->camion_marca = $request->camion_marca;
             $camion->camion_anio = $request->camion_anio;
+            $camion->camion_fecha_circulacion = $request->camion_fecha_circulacion;
+            $camion->camion_fecha_revision = $request->camion_fecha_revision;
             $camion->empresa_id = $request->empresa_id;
 
 

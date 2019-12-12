@@ -28,6 +28,13 @@
                                 <label for="remolque_anio" >Año <strong>*</strong></label>
                                 {!! Form::number('remolque_anio', $remolque->remolque_anio, ['placeholder'=>'Año ', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
+
+                            <div class="form-group">
+                                <label for="remolque_fecha_circulacion" >Permiso de Circulación <strong>*</strong></label>
+                                 {!! Form::date('remolque_fecha_circulacion', $remolque->remolque_fecha_circulacion, [ 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
+
+
                         </div>
 
                         <div class="col-md-4">
@@ -38,8 +45,12 @@
 
                             <div class="form-group">
                                 <label for="empresa_id" >Empresa <strong>*</strong></label>
-
                                 {!! Form::select('empresa_id', $empresa, $remolque->empresa_id, ['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="remolque_fecha_revision" >Próxima Revisión <strong>*</strong></label>
+                                {!! Form::date('remolque_fecha_revision', $remolque->remolque_fecha_revision, [ 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
 
                         </div>

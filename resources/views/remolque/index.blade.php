@@ -19,28 +19,36 @@
                             {!! Form::open(['route'=> 'remolque.store', 'method'=>'POST']) !!}
 
                             <div class="form-group">
-                                    <label for="remolque_patente" class="col-sm-3">Patente <strong>*</strong></label>
+                                    <label for="remolque_patente" >Patente <strong>*</strong></label>
                                     {!! Form::text('remolque_patente', null, ['placeholder'=>'Patente', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
 
                             <div class="form-group">
-                                <label for="remolque_anio" class="col-sm-3">Año <strong>*</strong></label>
+                                <label for="remolque_anio" >Año <strong>*</strong></label>
                                 {!! Form::number('remolque_anio', '2020', ['min' => '1980','placeholder'=>'Año', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
+                            <div class="form-group">
+                                <label for="remolque_fecha_circulacion" >Permiso de Circulación <strong>*</strong></label>
+                                 {!! Form::date('remolque_fecha_circulacion', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
 
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                    <label for="remolque_marca" class="col-sm-3">Marca <strong>*</strong></label>
+                                    <label for="remolque_marca">Marca <strong>*</strong></label>
                                     {!! Form::text('remolque_marca', null, ['placeholder'=>'Marca', 'class'=>'form-control col-sm-9', 'required']) !!}
 
                             </div>
 
                             <div class="form-group">
-                                <label for="empresa_id" class="col-sm-3">Empresa <strong>*</strong></label>
+                                <label for="empresa_id">Empresa <strong>*</strong></label>
                                 {!! Form::select('empresa_id', $empresa, null,['placeholder'=>'Empresa','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            </div>
 
+                            <div class="form-group">
+                                <label for="remolque_fecha_revision" >Próxima Revisión <strong>*</strong></label>
+                                 {!! Form::date('remolque_fecha_revision', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
 
                         </div>
@@ -52,7 +60,7 @@
                             </div>
 
                             <div class="form-group">
-                                    <label for="remolque_capacidad" class="col-sm-3">Capacidad <strong>*</strong></label>
+                                    <label for="remolque_capacidad" >Capacidad <strong>*</strong></label>
                                     {!! Form::number('remolque_capacidad', '0', ['min' => '0','placeholder'=>'Capaciad', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
                         </div>
@@ -99,6 +107,8 @@
                                     <th>Modelo</th>
                                     <th>Año</th>
                                     <th>Capacidad</th>
+                                    <th>Fecha de circulación</th>
+                                    <th>Revisión</th>
                                     <th>Empresa</th>
                                     <th>Acción</th>
                                 </tr>
@@ -112,6 +122,8 @@
                                     <td><small>{{ $p->remolque_modelo }}</small></td>
                                     <td><small>{{ $p->remolque_anio }}</small></td>
                                     <td><small>{{ $p->remolque_capacidad }}</small></td>
+                                    <td><small>{{ $p->remolque_fecha_circulacion }}</small></td>
+                                    <td><small>{{ $p->remolque_fecha_revision }}</small></td>
 
                                     <td><small>{{ $p->belongsToEmpresa->empresa_razon_social }}</small></td>
 

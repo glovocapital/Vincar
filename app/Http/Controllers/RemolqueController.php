@@ -59,6 +59,7 @@ class RemolqueController extends Controller
      */
     public function store(Request $request)
     {
+
         try {
 
             $remolque = new Remolque();
@@ -68,6 +69,8 @@ class RemolqueController extends Controller
             $remolque->remolque_marca = $request->remolque_marca;
             $remolque->remolque_anio = $request->remolque_anio;
             $remolque->remolque_capacidad = $request->remolque_capacidad;
+            $remolque->remolque_fecha_circulacion = $request->remolque_fecha_circulacion;
+            $remolque->remolque_fecha_revision = $request->remolque_fecha_revision;
             $remolque->empresa_id = $request->empresa_id;
 
 
@@ -135,7 +138,8 @@ class RemolqueController extends Controller
             $remolque->remolque_anio = $request->remolque_anio;
             $remolque->empresa_id = $request->empresa_id;
             $remolque->remolque_capacidad = $request->remolque_capacidad;
-
+            $remolque->remolque_fecha_circulacion = $request->remolque_fecha_circulacion;
+            $remolque->remolque_fecha_revision = $request->remolque_fecha_revision;
 
             $remolque->save();
 

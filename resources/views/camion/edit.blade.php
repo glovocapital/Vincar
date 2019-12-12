@@ -28,6 +28,10 @@
                                 <label for="camion_anio" >Año <strong>*</strong></label>
                                 {!! Form::number('camion_anio', $camiones->camion_anio, ['placeholder'=>'Año ', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
+                            <div class="form-group">
+                                <label for="camion_fecha_revision" >Próxima Revisión <strong>*</strong></label>
+                                {!! Form::date('camion_fecha_revision', $camiones->camion_fecha_revision, [ 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
                         </div>
 
                         <div class="col-md-4">
@@ -41,12 +45,21 @@
                                 {!! Form::select('empresa_id', $empresa, $camiones->empresa_id, ['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                             </div>
 
+                            <div class="form-group">
+                                <label for="">Subir Foto</label>
+                                {!! Form::file('camion_foto_documento',$camiones->camion_foto_documento); !!}
+                            </div>
+
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="camion_modelo" >Modelo <strong>*</strong></label>
                                 {!! Form::text('camion_modelo', $camiones->camion_modelo, ['placeholder'=>'Modelo', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
+                            <div class="form-group">
+                                <label for="camion_fecha_circulacion" >Permiso de Circulación <strong>*</strong></label>
+                                 {!! Form::date('camion_fecha_circulacion', $camiones->camion_fecha_circulacion, [ 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
                         </div>
                     </div>

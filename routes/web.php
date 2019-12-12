@@ -109,6 +109,8 @@ Route::post('camiones','CamionesController@store')->name('camiones.store');
 Route::patch('camiones/{id}/update','CamionesController@update')->name('camiones.update');
 Route::get('camiones/{id}/delete','CamionesController@destroy')->name('camiones.destroy');
 
+Route::get('camiones/{id}/download','CamionesController@download')->name('camiones.download');
+
 //ruta mantenedor de remolques
 Route::get('remolque', 'RemolqueController@index')->name('remolque.index');
 Route::get('remolque/create','RemolqueController@create')->name('remolque.create');

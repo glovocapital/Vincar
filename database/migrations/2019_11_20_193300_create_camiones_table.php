@@ -20,6 +20,9 @@ class CreateCamionesTable extends Migration
             $table->string('camion_modelo');
             $table->string('camion_marca');
             $table->integer('camion_anio');
+            $table->date('camion_fecha_revision');
+            $table->date('camion_fecha_circulacion');
+            $table->string('camion_foto_documentos')->nullable();
 
 
             $table->unsignedBigInteger('empresa_id');
