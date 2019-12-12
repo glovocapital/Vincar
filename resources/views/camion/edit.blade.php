@@ -17,7 +17,7 @@
                     <div class="row">
 
                         <div class="col-md-4">
-                            {!! Form::open(['route'=> ['camiones.update', Crypt::encrypt($camiones->camion_id)], 'method'=>'PATCH']) !!}
+                            {!! Form::open(['route'=> ['camiones.update', Crypt::encrypt($camiones->camion_id)], 'method'=>'PATCH', 'files' => true]) !!}
 
                             <div class="form-group">
                                 <label for="camion_patente" >Patente <strong>*</strong></label>

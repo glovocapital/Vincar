@@ -69,7 +69,6 @@ class CamionesController extends Controller
         try {
 
             $camion = new Camion();
-
             $camion->camion_patente = $request->camion_patente;
             $camion->camion_modelo = $request->camion_modelo;
             $camion->camion_marca = $request->camion_marca;
@@ -151,30 +150,60 @@ class CamionesController extends Controller
         $camion_id =  Crypt::decrypt($id);
         $camion =  Camion::findOrfail($camion_id);
 
+        if(is_null($request->camion_foto_documento)){
 
+            try {
+                $camion->camion_patente = $request->camion_patente;
+                $camion->camion_modelo = $request->camion_modelo;
+                $camion->camion_marca = $request->camion_marca;
+                $camion->camion_anio = $request->camion_anio;
+                $camion->camion_fecha_circulacion = $request->camion_fecha_circulacion;
+                $camion->camion_fecha_revision = $request->camion_fecha_revision;
+                $camion->empresa_id = $request->empresa_id;
+                //$camion->camion_foto_documentos = $path;
+                $camion->save();
 
-        try {
+                flash('La camión se edito correctamente.')->success();
+                return redirect('camiones');
 
-            $camion->camion_patente = $request->camion_patente;
-            $camion->camion_modelo = $request->camion_modelo;
-            $camion->camion_marca = $request->camion_marca;
-            $camion->camion_anio = $request->camion_anio;
-            $camion->camion_fecha_circulacion = $request->camion_fecha_circulacion;
-            $camion->camion_fecha_revision = $request->camion_fecha_revision;
-            $camion->empresa_id = $request->empresa_id;
+            }catch (\Exception $e) {
 
+                flash('Error al editar el camión.')->error();
+            flash($e->getMessage())->error();
+                return redirect('camiones');
+            }
+        }else{
 
-            $camion->save();
+            $fotoCamion = $request->file('camion_foto_documento');
+            $extensionFoto = $fotoCamion->extension();
+            $path = $fotoCamion->storeAs(
+                'documentosCamion',
+                "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+            );
 
-            flash('La camión se edito correctamente.')->success();
-            return redirect('camiones');
+            try {
+                $camion->camion_patente = $request->camion_patente;
+                $camion->camion_modelo = $request->camion_modelo;
+                $camion->camion_marca = $request->camion_marca;
+                $camion->camion_anio = $request->camion_anio;
+                $camion->camion_fecha_circulacion = $request->camion_fecha_circulacion;
+                $camion->camion_fecha_revision = $request->camion_fecha_revision;
+                $camion->empresa_id = $request->empresa_id;
+                $camion->camion_foto_documentos = $path;
+                $camion->save();
 
-        }catch (\Exception $e) {
+                flash('La camión se edito correctamente.')->success();
+                return redirect('camiones');
 
-            flash('Error al editar el camión.')->error();
-           flash($e->getMessage())->error();
-            return redirect('camiones');
+            }catch (\Exception $e) {
+
+                flash('Error al editar el camión.')->error();
+            flash($e->getMessage())->error();
+                return redirect('camiones');
+            }
+
         }
+
 
 
     }
