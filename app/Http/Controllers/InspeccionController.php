@@ -303,6 +303,56 @@ class InspeccionController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createDano($id_inspeccion)
+    {
+        try {
+            $inspeccion_id = Crypt::decrypt($id_inspeccion);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        $inspeccion = Inspeccion::find($inspeccion_id);
+
+        $responsable = Auth::user();
+        $responsable_nombres = $responsable->user_nombre.' '.$responsable->user_apellido;
+
+        $vin = Vin::find($inspeccion->vin_id);
+
+        $cliente = User::find($inspeccion->cliente_id);
+        $cliente_nombres = $cliente->user_nombre.' '.$cliente->user_apellido;
+
+        $tipoDanos = DB::table('tipo_danos')
+            ->select('tipo_dano_id', 'tipo_dano_descripcion')
+            ->pluck('tipo_dano_descripcion', 'tipo_dano_id');
+        
+        $gravedades = DB::table('gravedades')
+            ->select('gravedad_id', 'gravedad_descripcion')
+            ->pluck('gravedad_descripcion', 'gravedad_id');
+
+        $subAreas = DB::table('pieza_sub_areas')
+            ->select('pieza_sub_area_id', 'pieza_sub_area_desc')
+            ->pluck('pieza_sub_area_desc', 'pieza_sub_area_id');
+        
+        $piezaCategorias = DB::table('categoria_piezas')
+            ->select('categoria_pieza_id', 'categoria_pieza_desc')
+            ->pluck('categoria_pieza_desc', 'categoria_pieza_id');
+        
+        $piezaSubCategorias = DB::table('subcategoria_piezas')
+            ->select('subcategoria_pieza_id', 'subcategoria_pieza_desc')
+            ->pluck('subcategoria_pieza_desc', 'subcategoria_pieza_id');
+
+        $piezas = DB::table('piezas')
+            ->select('pieza_id', 'pieza_descripcion')
+            ->pluck('pieza_descripcion', 'pieza_id');
+
+        return view('inspeccion.create_dano', compact('inspeccion', 'responsable', 'responsable_nombres', 'vin', 'cliente_nombres','tipoDanos', 'gravedades', 'subAreas', 'piezaCategorias', 'piezaSubCategorias', 'piezas'));
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -383,56 +433,6 @@ class InspeccionController extends Controller
         }     
     }
     
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function createDano($id_inspeccion)
-    {
-        try {
-            $inspeccion_id = Crypt::decrypt($id_inspeccion);
-        } catch (DecryptException $e) {
-            abort(404);
-        }
-
-        $inspeccion = Inspeccion::find($inspeccion_id);
-
-        $responsable = Auth::user();
-        $responsable_nombres = $responsable->user_nombre.' '.$responsable->user_apellido;
-
-        $vin = Vin::find($inspeccion->vin_id);
-
-        $cliente = User::find($inspeccion->cliente_id);
-        $cliente_nombres = $cliente->user_nombre.' '.$cliente->user_apellido;
-
-        $tipoDanos = DB::table('tipo_danos')
-            ->select('tipo_dano_id', 'tipo_dano_descripcion')
-            ->pluck('tipo_dano_descripcion', 'tipo_dano_id');
-        
-        $gravedades = DB::table('gravedades')
-            ->select('gravedad_id', 'gravedad_descripcion')
-            ->pluck('gravedad_descripcion', 'gravedad_id');
-
-        $subAreas = DB::table('pieza_sub_areas')
-            ->select('pieza_sub_area_id', 'pieza_sub_area_desc')
-            ->pluck('pieza_sub_area_desc', 'pieza_sub_area_id');
-        
-        $piezaCategorias = DB::table('categoria_piezas')
-            ->select('categoria_pieza_id', 'categoria_pieza_desc')
-            ->pluck('categoria_pieza_desc', 'categoria_pieza_id');
-        
-        $piezaSubCategorias = DB::table('subcategoria_piezas')
-            ->select('subcategoria_pieza_id', 'subcategoria_pieza_desc')
-            ->pluck('subcategoria_pieza_desc', 'subcategoria_pieza_id');
-
-        $piezas = DB::table('piezas')
-            ->select('pieza_id', 'pieza_descripcion')
-            ->pluck('pieza_descripcion', 'pieza_id');
-
-        return view('inspeccion.create_dano', compact('inspeccion', 'responsable', 'responsable_nombres', 'vin', 'cliente_nombres','tipoDanos', 'gravedades', 'subAreas', 'piezaCategorias', 'piezaSubCategorias', 'piezas'));
-    }
-
     /**
      * Display the specified resource.
      *
