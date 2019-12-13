@@ -8,6 +8,8 @@ use App\Http\Middleware\CheckSession;
 use App\Remolque;
 use Illuminate\Support\Facades\Crypt;
 use DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class RemolqueController extends Controller
 {
@@ -15,7 +17,7 @@ class RemolqueController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(PreventBackHistory::class);
+
         $this->middleware(CheckSession::class);
     }
 
@@ -59,6 +61,12 @@ class RemolqueController extends Controller
      */
     public function store(Request $request)
     {
+        $fotoRemolque = $request->file('remolque_foto_documento');
+        $extensionFoto = $fotoRemolque->extension();
+        $path = $fotoRemolque->storeAs(
+            'documentosRemolque',
+            "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+        );
 
         try {
 
@@ -72,6 +80,8 @@ class RemolqueController extends Controller
             $remolque->remolque_fecha_circulacion = $request->remolque_fecha_circulacion;
             $remolque->remolque_fecha_revision = $request->remolque_fecha_revision;
             $remolque->empresa_id = $request->empresa_id;
+            $remolque->remolque_foto_documentos = $path;
+
 
 
             $remolque->save();
@@ -85,6 +95,24 @@ class RemolqueController extends Controller
            //flash($e->getMessage())->error();
             return redirect('remolque');
         }
+    }
+
+    public function download($id)
+    {
+        $remolque_id =  Crypt::decrypt($id);
+        $remolque = Remolque::findOrfail($remolque_id);
+        $name = $remolque->remolque_foto_documentos;
+        if(!is_null($name))
+        {
+            return Storage::download("$name");
+
+        }else{
+            flash('No se encontro documentación asociada al camión.')->error();
+            return redirect('remolque');
+
+        }
+
+
     }
 
     /**
@@ -130,27 +158,65 @@ class RemolqueController extends Controller
         $remolque_id =  Crypt::decrypt($id);
         $remolque =  Remolque::findOrfail($remolque_id);
 
-        try {
+        if(is_null($request->remolque_foto_documento)){
 
-            $remolque->remolque_patente = $request->remolque_patente;
-            $remolque->remolque_modelo = $request->remolque_modelo;
-            $remolque->remolque_marca = $request->remolque_marca;
-            $remolque->remolque_anio = $request->remolque_anio;
-            $remolque->empresa_id = $request->empresa_id;
-            $remolque->remolque_capacidad = $request->remolque_capacidad;
-            $remolque->remolque_fecha_circulacion = $request->remolque_fecha_circulacion;
-            $remolque->remolque_fecha_revision = $request->remolque_fecha_revision;
+            try {
 
-            $remolque->save();
+                $remolque->remolque_patente = $request->remolque_patente;
+                $remolque->remolque_modelo = $request->remolque_modelo;
+                $remolque->remolque_marca = $request->remolque_marca;
+                $remolque->remolque_anio = $request->remolque_anio;
+                $remolque->empresa_id = $request->empresa_id;
+                $remolque->remolque_capacidad = $request->remolque_capacidad;
+                $remolque->remolque_fecha_circulacion = $request->remolque_fecha_circulacion;
+                $remolque->remolque_fecha_revision = $request->remolque_fecha_revision;
 
-            flash('Los datos del remolque se editaron correctamente.')->success();
-            return redirect('remolque');
+                $remolque->save();
 
-        }catch (\Exception $e) {
+                flash('Los datos del remolque se editaron correctamente.')->success();
+                return redirect('remolque');
 
-            flash('Error al editar el remolque.')->error();
-           //flash($e->getMessage())->error();
-            return redirect('remolque');
+            }catch (\Exception $e) {
+
+                flash('Error al editar el remolque.')->error();
+               //flash($e->getMessage())->error();
+                return redirect('remolque');
+            }
+
+        }else{
+
+            $fotoRemolque = $request->file('remolque_foto_documento');
+            $extensionFoto = $fotoRemolque->extension();
+
+            $path = $fotoRemolque->storeAs(
+                'documentosRemolque',
+                "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+            );
+
+            try {
+
+                $remolque->remolque_patente = $request->remolque_patente;
+                $remolque->remolque_modelo = $request->remolque_modelo;
+                $remolque->remolque_marca = $request->remolque_marca;
+                $remolque->remolque_anio = $request->remolque_anio;
+                $remolque->empresa_id = $request->empresa_id;
+                $remolque->remolque_capacidad = $request->remolque_capacidad;
+                $remolque->remolque_fecha_circulacion = $request->remolque_fecha_circulacion;
+                $remolque->remolque_fecha_revision = $request->remolque_fecha_revision;
+                $remolque->remolque_foto_documentos = $path;
+
+                $remolque->save();
+
+                flash('Los datos del remolque se editaron correctamente.')->success();
+                return redirect('remolque');
+
+            }catch (\Exception $e) {
+
+                flash('Error al editar el remolque.')->error();
+               //flash($e->getMessage())->error();
+                return redirect('remolque');
+            }
+
         }
 
     }

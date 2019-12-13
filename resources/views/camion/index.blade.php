@@ -45,6 +45,7 @@
                                 <label for="empresa_id" >Empresa <strong>*</strong></label>
                                 {!! Form::select('empresa_id', $empresa, null,['placeholder'=>'Empresa','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                             </div>
+
                             <div class="form-group">
                                 <label for="">Subir Foto</label>
                                 {!! Form::file('camion_foto_documento'); !!}
@@ -124,7 +125,7 @@
 
                                     <td><small>{{ $p->belongsToEmpresa->empresa_razon_social }}</small></td>
 
-                                    <td><small> <a href="{{route('camiones.download', Crypt::encrypt($p->camion_id)) }}" target=”_blank”>Documento</small> </td>
+                                    <td><small> <a href="{{route('camiones.download', Crypt::encrypt($p->camion_id)) }}">Documento</small> </td>
 
                                     <td>
                                         <small>

@@ -112,7 +112,6 @@ Route::get('camiones/{id}/edit','CamionesController@edit')->name('camiones.edit'
 Route::post('camiones','CamionesController@store')->name('camiones.store');
 Route::patch('camiones/{id}/update','CamionesController@update')->name('camiones.update');
 Route::get('camiones/{id}/delete','CamionesController@destroy')->name('camiones.destroy');
-
 Route::get('camiones/{id}/download','CamionesController@download')->name('camiones.download');
 
 //ruta mantenedor de remolques
@@ -122,6 +121,7 @@ Route::get('remolque/{id}/edit','RemolqueController@edit')->name('remolque.edit'
 Route::post('remolque','RemolqueController@store')->name('remolque.store');
 Route::patch('remolque/{id}/update','RemolqueController@update')->name('remolque.update');
 Route::get('remolque/{id}/delete','RemolqueController@destroy')->name('remolque.destroy');
+Route::get('remolque/{id}/download','RemolqueController@download')->name('remolque.download');
 
 //ruta mantenedor de productos
 Route::get('productos', 'ProductoController@index')->name('productos.index');

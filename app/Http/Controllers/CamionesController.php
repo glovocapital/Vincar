@@ -7,7 +7,6 @@ use DB;
 use Illuminate\Support\Facades\Auth;
 use App\Camion;
 use Illuminate\Support\Facades\Storage;
-
 use Illuminate\Http\Request;
 
 class CamionesController extends Controller

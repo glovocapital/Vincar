@@ -17,7 +17,7 @@
                     <div class="row">
 
                         <div class="col-md-4">
-                            {!! Form::open(['route'=> ['remolque.update', Crypt::encrypt($remolque->remolque_id)], 'method'=>'PATCH']) !!}
+                            {!! Form::open(['route'=> ['remolque.update', Crypt::encrypt($remolque->remolque_id)], 'method'=>'PATCH', 'files' => true]) !!}
 
                             <div class="form-group">
                                 <label for="remolque_patente" >Patente <strong>*</strong></label>
@@ -64,6 +64,10 @@
                             <div class="form-group">
                                 <label for="remolque_modelo" >Capacidad <strong>*</strong></label>
                                 {!! Form::number('remolque_capacidad', $remolque->remolque_capacidad, ['min' => '0','placeholder'=>'Modelo', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
+                            <div class="form-group">
+                                <label for="">Subir Foto</label>
+                                {!! Form::file('remolque_foto_documento',$remolque->remolque_foto_documento); !!}
                             </div>
 
 
