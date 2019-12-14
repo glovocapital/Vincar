@@ -23,5 +23,9 @@ class RolesSeeder extends Seeder
             'rol_desc' => 'Operador',
         ]);
 
+        DB::table('roles')->insert([
+            'rol_desc' => 'Conductor',
+        ]);
+
     }
 }

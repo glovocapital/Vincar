@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Crypt;
+use App\Http\Middleware\CheckSession;
 use DB;
 use Illuminate\Support\Facades\Auth;
 use App\Camion;
@@ -11,6 +12,13 @@ use Illuminate\Http\Request;
 
 class CamionesController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+
+        $this->middleware(CheckSession::class);
+    }
 
 
 

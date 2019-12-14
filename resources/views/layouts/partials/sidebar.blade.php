@@ -64,7 +64,7 @@
                 </a>
               </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+                <a href="{{ route('conductores.index') }}" class="nav-link">
                 <i class="far nav-icon"></i>
                 <p>Conductores</p>
               </a>

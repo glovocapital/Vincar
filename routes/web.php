@@ -139,6 +139,15 @@ Route::post('servicios','ServicioController@store')->name('servicios.store');
 Route::patch('servicios/{id}/update','ServicioController@update')->name('servicios.update');
 Route::get('servicios/{id}/delete','ServicioController@destroy')->name('servicios.destroy');
 
+// ruta mantenedor conductores
+Route::get('conductores', 'ConductorController@index')->name('conductores.index');
+Route::get('conductores/create','ConductorController@create')->name('conductores.create');
+Route::get('conductores/{id}/edit','ConductorController@edit')->name('conductores.edit');
+Route::post('conductores','ConductorController@store')->name('conductores.store');
+Route::patch('conductores/{id}/update','ConductorController@update')->name('conductores.update');
+Route::get('conductores/{id}/delete','ConductorController@destroy')->name('conductores.destroy');
+Route::get('conductores/{id}/download','ConductorController@download')->name('conductores.download');
+
 
 
 });

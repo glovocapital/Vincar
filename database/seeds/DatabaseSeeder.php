@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MarcaSeeder::class);
         $this->call(DivisaSeeder::class);
         $this->call(ValorAsociadoSeeder::class);
+        $this->call(TipoLicenciaSeeder::class);
 
         // $this->call(UsersTableSeeder::class);
     }

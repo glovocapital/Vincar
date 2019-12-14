@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Middleware\PreventBackHistory;
+
 use App\Http\Middleware\CheckSession;
 use App\Remolque;
 use Illuminate\Support\Facades\Crypt;
@@ -50,7 +50,7 @@ class RemolqueController extends Controller
             ->pluck('empresa_razon_social', 'empresa_id');
 
 
-        return view('remolque.index', compact('remolque', 'camion'));
+        return view('remolque.index', compact('remolque', 'empresa'));
     }
 
     /**
