@@ -40,7 +40,6 @@
                                 <label for="conductor_fecha_vencimiento" >Fecha de vencimiento <strong>*</strong></label>
                                  {!! Form::date('conductor_fecha_vencimiento', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
-
                         </div>
                     </div>
 
@@ -68,10 +67,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                    <!--   <div class="col-lg-12 pb-3 pt-2">
-                                <a href="{{  route('camiones.create') }}" class = 'btn btn-primary'>Crear Camión</a>
-                            </div>
-                    -->
+
                     <div class="table-responsive">
                         <table class="table table-hover" id="dataTableCamion" width="100%" cellspacing="0">
                             <thead>

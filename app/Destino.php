@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Destino extends Model
@@ -16,6 +17,9 @@ class Destino extends Model
      * @var array
      */
     protected $fillable = [
-        'destino_nombre'
+        'destino_nombre',
+        'destino_codigo'
     ];
+
+
 }

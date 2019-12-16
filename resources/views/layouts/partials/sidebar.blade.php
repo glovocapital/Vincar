@@ -89,11 +89,17 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+                <a href="{{ route('marcas.index') }}" class="nav-link">
                 <i class="far nav-icon"></i>
-                <p>Marca / Modelo</p>
+                <p>Marcas </p>
               </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('modelos.index') }}" class="nav-link">
+                  <i class="far nav-icon"></i>
+                  <p>Modelo</p>
+                </a>
+              </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('proveedor.index') }}">
               <i class="far nav-icon"></i>

@@ -148,6 +148,21 @@ Route::patch('conductores/{id}/update','ConductorController@update')->name('cond
 Route::get('conductores/{id}/delete','ConductorController@destroy')->name('conductores.destroy');
 Route::get('conductores/{id}/download','ConductorController@download')->name('conductores.download');
 
+// ruta mantenedor marcas
+Route::get('marcas', 'MarcaController@index')->name('marcas.index');
+Route::get('marcas/create','MarcaController@create')->name('marcas.create');
+Route::get('marcas/{id}/edit','MarcaController@edit')->name('marcas.edit');
+Route::post('marcas','MarcaController@store')->name('marcas.store');
+Route::patch('marcas/{id}/update','MarcaController@update')->name('marcas.update');
+Route::get('marcas/{id}/delete','MarcaController@destroy')->name('marcas.destroy');
+
+// ruta mantenedor modelos
+Route::get('modelos', 'ModeloController@index')->name('modelos.index');
+Route::get('modelos/create','ModeloController@create')->name('modelos.create');
+Route::get('modelos/{id}/edit','ModeloController@edit')->name('modelos.edit');
+Route::post('modelos','ModeloController@store')->name('modelos.store');
+Route::patch('modelos/{id}/update','ModeloController@update')->name('modelos.update');
+Route::get('modelos/{id}/delete','ModeloController@destroy')->name('modelos.destroy');
 
 
 });
