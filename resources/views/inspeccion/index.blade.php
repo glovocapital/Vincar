@@ -63,7 +63,12 @@
                                     <td><small>{{ $dano->oneTipoDano->tipo_dano_descripcion }}</small></td>
                                     <td><small>{{ $dano->oneGravedad() }}</small></td>
                                     <td><small>{{ $dano->oneSubArea() }}</small></td>
-                                    <td><small>{{ $dano->oneFoto->foto_ubic_archivo }}</small></td>
+                                    <td><small>
+                                            <div class="thumbnail">
+                                                <img src="{{ $dano->oneFoto->url_path }}" alt="{{ $dano->oneFoto->foto_ubic_archivo }}">
+                                            </div>
+                                        </small>
+                                    </td>
                                     <td>
                                         <small>
                                             <a href="{{ route('inspeccion.create_dano', Crypt::encrypt($dano->dano_pieza_id)) }}" class="btn-dano"  title="Añadir Daño"><i class="far fa-plus-square"></i></a>

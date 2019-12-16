@@ -8,6 +8,7 @@ use App\Http\Middleware\CheckSession;
 use App\Inspeccion;
 use App\DanoPieza;
 use App\Foto;
+use App\Thumbnail;
 use App\Empresa;
 use App\Http\Requests\DanoPiezaCreateRequest;
 use App\Http\Requests\InspeccionCreateRequest;
@@ -278,6 +279,26 @@ class InspeccionController extends Controller
                             'fotos',
                             "foto de inspeccion ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
                         );
+
+                        //Creamos una instancia de la libreria instalada   
+                        $image = \Image::make($fotoArchivo);
+
+                        //Ruta donde queremos guardar las imagenes
+                        $path2 = storage_path().'/app/thumbnails/';
+                        
+                        // Cambiar de tamaño
+                        $image->resize(240,200);
+                        
+                        // Guardar
+                        $image->save($path2.'thumb_'.$fotoArchivo->getClientOriginalName());
+                        
+                        //Guardamos nombre y nombreOriginal en la BD
+                        $thumbnail = new Thumbnail();
+                        $thumbnail->thumbnail_nombre = $datosFoto['foto_descripcion'];
+                        $thumbnail->thumbnail_imagen = $fotoArchivo->getClientOriginalName();
+                        $thumbnail->foto_id = $foto->foto_id;
+                        
+                        $thumbnail->save();
 
                         $foto1 = Foto::find($foto->foto_id);
 

@@ -81,6 +81,9 @@ Route::get('inspeccion/{id}/delete_dano','InspeccionController@destroyDano')->na
 Route::get('inspeccion/obtener_subcategorias_pieza/{id_categoria}', ['as' => 'inspeccion.subcategorias', 'uses' => 'InspeccionController@subcategorias']);
 Route::get('inspeccion/obtener_piezas/{id_subcategoria}', ['as' => 'inspeccion.piezas', 'uses' => 'InspeccionController@piezas']);
 
+//Manejo de Thumbnail de imágenes
+Route::resource('thumbnail', 'ThumbnailController');
+
 //Rutas mantenedor país
 Route::get('pais', 'PaisController@index')->name('pais.index');
 Route::get('pais/create','PaisController@create')->name('pais.create');
