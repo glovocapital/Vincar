@@ -26,7 +26,7 @@ class AddCodigoToMarcaTable extends Migration
     public function down()
     {
         Schema::table('marcas', function (Blueprint $table) {
-            Schema::dropIfExists('marcas');
+            $table->dropColumn('marca_codigo');
         });
     }
 }
