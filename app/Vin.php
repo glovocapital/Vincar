@@ -16,7 +16,8 @@ class Vin extends Model
      * @var array
      */
     protected $fillable = [
-        'vin_codigo', 'vin_patente', 'vin_modelo', 'vin_marca', 'vin_color', 'vin_motor', 'vin_segmento', 'vin_fec_ingreso', 'user_id','vin_estado_inventario_id', 'vin_sub_estado_inventario_id'
+        'vin_codigo', 'vin_patente', 'vin_modelo', 'vin_marca', 'vin_color', 'vin_motor', 'vin_segmento', 
+        'vin_fec_ingreso', 'user_id', 'vin_estado_inventario_id', 'vin_sub_estado_inventario_id'
     ];
 
     public function oneUser(){

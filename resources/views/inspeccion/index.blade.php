@@ -17,6 +17,9 @@
                 <div class="row">
                     <a href="{{ route('inspeccion.create') }}" class = 'btn btn-primary'>Nueva Inspección</a>
                 </div>
+
+                <br />
+                
                 <div class="table-responsive">
                     <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
                         <thead>

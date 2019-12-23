@@ -85,6 +85,16 @@ Route::get('inspeccion/{id}/delete_dano','InspeccionController@destroyDano')->na
 Route::get('inspeccion/obtener_subcategorias_pieza/{id_categoria}', ['as' => 'inspeccion.subcategorias', 'uses' => 'InspeccionController@subcategorias']);
 Route::get('inspeccion/obtener_piezas/{id_subcategoria}', ['as' => 'inspeccion.piezas', 'uses' => 'InspeccionController@piezas']);
 
+//Rutas mantenedor patios
+Route::get('patio', 'PatioController@index')->name('patio.index');
+Route::get('patio/create','PatioController@create')->name('patio.create');
+Route::get('patio/{id}/edit','PatioController@edit')->name('patio.edit');
+Route::post('patio','PatioController@store')->name('patio.store');
+Route::patch('patio/{id}/update','PatioController@update')->name('patio.update');
+Route::get('patio/{id}/delete','PatioController@destroy')->name('patio.destroy');
+Route::get('patio/cargar_patios','PatioController@cargarPatios')->name('patio.cargar_patios');
+Route::post('patio/store_patios','PatioController@storePatios')->name('patio.store_patios');
+
 //Manejo de Thumbnail de imágenes
 Route::resource('thumbnail', 'ThumbnailController');
 

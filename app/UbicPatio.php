@@ -14,7 +14,7 @@ class UbicPatio extends Model
      * @var array
      */
     protected $fillable = [
-        'ubic_patio_bloque', 'ubic_patio_fila', 'ubic_patio_columna', 'ubic_patio_ocupada'
+        'ubic_patio_fila', 'ubic_patio_columna', 'ubic_patio_latitud', 'ubic_patio_longitud', 'ubic_patio_ocupada', 'bloque_id'
     ];
 
     public function marcarOcupada(){
@@ -23,8 +23,8 @@ class UbicPatio extends Model
         $this->save();
     }
 
-    public function onePatio(){
-        return $this->hasOne(Patio::class, 'patio_id', 'patio_id');
+    public function oneBloque(){
+        return $this->hasOne(Bloque::class, 'bloque_id', 'bloque_id');
     }
     
     public function oneVin(){
