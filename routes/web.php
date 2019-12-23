@@ -66,6 +66,10 @@ Route::patch('vin/{id}/update','VinController@update')->name('vin.update');
 Route::get('vin/{id}/delete','VinController@destroy')->name('vin.destroy');
 Route::get('vin/obtener_usuarios_empresa/{id_empresa}', ['as' => 'vin.clientes', 'uses' => 'VinController@empresa']);
 Route::get('vin/obtener_sub_estados/{id_estado_inventario}', ['as' => 'vin.sub_estados', 'uses' => 'VinController@estadoInventario']);
+Route::get('vin/cargamasiva','VinController@cargamasiva')->name('vin.cargamasiva');
+Route::post('vin/loadexcel','VinController@loadexcel')->name('vin.loadexcel');
+
+
 
 //Rutas mantenedor inspeccion
 Route::get('inspeccion', 'InspeccionController@index')->name('inspeccion.index');

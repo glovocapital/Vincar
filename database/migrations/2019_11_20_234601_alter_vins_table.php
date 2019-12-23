@@ -14,7 +14,7 @@ class AlterVinsTable extends Migration
     public function up()
     {
         Schema::table('vins', function (Blueprint $table) {
-            $table->unsignedBigInteger('vin_estado_inventario_id');
+            $table->unsignedBigInteger('vin_estado_inventario_id')->nullable();
             $table->foreign('vin_estado_inventario_id')->references('vin_estado_inventario_id')->on('vin_estado_inventarios');
             // $table->string('vin_sub_estado_inventario_id')->nullable();
             $table->unsignedBigInteger('vin_sub_estado_inventario_id')->nullable();

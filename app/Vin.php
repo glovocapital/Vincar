@@ -8,6 +8,7 @@ use DB;
 class Vin extends Model
 {
     protected $primaryKey = 'vin_id';
+    protected $guarded = [];
 
     /**
      * The attributes that are mass assignable.
@@ -27,7 +28,7 @@ class Vin extends Model
         $estadoInventario = DB::table('vin_estado_inventarios')
             ->where('vin_estado_inventario_id', $this->vin_estado_inventario_id)
             ->first();
-            
+
         return $estadoInventario->vin_estado_inventario_desc;
     }
 
@@ -36,7 +37,7 @@ class Vin extends Model
         $subEstadoInventario = DB::table('vin_sub_estado_inventarios')
             ->where('vin_sub_estado_inventario_id', $this->vin_sub_estado_inventario_id)
             ->first();
-            
+
         return $subEstadoInventario->vin_sub_estado_inventario_desc;
     }
 }
