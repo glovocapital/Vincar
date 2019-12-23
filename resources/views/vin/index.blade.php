@@ -134,6 +134,7 @@
                 <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
                     <thead>
 	                    <tr>
+                            <th>Vin</th>
 	                        <th>Patente</th>
                             <th>Modelo</th>
                             <th>Marca</th>
@@ -143,7 +144,7 @@
                             <th>Fecha de Ingreso</th>
                             <th>Cliente</th>
                             <th>Estado Inventario</th>
-                            <th>Sub Estado Inventario </th>
+                          <!--  <th>Sub Estado Inventario </th>  -->
 	                        <th>Acci&oacute;n</th>
 
 	                    </tr>
@@ -152,6 +153,7 @@
                     @foreach($vins as $vin)
 
                         <tr>
+                            <td><small>{{ $vin->vin_codigo }}</small></td>
                             <td><small>{{ $vin->vin_patente }}</small></td>
                             <td><small>{{ $vin->vin_modelo }}</small></td>
                             <td><small>{{ $vin->vin_marca }}</small></td>
@@ -162,10 +164,11 @@
                             <td><small>{{ $vin->oneUser->user_nombre.' '.$vin->oneUser->user_apellido }}</small></td>
                             <td><small>{{ $vin->oneVinEstadoInventario() }}</small></td>
                             @if($vin->vin_sub_estado_inventario_id != null)
-                            <td><small>{{ $vin->oneVinSubEstadoInventario() }}</small></td>
+                           <!-- <td><small>{{ $vin->oneVinSubEstadoInventario() }}</small></td>
                             @else
                             <td><small></small></td>
                             @endif
+                           -->
 
                             <td>
                                 <small>

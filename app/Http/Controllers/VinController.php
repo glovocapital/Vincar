@@ -181,7 +181,6 @@ class VinController extends Controller
         try {
 
             $vin = new Vin();
-
             $vin->vin_codigo = $request->vin_codigo;
             $vin->vin_patente = $request->vin_patente;
             $vin->vin_marca = $request->vin_marca;
