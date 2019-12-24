@@ -19,7 +19,7 @@
                 </div>
 
                 <br />
-                
+
                 <div class="table-responsive">
                     <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
                         <thead>
@@ -30,7 +30,7 @@
                                 <th>Longitud</th>
                                 <th>Dirección</th>
                                 <th>Región</th>
-                                <th>Provincia</th>
+                                <!-- <th>Provincia</th> -->
                                 <th>Comuna</th>
                                 <th>Acci&oacute;n</th>
 
@@ -46,7 +46,7 @@
                                 <td><small>{{ $patio->patio_coord_lon }}</small></td>
                                 <td><small>{{ $patio->patio_direccion }}</small></td>
                                 <td><small>{{ $patio->oneRegion() }}</small></td>
-                                <td><small>{{ $patio->oneProvincia() }}</small></td>
+                                <!-- <td><small>{{ $patio->oneProvincia() }}</small></td> -->
                                 <td><small>{{ $patio->oneComuna() }}</small></td>
                                 <td>
                                     <small>

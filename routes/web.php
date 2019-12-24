@@ -94,6 +94,7 @@ Route::patch('patio/{id}/update','PatioController@update')->name('patio.update')
 Route::get('patio/{id}/delete','PatioController@destroy')->name('patio.destroy');
 Route::get('patio/cargar_patios','PatioController@cargarPatios')->name('patio.cargar_patios');
 Route::post('patio/store_patios','PatioController@storePatios')->name('patio.store_patios');
+Route::get('patio/obtener_comunas/{id_region}', ['as' => 'patio.comunas', 'uses' => 'PatioController@comunas']);
 
 //Manejo de Thumbnail de imágenes
 Route::resource('thumbnail', 'ThumbnailController');

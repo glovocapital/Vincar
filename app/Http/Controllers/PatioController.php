@@ -7,6 +7,7 @@ use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\CheckSession;
 use App\Imports\UbicPatiosImport;
 use App\Patio;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PatioController extends Controller
@@ -28,7 +29,25 @@ class PatioController extends Controller
     {
         $patios = Patio::all();
 
-        return view('patio.index', compact('patios'));
+        $regiones = DB::table('regiones')
+            ->select('region_id', 'region_nombre')
+            ->orderBy('region_id')
+            ->pluck('region_nombre', 'region_id')
+            ->all();
+
+        // $provincias = DB::table('provincias')
+        //     ->select('provincia_id', 'provincia_nombre')
+        //     ->orderBy('provincia_id')
+        //     ->pluck('provincia_nombre', 'provincia_id')
+        //     ->all();
+
+        // $comunas = DB::table('comunas')
+        //     ->select('comuna_id', 'comuna_nombre')
+        //     ->orderBy('comuna_id')
+        //     ->pluck('comuna_nombre', 'comuna_id')
+        //     ->all();
+
+        return view('patio.index', compact('patios', 'regiones'/*, 'provincias', 'comunas'*/));
     }
 
     /**
@@ -38,7 +57,45 @@ class PatioController extends Controller
      */
     public function create()
     {
-        
+        $regiones = DB::table('regiones')
+            ->select('region_id', 'region_nombre')
+            ->orderBy('region_id')
+            ->pluck('region_nombre', 'region_id')
+            ->all();
+
+
+        return view('patio.create', compact('regiones'));
+    }
+
+    public function comunas(Request $request, $id_region){
+	    try {
+            $region_id = Crypt::decrypt($id_region);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        if ($request->ajax()){
+            $comunas = DB::table('comunas')
+                ->where('comunas.deleted_at', '=', null)
+                ->where('comunas.region_id', '=', $region_id)
+                ->select('comunas.comuna_nombre', 'comunas.comuna_id')
+                ->orderBy('comunas.comuna_id')
+                ->pluck('comunas.comuna_id', 'comunas.comuna_nombre');
+
+            $ids = DB::table('comunas')
+                ->where('comunas.deleted_at', '=', null)
+                ->where('comunas.region_id', '=', $region_id)
+                ->select('comunas.comuna_nombre', 'comunas.comuna_id')
+                ->orderBy('comunas.comuna_id')
+                ->pluck('comunas.comuna_nombre', 'comunas.comuna_id');
+
+            return response()->json([
+                'success' => true,
+                'message' => "Data de usuarios por empresa disponible",
+                'ids' => $ids,
+                'comunas' => $comunas,
+            ]);
+        }
     }
 
     /**

@@ -15,7 +15,7 @@ class Patio extends Model
      */
     protected $fillable = [
         'patio_nombre', 'patio_bloques', 'patio_coord_lat', 'patio_coord_lon', 'patio_direccion', 
-        'region_id', 'provincia_id', 'comuna_id'
+        'region_id', /*'provincia_id',*/ 'comuna_id'
     ];
     
     public function manyBloques(){
@@ -30,18 +30,18 @@ class Patio extends Model
         return $region->region_nombre;
     }
 
-    public function oneProvincia(){
-        $provincia = DB::table('provincias')
-        ->where('region_id', $this->region_id)
-        ->where('provincia_id', $this->provincia_id)
-        ->first();
+    // public function oneProvincia(){
+    //     $provincia = DB::table('provincias')
+    //     ->where('region_id', $this->region_id)
+    //     ->where('provincia_id', $this->provincia_id)
+    //     ->first();
 
-        return $provincia->provincia_nombre;
-    }
+    //     return $provincia->provincia_nombre;
+    // }
 
     public function oneComuna(){
         $comuna = DB::table('comunas')
-            ->where('provincia_id', $this->provincia_id)
+            ->where('region_id', $this->region_id)
             ->where('comuna_id', $this->comuna_id)
             ->first();
 
