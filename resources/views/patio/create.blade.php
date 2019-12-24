@@ -30,6 +30,10 @@
                                 {!! Form::text('patio_bloques', null, ['class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
 
+                        <br />
+                        <br />
+                        <br />
+
                         <div class="form-group">
                             <label for="" >Coordenadas Geográficas <strong>*</strong></label>
                         </div>
@@ -64,6 +68,8 @@
                             <label for="comuna_id" >Seleccionar Comuna <strong>*</strong></label>
                             {!! Form::select('comuna_id', ['placeholder' => 'Seleccionar Comuna'], null, ['id' => 'comuna_id', 'class' => 'form-control']) !!}
                         </div>
+
+                        <br />
 
                         <div class="form-group">
                             <label for="patio_direccion" >Dirección <strong>*</strong></label>

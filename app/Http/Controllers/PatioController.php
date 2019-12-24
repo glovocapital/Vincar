@@ -7,6 +7,7 @@ use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\CheckSession;
 use App\Imports\UbicPatiosImport;
 use App\Patio;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -76,18 +77,16 @@ class PatioController extends Controller
 
         if ($request->ajax()){
             $comunas = DB::table('comunas')
-                ->where('comunas.deleted_at', '=', null)
-                ->where('comunas.region_id', '=', $region_id)
-                ->select('comunas.comuna_nombre', 'comunas.comuna_id')
-                ->orderBy('comunas.comuna_id')
-                ->pluck('comunas.comuna_id', 'comunas.comuna_nombre');
-
-            $ids = DB::table('comunas')
-                ->where('comunas.deleted_at', '=', null)
                 ->where('comunas.region_id', '=', $region_id)
                 ->select('comunas.comuna_nombre', 'comunas.comuna_id')
                 ->orderBy('comunas.comuna_id')
                 ->pluck('comunas.comuna_nombre', 'comunas.comuna_id');
+
+            $ids = DB::table('comunas')
+                ->where('comunas.region_id', '=', $region_id)
+                ->select('comunas.comuna_nombre', 'comunas.comuna_id')
+                ->orderBy('comunas.comuna_id')
+                ->pluck('comunas.comuna_id', 'comunas.comuna_nombre');
 
             return response()->json([
                 'success' => true,
