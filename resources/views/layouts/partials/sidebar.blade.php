@@ -119,7 +119,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{ route('patio.index') }}" class="nav-link">
                 <i class="far nav-icon"></i>
                 <p>Patio y Posiciones</p>
               </a>

@@ -17,7 +17,7 @@
                     <div class="col-md-6">
                         {!! Form::open(['route'=> 'patio.store', 'method'=>'POST', 'files' => true]) !!}
                         <div class="form-group">
-                            <label for="" >Datos Básicos <strong>*</strong></label>
+                            <label for="" >Datos Básicos</label>
                         </div>
 
                         <div class="form-group">
@@ -35,7 +35,7 @@
                         <br />
 
                         <div class="form-group">
-                            <label for="" >Coordenadas Geográficas <strong>*</strong></label>
+                            <label for="" >Coordenadas Geográficas</label>
                         </div>
 
                         <div class="form-group">
@@ -51,7 +51,7 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="" >Datos de Ubicación <strong>*</strong></label>
+                            <label for="" >Datos de Ubicación</label>
                         </div>
 
                         <div class="form-group">
