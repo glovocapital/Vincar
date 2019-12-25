@@ -9,7 +9,7 @@ use App\Vin;
 use GuzzleHttp\Psr7\Request;
 use Maatwebsite\Excel\Concerns\Importable;
 use DB;
-
+use Illuminate\Support\Facades\Auth;
 
 class VinsCollectionImport implements ToCollection, WithHeadingRow
 {
@@ -42,7 +42,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                         'vin_fec_ingreso' => $row['fechadeingreso'],
                         'vin_estado_inventario_id' => 1,
                         'vin_sub_estado_inventario_id' => $row['subestadodeinventario'],
-                        'user_id' => $row['usuario'],
+                        'user_id' => Auth::id(),
                     ]);
                 } elseif( trim($row['estadodeinventario']) == 'Arribado' ||
                           trim($row['estadodeinventario']) == 'arribado' ||
@@ -59,7 +59,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                         'vin_fec_ingreso' => $row['fechadeingreso'],
                         'vin_estado_inventario_id' => 2,
                         'vin_sub_estado_inventario_id' => $row['subestadodeinventario'],
-                        'user_id' => $row['usuario'],
+                        'user_id' => Auth::id(),
                     ]);
                 } elseif( trim($row['estadodeinventario']) == 'Tránsito' ||
                           trim($row['estadodeinventario']) == 'Transito' ||
@@ -78,7 +78,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                         'vin_fec_ingreso' => $row['fechadeingreso'],
                         'vin_estado_inventario_id' => 3,
                         'vin_sub_estado_inventario_id' => $row['subestadodeinventario'],
-                        'user_id' => $row['usuario'],
+                        'user_id' => Auth::id(),
                     ]);
                 } elseif( trim($row['estadodeinventario']) == 'Disponible para la venta' ||
                           trim($row['estadodeinventario']) == 'Disponible Para La Venta' ||
@@ -95,7 +95,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                         'vin_fec_ingreso' => $row['fechadeingreso'],
                         'vin_estado_inventario_id' => 4,
                         'vin_sub_estado_inventario_id' => $row['subestadodeinventario'],
-                        'user_id' => $row['usuario'],
+                        'user_id' => Auth::id(),
                     ]);
                 } elseif( trim($row['estadodeinventario']) == 'No disponible para la venta' ||
                 trim($row['estadodeinventario']) == ' No Disponible Para La Venta' ||
@@ -112,7 +112,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                         'vin_fec_ingreso' => $row['fechadeingreso'],
                         'vin_estado_inventario_id' => 5,
                         'vin_sub_estado_inventario_id' => $row['subestadodeinventario'],
-                        'user_id' => $row['usuario'],
+                        'user_id' => Auth::id(),
                     ]);
                 } elseif( trim($row['estadodeinventario']) == 'Suprimido' ||
                           trim($row['estadodeinventario']) == 'SUPRIMIDO' ||
@@ -128,7 +128,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                         'vin_fec_ingreso' => $row['fechadeingreso'],
                         'vin_estado_inventario_id' => 6,
                         'vin_sub_estado_inventario_id' => $row['subestadodeinventario'],
-                        'user_id' => $row['usuario'],
+                        'user_id' => Auth::id(),
                     ]);
                 } elseif( trim($row['estadodeinventario']) == 'Entregado' ||
                           trim($row['estadodeinventario']) == 'entregado' ||
@@ -144,7 +144,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                         'vin_fec_ingreso' => $row['fechadeingreso'],
                         'vin_estado_inventario_id' => 7,
                         'vin_sub_estado_inventario_id' => $row['subestadodeinventario'],
-                        'user_id' => $row['usuario'],
+                        'user_id' => Auth::id(),
                     ]);
                 }
             }
