@@ -218,9 +218,21 @@ class PatioController extends Controller
      * @param  \App\Patio  $patio
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Patio $patio)
+    public function destroy($id)
     {
-        //
+        $patio_id =  Crypt::decrypt($id);
+
+        try {
+            $patio = Patio::findOrfail($patio_id)->delete();
+
+            flash('Los datos del Patio han sido eliminados satisfactoriamente.')->success();
+            return redirect('patio');
+        }catch (\Exception $e) {
+
+            flash('Error al intentar eliminar los datos del Patio.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('patio');
+        }
     }
 
     /**
