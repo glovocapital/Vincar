@@ -1,13 +1,12 @@
 @extends('layouts.app')
-@section('title','Patio index')
+@section('title','Modificar Patio')
 @section('content')
-
 <!-- Registrar datos básicos de un patio -->
 <div class="col-lg-12">
     <div class="ibox float-e-margins">
         <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">Registrar Patio</h3>
+                <h3 class="card-title">Editar Patio</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -16,19 +15,19 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        {!! Form::open(['route'=> 'patio.store', 'method'=>'POST', 'files' => true]) !!}
+                        {!! Form::open(['route'=> ['patio.update', Crypt::encrypt($patio->patio_id)], 'method'=>'PATCH', 'files' => true]) !!}
                         <div class="form-group">
                             <label for="" >Datos Básicos</label>
                         </div>
 
                         <div class="form-group">
                             <label for="patio_nombre" >Nombre del Patio <strong>*</strong></label>
-                            {!! Form::text('patio_nombre', null, ['class'=>'form-control col-sm-9', 'required']) !!}
+                            {!! Form::text('patio_nombre', $patio->patio_nombre, ['class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
 
                         <div class="form-group">
                                 <label for="patio_bloques" >Cantidad de Bloques <strong>*</strong></label>
-                                {!! Form::text('patio_bloques', null, ['class'=>'form-control col-sm-9', 'required']) !!}
+                                {!! Form::text('patio_bloques', $patio->patio_bloques, ['class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
 
                         <br />
@@ -41,12 +40,12 @@
 
                         <div class="form-group">
                             <label for="patio_coord_lat" >Latitud <strong>*</strong></label>
-                            {!! Form::text('patio_coord_lat', null, ['class'=>'form-control col-sm-9', 'required']) !!}
+                            {!! Form::text('patio_coord_lat', $patio->patio_coord_lat, ['class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
 
                         <div class="form-group">
                                 <label for="patio_coord_lon" >Longitud <strong>*</strong></label>
-                                {!! Form::text('patio_coord_lon', null, ['class'=>'form-control col-sm-9', 'required']) !!}
+                                {!! Form::text('patio_coord_lon', $patio->patio_coord_lon, ['class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
                     </div>
 
@@ -58,100 +57,46 @@
                         <div class="form-group">
                             <label for="region_id" >Region <strong>*</strong></label>
                             <select name="region_id" id="region" class="form-control select-region" required>
-                                <option value="" selected>Seleccione Región</option>
+                            <option value="" selected>Seleccionar Región</option>
                             @foreach($regiones as $k => $v)
-                                <option value="{!! Crypt::encrypt($k) !!}">{{$v}}</option>
+                                @if($k == $patio->region_id)
+                                    <option value="{{Crypt::encrypt($k)}}" selected>{{$v}}</option>
+                                @else
+                                    <option value="{!! Crypt::encrypt($k) !!}">{{$v}}</option>
+                                @endif
                             @endforeach
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="comuna_id" >Seleccionar Comuna <strong>*</strong></label>
-                            {!! Form::select('comuna_id', ['placeholder' => 'Seleccionar Comuna'], null, ['id' => 'comuna_id', 'class' => 'form-control']) !!}
+                            <select name="comuna_id" id="comuna_id" class="form-control" required>
+                            <option value="" selected>Seleccionar Comuna</option>
+                            @foreach($comunas as $k => $v)
+                                @if($k == $patio->comuna_id)
+                                    <option value="{{$k}}" selected>{{$v}}</option>
+                                @else
+                                    <option value="{{$k}}">{{$v}}</option>
+                                @endif
+                            @endforeach
+                            </select>
                         </div>
 
                         <br />
 
                         <div class="form-group">
                             <label for="patio_direccion" >Dirección <strong>*</strong></label>
-                            {!! Form::textarea('patio_direccion', null,['class'=>'form-control col-sm-9', 'required']) !!}
+                            {!! Form::textarea('patio_direccion', $patio->patio_direccion,['class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
                     </div>
                 </div>
                 <div class="text-right pb-5" id="boton_patio">
-                    {!! Form::submit('Registrar Patio', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                    {!! Form::submit('Actualizar Patio', ['class' => 'btn btn-primary block full-width m-b']) !!}
                     {!! Form::close() !!}
                 </div>
 
                 <div class="text-center texto-leyenda">
                         <p><strong>*</strong> Campos obligatorios</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="col-lg-12">
-    <div class="ibox float-e-margins">
-        <div class="card card-default">
-            <div class="card-header">
-                <h3 class="card-title">Listado de Patios</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                </div>
-            </div>
-            
-            <div class="card-body">
-                <!-- <div class="row">
-                    <a href="{{ route('patio.create') }}" class = 'btn btn-primary'>Nuevo Patio</a>
-                </div>
-
-                <br /> -->
-
-                <div class="table-responsive">
-                    <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Nro. de bloques</th>
-                                <th>Latitud</th>
-                                <th>Longitud</th>
-                                <th>Dirección</th>
-                                <th>Región</th>
-                                <!-- <th>Provincia</th> -->
-                                <th>Comuna</th>
-                                <th>Acci&oacute;n</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($patios as $patio)
-
-                            <tr>
-                                <td><small>{{ $patio->patio_nombre }}</small></td>
-                                <td><small>{{ $patio->patio_bloques }}</small></td>
-                                <td><small>{{ $patio->patio_coord_lat }}</small></td>
-                                <td><small>{{ $patio->patio_coord_lon }}</small></td>
-                                <td><small>{{ $patio->patio_direccion }}</small></td>
-                                <td><small>{{ $patio->oneRegion() }}</small></td>
-                                <!-- <td><small> $patio->oneProvincia() </small></td> -->
-                                <td><small>{{ $patio->oneComuna() }}</small></td>
-                                <td>
-                                    <small>
-                                        <a href="{{ route('patio.edit', Crypt::encrypt($patio->patio_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
-                                    </small>
-                                    <small>
-                                            <a href = "{{ route('patio.destroy', Crypt::encrypt($patio->patio_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
-                                            </a>
-                                    </small>
-                                </td>
-
-                            </tr>
-
-                            @endforeach
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>

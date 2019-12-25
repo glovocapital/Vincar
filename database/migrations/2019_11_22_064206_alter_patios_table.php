@@ -16,8 +16,8 @@ class AlterPatiosTable extends Migration
         Schema::table('patios', function (Blueprint $table) {
             $table->unsignedBigInteger('region_id');
             $table->foreign('region_id')->references('region_id')->on('regiones');
-            $table->unsignedBigInteger('provincia_id');
-            $table->foreign('provincia_id')->references('provincia_id')->on('provincias');
+            // $table->unsignedBigInteger('provincia_id');
+            // $table->foreign('provincia_id')->references('provincia_id')->on('provincias');
             $table->unsignedBigInteger('comuna_id');
             $table->foreign('comuna_id')->references('comuna_id')->on('comunas');
         });
@@ -33,8 +33,8 @@ class AlterPatiosTable extends Migration
         Schema::table('patios', function (Blueprint $table) {
             $table->dropForeign('patios_region_id_foreign');
             $table->dropColumn('region_id');
-            $table->dropForeign('patios_provincia_id_foreign');
-            $table->dropColumn('provincia_id');
+            // $table->dropForeign('patios_provincia_id_foreign');
+            // $table->dropColumn('provincia_id');
             $table->dropForeign('patios_comuna_id_foreign');
             $table->dropColumn('comuna_id');
         });

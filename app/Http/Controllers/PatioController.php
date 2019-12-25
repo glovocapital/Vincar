@@ -105,7 +105,33 @@ class PatioController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $region_id = Crypt::decrypt($request->region_id);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        try {
+            $patio = new Patio();
+            $patio->patio_nombre = $request->patio_nombre;
+            $patio->patio_bloques = $request->patio_bloques;
+            $patio->patio_coord_lat = $request->patio_coord_lat;
+            $patio->patio_coord_lon = $request->patio_coord_lon;
+            $patio->patio_direccion = $request->patio_direccion;
+            $patio->region_id = (int)$region_id;
+            $patio->comuna_id = (int)$request->comuna_id;
+
+            $patio->save();
+
+            flash('Patio registrado correctamente.')->success();
+            return redirect('patio');
+
+        }catch (\Exception $e) {
+
+            flash('Error registrando el patio.')->error();
+            flash($e->getMessage())->error();
+            return redirect('patio');
+        }
     }
 
     /**
@@ -125,9 +151,25 @@ class PatioController extends Controller
      * @param  \App\Patio  $patio
      * @return \Illuminate\Http\Response
      */
-    public function edit(Patio $patio)
+    public function edit($id)
     {
-        //
+        $patio_id =  Crypt::decrypt($id);
+        $patio = Patio::findOrfail($patio_id);
+
+        $regiones = DB::table('regiones')
+            ->select('region_id', 'region_nombre')
+            ->orderBy('region_id')
+            ->pluck('region_nombre', 'region_id')
+            ->all();
+        
+        $comunas = DB::table('comunas')
+            ->select('comuna_id', 'comuna_nombre')
+            ->where('region_id', $patio->region_id)
+            ->orderBy('comuna_id')
+            ->pluck('comuna_nombre', 'comuna_id')
+            ->all();
+
+        return view('patio.edit', compact('patio', 'regiones', 'comunas'));
     }
 
     /**
@@ -137,9 +179,37 @@ class PatioController extends Controller
      * @param  \App\Patio  $patio
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Patio $patio)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $patio_id = Crypt::decrypt($id);
+            $region_id = Crypt::decrypt($request->region_id);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        $patio = Patio::findOrfail($patio_id);
+
+        try {
+            $patio->patio_nombre = $request->patio_nombre;
+            $patio->patio_bloques = $request->patio_bloques;
+            $patio->patio_coord_lat = $request->patio_coord_lat;
+            $patio->patio_coord_lon = $request->patio_coord_lon;
+            $patio->patio_direccion = $request->patio_direccion;
+            $patio->region_id = $region_id;
+            $patio->comuna_id = (int)$request->comuna_id;
+
+            $patio->save();
+
+            flash('Patio actualizado correctamente.')->success();
+            return redirect('patio');
+
+        }catch (\Exception $e) {
+
+            flash('Error actualizando el patio.')->error();
+            flash($e->getMessage())->error();
+            return redirect('patio');
+        }
     }
 
     /**

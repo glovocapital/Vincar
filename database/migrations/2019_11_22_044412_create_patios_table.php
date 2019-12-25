@@ -17,8 +17,8 @@ class CreatePatiosTable extends Migration
             $table->bigIncrements('patio_id');
             $table->string('patio_nombre');
             $table->string('patio_bloques');
-            $table->string('patio_coord_lat');
-            $table->string('patio_coord_lon');
+            $table->decimal('patio_coord_lon', 10,8);
+            $table->decimal('patio_coord_lat', 10,8);
             $table->string('patio_direccion');
             $table->timestamps();
         });
