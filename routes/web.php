@@ -96,6 +96,17 @@ Route::get('patio/cargar_patios','PatioController@cargarPatios')->name('patio.ca
 Route::post('patio/store_patios','PatioController@storePatios')->name('patio.store_patios');
 Route::get('patio/obtener_comunas/{id_region}', ['as' => 'patio.comunas', 'uses' => 'PatioController@comunas']);
 
+//Rutas mantenedor patios
+Route::get('bloque/{id_patio}/index', 'BloqueController@index')->name('bloque.index');
+Route::get('bloque/{id_patio}/create','BloqueController@create')->name('bloque.create');
+Route::get('bloque/{id}/edit','BloqueController@edit')->name('bloque.edit');
+Route::post('bloque','BloqueController@store')->name('bloque.store');
+Route::patch('bloque/{id}/update','BloqueController@update')->name('bloque.update');
+Route::get('bloque/{id}/delete','BloqueController@destroy')->name('bloque.destroy');
+Route::get('bloque/cargar_patios','BloqueController@cargarPatios')->name('bloque.cargar_patios');
+Route::post('bloque/store_patios','BloqueController@storePatios')->name('bloque.store_patios');
+Route::get('bloque/obtener_comunas/{id_region}', ['as' => 'bloque.comunas', 'uses' => 'BloqueController@comunas']);
+
 //Manejo de Thumbnail de imágenes
 Route::resource('thumbnail', 'ThumbnailController');
 

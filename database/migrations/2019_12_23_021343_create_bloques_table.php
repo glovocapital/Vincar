@@ -18,12 +18,13 @@ class CreateBloquesTable extends Migration
             $table->string('bloque_nombre');
             $table->string('bloque_filas');
             $table->string('bloque_columnas');
-            $table->string('bloque_coord_lat');
-            $table->string('bloque_coord_lon');
+            $table->decimal('bloque_coord_lon', 10,8);
+            $table->decimal('bloque_coord_lat', 10,8);
             
             $table->unsignedBigInteger('patio_id');
             $table->foreign('patio_id')->references('patio_id')->on('patios');
             
+            $table->softDeletes();
             $table->timestamps();
         });
     }

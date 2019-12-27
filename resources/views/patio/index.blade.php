@@ -104,7 +104,7 @@
             
             <div class="card-body">
                 <!-- <div class="row">
-                    <a href="{{ route('patio.create') }}" class = 'btn btn-primary'>Nuevo Patio</a>
+                    <a href=" route('patio.create') " class = 'btn btn-primary'>Nuevo Patio</a>
                 </div>
 
                 <br /> -->
@@ -112,9 +112,11 @@
                 <div class="table-responsive">
                     <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
                         <thead>
-                            <tr>
+                            <tr rowspan=2>
                                 <th>Nombre</th>
-                                <th>Nro. de bloques</th>
+                                <th colspan="2">Bloques - Acciones
+                                </th>
+                                
                                 <th>Latitud</th>
                                 <th>Longitud</th>
                                 <th>Dirección</th>
@@ -130,7 +132,17 @@
 
                             <tr>
                                 <td><small>{{ $patio->patio_nombre }}</small></td>
-                                <td><small>{{ $patio->patio_bloques }}</small></td>
+                                <td style="text-align: center"><small>{{ $patio->patio_bloques }}
+                                    </small>
+                                </td>
+                                <td>
+                                    <small>
+                                        <a href = "{{ route('bloque.index', Crypt::encrypt($patio->patio_id))  }}" class="btn-bloque" title="Ver Bloques"><i class="far fa-eye"></i></a>
+                                    </small>
+                                    <small>
+                                        <a href = "{{ route('bloque.create', Crypt::encrypt($patio->patio_id))  }}" class="btn-bloque" title="Añadir Bloque"><i class="far fa-plus-square"></i></a>
+                                    </small>
+                                </td>
                                 <td><small>{{ $patio->patio_coord_lat }}</small></td>
                                 <td><small>{{ $patio->patio_coord_lon }}</small></td>
                                 <td><small>{{ $patio->patio_direccion }}</small></td>
@@ -139,11 +151,10 @@
                                 <td><small>{{ $patio->oneComuna() }}</small></td>
                                 <td>
                                     <small>
-                                        <a href="{{ route('patio.edit', Crypt::encrypt($patio->patio_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
+                                        <a href="{{ route('patio.edit', Crypt::encrypt($patio->patio_id)) }}" class="btn-patio"  title="Editar Patio"><i class="far fa-edit"></i></a>
                                     </small>
                                     <small>
-                                            <a href = "{{ route('patio.destroy', Crypt::encrypt($patio->patio_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
-                                            </a>
+                                        <a href = "{{ route('patio.destroy', Crypt::encrypt($patio->patio_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-patio"  title="Eliminar Patio"><i class="far fa-trash-alt"></i></a>
                                     </small>
                                 </td>
 
