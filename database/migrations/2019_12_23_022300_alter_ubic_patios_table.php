@@ -18,6 +18,7 @@ class AlterUbicPatiosTable extends Migration
             $table->foreign('bloque_id')->references('bloque_id')->on('bloques');
             $table->dropForeign('ubic_patios_patio_id_foreign');
             $table->dropColumn('patio_id');
+            $table->softDeletes();
         });
     }
 
@@ -29,10 +30,11 @@ class AlterUbicPatiosTable extends Migration
     public function down()
     {
         Schema::table('ubic_patios', function (Blueprint $table) {
-            $table->unsignedBigInteger('patio_id');
+            $table->unsignedBigInteger('patio_id')->nullable();
             $table->foreign('patio_id')->references('patio_id')->on('patios');
             $table->dropForeign('ubic_patios_bloque_id_foreign');
             $table->dropColumn('bloque_id');
+            $table->dropColumn('deleted_at');
         });
     }
 }

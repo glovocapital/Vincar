@@ -15,7 +15,6 @@ class CreateUbicPatiosTable extends Migration
     {
         Schema::create('ubic_patios', function (Blueprint $table) {
             $table->bigIncrements('ubic_patio_id');
-            $table->string('ubic_patio_bloque');
             $table->string('ubic_patio_fila');
             $table->string('ubic_patio_columna');
             $table->boolean('ubic_patio_ocupada')->default(false);

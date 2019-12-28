@@ -3,18 +3,54 @@
 namespace App\Http\Controllers;
 
 use App\UbicPatio;
+use App\Bloque;
 use Illuminate\Http\Request;
+use App\Http\Middleware\PreventBackHistory;
+use App\Http\Middleware\CheckSession;
+use App\Imports\UbicPatiosImport;
+use App\Vin;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UbicPatioController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(PreventBackHistory::class);
+        $this->middleware(CheckSession::class);
+
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id_bloque)
     {
-        //
+        try {
+            $bloque_id = Crypt::decrypt($id_bloque);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        $bloque = Bloque::find($bloque_id);
+
+        $bloque_nombre = $bloque->bloque_nombre;
+
+        $patio_id = $bloque->patio_id;
+
+        $ubic_patios = UbicPatio::where('bloque_id',$bloque_id)
+            ->where('deleted_at', null)
+            ->get();
+
+        if($ubic_patios->count() > 0) {
+            return view('ubic_patio.index', compact('ubic_patios', 'bloque_nombre', 'patio_id'));
+        } else {
+            return view('ubic_patio.noubics',compact('patio_id'));
+        }
     }
 
     /**
@@ -22,9 +58,29 @@ class UbicPatioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id_bloque)
     {
-        //
+        try {
+            $bloque_id = Crypt::decrypt($id_bloque);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        $bloque = Bloque::find($bloque_id);
+
+        $bloque_nombre = $bloque->bloque_nombre;
+
+        $ubicaciones = UbicPatio::where('bloque_id',$bloque_id)
+            ->where('deleted_at', null)
+            ->get();
+
+        $totalUbicacionesBloque = (int)$bloque->bloque_filas * (int)$bloque->bloque_columnas;
+
+        if($ubicaciones->count() < $totalUbicacionesBloque){
+            return view('ubic_patio.create', compact('bloque_id', 'bloque_nombre'));
+        } else {
+            return view('ubic_patio.maxubics', compact('bloque_id'));
+        }
     }
 
     /**
@@ -35,7 +91,41 @@ class UbicPatioController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            if(isset($request->vin_codigo)){
+                $vin = Vin::where('vin_codigo', $request->vin_codigo)->first();
+            }
+
+            $ubic_patio = new UbicPatio();
+
+            $ubic_patio->ubic_patio_bloque = "Ubicación de prueba";
+            $ubic_patio->ubic_patio_fila = $request->ubic_patio_fila;
+            $ubic_patio->ubic_patio_columna = $request->ubic_patio_columna;
+            
+            if(isset($vin)) {
+                $ubic_patio->vin_id = $vin->vin_id;
+            } else {
+                $ubic_patio->vin_id = null;
+            }
+
+            if($request->ubic_patio_ocupada == 1){
+                $ubic_patio->ubic_patio_ocupada = true;
+            } else {
+                $ubic_patio->ubic_patio_ocupada = false;
+            }
+
+            $ubic_patio->bloque_id = (int)$request->bloque_id;
+
+            $ubic_patio->save();
+
+            flash('Ubicación registrada correctamente.')->success();
+            return redirect()->route('ubic_patio.index', ['id_bloque' => Crypt::encrypt($ubic_patio->bloque_id)]);
+        } catch (\Exception $e) {
+
+            flash('Error registrando la ubicación.')->error();
+            flash($e->getMessage())->error();
+            return redirect()->route('ubic_patio.index', ['id_bloque' => Crypt::encrypt($ubic_patio->bloque_id)]);
+        }
     }
 
     /**

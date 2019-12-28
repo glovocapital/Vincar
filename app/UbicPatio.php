@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UbicPatio extends Model
 {
+    use SoftDeletes;
+    
     protected $primaryKey = 'ubic_patio_id';
 
     /**

@@ -34,7 +34,8 @@
                                 <th>Nro. columnas</th>
                                 <th>Latitud</th>
                                 <th>Longitud</th>
-                                <th>Acci&oacute;n</th>
+                                <th>Ubicaciones</th>
+                                <th>Bloque</th>
 
                             </tr>
                         </thead>
@@ -47,6 +48,14 @@
                                 <td><small>{{ $bloque->bloque_columnas }}</small></td>
                                 <td><small>{{ $bloque->bloque_coord_lat }}</small></td>
                                 <td><small>{{ $bloque->bloque_coord_lon }}</small></td>
+                                <td>
+                                    <small>
+                                        <a href="{{ route('ubic_patio.index', Crypt::encrypt($bloque->bloque_id)) }}" class="btn-bloque" title="Ver Ubicaciones"><i class="far fa-eye"></i></a>
+                                    </small>
+                                    <small>
+                                        <a href="{{ route('ubic_patio.create', Crypt::encrypt($bloque->bloque_id)) }}" class="btn-bloque" title="Añadir Ubicación"><i class="far fa-plus-square"></i></a>
+                                    </small>
+                                </td>
                                 <td>
                                     <small>
                                         <a href="{{ route('bloque.edit', Crypt::encrypt($bloque->bloque_id)) }}" class="btn-bloque" title="Editar bloque"><i class="far fa-edit"></i></a>
