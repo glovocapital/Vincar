@@ -96,9 +96,8 @@ class UbicPatioController extends Controller
                 $vin = Vin::where('vin_codigo', $request->vin_codigo)->first();
             }
 
-            $ubic_patio = new UbicPatio();
+             $ubic_patio = new UbicPatio();
 
-            $ubic_patio->ubic_patio_bloque = "Ubicación de prueba";
             $ubic_patio->ubic_patio_fila = $request->ubic_patio_fila;
             $ubic_patio->ubic_patio_columna = $request->ubic_patio_columna;
             
@@ -145,9 +144,17 @@ class UbicPatioController extends Controller
      * @param  \App\UbicPatio  $ubicPatio
      * @return \Illuminate\Http\Response
      */
-    public function edit(UbicPatio $ubicPatio)
+    public function edit($id_ubic_patio)
     {
-        //
+        try {
+            $ubic_patio_id = Crypt::decrypt($id_ubic_patio);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        $ubic_patio = UbicPatio::findOrFail($ubic_patio_id);
+
+        return view('ubic_patio.edit', compact('ubic_patio'));
     }
 
     /**
@@ -157,9 +164,45 @@ class UbicPatioController extends Controller
      * @param  \App\UbicPatio  $ubicPatio
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UbicPatio $ubicPatio)
+    public function update(Request $request, $id_ubic_patio)
     {
-        //
+        try {
+            $ubic_patio_id = Crypt::decrypt($id_ubic_patio);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        $ubic_patio = UbicPatio::findOrFail($ubic_patio_id);
+
+        if(isset($request->vin_codigo)){
+            $vin = Vin::where('vin_codigo', $request->vin_codigo)->first();
+        }
+
+        try {
+            
+            $ubic_patio->ubic_patio_fila = $request->ubic_patio_fila;
+            $ubic_patio->ubic_patio_columna = $request->ubic_patio_columna;
+            $ubic_patio->ubic_patio_ocupada = $request->ubic_patio_ocupada;
+            
+            if(isset($vin)){
+                $ubic_patio->vin_id = $vin->vin_id;
+            } else {
+                $ubic_patio->vin_id = null;
+            }
+            
+            $ubic_patio->bloque_id = $request->bloque_id;
+
+            $ubic_patio->save();
+
+            flash('Ubicación modificada correctamente.')->success();
+            return redirect()->route('ubic_patio.index', ['id_bloque' => Crypt::encrypt($request->bloque_id)]);
+
+        }catch (\Exception $e) {
+
+            flash('Error modificando la ubicación.')->error();
+            flash($e->getMessage())->error();
+            return redirect()->route('ubic_patio.index', ['id_bloque' => Crypt::encrypt($request->bloque_id)]);
+        }
     }
 
     /**
@@ -168,8 +211,25 @@ class UbicPatioController extends Controller
      * @param  \App\UbicPatio  $ubicPatio
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UbicPatio $ubicPatio)
+    public function destroy($id)
     {
-        //
+        $ubic_patio_id =  Crypt::decrypt($id);
+
+        $ubic_patio = UbicPatio::findOrfail($ubic_patio_id);
+
+        $bloque_id = $ubic_patio->bloque_id;
+
+        $ubic_patio->delete();
+        
+        try {
+
+            flash('Los datos de la Ubicación han sido eliminados satisfactoriamente.')->success();
+            return redirect()->route('ubic_patio.index', ['id_bloque' => Crypt::encrypt($bloque_id)]);
+        }catch (\Exception $e) {
+
+            flash('Error al intentar eliminar los datos de la Ubicación.')->error();
+            //flash($e->getMessage())->error();
+            return redirect()->route('ubic_patio.index', ['id_bloque' => Crypt::encrypt($bloque_id)]);
+        }
     }
 }
