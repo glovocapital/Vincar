@@ -142,7 +142,7 @@
               </a>
             </li>
             <li class="nav-item">
-                  <a class="nav-link" href="{{ route('vin.cargamasiva') }}">
+                  <a class="nav-link" href="{{ route('vin.index') }}">
 
                 <i class="far nav-icon"></i>
                 <p>Vins</p>

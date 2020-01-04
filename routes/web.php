@@ -71,6 +71,8 @@ Route::post('vin/loadexcel','VinController@loadexcel')->name('vin.loadexcel');
 
 
 
+
+
 //Rutas mantenedor inspeccion
 Route::get('inspeccion', 'InspeccionController@index')->name('inspeccion.index');
 Route::get('inspeccion/create','InspeccionController@create')->name('inspeccion.create');
