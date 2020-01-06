@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\CheckSession;
-use App\Imports\UbicPatiosImport;
+use App\Imports\PatiosImport;
 use App\Patio;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Row;
 
 class PatioController extends Controller
 {
@@ -246,10 +247,9 @@ class PatioController extends Controller
      * Carga Masiva de Vins
      */
     public function storePatios(Request $request){
-        $array = Excel::toArray(new UbicPatiosImport, request()->file('ENVIO GASTOS COMUNES ABRIL\'19 T-B (1).xls'));
-        dd($array);
-
-
-        $collection = Excel::toCollection(new UbicPatiosImport, request()->file('ENVIO GASTOS COMUNES ABRIL\'19 T-B (1).xls'));
+        Excel::import(new PatiosImport, request()->file('file'));
+        flash('Los patios fueron cargados exitosamente.')->success();
+        // return view('patio.index');
+        return redirect()->action('PatioController@index');
     }
 }

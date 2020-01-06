@@ -98,7 +98,7 @@ Route::get('patio/cargar_patios','PatioController@cargarPatios')->name('patio.ca
 Route::post('patio/store_patios','PatioController@storePatios')->name('patio.store_patios');
 Route::get('patio/obtener_comunas/{id_region}', ['as' => 'patio.comunas', 'uses' => 'PatioController@comunas']);
 
-//Rutas mantenedor patios
+//Rutas mantenedor bloques
 Route::get('bloque/{id_patio}/index', 'BloqueController@index')->name('bloque.index');
 Route::get('bloque/{id_patio}/create','BloqueController@create')->name('bloque.create');
 Route::get('bloque/{id}/edit','BloqueController@edit')->name('bloque.edit');
