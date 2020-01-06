@@ -14,6 +14,7 @@ use Auth;
 use Illuminate\Support\Facades\Crypt;
 use DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 
 
 class VinController extends Controller
@@ -386,5 +387,11 @@ class VinController extends Controller
            return redirect('vin');
         }
 
+    }
+
+    public function downloadFile()
+    {
+
+        return Storage::downloadFile();
     }
 }

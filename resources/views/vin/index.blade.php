@@ -21,6 +21,14 @@
                         {!! Form::close() !!}
                     </div>
                 </div>
+                <div class="row">
+                    <div class="text pb-5">
+                        @php( $url = Storage::url('Carga_de_vehiculos.xlsx'))
+                        <a href="{{ asset($url) }}" class="btn btn-primary btn-sm ml-auto"><i class="fa fa-file-excel-o"></i> Descarga plantilla</a>
+
+                </div>
+
+                </div>
             </div>
         </div>
     </div>
@@ -93,24 +101,14 @@
                                     <label for="vin_color" >Vin <strong>*</strong></label>
                                     {!! Form::text('vin_color', null, ['placeholder'=>'Color', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
-
-
-
-
-
                         </div>
-
-
-
                     </div>
-
                 </div>
             </div>
         </div>
 </div>
 
 <br />
-
 
     <div class="col-lg-12">
             <div class="ibox float-e-margins">
@@ -123,8 +121,6 @@
                         </div>
                     </div>
                     <div class="card-body">
-
-
 
             <div class="table-responsive">
                 <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
