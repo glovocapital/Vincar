@@ -136,7 +136,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+                <a class="nav-link" href="{{ route('patio.index') }}">
                 <i class="far nav-icon"></i>
                 <p>Patios</p>
               </a>

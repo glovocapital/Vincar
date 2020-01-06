@@ -79,10 +79,15 @@
                     </div>
                 </div>
                 <div class="text-right pb-5" id="boton_patio">
+
                     {!! Form::submit('Registrar Patio', ['class' => 'btn btn-primary block full-width m-b']) !!}
+
                     {!! Form::close() !!}
                 </div>
-
+                <div class="text-right pb-5" id="boton_patio">
+                {!! Form::open(['route'=> 'patio.cargar_patios', 'method'=>'GET']) !!}
+                    {!! Form::submit('Carga Patios ', ['class' => 'btn btn-info block full-width m-b']) !!}
+                </div>
                 <div class="text-center texto-leyenda">
                         <p><strong>*</strong> Campos obligatorios</p>
                 </div>
@@ -101,7 +106,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            
+
             <div class="card-body">
                 <!-- <div class="row">
                     <a href=" route('patio.create') " class = 'btn btn-primary'>Nuevo Patio</a>
@@ -116,7 +121,7 @@
                                 <th>Nombre</th>
                                 <th colspan="2">Bloques - Acciones
                                 </th>
-                                
+
                                 <th>Latitud</th>
                                 <th>Longitud</th>
                                 <th>Dirección</th>
@@ -183,7 +188,7 @@
                 if (id != ''){
 
                     var url = "/patio/obtener_comunas/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){
