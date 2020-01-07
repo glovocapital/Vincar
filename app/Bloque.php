@@ -17,7 +17,7 @@ class Bloque extends Model
      * @var array
      */
     protected $fillable = [
-        'bloque_nombre', 'bloque_filas', 'bloque_columnas', 'bloque_coord_lat', 'bloque_coord_lon', 'patio_id'
+        'bloque_nombre', 'bloque_filas', 'bloque_columnas', 'patio_id'
     ];
     
     public function manyUbicPatios(){

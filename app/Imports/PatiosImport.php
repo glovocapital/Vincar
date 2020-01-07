@@ -23,21 +23,21 @@ class PatiosImport implements ToArray
                 if(isset($patio)){
                     try {
                         DB::beginTransaction();
-                        $patio->patio_bloques += 1;
-                        $patio->save();
+                        
 
                         $existe = Bloque::whereRaw('upper(bloque_nombre) like (?)',strtoupper($v[1]))
                             ->where('patio_id', $patio->patio_id)
                             ->first();
                         
                         if(!$existe){
+                            $patio->patio_bloques += 1;
+                            $patio->save();
+
                             $bloque = new Bloque();
 
                             $bloque->bloque_nombre = $v[1];
                             $bloque->bloque_filas = $v[2];
                             $bloque->bloque_columnas = $v[3];
-                            $bloque->bloque_coord_lat = $v[4];
-                            $bloque->bloque_coord_lon = $v[5];
                             $bloque->patio_id = $patio->patio_id;
 
                             $bloque->save();
@@ -52,11 +52,21 @@ class PatiosImport implements ToArray
                         DB::beginTransaction();
                         $patio = new Patio();
 
+                        $comuna_id = DB::table('comunas')
+                            ->whereRaw('upper(comuna_nombre) like (?)',strtoupper($v[7]))
+                            ->value('comuna_id');
+
+                        $region_id = DB::table('regiones')
+                            ->whereRaw('upper(region_nombre) like (?)',strtoupper($v[8]))
+                            ->value('region_id');
+
                         $patio->patio_nombre = $v[0];
                         $patio->patio_bloques = 1;
                         $patio->patio_coord_lat = $v[4];
                         $patio->patio_coord_lon = $v[5];
-                        $patio->patio_direccion = "Actualizar dirección";
+                        $patio->patio_direccion = $v[6];
+                        $patio->comuna_id = $comuna_id;
+                        $patio->region_id = $region_id;
 
                         $patio->save();
 
@@ -70,8 +80,6 @@ class PatiosImport implements ToArray
                             $bloque->bloque_nombre = $v[1];
                             $bloque->bloque_filas = $v[2];
                             $bloque->bloque_columnas = $v[3];
-                            $bloque->bloque_coord_lat = $v[4];
-                            $bloque->bloque_coord_lon = $v[5];
                             $bloque->patio_id = $patio->patio_id;
 
                             $bloque->save();
