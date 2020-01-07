@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    "driver"    =>"pgsql",
+    "driver"    =>"mysql",
     "host"      =>"localhost",
     "user"      =>"vincar",
     "pass"      =>"vincar01",
