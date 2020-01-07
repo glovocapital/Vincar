@@ -52,11 +52,21 @@ class PatiosImport implements ToArray
                         DB::beginTransaction();
                         $patio = new Patio();
 
+                        $comuna_id = DB::table('comunas')
+                            ->whereRaw('upper(comuna_nombre) like (?)',strtoupper($v[7]))
+                            ->value('comuna_id');
+
+                        $region_id = DB::table('regiones')
+                            ->whereRaw('upper(region_nombre) like (?)',strtoupper($v[8]))
+                            ->value('region_id');
+
                         $patio->patio_nombre = $v[0];
                         $patio->patio_bloques = 1;
                         $patio->patio_coord_lat = $v[4];
                         $patio->patio_coord_lon = $v[5];
-                        $patio->patio_direccion = "Actualizar dirección";
+                        $patio->patio_direccion = $v[6];
+                        $patio->comuna_id = $comuna_id;
+                        $patio->region_id = $region_id;
 
                         $patio->save();
 
