@@ -21,6 +21,14 @@
                         {!! Form::close() !!}
                     </div>
                 </div>
+                <div class="row">
+                    <div class="text pb-5">
+                        @php( $url = Storage::url('Carga_de_vehiculos.xlsx'))
+                        <a href="{{ asset($url) }}" class="btn btn-primary btn-sm ml-auto"><i class="fa fa-file-excel-o"></i> Descarga plantilla</a>
+
+                </div>
+
+                </div>
             </div>
         </div>
     </div>
@@ -77,7 +85,7 @@
         <div class="ibox float-e-margins">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Registrar Vin</h3>
+                    <h3 class="card-title">Buscar Vin</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -90,27 +98,17 @@
                         <div class="col-md-4" id="wrapper_2">
 
                             <div class="form-group">
-                                    <label for="vin_color" >Vin <strong>*</strong></label>
-                                    {!! Form::text('vin_color', null, ['placeholder'=>'Color', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                    <label for="vin_numero" >Vin <strong>*</strong></label>
+                                    {!! Form::text('vin_numero', null, ['placeholder'=>'Vin', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
-
-
-
-
-
                         </div>
-
-
-
                     </div>
-
                 </div>
             </div>
         </div>
 </div>
 
 <br />
-
 
     <div class="col-lg-12">
             <div class="ibox float-e-margins">
@@ -123,68 +121,57 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        <div class="tab le-responsive">
+                            <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Vin</th>
+                                        <th>Patente</th>
+                                        <th>Modelo</th>
+                                        <th>Marca</th>
+                                        <th>Color</th>
+                                        <th>Motor</th>
+                                        <th>Segmento</th>
+                                        <th>Fecha de Ingreso</th>
+                                        <th>Cliente</th>
+                                        <th>Estado Inventario</th>
+                                    <!--  <th>Sub Estado Inventario </th>  -->
+                                        <th>Acci&oacute;n</th>
 
-
-
-            <div class="table-responsive">
-                <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
-                    <thead>
-	                    <tr>
-                            <th>Vin</th>
-	                        <th>Patente</th>
-                            <th>Modelo</th>
-                            <th>Marca</th>
-	                        <th>Color</th>
-                            <th>Motor</th>
-                            <th>Segmento</th>
-                            <th>Fecha de Ingreso</th>
-                            <th>Cliente</th>
-                            <th>Estado Inventario</th>
-                          <!--  <th>Sub Estado Inventario </th>  -->
-	                        <th>Acci&oacute;n</th>
-
-	                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($vins as $vin)
-
-                        <tr>
-                            <td><small>{{ $vin->vin_codigo }}</small></td>
-                            <td><small>{{ $vin->vin_patente }}</small></td>
-                            <td><small>{{ $vin->vin_modelo }}</small></td>
-                            <td><small>{{ $vin->vin_marca }}</small></td>
-                            <td><small>{{ $vin->vin_color }}</small></td>
-                            <td><small>{{ $vin->vin_motor }}</small></td>
-                            <td><small>{{ $vin->vin_segmento }}</small></td>
-                            <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
-                            <td><small>{{ $vin->oneUser->user_nombre.' '.$vin->oneUser->user_apellido }}</small></td>
-                            <td><small>{{ $vin->oneVinEstadoInventario() }}</small></td>
-                            @if($vin->vin_sub_estado_inventario_id != null)
-                           <!-- <td><small>{{ $vin->oneVinSubEstadoInventario() }}</small></td>
-                            @else
-                            <td><small></small></td>
-                            @endif
-                           -->
-
-                            <td>
-                                <small>
-                                    <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
-                                </small>
-                                <small>
-                                        <a href = "{{ route('vin.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($vins as $vin)
+                                <tr>
+                                    <td><small>{{ $vin->vin_codigo }}</small></td>
+                                    <td><small>{{ $vin->vin_patente }}</small></td>
+                                    <td><small>{{ $vin->vin_modelo }}</small></td>
+                                    <td><small>{{ $vin->vin_marca }}</small></td>
+                                    <td><small>{{ $vin->vin_color }}</small></td>
+                                    <td><small>{{ $vin->vin_motor }}</small></td>
+                                    <td><small>{{ $vin->vin_segmento }}</small></td>
+                                    <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
+                                    <td><small>{{ $vin->oneUser->user_nombre.' '.$vin->oneUser->user_apellido }}</small></td>
+                                    <td><small>{{ $vin->oneVinEstadoInventario() }}</small></td>
+                                    <td>
+                                        <small>
+                                            <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
+                                        </small>
+                                        <small>
+                                            <a href = "{{ route('vin.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
                                         </a>
-                                </small>
-                            </td>
-
-                        </tr>
-
-                        @endforeach
-                    </tbody>
-                </table>
+                                        </small>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
     </div>
-</div>
+
 
 
 

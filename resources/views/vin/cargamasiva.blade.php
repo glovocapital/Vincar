@@ -17,33 +17,14 @@
                     <div class="col-md-4">
                         {!! Form::open(['route'=> 'vin.loadexcel', 'method'=>'POST', 'enctype' => 'multipart/form-data','files'=> true]) !!}
 
-                        <div class="form-group">
-                            <label for="user_id" >Seleccionar Cliente <strong>*</strong></label>
-                            {!! Form::select('user_id', $users, null,['id' => 'cliente', 'placeholder'=>'Seleccionar Cliente', 'class'=>'form-control col-sm-9 select-cliente', 'required'=>'required']) !!}
-                        </div>
 
                         <div class="form-group">
-                            <label for="vin_estado_inventario_id" >Estado de Inventario <strong>*</strong></label>
-                            {!! Form::select('vin_estado_inventario_id', $estadosInventario, null,['class'=>'form-control col-sm-9']) !!}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="">Subir Foto</label>
+                            <label for="">Cargar Documento</label>
                             {!! Form::file('carga_masiva'); !!}
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="vin_sub_estado_inventario_id" >Sub-Estado de Inventario <strong>*</strong></label>
-                            {!! Form::select('vin_sub_estado_inventario_id', $subEstadosInventario, null,['class'=>'form-control col-sm-9']) !!}
-                        </div>
 
-                        <div class="form-group">
-                            <label for="empresa_id" >Empresa <strong>*</strong></label>
-                            {!! Form::select('empresa_id', $empresas, null,['placeholder'=>'Seleccionar Empresa', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                        </div>
-                    </div>
                 </div>
 
                 <div class="text-right pb-5">

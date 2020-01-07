@@ -68,6 +68,7 @@ Route::get('vin/obtener_usuarios_empresa/{id_empresa}', ['as' => 'vin.clientes',
 Route::get('vin/obtener_sub_estados/{id_estado_inventario}', ['as' => 'vin.sub_estados', 'uses' => 'VinController@estadoInventario']);
 Route::get('vin/cargamasiva','VinController@cargamasiva')->name('vin.cargamasiva');
 Route::post('vin/loadexcel','VinController@loadexcel')->name('vin.loadexcel');
+Route::get('vin/download/{file}' , 'VinController@downloadFile');
 
 
 
