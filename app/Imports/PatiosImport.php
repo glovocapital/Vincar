@@ -38,8 +38,6 @@ class PatiosImport implements ToArray
                             $bloque->bloque_nombre = $v[1];
                             $bloque->bloque_filas = $v[2];
                             $bloque->bloque_columnas = $v[3];
-                            $bloque->bloque_coord_lat = $v[4];
-                            $bloque->bloque_coord_lon = $v[5];
                             $bloque->patio_id = $patio->patio_id;
 
                             $bloque->save();
@@ -82,8 +80,6 @@ class PatiosImport implements ToArray
                             $bloque->bloque_nombre = $v[1];
                             $bloque->bloque_filas = $v[2];
                             $bloque->bloque_columnas = $v[3];
-                            $bloque->bloque_coord_lat = $v[4];
-                            $bloque->bloque_coord_lon = $v[5];
                             $bloque->patio_id = $patio->patio_id;
 
                             $bloque->save();

@@ -38,22 +38,6 @@
                                 {!! Form::text('bloque_columnas', null, ['class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="" >Coordenadas Geográficas</label>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="bloque_coord_lat" >Latitud <strong>*</strong></label>
-                            {!! Form::text('bloque_coord_lat', null, ['class'=>'form-control col-sm-9', 'required']) !!}
-                        </div>
-
-                        <div class="form-group">
-                                <label for="bloque_coord_lon" >Longitud <strong>*</strong></label>
-                                {!! Form::text('bloque_coord_lon', null, ['class'=>'form-control col-sm-9', 'required']) !!}
-                        </div>
-                    </div>
                 </div>
                 <div class="text-right pb-5" id="boton_bloque">
                     {!! Form::submit('Registrar Bloque', ['class' => 'btn btn-primary block full-width m-b']) !!}

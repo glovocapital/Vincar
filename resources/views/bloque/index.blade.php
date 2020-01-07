@@ -32,8 +32,6 @@
                                 <th>Nombre</th>
                                 <th>Nro. filas</th>
                                 <th>Nro. columnas</th>
-                                <th>Latitud</th>
-                                <th>Longitud</th>
                                 <th>Ubicaciones</th>
                                 <th>Bloque</th>
 
@@ -46,8 +44,6 @@
                                 <td><small>{{ $bloque->bloque_nombre }}</small></td>
                                 <td><small>{{ $bloque->bloque_filas }}</small></td>
                                 <td><small>{{ $bloque->bloque_columnas }}</small></td>
-                                <td><small>{{ $bloque->bloque_coord_lat }}</small></td>
-                                <td><small>{{ $bloque->bloque_coord_lon }}</small></td>
                                 <td>
                                     <small>
                                         <a href="{{ route('ubic_patio.index', Crypt::encrypt($bloque->bloque_id)) }}" class="btn-bloque" title="Ver Ubicaciones"><i class="far fa-eye"></i></a>

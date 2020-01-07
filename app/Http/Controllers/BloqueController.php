@@ -89,8 +89,6 @@ class BloqueController extends Controller
             $bloque->bloque_nombre = $request->bloque_nombre;
             $bloque->bloque_filas = $request->bloque_filas;
             $bloque->bloque_columnas = $request->bloque_columnas;
-            $bloque->bloque_coord_lat = $request->bloque_coord_lat;
-            $bloque->bloque_coord_lon = $request->bloque_coord_lon;
             $bloque->patio_id = $request->patio_id;
             
             $bloque->save();
@@ -158,8 +156,6 @@ class BloqueController extends Controller
             $bloque->bloque_nombre = $request->bloque_nombre;
             $bloque->bloque_filas = $request->bloque_filas;
             $bloque->bloque_columnas = $request->bloque_columnas;
-            $bloque->bloque_coord_lat = $request->bloque_coord_lat;
-            $bloque->bloque_coord_lon = $request->bloque_coord_lon;
             $bloque->patio_id = $request->patio_id;
 
             $bloque->save();
