@@ -23,14 +23,16 @@ class PatiosImport implements ToArray
                 if(isset($patio)){
                     try {
                         DB::beginTransaction();
-                        $patio->patio_bloques += 1;
-                        $patio->save();
+                        
 
                         $existe = Bloque::whereRaw('upper(bloque_nombre) like (?)',strtoupper($v[1]))
                             ->where('patio_id', $patio->patio_id)
                             ->first();
                         
                         if(!$existe){
+                            $patio->patio_bloques += 1;
+                            $patio->save();
+
                             $bloque = new Bloque();
 
                             $bloque->bloque_nombre = $v[1];
