@@ -17,10 +17,10 @@ class EmpresaSeeder extends Seeder
             'empresa_giro' => 'Consultoria y Desarrollo',
             'empresa_direccion' =>  'Providencia - Santiago de Chile',
             'empresa_nombre_contacto' => 'Oscar Ferrer',
-            'empresa_es_proveedor' => '4',
+            'empresa_es_proveedor' => '1',
             'empresa_telefono_contacto' => '977763391',
             'empresa_email_contacto' => 'info@glovocapital.com',
-            'pais_id' => '1',
+            'pais_id' => '4',
             'tipo_proveedor_id' => '1',
 
     	]);
