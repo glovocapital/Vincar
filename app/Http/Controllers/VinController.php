@@ -9,12 +9,15 @@ use App\User;
 use App\Empresa;
 use App\Imports\VinsCollectionImport;
 use App\Imports\VinsImport;
+use App\Patio;
 use App\Vin;
 use Auth;
 use Illuminate\Support\Facades\Crypt;
 use DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
+
+
 
 
 class VinController extends Controller
@@ -38,6 +41,11 @@ class VinController extends Controller
     {
         $vins = Vin::all();
 
+        $patios = DB::table('patios')
+            ->select('patio_id', 'patio_nombre')
+            ->pluck('patio_nombre', 'patio_id');
+
+
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
         ->orderBy('user_id')
         ->pluck('user_nombres', 'user_id')
@@ -56,7 +64,13 @@ class VinController extends Controller
             ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
-        return view('vin.index', compact('vins','users','empresas', 'estadosInventario', 'subEstadosInventario'));
+        $marcas = DB::table('marcas')
+            ->select('marca_id', 'marca_nombre')
+            ->pluck('marca_nombre', 'marca_id');
+
+
+
+        return view('vin.index', compact('vins','users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas'));
     }
 
     /**
@@ -67,6 +81,8 @@ class VinController extends Controller
     public function create()
     {
         // $vins = Vin::all();
+
+        $vins = Vin::all();
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
@@ -85,6 +101,14 @@ class VinController extends Controller
         $subEstadosInventario = DB::table('vin_sub_estado_inventarios')
             ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
+
+        $marcas = DB::table('marcas')
+            ->select('marca_id', 'marca_nombre')
+            ->pluck('marca_nombre', 'marca_id');
+
+        $patios = DB::table('patios')
+            ->select('patio_id', 'patio_nombre')
+            ->pluck('patio_nombre', 'patio_id');
 
 
         return view('vin.create', compact(/*'vins', */'users','empresas', 'estadosInventario', 'subEstadosInventario'));
@@ -337,7 +361,7 @@ class VinController extends Controller
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
 
-        return view('vin.cargamasiva', compact(/*'vins', */'users','empresas', 'estadosInventario', 'subEstadosInventario'));
+        return view('vin.cargamasiva');
 
 
     }
@@ -393,5 +417,10 @@ class VinController extends Controller
     {
 
         return Storage::downloadFile();
+    }
+
+    public function search(Request $request)
+    {
+        dd($request);
     }
 }

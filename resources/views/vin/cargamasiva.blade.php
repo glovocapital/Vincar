@@ -19,8 +19,8 @@
 
 
                         <div class="form-group">
-                            <label for="">Cargar Documento</label>
-                            {!! Form::file('carga_masiva'); !!}
+                            <label for="">Cargar Documento *</label>
+                            {!! Form::file('carga_masiva', array('required' => 'required')); !!}
                         </div>
                     </div>
 

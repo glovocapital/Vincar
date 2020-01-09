@@ -19,8 +19,9 @@ class CreateEmpresasTable extends Migration
             $table->string('empresa_razon_social');
             $table->string('empresa_giro');
             $table->string('empresa_direccion');
-            $table->string('empresa_nombre_contacto');
-            $table->string('empresa_telefono_contacto');
+            $table->string('empresa_nombre_contacto')->nullable();
+            $table->string('empresa_telefono_contacto')->nullable();
+            $table->string('empresa_email_contacto')->nullable();
             $table->boolean('empresa_es_proveedor');
             $table->unsignedBigInteger('pais_id');
             $table->foreign('pais_id')->references('pais_id')->on('paises');

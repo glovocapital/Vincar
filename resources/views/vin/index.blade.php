@@ -21,14 +21,7 @@
                         {!! Form::close() !!}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="text pb-5">
-                        @php( $url = Storage::url('Carga_de_vehiculos.xlsx'))
-                        <a href="{{ asset($url) }}" class="btn btn-primary btn-sm ml-auto"><i class="fa fa-file-excel-o"></i> Descarga plantilla</a>
 
-                </div>
-
-                </div>
             </div>
         </div>
     </div>
@@ -92,21 +85,48 @@
                         </div>
                 </div>
                 <div class="card-body">
+                    {!! Form::open(['route'=> 'vin.search', 'method'=>'POST']) !!}
                     <div class="row">
-
-
                         <div class="col-md-4" id="wrapper_2">
-
                             <div class="form-group">
                                     <label for="vin_numero" >Vin <strong>*</strong></label>
-                                    {!! Form::text('vin_numero', null, ['placeholder'=>'Vin', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                    {!! Form::textarea('vin_numero[]', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none', 'required']) !!}
                             </div>
                         </div>
+
+                        <div class="col-md-4" id="wrapper_2">
+                            <div class="form-group">
+                                    <label for="user_id" >Seleccionar Cliente <strong>*</strong></label>
+                                    {!! Form::select('user_id', $users, null,['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente', 'required'=>'required']) !!}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="estado_nombre" >Seleccionar Estado <strong>*</strong></label>
+                                {!! Form::select('estadoinventario_nombre', $estadosInventario, null,['id' => 'estadoinventario', 'placeholder'=>'Estado', 'class'=>'form-control col-sm-9 select-cliente', 'required'=>'required']) !!}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4" id="wrapper_2">
+                            <div class="form-group">
+                                    <label for="user_id" >Seleccionar Patio <strong>*</strong></label>
+                                    {!! Form::select('patio_nombre', $patios, null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente', 'required'=>'required']) !!}
+                            </div>
+                            <div class="form-group">
+                                <label for="marca_nombre" >Seleccionar Marca <strong>*</strong></label>
+                                {!! Form::select('marca_nombre', $marcas, null,['id' => 'estadoinventario', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9 select-cliente', 'required'=>'required']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right pb-5">
+                        {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                        {!! Form::close() !!}
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </div>
+
 
 <br />
 

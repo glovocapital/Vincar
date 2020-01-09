@@ -38,5 +38,18 @@ class UsersSeeder extends Seeder
             'rol_id'            => '1',
             'empresa_id'        => '1',
         ]);
+
+        User::create([
+            'user_nombre'		=>	'Abraham',
+            'user_apellido'		=>	'Ferrer',
+            'user_rut'          =>  '25555555-5',
+            'user_cargo'        =>  'Analista',
+            'user_estado'       =>  '1',
+            'email'			    =>  'info@glovocapital.com',
+            'user_telefono'     =>  '977763391',
+            'password' 		    => bcrypt('123456'),
+            'rol_id'            => '1',
+            'empresa_id'        => '1',
+        ]);
     }
 }

@@ -41,6 +41,8 @@ class EmpresaController extends Controller
 
 
         $empresa = Empresa::all();
+
+
         return view('empresa.index', compact('empresa', 'pais', 'tipo_proveedor'));
     }
 
@@ -77,7 +79,7 @@ class EmpresaController extends Controller
             ->where('empresa_rut', $request->empresa_rut)
             ->where('deleted_at', '=', null)
             ->exists();
-            
+
         if($validate == true)
         {
             flash('El rut '.$request->empresa_rut.'  ya existe en la base de datos')->warning();
@@ -94,7 +96,8 @@ class EmpresaController extends Controller
             $empresa->empresa_direccion = $request->empresa_direccion;
             $empresa->empresa_nombre_contacto = $request->empresa_nombre_contacto;
             $empresa->empresa_telefono_contacto = $request->empresa_telefono_contacto;
-            
+            $empresa->empresa_email_contacto = $request->empresa_email_contacto;
+
             if($request->es_proveedor == "true")
             {
                 $empresa->empresa_es_proveedor = true;
@@ -104,7 +107,7 @@ class EmpresaController extends Controller
                 $empresa->empresa_es_proveedor = false;
                 $empresa->tipo_proveedor_id = NULL;
             }
-            
+
             $empresa->save();
 
             flash('La empresa se creo correctamente.')->success();
@@ -175,6 +178,8 @@ class EmpresaController extends Controller
             $empresa->empresa_direccion = $request->empresa_direccion;
             $empresa->empresa_nombre_contacto = $request->empresa_nombre_contacto;
             $empresa->empresa_telefono_contacto = $request->empresa_telefono_contacto;
+            $empresa->empresa_email_contacto = $request->empresa_email_contacto;
+
             if($request->es_proveedor == 1)
             {
                 $empresa->empresa_es_proveedor = 1;

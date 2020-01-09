@@ -13,7 +13,11 @@ class RolesSeeder extends Seeder
     {
          DB::table('roles')->insert([
         	'rol_desc' => 'SuperAdministrador',
-    	]);
+        ]);
+
+        DB::table('roles')->insert([
+            'rol_desc' => 'Administrador',
+        ]);
 
     	DB::table('roles')->insert([
         	'rol_desc' => 'Cliente',
@@ -25,6 +29,10 @@ class RolesSeeder extends Seeder
 
         DB::table('roles')->insert([
             'rol_desc' => 'Conductor',
+        ]);
+
+        DB::table('roles')->insert([
+            'rol_desc' => 'Pickero',
         ]);
 
     }

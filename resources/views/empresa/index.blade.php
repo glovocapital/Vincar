@@ -26,7 +26,7 @@
                             <label for="empresa_nombre" >Razón Social <strong>*</strong></label>
                             {!! Form::text('empresa_nombre', null, ['placeholder'=>'Nombre o Razón Social', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="pais_id" >Pais <strong>*</strong></label>
                             {!! Form::select('pais_id', $pais, null,['placeholder'=>'Seleccionar País', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
@@ -43,7 +43,7 @@
                             <label for="empresa_telefono_contacto" >Teléfono </label>
                             {!! Form::text('empresa_telefono_contacto', null, ['placeholder'=>'Telefono', 'class'=>'form-control col-sm-9']) !!}
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="empresa_nombre_contacto" >Contacto de la empresa </label>
                             {!! Form::text('empresa_nombre_contacto', null, ['placeholder'=>'Nombre de contacto', 'class'=>'form-control col-sm-9']) !!}
@@ -55,6 +55,15 @@
                             <label for="empresa_giro" >Giro <strong>*</strong></label>
                             {!! Form::text('empresa_giro', null, ['placeholder'=>'Giro de la empresa', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
+
+                        <div class="form-group">
+                            <label for="empresa_telefono_contacto" >Email </label>
+                            {!! Form::email('empresa_email_contacto', null, ['placeholder'=>'Email', 'class'=>'form-control col-sm-9']) !!}
+                        </div>
+
+
+
+
 
                         <div class="form-group">
                             <label for="es_proveedor" >Es proveedor? </label>
@@ -113,19 +122,23 @@
                                 <th>Rut</th>
                                 <th>Dirección</th>
                                 <th>Pais</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
                                 <th>Acci&oacute;n</th>
 
                             </tr>
                         </thead>
                         <tbody>
                         @foreach($empresa as $emp)
-                            @if(!$emp->empresa_es_proveedor)
+
                             <tr>
                                 <td><small>{{ $emp->empresa_razon_social }}</small></td>
                                 <td><small>{{ $emp->empresa_giro }}</small></td>
                                 <td><small>{{ $emp->empresa_rut }}</small></td>
                                 <td><small>{{ $emp->empresa_direccion }}</small></td>
                                 <td><small>{{ $emp->onePais->pais_nombre }}</small></td>
+                                <td><small>{{ $emp->empresa_telefono_contacto }}</small></td>
+                                <td><small>{{ $emp->empresa_email_contacto }}</small></td>
 
                                 <td>
                                     <small>
@@ -137,7 +150,7 @@
                                     </small>
                                 </td>
                             </tr>
-                            @endif
+
                         @endforeach
                         </tbody>
                     </table>
@@ -155,7 +168,7 @@
 <!--Funcion para ocultar y mostrar input segun seleccion-->
 @section('local-scripts')
 <script language="javascript" type="text/javascript">
-   
+
     function d1(button){
         if(button.value == 'false')
         {

@@ -58,6 +58,11 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="empresa_telefono_contacto" >Email </label>
+                            {!! Form::email('empresa_email_contacto', $empresa->empresa_email_contacto, ['placeholder'=>'Email', 'class'=>'form-control col-sm-9']) !!}
+                        </div>
+
+                        <div class="form-group">
                             <label for="es_proveedor" >Es proveedor? </label>
                             @if($empresa->empresa_es_proveedor)
                             <label>Sí</label>
@@ -107,7 +112,7 @@
 <!--Funcion para ocultar y mostrar input segun seleccion-->
 @section('local-scripts')
 <script language="javascript" type="text/javascript">
-   
+
     function d1(button){
         if(button.value == 'false')
         {
