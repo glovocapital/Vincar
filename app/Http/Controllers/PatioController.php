@@ -237,14 +237,14 @@ class PatioController extends Controller
     }
 
     /**
-     * Carga Masiva de Vins
+     * Carga Masiva de Patios
      */
     public function cargarPatios(){
         return view('patio.cargar_patios');
     }
 
     /**
-     * Carga Masiva de Vins
+     * Carga Masiva de Patios
      */
     public function storePatios(Request $request){
         Excel::import(new PatiosImport, request()->file('file'));

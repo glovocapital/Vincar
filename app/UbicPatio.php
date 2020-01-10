@@ -17,7 +17,7 @@ class UbicPatio extends Model
      * @var array
      */
     protected $fillable = [
-        'ubic_patio_fila', 'ubic_patio_columna', 'ubic_patio_latitud', 'ubic_patio_longitud', 'ubic_patio_ocupada', 'bloque_id'
+        'ubic_patio_fila', 'ubic_patio_columna', 'ubic_patio_ocupada', 'bloque_id', 'vin_id'
     ];
 
     public function marcarOcupada(){

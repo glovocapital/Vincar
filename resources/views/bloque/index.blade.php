@@ -48,9 +48,6 @@
                                     <small>
                                         <a href="{{ route('ubic_patio.index', Crypt::encrypt($bloque->bloque_id)) }}" class="btn-bloque" title="Ver Ubicaciones"><i class="far fa-eye"></i></a>
                                     </small>
-                                    <small>
-                                        <a href="{{ route('ubic_patio.create', Crypt::encrypt($bloque->bloque_id)) }}" class="btn-bloque" title="Añadir Ubicación"><i class="far fa-plus-square"></i></a>
-                                    </small>
                                 </td>
                                 <td>
                                     <small>

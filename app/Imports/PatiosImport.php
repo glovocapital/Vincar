@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Bloque;
 use App\Patio;
+use App\UbicPatio;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToArray;
 
@@ -41,6 +42,18 @@ class PatiosImport implements ToArray
                             $bloque->patio_id = $patio->patio_id;
 
                             $bloque->save();
+
+                            for ($i=1; $i <= $v[2]; $i++) { 
+                                for ($j=1; $j <= $v[3]; $j++) { 
+                                    $ubic_patio = new UbicPatio();
+
+                                    $ubic_patio->ubic_patio_fila = $i;
+                                    $ubic_patio->ubic_patio_columna = $j;
+                                    $ubic_patio->bloque_id = $bloque->bloque_id;
+                                    
+                                    $ubic_patio->save();
+                                }
+                            }
                         }
                         DB::commit();
                     } catch (\Throwable $th) {
@@ -83,6 +96,18 @@ class PatiosImport implements ToArray
                             $bloque->patio_id = $patio->patio_id;
 
                             $bloque->save();
+
+                            for ($i=1; $i <= $v[2]; $i++) { 
+                                for ($j=1; $j <= $v[3]; $j++) { 
+                                    $ubic_patio = new UbicPatio();
+
+                                    $ubic_patio->ubic_patio_fila = $i;
+                                    $ubic_patio->ubic_patio_columna = $j;
+                                    $ubic_patio->bloque_id = $bloque->bloque_id;
+                                    
+                                    $ubic_patio->save();
+                                }
+                            }
                         }
                         DB::commit();
                     } catch (\Throwable $th) {

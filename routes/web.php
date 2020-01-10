@@ -107,8 +107,6 @@ Route::get('bloque/{id}/edit','BloqueController@edit')->name('bloque.edit');
 Route::post('bloque','BloqueController@store')->name('bloque.store');
 Route::patch('bloque/{id}/update','BloqueController@update')->name('bloque.update');
 Route::get('bloque/{id}/delete','BloqueController@destroy')->name('bloque.destroy');
-Route::get('bloque/cargar_patios','BloqueController@cargarPatios')->name('bloque.cargar_patios');
-Route::post('bloque/store_patios','BloqueController@storePatios')->name('bloque.store_patios');
 
 //Rutas mantenedor Ubicación en Bloque o Patio
 Route::get('ubic_patio/{id_bloque}/index', 'UbicPatioController@index')->name('ubic_patio.index');
@@ -117,8 +115,6 @@ Route::get('ubic_patio/{id}/edit','UbicPatioController@edit')->name('ubic_patio.
 Route::post('ubic_patio/store','UbicPatioController@store')->name('ubic_patio.store');
 Route::patch('ubic_patio/{id}/update','UbicPatioController@update')->name('ubic_patio.update');
 Route::get('ubic_patio/{id}/delete','UbicPatioController@destroy')->name('ubic_patio.destroy');
-Route::get('ubic_patio/cargar_patios','UbicPatioController@cargarPatios')->name('ubic_patio.cargar_patios');
-Route::post('ubic_patio/store_patios','UbicPatioController@storePatios')->name('ubic_patio.store_patios');
 
 //Manejo de Thumbnail de imágenes
 Route::resource('thumbnail', 'ThumbnailController');
