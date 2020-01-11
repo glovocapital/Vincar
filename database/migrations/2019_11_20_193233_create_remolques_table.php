@@ -25,7 +25,7 @@ class CreateRemolquesTable extends Migration
             $table->string('remolque_foto_documentos')->nullable();
 
             $table->unsignedBigInteger('empresa_id');
-            $table->foreign('empresa_id')->references('empresa_id')->on('empresas')->onDelete('cascade');
+            $table->foreign('empresa_id')->references('empresa_id')->on('empresas')->onDelete('cascade')->onUpdate('cascade')->onDelete('cascade');
 
             $table->timestamps();
         });

@@ -21,10 +21,10 @@ class CreateLicenciasTable extends Migration
             $table->string('licencia_fecha_vencimiento');
             
             $table->unsignedBigInteger('tipo_licencia_id');
-            $table->foreign('tipo_licencia_id')->references('tipo_licencia_id')->on('tipo_licencias');
+            $table->foreign('tipo_licencia_id')->references('tipo_licencia_id')->on('tipo_licencias')->onUpdate('cascade')->onDelete('cascade');
             
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('user_id')->on('users');
+            $table->foreign('user_id')->references('user_id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             
             $table->timestamps();
         });

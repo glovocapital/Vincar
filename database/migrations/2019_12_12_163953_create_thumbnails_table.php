@@ -18,7 +18,7 @@ class CreateThumbnailsTable extends Migration
             $table->string('thumbnail_nombre');
             $table->string('thumbnail_imagen');
             $table->unsignedBigInteger('foto_id');
-            $table->foreign('foto_id')->references('foto_id')->on('fotos');
+            $table->foreign('foto_id')->references('foto_id')->on('fotos')->onUpdate('cascade')->onDelete('cascade');;
             $table->timestamps();
         });
     }

@@ -16,9 +16,9 @@ class AlterUsersTable extends Migration
         
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedBigInteger('rol_id');
-            $table->foreign('rol_id')->references('rol_id')->on('roles');
+            $table->foreign('rol_id')->references('rol_id')->on('roles')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('empresa_id');
-            $table->foreign('empresa_id')->references('empresa_id')->on('empresas');
+            $table->foreign('empresa_id')->references('empresa_id')->on('empresas')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

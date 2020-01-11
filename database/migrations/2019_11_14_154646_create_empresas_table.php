@@ -24,9 +24,9 @@ class CreateEmpresasTable extends Migration
             $table->string('empresa_email_contacto')->nullable();
             $table->boolean('empresa_es_proveedor');
             $table->unsignedBigInteger('pais_id');
-            $table->foreign('pais_id')->references('pais_id')->on('paises');
+            $table->foreign('pais_id')->references('pais_id')->on('paises')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('tipo_proveedor_id')->nullable();
-            $table->foreign('tipo_proveedor_id')->references('tipo_proveedor_id')->on('tipo_proveedores');
+            $table->foreign('tipo_proveedor_id')->references('tipo_proveedor_id')->on('tipo_proveedores')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

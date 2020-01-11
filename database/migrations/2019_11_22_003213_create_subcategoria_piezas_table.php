@@ -17,7 +17,7 @@ class CreateSubcategoriaPiezasTable extends Migration
             $table->bigIncrements('subcategoria_pieza_id');
             $table->string('subcategoria_pieza_desc');
             $table->unsignedBigInteger('categoria_pieza_id');
-            $table->foreign('categoria_pieza_id')->references('categoria_pieza_id')->on('categoria_piezas');
+            $table->foreign('categoria_pieza_id')->references('categoria_pieza_id')->on('categoria_piezas')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

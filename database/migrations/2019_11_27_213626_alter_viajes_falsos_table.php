@@ -15,7 +15,7 @@ class AlterViajesFalsosTable extends Migration
     {
         Schema::table('viajes_falsos', function (Blueprint $table) {
             $table->unsignedBigInteger('camion_id');
-            $table->foreign('camion_id')->references('camion_id')->on('camiones');
+            $table->foreign('camion_id')->references('camion_id')->on('camiones')->onUpdate('cascade')->onDelete('cascade');;
             
         });
     }
