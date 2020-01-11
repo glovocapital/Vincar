@@ -89,9 +89,10 @@
 
 
 
-
+@section('local-scripts')
 <script>
        $(document).ready(function() {
     $('#dataTableCampanias').DataTable();
 } );
 </script>
+@endsection

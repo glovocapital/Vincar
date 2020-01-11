@@ -29,6 +29,6 @@ class CreateTipoCampaniasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('campanias');
+        Schema::dropIfExists('tipo_campanias');
     }
 }

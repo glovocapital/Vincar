@@ -6,6 +6,8 @@ use App\TipoCampania;
 use Illuminate\Http\Request;
 use App\Http\Middleware\CheckSession;
 use App\Http\Middleware\PreventBackHistory;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Crypt;
 
 class TipoCampaniaController extends Controller
 {
@@ -36,7 +38,7 @@ class TipoCampaniaController extends Controller
      */
     public function create()
     {
-        //
+        return view('tipo_campania.create');
     }
 
     /**
@@ -47,7 +49,19 @@ class TipoCampaniaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $tipoCampania = new TipoCampania();
+
+        $tipoCampania->tipo_campania_descripcion = $request->tipo_campania_descripcion;
+        
+        if($tipoCampania->save()){
+            flash('Tipo de Campaña creado exitosamente.')->success();
+            
+            return redirect()->action('TipoCampaniaController@index');
+        } else {
+            flash('Error creando nuevo tipo de campaña.')->error();
+            
+            return redirect()->action('TipoCampaniaController@index');
+        }
     }
 
     /**
@@ -67,9 +81,17 @@ class TipoCampaniaController extends Controller
      * @param  \App\TipoCampania  $tipoCampania
      * @return \Illuminate\Http\Response
      */
-    public function edit(TipoCampania $tipoCampania)
+    public function edit($id_tipo_campania)
     {
-        //
+        try {
+            $tipo_campania_id = Crypt::decrypt($id_tipo_campania);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        $tipoCampania = TipoCampania::findOrFail($tipo_campania_id);
+
+        return view('tipo_campania.edit', compact('tipoCampania'));
     }
 
     /**
@@ -79,9 +101,21 @@ class TipoCampaniaController extends Controller
      * @param  \App\TipoCampania  $tipoCampania
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TipoCampania $tipoCampania)
+    public function update(Request $request)
     {
-        //
+        $tipoCampania = TipoCampania::findOrFail($request->tipo_campania_id);
+
+        $tipoCampania->tipo_campania_descripcion = $request->tipo_campania_descripcion;
+        
+        if($tipoCampania->save()){
+            flash('Tipo de Campaña creado exitosamente.')->success();
+            
+            return redirect()->action('TipoCampaniaController@index');
+        } else {
+            flash('Error creando nuevo tipo de campaña.')->error();
+            
+            return redirect()->action('TipoCampaniaController@index');
+        }
     }
 
     /**
@@ -90,8 +124,22 @@ class TipoCampaniaController extends Controller
      * @param  \App\TipoCampania  $tipoCampania
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TipoCampania $tipoCampania)
+    public function destroy($id)
     {
-        //
+        $tipo_campania_id =  Crypt::decrypt($id);
+
+        $tipoCampania = TipoCampania::findOrfail($tipo_campania_id);
+
+        $tipoCampania->delete();
+        
+        try {
+
+            flash('Los datos de la campaña han sido eliminados satisfactoriamente.')->success();
+            return redirect()->action('TipoCampaniaController@index');
+        }catch (\Exception $e) {
+
+            flash('Error al intentar eliminar los datos de la campaña.')->error();
+            return redirect()->action('TipoCampaniaController@index');
+        }
     }
 }
