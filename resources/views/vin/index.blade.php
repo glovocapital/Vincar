@@ -90,35 +90,35 @@
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                     <label for="vin_numero" >Vin <strong>*</strong></label>
-                                    {!! Form::textarea('vin_numero[]', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none', 'required']) !!}
+                                    {!! Form::textarea('vin_numero[]', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none']) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                     <label for="user_id" >Seleccionar Cliente <strong>*</strong></label>
-                                    {!! Form::select('user_id', $users, null,['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente', 'required'=>'required']) !!}
+                                    {!! Form::select('user_id', $users, null,['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
 
                             <div class="form-group">
                                 <label for="estado_nombre" >Seleccionar Estado <strong>*</strong></label>
-                                {!! Form::select('estadoinventario_nombre', $estadosInventario, null,['id' => 'estadoinventario', 'placeholder'=>'Estado', 'class'=>'form-control col-sm-9 select-cliente', 'required'=>'required']) !!}
+                                {!! Form::select('estadoinventario_nombre', $estadosInventario, null,['id' => 'estadoinventario', 'placeholder'=>'Estado', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                     <label for="user_id" >Seleccionar Patio <strong>*</strong></label>
-                                    {!! Form::select('patio_nombre', $patios, null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente', 'required'=>'required']) !!}
+                                    {!! Form::select('patio_nombre', $patios, null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                             <div class="form-group">
                                 <label for="marca_nombre" >Seleccionar Marca <strong>*</strong></label>
-                                {!! Form::select('marca_nombre', $marcas, null,['id' => 'estadoinventario', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9 select-cliente', 'required'=>'required']) !!}
+                                {!! Form::select('marca_nombre', $marcas, null,['id' => 'estadoinventario', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                         </div>
                     </div>
                     <div class="text-right pb-5">
-                        {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                        {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
                         {!! Form::close() !!}
                     </div>
                 </div>
@@ -197,7 +197,9 @@
 
 @stop
 @section('local-scripts')
-    <script>
+
+
+<script>
         $(document).ready(function () {
 
             $(".select-empresa").change(function (e) {
@@ -310,3 +312,5 @@
         });
     </script>
 @endsection
+
+

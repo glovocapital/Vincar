@@ -421,6 +421,22 @@ class VinController extends Controller
 
     public function search(Request $request)
     {
-        dd($request);
+
+        if(is_null($request))
+        {
+            dd(1);
+        }else {
+
+            $vins = DB::table('vins')
+                ->where('user_id',$request->user_id)
+                ->get();
+
+                dd($vins);
+
+
+        }
+
+
+
     }
 }
