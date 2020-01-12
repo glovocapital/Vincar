@@ -135,6 +135,14 @@ Route::post('proveedor','TipoProveedorController@store')->name('proveedor.store'
 Route::patch('proveedor/{id}/update','TipoProveedorController@update')->name('proveedor.update');
 Route::get('proveedor/{id}/delete','TipoProveedorController@destroy')->name('proveedor.destroy');
 
+//ruta mantenedor tipo de campaña
+Route::get('tipo_campania', 'TipoCampaniaController@index')->name('tipo_campania.index');
+Route::get('tipo_campania/create','TipoCampaniaController@create')->name('tipo_campania.create');
+Route::get('tipo_campania/{id}/edit','TipoCampaniaController@edit')->name('tipo_campania.edit');
+Route::post('tipo_campania','TipoCampaniaController@store')->name('tipo_campania.store');
+Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
+Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
+
 //ruta mantenedor destinos
 Route::get('destinos', 'DestinoController@index')->name('destinos.index');
 Route::get('destinos/create','DestinoController@create')->name('destinos.create');

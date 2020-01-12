@@ -30,6 +30,9 @@ class DatabaseSeeder extends Seeder
         $this->call(ValorAsociadoSeeder::class);
         $this->call(TipoLicenciaSeeder::class);
         $this->call(ChileTableSeeder::class);
+        $this->call(TipoCampaniaSeeder::class);
+        $this->call(TipoTareaSeeder::class);
+        $this->call(TipoDestinoSeeder::class);
 
         // $this->call(UsersTableSeeder::class);
     }
