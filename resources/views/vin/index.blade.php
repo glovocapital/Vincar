@@ -85,7 +85,7 @@
                         </div>
                 </div>
                 <div class="card-body">
-                    {!! Form::open(['route'=> 'vin.search', 'method'=>'POST']) !!}
+                    {!! Form::open(['route'=> 'vin.index', 'method'=>'get']) !!}
                     <div class="row">
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
@@ -102,18 +102,18 @@
 
                             <div class="form-group">
                                 <label for="estado_nombre" >Seleccionar Estado <strong>*</strong></label>
-                                {!! Form::select('estadoinventario_nombre', $estadosInventario, null,['id' => 'estadoinventario', 'placeholder'=>'Estado', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                {!! Form::select('estadoinventario_id', $estadosInventario, null,['id' => 'estadoinventario', 'placeholder'=>'Estado', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                     <label for="user_id" >Seleccionar Patio <strong>*</strong></label>
-                                    {!! Form::select('patio_nombre', $patios, null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                    {!! Form::select('patio_id', $patios, null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                             <div class="form-group">
                                 <label for="marca_nombre" >Seleccionar Marca <strong>*</strong></label>
-                                {!! Form::select('marca_nombre', $marcas, null,['id' => 'estadoinventario', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                {!! Form::select('marca_id', $marcas, null,['id' => 'estadoinventario', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                         </div>
                     </div>
@@ -154,14 +154,14 @@
                                         <th>Segmento</th>
                                         <th>Fecha de Ingreso</th>
                                         <th>Cliente</th>
-                                        <th>Estado Inventario</th>
+                                        <th>Estado</th>
                                     <!--  <th>Sub Estado Inventario </th>  -->
                                         <th>Acci&oacute;n</th>
 
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($vins as $vin)
+                                @foreach($tabla_vins as $vin)
                                 <tr>
                                     <td><small>{{ $vin->vin_codigo }}</small></td>
                                     <td><small>{{ $vin->vin_patente }}</small></td>
@@ -171,8 +171,9 @@
                                     <td><small>{{ $vin->vin_motor }}</small></td>
                                     <td><small>{{ $vin->vin_segmento }}</small></td>
                                     <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
-                                    <td><small>{{ $vin->oneUser->user_nombre.' '.$vin->oneUser->user_apellido }}</small></td>
-                                    <td><small>{{ $vin->oneVinEstadoInventario() }}</small></td>
+                                    <td><small>{{ $vin->user_nombre }} {{ $vin->user_apellido }}</small></td>
+                                    <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
+
                                     <td>
                                         <small>
                                             <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
