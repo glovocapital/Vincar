@@ -24,7 +24,7 @@ class CreateVinsTable extends Migration
             $table->string('vin_segmento')->nullable();
             $table->date('vin_fec_ingreso');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('user_id')->on('users');
+            $table->foreign('user_id')->references('user_id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

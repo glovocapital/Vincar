@@ -17,15 +17,15 @@ class CreateDanoPiezasTable extends Migration
             $table->bigIncrements('dano_pieza_id');
             $table->text('dano_pieza_observaciones');
             $table->unsignedBigInteger('inspeccion_id');
-            $table->foreign('inspeccion_id')->references('inspeccion_id')->on('inspecciones');
+            $table->foreign('inspeccion_id')->references('inspeccion_id')->on('inspecciones')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('pieza_id');
-            $table->foreign('pieza_id')->references('pieza_id')->on('piezas');
+            $table->foreign('pieza_id')->references('pieza_id')->on('piezas')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('tipo_dano_id');
-            $table->foreign('tipo_dano_id')->references('tipo_dano_id')->on('tipo_danos');
+            $table->foreign('tipo_dano_id')->references('tipo_dano_id')->on('tipo_danos')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('gravedad_id');
-            $table->foreign('gravedad_id')->references('gravedad_id')->on('gravedades');
+            $table->foreign('gravedad_id')->references('gravedad_id')->on('gravedades')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('pieza_sub_area_id')->nullable();
-            $table->foreign('pieza_sub_area_id')->references('pieza_sub_area_id')->on('pieza_sub_areas');
+            $table->foreign('pieza_sub_area_id')->references('pieza_sub_area_id')->on('pieza_sub_areas')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

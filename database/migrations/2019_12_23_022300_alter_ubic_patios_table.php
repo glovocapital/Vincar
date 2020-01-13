@@ -15,7 +15,7 @@ class AlterUbicPatiosTable extends Migration
     {
         Schema::table('ubic_patios', function (Blueprint $table) {
             $table->unsignedBigInteger('bloque_id');
-            $table->foreign('bloque_id')->references('bloque_id')->on('bloques');
+            $table->foreign('bloque_id')->references('bloque_id')->on('bloques')->onUpdate('cascade')->onDelete('cascade');;
             $table->dropForeign('ubic_patios_patio_id_foreign');
             $table->dropColumn('patio_id');
             $table->softDeletes();

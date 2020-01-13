@@ -17,7 +17,7 @@ class CreateComunasTable extends Migration
             $table->bigIncrements('comuna_id');
             $table->string('comuna_nombre');
             $table->unsignedBigInteger('region_id');
-            $table->foreign('region_id')->references('region_id')->on('regiones');
+            $table->foreign('region_id')->references('region_id')->on('regiones')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

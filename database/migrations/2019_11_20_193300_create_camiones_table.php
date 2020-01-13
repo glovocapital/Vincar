@@ -26,7 +26,7 @@ class CreateCamionesTable extends Migration
 
 
             $table->unsignedBigInteger('empresa_id');
-            $table->foreign('empresa_id')->references('empresa_id')->on('empresas')->onDelete('cascade');
+            $table->foreign('empresa_id')->references('empresa_id')->on('empresas')->onDelete('cascade')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

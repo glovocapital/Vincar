@@ -20,7 +20,7 @@ class CreateBloquesTable extends Migration
             $table->string('bloque_columnas');
             
             $table->unsignedBigInteger('patio_id');
-            $table->foreign('patio_id')->references('patio_id')->on('patios');
+            $table->foreign('patio_id')->references('patio_id')->on('patios')->onUpdate('cascade')->onDelete('cascade');;
             
             $table->softDeletes();
             $table->timestamps();

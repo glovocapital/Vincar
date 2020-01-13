@@ -21,7 +21,7 @@ class CreateFotosTable extends Migration
             $table->decimal('foto_coord_lon', 10,8);
             $table->decimal('foto_coord_lat', 10,8);
             $table->unsignedBigInteger('dano_pieza_id');
-            $table->foreign('dano_pieza_id')->references('dano_pieza_id')->on('dano_piezas');
+            $table->foreign('dano_pieza_id')->references('dano_pieza_id')->on('dano_piezas')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

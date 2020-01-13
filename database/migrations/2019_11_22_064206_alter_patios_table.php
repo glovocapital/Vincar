@@ -15,11 +15,11 @@ class AlterPatiosTable extends Migration
     {
         Schema::table('patios', function (Blueprint $table) {
             $table->unsignedBigInteger('region_id');
-            $table->foreign('region_id')->references('region_id')->on('regiones');
+            $table->foreign('region_id')->references('region_id')->on('regiones')->onUpdate('cascade')->onDelete('cascade');
             // $table->unsignedBigInteger('provincia_id');
             // $table->foreign('provincia_id')->references('provincia_id')->on('provincias');
             $table->unsignedBigInteger('comuna_id');
-            $table->foreign('comuna_id')->references('comuna_id')->on('comunas');
+            $table->foreign('comuna_id')->references('comuna_id')->on('comunas')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

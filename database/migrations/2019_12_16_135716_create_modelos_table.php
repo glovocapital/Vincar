@@ -17,7 +17,7 @@ class CreateModelosTable extends Migration
         Schema::create('modelos', function (Blueprint $table) {
             $table->bigIncrements('modelo_id');
             $table->unsignedBigInteger('marca_id');
-            $table->foreign('marca_id')->references('marca_id')->on('marcas')->onDelete('cascade');
+            $table->foreign('marca_id')->references('marca_id')->on('marcas')->onUpdate('cascade')->onDelete('cascade');;
             $table->string('modelo_nombre');
             $table->string('modelo_tipo');
             $table->string('modelo_alias')->nullable();

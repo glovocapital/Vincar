@@ -18,9 +18,9 @@ class CreateViajesFalsosTable extends Migration
             $table->date('viaje_falso_fecha');
             
             $table->unsignedBigInteger('conductor_id');
-            $table->foreign('conductor_id')->references('user_id')->on('users');
+            $table->foreign('conductor_id')->references('user_id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('empresa_id');
-            $table->foreign('empresa_id')->references('empresa_id')->on('empresas');
+            $table->foreign('empresa_id')->references('empresa_id')->on('empresas')->onUpdate('cascade')->onDelete('cascade');
             
             $table->timestamps();
         });

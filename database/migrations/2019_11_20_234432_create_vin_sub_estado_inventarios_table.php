@@ -17,7 +17,7 @@ class CreateVinSubEstadoInventariosTable extends Migration
             $table->bigIncrements('vin_sub_estado_inventario_id');
             $table->string('vin_sub_estado_inventario_desc');
             $table->unsignedBigInteger('vin_estado_inventario_id');
-            $table->foreign('vin_estado_inventario_id')->references('vin_estado_inventario_id')->on('vin_estado_inventarios');
+            $table->foreign('vin_estado_inventario_id')->references('vin_estado_inventario_id')->on('vin_estado_inventarios')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }
