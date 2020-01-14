@@ -555,10 +555,6 @@ class VinController extends Controller
             $patio_id = 0;
         }
 
-
-
-
-
         $tabla_vins = DB::table('vins')
             ->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
             ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
@@ -571,8 +567,50 @@ class VinController extends Controller
 
             return view('vin.index', compact('tabla_vins'));
 
+    }
+
+    public function editarestado($id)
+    {
+        $vin_id =  Crypt::decrypt($id);
+        $vin = Vin::findOrfail($vin_id);
+
+        $user = User::find($vin->user_id)->first();
+
+        $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
+            ->orderBy('user_id')
+            ->pluck('user_nombres', 'user_id')
+            ->all();
+
+        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
+            ->orderBy('empresa_id')
+            ->pluck('empresa_razon_social', 'empresa_id')
+            ->all();
+
+        $estadosInventario = DB::table('vin_estado_inventarios')
+            ->select('vin_estado_inventario_id', 'vin_estado_inventario_desc')
+            ->pluck('vin_estado_inventario_desc', 'vin_estado_inventario_id');
 
 
+        return view('vin.cambiaestado', compact('vin', 'user', 'users','empresas', 'estadosInventario'));
+    }
 
+    public function cambiaestado(Request $request, $id)
+    {
+
+        $vin_id =  Crypt::decrypt($id);
+        $vin = Vin::findOrfail($vin_id);
+        try {
+            $vin->vin_estado_inventario_id = $request->vin_estado_inventario_id;
+            $vin->save();
+
+            flash('Estrado actualizado correctamente.')->success();
+            return redirect('vin');
+
+        }catch (\Exception $e) {
+
+            flash('Error al actualizar el estado del VIN.')->error();
+            flash($e->getMessage())->error();
+            return redirect('vin');
+        }
     }
 }

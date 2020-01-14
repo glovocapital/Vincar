@@ -70,6 +70,8 @@ Route::get('vin/cargamasiva','VinController@cargamasiva')->name('vin.cargamasiva
 Route::post('vin/loadexcel','VinController@loadexcel')->name('vin.loadexcel');
 Route::get('vin/download/{file}' , 'VinController@downloadFile');
 Route::post('vin/search','VinController@search')->name('vin.search');
+Route::get('vin/{id}/editarestado','VinController@editarestado')->name('vin.editarestado');
+Route::patch('vin/{id}/cambiaestado','VinController@cambiaestado')->name('vin.cambiaestado');
 
 
 
