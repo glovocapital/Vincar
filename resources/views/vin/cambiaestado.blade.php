@@ -18,34 +18,34 @@
                                 {!! Form::open(['route'=> ['vin.cambiaestado', Crypt::encrypt($vin->vin_id)], 'method'=>'PATCH']) !!}
 
                             <div class="form-group">
-                                    <label for="vin_codigo" >Código VIN <strong>*</strong></label>
+                                    <label for="vin_codigo" >Código VIN </label>
                                     {!! Form::text('vin_codigo', $vin->vin_codigo, ['class'=>'form-control col-sm-9', 'required', 'readonly']) !!}
                             </div>
 
                             <div class="form-group">
-                                <label for="vin_patente" >Patente <strong>*</strong></label>
+                                <label for="vin_patente" >Patente </label>
                                 {!! Form::text('vin_patente', $vin->vin_patente, ['class'=>'form-control col-sm-9', 'readonly']) !!}
                             </div>
 
                             <div class="form-group">
-                                    <label for="vin_marca" >Marca <strong>*</strong></label>
+                                    <label for="vin_marca" >Marca </label>
                                     {!! Form::text('vin_marca', $vin->vin_marca, ['class'=>'form-control col-sm-9', 'readonly']) !!}
                             </div>
 
                             <div class="form-group">
-                                    <label for="vin_modelo" >Modelo <strong>*</strong></label>
+                                    <label for="vin_modelo" >Modelo </label>
                                     {!! Form::text('vin_modelo', $vin->vin_modelo, ['class'=>'form-control col-sm-9', 'readonly']) !!}
                             </div>
 
                             <div class="form-group">
-                                <label for="empresa_id" >Empresa <strong>*</strong></label>
-                                {!! Form::select('empresa_id', $empresas, $user->belongsToEmpresa->empresa_id, ['class'=>'form-control col-sm-9', 'readonly']) !!}
+                                <label for="empresa_id" >Empresa </label>
+                                {!! Form::select('empresa_id', $empresas, $user->belongsToEmpresa->empresa_id, ['class'=>'form-control col-sm-9', 'disabled', 'readonly']) !!}
 
                             </div>
 
                             <div class="form-group">
-                                <label for="user_id" >Seleccionar Cliente <strong>*</strong></label>
-                                {!! Form::select('user_id',$users, $vin->user_nombres,['class'=>'form-control col-sm-9', 'readonly']) !!}
+                                <label for="user_id" >Seleccionar Cliente </label>
+                                {!! Form::select('user_id',$users, $vin->user_nombres,['class'=>'form-control col-sm-9', 'disabled', 'readonly']) !!}
                             </div>
 
                             <div class="form-group">
