@@ -21,8 +21,10 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows)
     {
 
+
         foreach ($rows as $row)
         {
+
             $fecha = date("Y-m-d",$row['fecha_de_ingreso']);
 
 
@@ -52,7 +54,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 'vin_fec_ingreso' => $fecha,
                                 'vin_estado_inventario_id' => 1,
                                 'vin_sub_estado_inventario_id' => null,
-                                'user_id' => Auth::id(),
+                                'user_id' =>  Auth::id(),
                             ]);
                         } elseif( trim($row['estado_de_inventario']) == 'Arribado' ||
                                   trim($row['estado_de_inventario']) == 'arribado' ||
@@ -88,7 +90,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 'vin_fec_ingreso' => $fecha,
                                 'vin_estado_inventario_id' => 3,
                                 'vin_sub_estado_inventario_id' => null,
-                                'user_id' => Auth::id(),
+                                'user_id' =>  Auth::id(),
                             ]);
                         } elseif( trim($row['estado_de_inventario']) == 'Disponible para la venta' ||
                                   trim($row['estado_de_inventario']) == 'Disponible Para La Venta' ||
@@ -105,7 +107,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 'vin_fec_ingreso' => $fecha,
                                 'vin_estado_inventario_id' => 4,
                                 'vin_sub_estado_inventario_id' =>null,
-                                'user_id' => Auth::id(),
+                                'user_id' =>  Auth::id(),
                             ]);
                         } elseif( trim($row['estado_de_inventario']) == 'No disponible para la venta' ||
                         trim($row['estado_de_inventario']) == ' No Disponible Para La Venta' ||
@@ -122,7 +124,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 'vin_fec_ingreso' => $fecha,
                                 'vin_estado_inventario_id' => 5,
                                 'vin_sub_estado_inventario_id' => null,
-                                'user_id' => Auth::id(),
+                                'user_id' =>  Auth::id(),
                             ]);
                         } elseif( trim($row['estado_de_inventario']) == 'Suprimido' ||
                                   trim($row['estado_de_inventario']) == 'SUPRIMIDO' ||
@@ -138,7 +140,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 'vin_fec_ingreso' => $fecha,
                                 'vin_estado_inventario_id' => 6,
                                 'vin_sub_estado_inventario_id' => null,
-                                'user_id' => Auth::id(),
+                                'user_id' =>  Auth::id(),
                             ]);
                         } elseif( trim($row['estado_de_inventario']) == 'Entregado' ||
                                   trim($row['estado_de_inventario']) == 'entregado' ||
@@ -154,7 +156,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 'vin_fec_ingreso' => $fecha,
                                 'vin_estado_inventario_id' => 7,
                                 'vin_sub_estado_inventario_id' => null,
-                                'user_id' => Auth::id(),
+                                'user_id' =>  Auth::id(),
                             ]);
                         }
                     }

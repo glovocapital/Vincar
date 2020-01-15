@@ -97,7 +97,7 @@
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                     <label for="user_id" >Seleccionar Cliente <strong>*</strong></label>
-                                    {!! Form::select('user_id', $users, null,['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                    {!! Form::select('user_id', $empresas, null,['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
 
                             <div class="form-group">
@@ -150,13 +150,13 @@
                                         <th>Modelo</th>
                                         <th>Marca</th>
                                         <th>Color</th>
-                                        <th>Motor</th>
+                                       <!-- <th>Motor</th> -->
                                         <th>Segmento</th>
                                         <th>Fecha de Ingreso</th>
                                         <th>Cliente</th>
                                         <th>Estado</th>
                                     <!--  <th>Sub Estado Inventario </th>  -->
-                                        <th>Gestión de Registro</th>
+                                     <!--   <th>Gestión de Registro</th> -->
                                         <th>Acciones de VIN</th>
 
                                     </tr>
@@ -169,33 +169,40 @@
                                     <td><small>{{ $vin->vin_modelo }}</small></td>
                                     <td><small>{{ $vin->vin_marca }}</small></td>
                                     <td><small>{{ $vin->vin_color }}</small></td>
-                                    <td><small>{{ $vin->vin_motor }}</small></td>
+                                   <!-- <td><small>{{ $vin->vin_motor }}</small></td> -->
                                     <td><small>{{ $vin->vin_segmento }}</small></td>
                                     <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
-                                    <td><small>{{ $vin->user_nombre }} {{ $vin->user_apellido }}</small></td>
+                                    <td><small>{{ $vin->empresa_razon_social }}</small></td>
                                     <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
 
-                                    <td>
+                                 <!--   <td>
+
+
                                         <small>
-                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="far fa-edit"></i></a>
-                                        </small>
-                                        <small>
-                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="far fa-clock"></i></a>
-                                        </small>
-                                       <!-- <small>
                                             <a href = "{{ route('vin.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
                                         </a>
-                                        </small> -->
+                                        </small>
 
-                                    </td>
+                                    </td> -->
 
                                     <td>
+
+                                        <small>
+                                            <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
+                                        </small>
+
+                                        <small>
+                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fa fa-flag-checkered"></i></a>
+                                        </small>
+
                                         <small>
                                             <button value="{{ $vin->vin_id }}" class="btn btn-xs btn-success btn-campania"  title="Solicitar Campaña"><i class="far fa-lightbulb"></i></button>
                                         </small>
                                         <small>
                                             <button class="btn btn-xs btn-info btn-campania"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
                                         </small>
+
+
 
                                     </td>
                                 </tr>
