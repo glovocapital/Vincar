@@ -15,6 +15,9 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
+
+
+
                                 {!! Form::open(['route'=> ['vin.cambiaestado', Crypt::encrypt($vin->vin_id)], 'method'=>'PATCH']) !!}
 
                             <div class="form-group">
@@ -54,6 +57,7 @@
 
                             </div>
                         </div>
+
 
                     </div>
                     <div class="text-right pb-5">

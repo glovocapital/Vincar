@@ -179,9 +179,12 @@
                                             <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="far fa-edit"></i></a>
                                         </small>
                                         <small>
+                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="far fa-clock"></i></a>
+                                        </small>
+                                       <!-- <small>
                                             <a href = "{{ route('vin.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
                                         </a>
-                                        </small>
+                                        </small> -->
 
                                     </td>
                                 </tr>
