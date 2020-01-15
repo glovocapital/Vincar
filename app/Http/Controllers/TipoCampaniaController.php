@@ -26,7 +26,8 @@ class TipoCampaniaController extends Controller
      */
     public function index()
     {
-        $tipoCampanias = TipoCampania::all();
+        $tipoCampanias = TipoCampania::all()
+            ->sortBy('tipo_campania_id');
 
         return view('tipo_campania.index', compact('tipoCampanias'));
     }
