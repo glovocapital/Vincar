@@ -145,6 +145,14 @@ Route::post('tipo_campania','TipoCampaniaController@store')->name('tipo_campania
 Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
 Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
 
+//ruta mantenedor campaña
+Route::get('campania', 'CampaniaController@index')->name('campania.index');
+Route::get('campania/create','CampaniaController@create')->name('campania.create');
+Route::get('campania/{id}/edit','CampaniaController@edit')->name('campania.edit');
+Route::post('campania','CampaniaController@store')->name('campania.store');
+Route::patch('campania/{id}/update','CampaniaController@update')->name('campania.update');
+Route::get('campania/{id}/delete','CampaniaController@destroy')->name('campania.destroy');
+
 //ruta mantenedor destinos
 Route::get('destinos', 'DestinoController@index')->name('destinos.index');
 Route::get('destinos/create','DestinoController@create')->name('destinos.create');

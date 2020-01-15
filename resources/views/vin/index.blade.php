@@ -113,7 +113,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="marca_nombre" >Seleccionar Marca <strong>*</strong></label>
-                                {!! Form::select('marca_id', $marcas, null,['id' => 'estadoinventario', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                {!! Form::select('marca_id', $marcas, null,['id' => 'marca', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                         </div>
                     </div>
@@ -156,14 +156,15 @@
                                         <th>Cliente</th>
                                         <th>Estado</th>
                                     <!--  <th>Sub Estado Inventario </th>  -->
-                                        <th>Acci&oacute;n</th>
+                                        <th>Gestión de Registro</th>
+                                        <th>Acciones de VIN</th>
 
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($tabla_vins as $vin)
                                 <tr>
-                                    <td><small>{{ $vin->vin_codigo }}</small></td>
+                                    <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
                                     <td><small>{{ $vin->vin_patente }}</small></td>
                                     <td><small>{{ $vin->vin_modelo }}</small></td>
                                     <td><small>{{ $vin->vin_marca }}</small></td>
@@ -184,6 +185,16 @@
                                         </small>
 
                                     </td>
+
+                                    <td>
+                                        <small>
+                                            <button value="{{ $vin->vin_id }}" class="btn btn-xs btn-success btn-campania"  title="Solicitar Campaña"><i class="far fa-lightbulb"></i></button>
+                                        </small>
+                                        <small>
+                                            <button class="btn btn-xs btn-info btn-campania"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
+                                        </small>
+
+                                    </td>
                                 </tr>
                                 @endforeach
                                 </tbody>
@@ -194,7 +205,7 @@
             </div>
     </div>
 
-
+    @include('vin.partials.modal_solicitud_campania')
 
 
 
@@ -312,6 +323,19 @@
                 }
                 /**/
 
+            });
+
+
+            //Modal Solicitar Campaña
+            $('.btn-campania').click(function (e) {
+                e.preventDefault();
+
+                var vin_id = $(this).val();
+                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
+
+                $("#vin_codigo").html("VIN: " +vin_codigo);
+
+                $("#solicitudCampaniaModal").modal('show');
             });
         });
     </script>
