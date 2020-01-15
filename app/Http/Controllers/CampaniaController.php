@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Campania;
 use App\TipoCampania;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CampaniaController extends Controller
@@ -55,9 +56,32 @@ class CampaniaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function storeModal(Request $request)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $campania = new Campania();
+
+            $campania->campania_fecha_finalizacion = $request->campania_fecha_finalizacion;
+            $campania->campania_observaciones = $request->campania_observaciones;
+            $campania->vin_id = $request->vin_id;
+            $campania->user_id = Auth::user()->user_id;
+
+            $campania->save();
+            
+            foreach ($request->tipo_campanias as $t_campania_id) {
+                $tipo_campania_id = (int)$t_campania_id;
+                DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $campania->campania_id]);
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('vin.index')->with('error-msg', 'Error asignando campaña.');
+        }
+
+        return redirect()->back(); 
     }
 
     /**

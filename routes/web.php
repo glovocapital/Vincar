@@ -150,6 +150,7 @@ Route::get('campania', 'CampaniaController@index')->name('campania.index');
 Route::get('campania/create','CampaniaController@create')->name('campania.create');
 Route::get('campania/{id}/edit','CampaniaController@edit')->name('campania.edit');
 Route::post('campania','CampaniaController@store')->name('campania.store');
+Route::post('campania/modal','CampaniaController@storeModal')->name('campania.storeModal');
 Route::patch('campania/{id}/update','CampaniaController@update')->name('campania.update');
 Route::get('campania/{id}/delete','CampaniaController@destroy')->name('campania.destroy');
 
