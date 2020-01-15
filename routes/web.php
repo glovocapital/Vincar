@@ -77,6 +77,8 @@ Route::get('vin/obtener_usuarios_empresa/{id_empresa}', ['as' => 'vin.clientes',
 Route::get('vin/obtener_sub_estados/{id_estado_inventario}', ['as' => 'vin.sub_estados', 'uses' => 'VinController@estadoInventario']);
 Route::get('vin/cargamasiva','VinController@cargamasiva')->name('vin.cargamasiva');
 Route::post('vin/loadexcel','VinController@loadexcel')->name('vin.loadexcel');
+Route::get('vin/download/{file}' , 'VinController@downloadFile');
+Route::post('vin/search','VinController@search')->name('vin.search');
 
 
 
@@ -106,6 +108,12 @@ Route::get('patio/{id}/delete','PatioController@destroy')->name('patio.destroy')
 Route::get('patio/cargar_patios','PatioController@cargarPatios')->name('patio.cargar_patios');
 Route::post('patio/store_patios','PatioController@storePatios')->name('patio.store_patios');
 Route::get('patio/obtener_comunas/{id_region}', ['as' => 'patio.comunas', 'uses' => 'PatioController@comunas']);
+//Jc
+Route::get('patio/vins_patio','PatioController@indexVinsPatio')->name('patio.vins_patio');
+Route::get('patioDashboard', 'PatioController@dashboard')->name('patio.dashboard');
+Route::get('patioBloques', 'PatioController@bloques')->name('patio.bloques');
+Route::get('TodospatioBloques', 'PatioController@Todosbloques')->name('patio.todos_bloques');
+
 
 //Rutas mantenedor bloques
 Route::get('bloque/{id_patio}/index', 'BloqueController@index')->name('bloque.index');
