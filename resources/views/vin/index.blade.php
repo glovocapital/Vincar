@@ -342,7 +342,8 @@
 
                 var vin_id = $(this).val();
                 var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
-
+                
+                $(".vin-id").val(vin_id);
                 $("#vin_codigo").html("VIN: " +vin_codigo);
 
                 $("#solicitudCampaniaModal").modal('show');

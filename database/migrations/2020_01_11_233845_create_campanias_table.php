@@ -16,7 +16,7 @@ class CreateCampaniasTable extends Migration
         Schema::create('campanias', function (Blueprint $table) {
             $table->bigIncrements('campania_id');
             $table->date('campania_fecha_finalizacion');
-            $table->string('campania_observaciones');
+            $table->string('campania_observaciones')->nullable();
             
             $table->unsignedBigInteger('vin_id');
             $table->foreign('vin_id')->references('vin_id')->on('vins')->onUpdate('cascade')->onDelete('cascade');
