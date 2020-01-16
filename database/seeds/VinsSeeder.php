@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\User;
-
+use App\Vin;
 
 class VinsSeeder extends Seeder
 {
