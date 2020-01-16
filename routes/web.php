@@ -73,10 +73,6 @@ Route::post('vin/search','VinController@search')->name('vin.search');
 Route::get('vin/{id}/editarestado','VinController@editarestado')->name('vin.editarestado');
 Route::patch('vin/{id}/cambiaestado','VinController@cambiaestado')->name('vin.cambiaestado');
 
-
-
-
-
 //Rutas mantenedor inspeccion
 Route::get('inspeccion', 'InspeccionController@index')->name('inspeccion.index');
 Route::get('inspeccion/create','InspeccionController@create')->name('inspeccion.create');
@@ -147,6 +143,7 @@ Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('
 
 //ruta mantenedor campaña
 Route::get('campania', 'CampaniaController@index')->name('campania.index');
+Route::get('planificacion', 'CampaniaController@index2')->name('planificacion.index');
 Route::get('campania/create','CampaniaController@create')->name('campania.create');
 Route::get('campania/{id}/edit','CampaniaController@edit')->name('campania.edit');
 Route::post('campania','CampaniaController@store')->name('campania.store');
