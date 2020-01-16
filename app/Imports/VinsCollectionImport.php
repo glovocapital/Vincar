@@ -25,7 +25,9 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
         foreach ($rows as $row)
         {
 
-            $fecha = date("Y-m-d",$row['fecha_de_ingreso']);
+            //$fecha = date("Y-m-d",$row['fecha_de_ingreso']);
+
+            $fecha = Carbon::now();
 
 
 
