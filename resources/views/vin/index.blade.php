@@ -67,6 +67,7 @@
                         {!! Form::submit('Exportar VIN ', ['class' => 'btn btn-info block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>
+
                 </div>
             </div>
         </div>
@@ -121,6 +122,10 @@
                         {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
                         {!! Form::close() !!}
                     </div>
+                    <div class="row">
+                        <a href="{{ route('campania.index') }}" class = 'btn btn-success'>Ver Campañas</a>
+                    </div>
+
                 </div>
             </div>
         </div>
