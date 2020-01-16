@@ -8,7 +8,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                {!! Form::open(['route'=> 'campania.storeModal', 'method'=>'POST']) !!}
+                {!! Form::open(['route'=> 'campania.storeModalTarea', 'method'=>'POST']) !!}
                 <div class="row row-fluid">
                     <div class="col-md-12">
                         <div class="form-group">
@@ -34,8 +34,25 @@
                         <div id="mensaje1" class="error" style="color: red; font-weight: bold"> Fecha requerida.</div>
                     </div>
                     <div class="col-md-6">
-                        <label for="campania_observaciones">Observaciones</label>
-                        {!! Form::textarea('campania_observaciones', null, ['placeholder'=>'Colocar observaciones', 'class'=>'form-control col-sm-12']) !!}
+                        <div class="form-group">
+                            <label for="tarea_responsable" >Usuario Responsable <strong>*</strong></label>
+                            {!! Form::select('tarea_responsable', $responsables, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-responsable']) !!}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tipo_tarea" >Tarea <strong>*</strong></label>
+                            {!! Form::select('tipo_tarea', $tipo_tareas_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-tarea']) !!}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tipo_destino" >Destino <strong>*</strong></label>
+                            {!! Form::select('tipo_destino', $tipo_destinos_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-destino']) !!}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tarea_hora_termino" >Hora de Término <strong>*</strong></label>
+                            {{ Form::time('tarea_hora_termino', null, ['class'=>'form-control col-sm-12 select-tipo-destino']) }}
+                        </div>
                     </div>
                 </div>
             </div>

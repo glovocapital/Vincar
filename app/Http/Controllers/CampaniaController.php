@@ -218,8 +218,13 @@ class CampaniaController extends Controller
         ->orWhere('rol_id', 6)
         ->get();
 
-    // dd($responsables); Continuar a partir de acá mañana 16/01 
+    $tipo_tareas_array = DB::table('tipo_tareas')
+        ->select('tipo_tarea_id', 'tipo_tarea_descripcion')
+        ->pluck('tipo_tarea_descripcion', 'tipo_tarea_id');
 
+    $tipo_destinos_array = DB::table('tipo_destinos')
+        ->select('tipo_destino_id', 'tipo_destino_descripcion')
+        ->pluck('tipo_destino_descripcion', 'tipo_destino_id');
 
     /** Listado de Campañas para la vista de planificación */
         $campanias = Campania::all()
@@ -242,7 +247,7 @@ class CampaniaController extends Controller
                 array_push($arrayTCampanias, $tCampanias);
         }
 
-        return view('planificacion.index', compact('tabla_vins', 'tipo_campanias', 'tipo_campanias_array','users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
+        return view('planificacion.index', compact('tabla_vins', 'tipo_campanias', 'tipo_campanias_array','users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables', 'tipo_tareas_array', 'tipo_destinos_array','campanias', 'tipo_campanias', 'arrayTCampanias'));
 
     }
 
@@ -265,6 +270,42 @@ class CampaniaController extends Controller
     public function storeModal(Request $request)
     {
         try {
+            DB::beginTransaction();
+
+            $campania = new Campania();
+
+            $campania->campania_fecha_finalizacion = $request->campania_fecha_finalizacion;
+            $campania->campania_observaciones = $request->campania_observaciones;
+            $campania->vin_id = $request->vin_id;
+            $campania->user_id = Auth::user()->user_id;
+
+            $campania->save();
+            
+            foreach ($request->tipo_campanias as $t_campania_id) {
+                $tipo_campania_id = (int)$t_campania_id;
+                DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $campania->campania_id]);
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('vin.index')->with('error-msg', 'Error asignando campaña.');
+        }
+
+        return redirect()->route('campania.index')->with('success', 'Campaña asignada con éxito.');; 
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeModalTarea(Request $request)
+    {
+        try {
+
+            dd($request);
             DB::beginTransaction();
 
             $campania = new Campania();
