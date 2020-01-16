@@ -94,6 +94,23 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 'vin_sub_estado_inventario_id' => null,
                                 'user_id' =>  Auth::id(),
                             ]);
+                        } elseif( trim($row['estado_de_inventario']) == 'En Patio' ||
+                                    trim($row['estado_de_inventario']) == 'EN PATIO' ||
+                                    trim($row['estado_de_inventario']) == 'en patio' ||
+                                    trim($row['estado_de_inventario']) == 'En patio') {
+                            Vin::create([
+                                'vin_codigo' => $row['vin'],
+                                'vin_patente' => $row['patente'],
+                                'vin_marca' => $row['marca'],
+                                'vin_modelo' => $row['modelo'],
+                                'vin_color' => $row['color'],
+                                'vin_motor' => $row['motor'],
+                                'vin_segmento' => $row['segmento'],
+                                'vin_fec_ingreso' => $fecha,
+                                'vin_estado_inventario_id' => 4,
+                                'vin_sub_estado_inventario_id' => null,
+                                'user_id' =>  Auth::id(),
+                            ]);
                         } elseif( trim($row['estado_de_inventario']) == 'Disponible para la venta' ||
                                   trim($row['estado_de_inventario']) == 'Disponible Para La Venta' ||
                                   trim($row['estado_de_inventario']) == 'DISPONIBLE PARA LA VENTA' ||
@@ -107,7 +124,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 'vin_motor' => $row['motor'],
                                 'vin_segmento' => $row['segmento'],
                                 'vin_fec_ingreso' => $fecha,
-                                'vin_estado_inventario_id' => 4,
+                                'vin_estado_inventario_id' => 5,
                                 'vin_sub_estado_inventario_id' =>null,
                                 'user_id' =>  Auth::id(),
                             ]);
@@ -124,7 +141,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 'vin_motor' => $row['motor'],
                                 'vin_segmento' => $row['segmento'],
                                 'vin_fec_ingreso' => $fecha,
-                                'vin_estado_inventario_id' => 5,
+                                'vin_estado_inventario_id' => 6,
                                 'vin_sub_estado_inventario_id' => null,
                                 'user_id' =>  Auth::id(),
                             ]);
@@ -140,7 +157,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 'vin_motor' => $row['motor'],
                                 'vin_segmento' => $row['segmento'],
                                 'vin_fec_ingreso' => $fecha,
-                                'vin_estado_inventario_id' => 6,
+                                'vin_estado_inventario_id' => 7,
                                 'vin_sub_estado_inventario_id' => null,
                                 'user_id' =>  Auth::id(),
                             ]);
@@ -156,7 +173,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 'vin_motor' => $row['motor'],
                                 'vin_segmento' => $row['segmento'],
                                 'vin_fec_ingreso' => $fecha,
-                                'vin_estado_inventario_id' => 7,
+                                'vin_estado_inventario_id' => 8,
                                 'vin_sub_estado_inventario_id' => null,
                                 'user_id' =>  Auth::id(),
                             ]);

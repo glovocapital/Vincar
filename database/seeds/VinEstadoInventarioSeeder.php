@@ -14,13 +14,17 @@ class VinEstadoInventarioSeeder extends Seeder
         DB::table('vin_estado_inventarios')->insert([
         	'vin_estado_inventario_desc' => 'Anunciado',
         ]);
-        
+
         DB::table('vin_estado_inventarios')->insert([
         	'vin_estado_inventario_desc' => 'Arribado',
         ]);
 
         DB::table('vin_estado_inventarios')->insert([
         	'vin_estado_inventario_desc' => 'Tránsito',
+        ]);
+
+        DB::table('vin_estado_inventarios')->insert([
+        	'vin_estado_inventario_desc' => 'En Patio',
         ]);
 
         DB::table('vin_estado_inventarios')->insert([
@@ -38,5 +42,6 @@ class VinEstadoInventarioSeeder extends Seeder
         DB::table('vin_estado_inventarios')->insert([
         	'vin_estado_inventario_desc' => 'Entregado',
         ]);
+
     }
 }
