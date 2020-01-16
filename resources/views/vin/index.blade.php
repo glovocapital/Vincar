@@ -90,7 +90,7 @@
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                     <label for="vin_numero" >Vin <strong>*</strong></label>
-                                    {!! Form::textarea('vin_numero[]', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none']) !!}
+                                    {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none']) !!}
                             </div>
                         </div>
 
@@ -147,8 +147,9 @@
                                     <tr>
                                         <th>Vin</th>
                                         <th>Patente</th>
-                                        <th>Modelo</th>
+
                                         <th>Marca</th>
+                                        <th>Modelo</th>
                                         <th>Color</th>
                                        <!-- <th>Motor</th> -->
                                         <th>Segmento</th>
@@ -162,12 +163,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+
                                 @foreach($tabla_vins as $vin)
                                 <tr>
                                     <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
                                     <td><small>{{ $vin->vin_patente }}</small></td>
-                                    <td><small>{{ $vin->vin_modelo }}</small></td>
                                     <td><small>{{ $vin->vin_marca }}</small></td>
+                                    <td><small>{{ $vin->vin_modelo }}</small></td>
                                     <td><small>{{ $vin->vin_color }}</small></td>
                                    <!-- <td><small>{{ $vin->vin_motor }}</small></td> -->
                                     <td><small>{{ $vin->vin_segmento }}</small></td>
@@ -342,7 +344,7 @@
 
                 var vin_id = $(this).val();
                 var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
-                
+
                 $(".vin-id").val(vin_id);
                 $("#vin_codigo").html("VIN: " +vin_codigo);
 

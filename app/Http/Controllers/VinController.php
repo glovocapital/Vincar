@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Crypt;
 use DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection as Collection;
 
 
 
@@ -30,7 +31,6 @@ class VinController extends Controller
         $this->middleware('auth');
         $this->middleware(PreventBackHistory::class);
         $this->middleware(CheckSession::class);
-
     }
 
     /**
@@ -73,9 +73,15 @@ class VinController extends Controller
             ->pluck('marca_nombre', 'marca_id');
 
 
+/***********A partir de aqui las consultas del cuadro de busqueda ***************/
+
+
+
         $estado = DB::table('vin_estado_inventarios')
             ->where('vin_estado_inventario_id',$request->estadoinventario_id)
             ->get();
+
+
 
         if(!empty($estado[0]->vin_estado_inventario_id)){
             $estado_id = $estado[0]->vin_estado_inventario_id;
@@ -94,17 +100,13 @@ class VinController extends Controller
         }else{
             $marca_nombre = 'Sin marca';
         }
-/********************************************************* */
-
-
-
 
         $user = DB::table('users')
             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
             ->where('user_id',$request->user_id)
             ->get();
 
-            //dd($user[0]);
+
 
         if(!empty($user[0]->empresa_id))
         {
@@ -112,7 +114,7 @@ class VinController extends Controller
         }else{
             $user_empresa_id = 0;
         }
-/********************************************************** */
+
         $patio = DB::table('patios')
             ->where('patio_id', $request->patio_id)
             ->get();
@@ -125,15 +127,70 @@ class VinController extends Controller
         }
 
 
-        $query = DB::table('vins')
-        ->join('users','users.user_id','=','vins.user_id')
-        ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-        ->where('vins.user_id',$user_empresa_id)
-        ->orWhere('vin_marca',$marca_nombre)
-        ->orWhere('vins.vin_estado_inventario_id',$estado_id);
+        if(!empty($request->vin_numero)){
 
-        $tabla_vins = $query->get();
+            foreach(explode(',',$request->vin_numero) as $row){
+                $arreglo_vins[] = trim($row);
+            }
+
+            foreach($arreglo_vins as $v){
+
+                $validate = DB::table('vins')
+                    ->where('vin_codigo', $v)
+                    ->exists();
+
+                if($validate == true){
+
+                    $vins_selec = DB::table('vins')
+                        ->join('users','users.user_id','=','vins.user_id')
+                        ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
+                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                        ->where('vin_codigo',$v)
+                        ->orWhere('vins.user_id',$user_empresa_id)
+                        ->orWhere('vin_marca',$marca_nombre)
+                        ->orWhere('vins.vin_estado_inventario_id',$estado_id)
+                        ->first();
+                    $tabla_vins[] = $vins_selec;
+                } else {
+
+                    $tabla_vins = DB::table('vins')
+                        ->join('users','users.user_id','=','vins.user_id')
+                        ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
+                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                        ->where('vins.user_id',$user_empresa_id)
+                        ->orWhere('vin_marca',$marca_nombre)
+                        ->orWhere('vins.vin_estado_inventario_id',$estado_id)
+                        ->get();
+
+                }
+            }
+        }else{
+
+            $query = DB::table('vins')
+            ->join('users','users.user_id','=','vins.user_id')
+            ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
+            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+            ->where('vins.user_id',$user_empresa_id)
+            ->orWhere('vin_marca',$marca_nombre)
+            ->orWhere('vins.vin_estado_inventario_id',$estado_id);
+
+            if($estado_id == 4 || $estado_id == 5) {
+                $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                    ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                    ->join('patios','bloques.patio_id','=','patios.patio_id')
+                    ->orWhere('patios.patio_id',$patio_id)
+                    ->get();
+
+            }else{
+                $query->get();
+            }
+
+
+            $tabla_vins = $query->get();
+        }
+
+
+
 /*
         $tabla_vins = DB::table('vins')
             // ->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
