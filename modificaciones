@@ -1,0 +1,11 @@
+1 - Creado LangMiddleware
+2 - Agrega en App->Http->Kernel en el grupo web
+3 - Se agregaron 2 rutas en Routes web (Linea 31, 49,51)
+4- Modificado la carpeta layout en views
+5- Agregado la carpeta base en public
+6-Agregado resources/lang/en/menu.php
+7--Agregado resources/lang/es/menu.php
+6-Agregado resources/lang/en/comun.php
+7--Agregado resources/lang/es/comun.php
+8- Modificado Home View
+9- Modificado HomeControler para obtener los datos para el dashboard
