@@ -171,7 +171,7 @@ class VinController extends Controller
             ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
             ->where('vins.user_id',$user_empresa_id)
-            ->orWhere('vin_marca',$marca_nombre)
+            ->orWhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre))
             ->orWhere('vins.vin_estado_inventario_id',$estado_id);
 
             if($estado_id == 4 ||$estado_id == 5 || $estado_id == 6 || $patio_id != 0) {
