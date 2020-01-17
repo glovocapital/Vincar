@@ -16,3 +16,17 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/', 'ApiController@index')->name('/');
+
+Route::post('login','ApiController@login')->name('api.login');
+
+Route::get('badge','ApiController@Badge')->name('api.badge');
+
+Route::get('list','ApiController@Lists')->name('api.list');
+
+Route::get('listvin/{vins_id}','ApiController@ListVIN')->name('api.listvin');
+
+Route::get('cambioposicion','ApiController@CambiarPosicion')->name('api.Ccmbiar_posicion');
+
+Route::post('cambioposicion','ApiController@CambiarPosicion')->name('api.Ccmbiar_posicion');
