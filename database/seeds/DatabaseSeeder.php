@@ -34,6 +34,8 @@ class DatabaseSeeder extends Seeder
         $this->call(TipoTareaSeeder::class);
         $this->call(TipoDestinoSeeder::class);
         $this->call(VinsSeeder::class);
+        $this->call(CampaniaSeeder::class);
+        $this->call(CampaniaVinSeeder::class);
 
         // $this->call(UsersTableSeeder::class);
     }
