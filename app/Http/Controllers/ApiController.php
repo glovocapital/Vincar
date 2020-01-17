@@ -178,7 +178,7 @@ class ApiController extends Controller
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
         }else{
             $Vin =DB::table('vins')
-                ->join('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
+                ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
                 ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
                 ->join('bloques', 'bloques.bloque_id','=', 'ubic_patios.bloque_id')
                 ->select('vins.vin_codigo as vin','vins.vin_modelo as modelo','vins.vin_marca as marca', 'vins.created_at as fecha'
