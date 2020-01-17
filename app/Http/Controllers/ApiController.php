@@ -129,7 +129,7 @@ class ApiController extends Controller
             // ->join('bloques', 'bloques.bloque_id','=', 'ubic_patios.bloque_id')
             ->select('vins.vin_codigo as vin','vins.vin_modelo as modelo','vins.vin_marca as marca', 'vins.created_at as fecha'
                 ,'vin_estado_inventario_desc as estado'/*,
-                'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','bloque_nombre'/* )
+                'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','bloque_nombre'*/ )
             ->orderBy('vins.updated_at','desc')
             ->get();
 
