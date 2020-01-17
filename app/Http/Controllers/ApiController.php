@@ -182,7 +182,7 @@ class ApiController extends Controller
                 ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
                 // ->join('bloques', 'bloques.bloque_id','=', 'ubic_patios.bloque_id')
                 ->select('vins.vin_codigo as vin','vins.vin_modelo as modelo','vins.vin_marca as marca', 'vins.created_at as fecha'
-                    ,'vin_estado_inventario_desc as estado'/*,
+                    ,'vin_estado_inventario_desc as estado', 'vins.vin_color'/*,
                     'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','bloque_nombre'*/ );
 
             if(strlen($vins_id)==6){
