@@ -60,7 +60,7 @@ class UsersSeeder extends Seeder
             'user_estado'       =>  '1',
             'email'			    =>  'asthar2010@gmail.com',
             'user_telefono'     =>  '04129876534',
-            'password' 		    => '123456',
+            'password' 		    =>  bcrypt('123456'),
             'rol_id'            => '1',
             'empresa_id'        => '1',
         ]);
