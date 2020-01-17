@@ -89,6 +89,7 @@ class VinController extends Controller
             $estado_id = 0;
         }
 
+
         $marca = DB::table('marcas')
             ->where('marca_id',$request->marca_id)
             ->get();
@@ -174,12 +175,14 @@ class VinController extends Controller
             ->orWhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre))
             ->orWhere('vins.vin_estado_inventario_id',$estado_id);
 
-            if($estado_id == 4 ||$estado_id == 5 || $estado_id == 6 || $patio_id != 0) {
+            if($estado_id == 4 || $estado_id == 5 || $estado_id == 6 || $patio_id != 0) {
                 $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                     ->join('patios','bloques.patio_id','=','patios.patio_id')
                     ->orWhere('patios.patio_id',$patio_id)
                     ->get();
+
+
 
             }else{
                 $query->get();
