@@ -17,21 +17,22 @@
         <a href="#Administrador" data-toggle="collapse" class="sidebar-link">
           <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">{{trans('menu.Administrador')}}</span>
         </a>
+
         <ul id="Administrador" class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar">
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('usuarios.index') }}">{{trans('menu.Usuario')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('empresa.index') }}">{{trans('menu.Clientes')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('camiones.index') }}">{{trans('menu.Camiones')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('remolque.index') }}">{{trans('menu.Remolques')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('conductores.index') }}">{{trans('menu.Conductores')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('destinos.index') }}">{{trans('menu.Destinos')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('pais.index') }}">{{trans('menu.Paises')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('inspeccion.index') }}">{{trans('menu.Dano_Faltante')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('marcas.index') }}">{{trans('menu.Marca')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('modelos.index') }}">{{trans('menu.Modelos')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('proveedor.index') }}">{{trans('menu.Proveedor')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('productos.index') }}">{{trans('menu.Productos')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('servicios.index') }}">{{trans('menu.Servicios')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('patio.index') }}">{{trans('menu.Patios_Posiciones')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='usuarios.index') active @endif"><a class="sidebar-link" href="{{ route('usuarios.index') }}">{{trans('menu.Usuario')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='empresa.index') active @endif"><a class="sidebar-link" href="{{ route('empresa.index') }}">{{trans('menu.Clientes')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='camiones.index') active @endif"><a class="sidebar-link" href="{{ route('camiones.index') }}">{{trans('menu.Camiones')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='remolque.index') active @endif"><a class="sidebar-link" href="{{ route('remolque.index') }}">{{trans('menu.Remolques')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='conductores.index') active @endif"><a class="sidebar-link" href="{{ route('conductores.index') }}">{{trans('menu.Conductores')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='destinos.index') active @endif"><a class="sidebar-link" href="{{ route('destinos.index') }}">{{trans('menu.Destinos')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='pais.index') active @endif"><a class="sidebar-link" href="{{ route('pais.index') }}">{{trans('menu.Paises')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='inspeccion.index') active @endif"><a class="sidebar-link" href="{{ route('inspeccion.index') }}">{{trans('menu.Dano_Faltante')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='marcas.index') active @endif"><a class="sidebar-link" href="{{ route('marcas.index') }}">{{trans('menu.Marca')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='modelos.index') active @endif"><a class="sidebar-link" href="{{ route('modelos.index') }}">{{trans('menu.Modelos')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='proveedor.index') active @endif"><a class="sidebar-link" href="{{ route('proveedor.index') }}">{{trans('menu.Proveedor')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='productos.index') active @endif"><a class="sidebar-link" href="{{ route('productos.index') }}">{{trans('menu.Productos')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='servicios.index') active @endif"><a class="sidebar-link" href="{{ route('servicios.index') }}">{{trans('menu.Servicios')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='patio.index') active @endif"><a class="sidebar-link" href="{{ route('patio.index') }}">{{trans('menu.Patios_Posiciones')}}</a></li>
         </ul>
       </li>
       <li class="sidebar-item">
@@ -39,9 +40,9 @@
           <i class="align-middle" data-feather="layout"></i> <span class="align-middle">Vins</span>
         </a>
         <ul id="Vins" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('vin.index') }}">{{trans('menu.Patios')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('vin.index') }}">{{trans('menu.Vins')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="{{ route('vin.index') }}">{{trans('menu.Planificacion')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='patio.vins_patio') active @endif"><a class="sidebar-link" href="{{ route('patio.vins_patio') }}">{{trans('menu.Patios')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='vin.index') active @endif"><a class="sidebar-link" href="{{ route('vin.index') }}">{{trans('menu.Vins')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='') active @endif"><a class="sidebar-link" href="">{{trans('menu.Planificacion')}}</a></li>
         </ul>
       </li>
       <li class="sidebar-item">

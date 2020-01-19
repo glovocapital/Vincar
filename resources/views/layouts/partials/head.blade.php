@@ -9,13 +9,39 @@
 
 
 <style>
-  body {
-    opacity: 0;
-  }
-  .borderless td, .borderless th {
-      border: none !important;
-      padding: 0px !important;
-  }
+    body {
+        opacity: 0;
+    }
+    .borderless td, .borderless th {
+        border: none !important;
+        padding: 0px !important;
+    }
+    .card {
+        box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12) !important;
+        transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .card-header{
+        border-bottom:  solid lightgray 2px !important;
+
+    }
+    .card-title{
+        font-size: 24px !important;
+        margin-bottom: 0px !important;
+    }
+    label{
+        font-weight: bold !important;
+    }
+    .fa-edit{
+        color: #fad430;
+        font-size: 16px !important;
+        margin-right: 5px;
+    }
+
+    .fa-trash-alt{
+        color: #ca4949;
+        font-size: 16px !important;
+    }
+
 </style>
 <script  src="{{ asset('base/js/settings.js') }}"></script>
 

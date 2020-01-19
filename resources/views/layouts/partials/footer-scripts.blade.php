@@ -2,16 +2,18 @@
 <script>
     $(function () {
 
-        if ("#dataTableAusentismo") {
+        if ($(".card-tools").length > 0)
             $(".card-tools").hide();
 
-            var datatablesButtons = $("#dataTableAusentismo").DataTable({
+        if ($('[id*="dataTable"]').length > 0) {
+
+            var datatablesButtons = $('[id*="dataTable"]').DataTable({
                 responsive: true,
                 lengthChange: !1,
                 @if(Session::get('lang')=="es")
                 language: {
-                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-                 },
+                    "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                },
                 @endif
                 buttons: ["copy", "print"],
 
@@ -22,6 +24,9 @@
         }
 
     });
+
+
+
 
 
 </script>
