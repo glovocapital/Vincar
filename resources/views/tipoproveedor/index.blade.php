@@ -2,6 +2,7 @@
 @section('title','Tipo de proveedor index')
 @section('content')
 
+    <div class="row">
 <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="card card-default">
@@ -37,7 +38,9 @@
             </div>
         </div>
     </div>
+    </div>
 
+    <div class="row">
 
     <div class="col-lg-12">
             <div class="ibox float-e-margins">
@@ -58,6 +61,7 @@
                         <thead>
                             <tr>
                                 <th>Nombre</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,6 +89,7 @@
     </div>
 </div>
 </div>
+    </div>
 @stop
 
 

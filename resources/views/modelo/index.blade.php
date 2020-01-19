@@ -2,6 +2,7 @@
 @section('title','Empresa index')
 @section('content')
 
+    <div class="row">
 <div class="col-lg-12">
     <div class="ibox float-e-margins">
         <div class="card card-default">
@@ -53,9 +54,9 @@
         </div>
     </div>
 </div>
+    </div>
 
-
-
+    <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
                 <div class="card card-default">
@@ -68,11 +69,11 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                                <hr class="mb-4">
+                               
 
 
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="dataTablePais" width="100%" cellspacing="0">
+                                    <table class="table table-hover" id="dataTableModelo" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th>Marca</th>
@@ -116,10 +117,3 @@
 
 @stop
 
-
-
-<script>
-       $(document).ready(function() {
-    $('#dataTablePais').DataTable();
-} );
-</script>
