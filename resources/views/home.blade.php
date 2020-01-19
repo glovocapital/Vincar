@@ -289,15 +289,7 @@
     <script>
         $(function(){
 
-            var defaultMap = {
-                zoom: 14,
-                center: {
-                    lat: 40.712784,
-                    lng: -74.005941
-                },
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            new google.maps.Map(document.getElementById("base_map"), defaultMap);
+
 
             $.ajax({
                 url: '{{ route('home.dashboard') }}',
@@ -330,6 +322,21 @@
                 }
             });
 
+
+
+            var defaultMap = {
+                zoom: 14,
+                center: {
+                    lat: 40.712784,
+                    lng: -74.005941
+                },
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            
+            if(!(typeof google === 'undefined'))
+
+            google.maps.Map(document.getElementById("base_map"), defaultMap);
 
         });
     </script>
