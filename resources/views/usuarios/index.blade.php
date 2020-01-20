@@ -28,7 +28,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="user_nombre" >Apellido del usuario <strong>*</strong></label>
+                            <label for="user_nombre" >Apellido  <strong>*</strong></label>
                             {!! Form::text('user_apellido', null, ['placeholder'=>'Apellido del usuario', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
 
@@ -74,7 +74,7 @@
                         <div class="form-group">
                             <label for="rol_id" >Rol <strong>*</strong></label>
                             {!! Form::select('rol_id', $roles, null,['placeholder'=>'Seleccionar Rol', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                        </div>                            
+                        </div>
                     </div>
                 </div>
 
