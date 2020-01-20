@@ -1,17 +1,32 @@
-<!-- jQuery -->
+<script src="{{ asset('base/js/app.js') }}"></script>
+<script>
+    $(function () {
 
-<script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
+        if ($(".card-tools").length > 0)
+            $(".card-tools").hide();
 
-<!-- Bootstrap 4 -->
+        if ($('[id*="dataTable"]').length > 0) {
 
-<script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+            var datatablesButtons = $('[id*="dataTable"]').DataTable({
+                responsive: true,
+                lengthChange: !1,
+                @if(Session::get('lang')=="es")
+                language: {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                },
+                @endif
+                buttons: ["copy", "print"],
 
-<!-- overlayScrollbars -->
+            });
 
-<script src="{{ asset('adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+            datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
 
-<!-- AdminLTE App -->
-<script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
+        }
 
-<!-- AdminLTE for demo purposes -->
-<script src="{{ asset('adminlte/dist/js/demo.js') }}"></script>
+    });
+
+
+
+
+
+</script>

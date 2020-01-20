@@ -2,24 +2,23 @@
 @section('title','Vin index')
 @section('content')
 
-
+<div class="row">
 <div class="col-lg-4">
     <div class="ibox float-e-margins">
-        <div class="card card-default">
+        <div class="card card-default text-center">
             <div class="card-header">
-                <h3 class="card-title">Cargar Vehiculos </h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                </div>
+                <h3 class="card-title text-center">Cargar Vehiculos </h3>
+
             </div>
             <div class="card-body">
                 <div class="row">
+                    <div class="col-lg-12">
                     {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
                     <div class="text pb-5">
                         {!! Form::submit('Registrar vin ', ['class' => 'btn btn-success block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>
+                    </div>
                 </div>
 
             </div>
@@ -29,21 +28,20 @@
 
 <div class="col-lg-4">
     <div class="ibox float-e-margins">
-        <div class="card card-default">
+        <div class="card card-default text-center">
             <div class="card-header">
                 <h3 class="card-title">Vehiculos N/N  </h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                </div>
+
             </div>
             <div class="card-body">
                 <div class="row">
+                    <div class="col-lg-12">
                     {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
                     <div class="text pb-5">
                         {!! Form::submit('Vehiculos N/N ', ['class' => 'btn btn-primary block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -51,16 +49,14 @@
 </div>
 <div class="col-lg-4">
     <div class="ibox float-e-margins">
-        <div class="card card-default">
+        <div class="card card-default text-center">
             <div class="card-header">
                 <h3 class="card-title">Exportar Tabla</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                    </div>
+
             </div>
             <div class="card-body">
                 <div class="row">
+                    <div class="col-lg-12">
                     {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
                     <div class="text pb-5">
 
@@ -68,22 +64,22 @@
                         {!! Form::close() !!}
                     </div>
 
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+</div>
 
-
+<div class="row">
 <div class="col-lg-12">
-        <div class="ibox float-e-margins">
+        <div class="ibox float-e-margins text-center">
             <div class="card card-default">
                 <div class="card-header">
                     <h3 class="card-title">Buscar Vin</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                        </div>
+
                 </div>
                 <div class="card-body">
                     {!! Form::open(['route'=> 'vin.index', 'method'=>'get']) !!}
@@ -133,9 +129,8 @@
 </div>
 
 
-<br />
-
-    <div class="col-lg-12">
+<div class="row">
+ <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="card card-default">
                     <div class="card-header">
@@ -221,10 +216,10 @@
                 </div>
             </div>
     </div>
+</div>
 
-    @include('vin.partials.modal_solicitud_campania')
 
-
+@include('vin.partials.modal_solicitud_campania')
 
 
 @stop

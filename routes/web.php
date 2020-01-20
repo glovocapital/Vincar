@@ -28,6 +28,14 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
 
+//Jc
+Route::get('lang/{lang}', function ($lang) {
+    session()->put('lang', $lang);
+
+    return redirect()->back();
+})->where([
+    'lang' => 'en|es'
+]);
 /*
 Route::get('/', function () {
     return view('welcome');
@@ -36,10 +44,11 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false]);
 
-
-
 /***** Una vez creado los middleware se dividen las rutas por rol *****/
 Route::group(['middleware' => ['CheckRol:SuperAdministrador']], function () {
+    //Jc
+Route::get('home', 'HomeController@index')->name('home');
+Route::get('homeDashboard', 'HomeController@Dashboard')->name('home.dashboard');
 
 //Rutas mantenedor usuarios
 Route::get('usuarios', 'UserController@index')->name('usuarios.index');
@@ -97,6 +106,12 @@ Route::get('patio/{id}/delete','PatioController@destroy')->name('patio.destroy')
 Route::get('patio/cargar_patios','PatioController@cargarPatios')->name('patio.cargar_patios');
 Route::post('patio/store_patios','PatioController@storePatios')->name('patio.store_patios');
 Route::get('patio/obtener_comunas/{id_region}', ['as' => 'patio.comunas', 'uses' => 'PatioController@comunas']);
+//Jc
+Route::get('patio/vins_patio','PatioController@indexVinsPatio')->name('patio.vins_patio');
+Route::get('patioDashboard', 'PatioController@dashboard')->name('patio.dashboard');
+Route::get('patioBloques', 'PatioController@bloques')->name('patio.bloques');
+Route::get('TodospatioBloques', 'PatioController@Todosbloques')->name('patio.todos_bloques');
+
 
 //Rutas mantenedor bloques
 Route::get('bloque/{id_patio}/index', 'BloqueController@index')->name('bloque.index');
@@ -105,6 +120,8 @@ Route::get('bloque/{id}/edit','BloqueController@edit')->name('bloque.edit');
 Route::post('bloque','BloqueController@store')->name('bloque.store');
 Route::patch('bloque/{id}/update','BloqueController@update')->name('bloque.update');
 Route::get('bloque/{id}/delete','BloqueController@destroy')->name('bloque.destroy');
+Route::get('bloque/cargar_patios','BloqueController@cargarPatios')->name('bloque.cargar_patios');
+Route::post('bloque/store_patios','BloqueController@storePatios')->name('bloque.store_patios');
 
 //Rutas mantenedor Ubicación en Bloque o Patio
 Route::get('ubic_patio/{id_bloque}/index', 'UbicPatioController@index')->name('ubic_patio.index');
@@ -113,6 +130,8 @@ Route::get('ubic_patio/{id}/edit','UbicPatioController@edit')->name('ubic_patio.
 Route::post('ubic_patio/store','UbicPatioController@store')->name('ubic_patio.store');
 Route::patch('ubic_patio/{id}/update','UbicPatioController@update')->name('ubic_patio.update');
 Route::get('ubic_patio/{id}/delete','UbicPatioController@destroy')->name('ubic_patio.destroy');
+Route::get('ubic_patio/cargar_patios','UbicPatioController@cargarPatios')->name('ubic_patio.cargar_patios');
+Route::post('ubic_patio/store_patios','UbicPatioController@storePatios')->name('ubic_patio.store_patios');
 
 //Manejo de Thumbnail de imágenes
 Route::resource('thumbnail', 'ThumbnailController');

@@ -1,29 +1,48 @@
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Cloud Warehouse & Transport </title>
-  <!-- Tell the browser to be responsive to screen width -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="{{ asset('adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+<meta name="author" content="Vinca CL">
+<link rel="icon" type="image/ico" href="{{ asset('favicon.ico') }}">
 
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
-  
-  <!-- Google Font: Source Sans Pro -->
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+<title>Cloud Warehouse & Transport</title>
 
-  <!-- jQuery CDN 3.4.1 min -->
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js" 
-          integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-          crossorigin="anonymous">
-  </script>
 
-  <!-- Datatable -->
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
-<!-- Datatable -->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+<style>
+    body {
+        opacity: 0;
+    }
+    .borderless td, .borderless th {
+        border: none !important;
+        padding: 0px !important;
+    }
+    .card {
+        box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12) !important;
+        transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .card-header{
+        border-bottom:  solid lightgray 2px !important;
+
+    }
+    .card-title{
+        font-size: 24px !important;
+        margin-bottom: 0px !important;
+    }
+    label{
+        font-weight: bold !important;
+    }
+    .fa-edit{
+        color: #fad430;
+        font-size: 16px !important;
+        margin-right: 5px;
+    }
+
+    .fa-trash-alt{
+        color: #ca4949;
+        font-size: 16px !important;
+    }
+
+</style>
+<script  src="{{ asset('base/js/settings.js') }}"></script>
+
+<link href="{{ asset('base/css/classic.css') }}" type="text/css" rel="stylesheet">
