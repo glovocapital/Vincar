@@ -108,7 +108,6 @@ class VinController extends Controller
             ->get();
 
 
-
         if(!empty($user[0]->empresa_id))
         {
             $user_empresa_id = $user[0]->empresa_id;
@@ -138,6 +137,7 @@ class VinController extends Controller
 
                 $validate = DB::table('vins')
                     ->where('vin_codigo', $v)
+                    ->orWhere('vin_patente', $v)
                     ->exists();
 
                 if($validate == true){
@@ -147,13 +147,13 @@ class VinController extends Controller
                         ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                         ->join('empresas','users.empresa_id','=','empresas.empresa_id')
                         ->where('vin_codigo',$v)
+                        ->orWhere('vin_patente',$v)
                         ->orWhere('vins.user_id',$user_empresa_id)
                         ->orWhere('vin_marca',$marca_nombre)
                         ->orWhere('vins.vin_estado_inventario_id',$estado_id)
                         ->first();
                     $tabla_vins[] = $vins_selec;
                 } else {
-
                     $tabla_vins = DB::table('vins')
                         ->join('users','users.user_id','=','vins.user_id')
                         ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
@@ -174,6 +174,8 @@ class VinController extends Controller
             ->where('vins.user_id',$user_empresa_id)
             ->orWhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre))
             ->orWhere('vins.vin_estado_inventario_id',$estado_id);
+           // ->tosql();
+           // dd($query);
 
             if($estado_id == 4 || $estado_id == 5 || $estado_id == 6 || $patio_id != 0) {
                 $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')

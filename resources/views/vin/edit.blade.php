@@ -19,7 +19,7 @@
 
                             <div class="form-group">
                                     <label for="vin_codigo" >Código VIN <strong>*</strong></label>
-                                    {!! Form::text('vin_codigo', $vin->vin_codigo, ['class'=>'form-control col-sm-9', 'required']) !!}
+                                    {!! Form::text('vin_codigo', $vin->vin_codigo, ['class'=>'form-control col-sm-9', 'readonly']) !!}
                             </div>
 
                             <div class="form-group">

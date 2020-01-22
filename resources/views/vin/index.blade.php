@@ -86,30 +86,30 @@
                     <div class="row">
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
-                                    <label for="vin_numero" >Vin <strong>*</strong></label>
+                                    <label for="vin_numero" >Vin / Patente</label>
                                     {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none']) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
-                                    <label for="user_id" >Seleccionar Cliente <strong>*</strong></label>
+                                    <label for="user_id" >Seleccionar Cliente </label>
                                     {!! Form::select('user_id', $empresas, null,['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
 
                             <div class="form-group">
-                                <label for="estado_nombre" >Seleccionar Estado <strong>*</strong></label>
+                                <label for="estado_nombre" >Seleccionar Estado </label>
                                 {!! Form::select('estadoinventario_id', $estadosInventario, null,['id' => 'estadoinventario', 'placeholder'=>'Estado', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
-                                    <label for="user_id" >Seleccionar Patio <strong>*</strong></label>
+                                    <label for="user_id" >Seleccionar Patio </label>
                                     {!! Form::select('patio_id', $patios, null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                             <div class="form-group">
-                                <label for="marca_nombre" >Seleccionar Marca <strong>*</strong></label>
+                                <label for="marca_nombre" >Seleccionar Marca </label>
                                 {!! Form::select('marca_id', $marcas, null,['id' => 'marca', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                         </div>
@@ -203,7 +203,9 @@
                                         <small>
                                             <button class="btn btn-xs btn-info btn-campania"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
                                         </small>
-
+                                        <button  value="{{ $vin->vin_id }}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                            Launch demo modal
+                                          </button>
 
 
                                     </td>
@@ -220,6 +222,7 @@
 
 
 @include('vin.partials.modal_solicitud_campania')
+
 
 
 @stop
