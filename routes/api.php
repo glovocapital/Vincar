@@ -27,6 +27,9 @@ Route::get('list','ApiController@Lists')->name('api.list');
 
 Route::get('listvin/{vins_id}','ApiController@ListVIN')->name('api.listvin');
 
-Route::get('cambioposicion','ApiController@CambiarPosicion')->name('api.Ccmbiar_posicion');
+Route::get('listbloq/{patio_id}','ApiController@ListBloques')->name('api.listbloq');
 
-Route::post('cambioposicion','ApiController@CambiarPosicion')->name('api.Ccmbiar_posicion');
+Route::get('listpos/{bloque_id}','ApiController@ListPosicion')->name('api.listpos');
+
+
+Route::post('guardarposicion','ApiController@CambiarPosicion')->name('api.Ccmbiar_posicion');
