@@ -41,7 +41,7 @@
                         @foreach($ubic_patios as $ubic_patio)
 
                             <tr>
-                                @if($ubic_patio->vin_id != null)
+                                @if(isset($ubic_patio->vin_id))
                                 <td><small>{{ $ubic_patio->oneVin->vin_codigo }}</small></td>
                                 @else
                                 <td><small> -- </small></td>
@@ -66,7 +66,7 @@
                                 </td>
                             </tr>
 
-                            @endforeach
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
