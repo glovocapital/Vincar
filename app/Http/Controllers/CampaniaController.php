@@ -6,9 +6,11 @@ use App\Campania;
 use App\Empresa;
 use App\Http\Middleware\CheckSession;
 use App\Http\Middleware\PreventBackHistory;
+use App\Tarea;
 use App\TipoCampania;
 use App\User;
 use App\Vin;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -311,30 +313,36 @@ class CampaniaController extends Controller
     {
         try {
 
-            dd($request);
+            // dd($request);
             DB::beginTransaction();
 
-            $campania = new Campania();
+            $hora = $request->tarea_hora_termino;
+            $carbon_date = \Carbon\Carbon::createFromFormat('h:i', $hora);
 
-            $campania->campania_fecha_finalizacion = $request->campania_fecha_finalizacion;
-            $campania->campania_observaciones = $request->campania_observaciones;
-            $campania->vin_id = $request->vin_id;
-            $campania->user_id = Auth::user()->user_id;
+            $tarea = new Tarea();
 
-            $campania->save();
+            $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
+            $tarea->tarea_prioridad = $request->tarea_prioridad;
+            $tarea->tarea_hora_termino = $carbon_date->toTimeString();
+            $tarea->vin_id = $request->vin_id;
+            $tarea->user_id = $request->tarea_responsable_id;
+            $tarea->tipo_tarea_id = $request->tipo_tarea_id;
+            $tarea->tipo_destino_id = $request->tipo_destino_id;
             
-            foreach ($request->tipo_campanias as $t_campania_id) {
-                $tipo_campania_id = (int)$t_campania_id;
-                DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $campania->campania_id]);
-            }
+            $tarea->save();
+            
+            // foreach ($request->tipo_campanias as $t_campania_id) {
+            //     $tipo_campania_id = (int)$t_campania_id;
+            //     DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $campania->campania_id]);
+            // }
 
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('vin.index')->with('error-msg', 'Error asignando campaña.');
+            return redirect()->route('planificacion.index')->with('error-msg', 'Error asignando tarea.');
         }
 
-        return redirect()->route('campania.index')->with('success', 'Campaña asignada con éxito.');; 
+        return redirect()->route('planificacion.index')->with('success', 'Tarea asignada con éxito.');; 
     }
 
     /**
