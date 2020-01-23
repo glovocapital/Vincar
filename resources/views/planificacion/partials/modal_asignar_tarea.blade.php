@@ -8,7 +8,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                {!! Form::open(['route'=> 'campania.storeModal', 'method'=>'POST']) !!}
+                {!! Form::open(['route'=> 'campania.storeModalTarea', 'method'=>'POST']) !!}
                 <div class="row row-fluid">
                     <div class="col-md-12">
                         <div class="form-group">
