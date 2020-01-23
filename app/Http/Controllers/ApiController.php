@@ -109,46 +109,30 @@ class ApiController extends Controller
                 ->where('ubic_patio_columna','=', $posicion[1])
                 ->get();
 
-            $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->get();
-
-            if(count($UbicPatio)>0){
-
-                if(count($UbicPatio_)>0){
-                    if($UbicPatio_[0]->vin_id!=$Vin->vin_id){
-                        $usersf = Array("Err" => 1, "Msg" => "Ya esta ocupada esta posición");
-                    }
-                    else {
+            if(count($UbicPatio_)>0){
+                if($UbicPatio_[0]->ubic_patio_ocupada){
+                    $usersf = Array("Err" => 1, "Msg" => "Esta posición esta ocupada");
+                }else{
+                    $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->get();
+                    if(count($UbicPatio)>0){
                         $UbicPatios = UbicPatio::findOrFail($UbicPatio[0]->ubic_patio_id);
-                        $UbicPatios->ubic_patio_ocupada = true;
-                        $UbicPatios->ubic_patio_fila =  $posicion[0];
-                        $UbicPatios->ubic_patio_columna =  $posicion[1];
-                        $UbicPatios->bloque_id = $bloque;
-                        $UbicPatios->vin_id = $Vin->vin_id;
+                        $UbicPatios->ubic_patio_ocupada = false;
+                        $UbicPatios->vin_id = null;
                         $UbicPatios->update();
                     }
 
-                }else{
-                    $UbicPatios = UbicPatio::findOrFail($UbicPatio[0]->ubic_patio_id);
+                    $UbicPatios = UbicPatio::findOrFail($UbicPatio_[0]->ubic_patio_id);
                     $UbicPatios->ubic_patio_ocupada = true;
-                    $UbicPatios->ubic_patio_fila =  $posicion[0];
-                    $UbicPatios->ubic_patio_columna =  $posicion[1];
-                    $UbicPatios->bloque_id = $bloque;
                     $UbicPatios->vin_id = $Vin->vin_id;
                     $UbicPatios->update();
+
+                    $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso");
+
                 }
             }else{
-                $UbicPatios = new UbicPatio();
-                $UbicPatios->ubic_patio_fila =  $posicion[0];
-                $UbicPatios->ubic_patio_columna =  $posicion[1];
-                $UbicPatios->ubic_patio_ocupada = true;
-                $UbicPatios->vin_id = $Vin->vin_id;
-                $UbicPatios->bloque_id = $bloque;
-                $UbicPatios->save();
-
+                $usersf = Array("Err" => 1, "Msg" => "La ubicacion en el bloque no esta creado");
             }
 
-
-            $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso");
 
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
@@ -161,12 +145,12 @@ class ApiController extends Controller
         $this->cors();
 
         $Vin =DB::table('vins')
-            // ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
+             ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
             ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
-            // ->join('bloques', 'bloques.bloque_id','=', 'ubic_patios.bloque_id')
+            ->join('bloques', 'bloques.bloque_id','=', 'ubic_patios.bloque_id')
             ->select('vins.vin_codigo as vin','vins.vin_modelo as modelo','vins.vin_marca as marca', 'vins.created_at as fecha'
-                ,'vin_estado_inventario_desc as estado'/*,
-                'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','bloque_nombre'*/ )
+                ,'vin_estado_inventario_desc as estado',
+                'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','bloque_nombre' )
             ->orderBy('vins.updated_at','desc')
             ->get();
 
