@@ -42,7 +42,7 @@
         <ul id="Vins" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
           <li class="sidebar-item @if(request()->route()->getName()=='patio.vins_patio') active @endif"><a class="sidebar-link" href="{{ route('patio.vins_patio') }}">{{trans('menu.Patios')}}</a></li>
           <li class="sidebar-item @if(request()->route()->getName()=='vin.index') active @endif"><a class="sidebar-link" href="{{ route('vin.index') }}">{{trans('menu.Vins')}}</a></li>
-          <li class="sidebar-item @if(request()->route()->getName()=='') active @endif"><a class="sidebar-link" href="">{{trans('menu.Planificacion')}}</a></li>
+          <li class="sidebar-item @if(request()->route()->getName()=='planificacion.index') active @endif"><a class="sidebar-link" href="{{ route('planificacion.index') }}">{{trans('menu.Planificacion')}}</a></li>
         </ul>
       </li>
       <li class="sidebar-item">
