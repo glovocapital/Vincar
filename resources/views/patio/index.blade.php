@@ -82,12 +82,13 @@
 
                     {!! Form::submit('Registrar Patio', ['class' => 'btn btn-primary block full-width m-b']) !!}
 
+
+                    <a href="{{ route('patio.cargar_patios') }}" class = 'btn btn-success'>Carga Patios</a>
+
+
                     {!! Form::close() !!}
                 </div>
-                <div class="text-right pb-5" id="boton_patio">
-                {!! Form::open(['route'=> 'patio.cargar_patios', 'method'=>'GET']) !!}
-                    {!! Form::submit('Carga Patios ', ['class' => 'btn btn-info block full-width m-b']) !!}
-                </div>
+
                 <div class="text-center texto-leyenda">
                         <p><strong>*</strong> Campos obligatorios</p>
                 </div>
