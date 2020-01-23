@@ -184,8 +184,6 @@ class VinController extends Controller
                     ->orWhere('patios.patio_id',$patio_id)
                     ->get();
 
-
-
             }else{
                 $query->get();
             }
@@ -194,24 +192,6 @@ class VinController extends Controller
             $tabla_vins = $query->get();
         }
 
-
-
-/*
-        $tabla_vins = DB::table('vins')
-            // ->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
-            // ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-            // ->join('patios','bloques.patio_id','=','patios.patio_id')
-            ->join('users','users.user_id','=','vins.user_id')
-            ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-            ->where('vins.user_id',$user_empresa_id)
-            ->orWhere('vin_marca',$marca_nombre)
-            ->orWhere('vins.vin_estado_inventario_id',$estado_id)
-            // ->orWhere('patios.patio_id',$patio_id)
-            ->get();
-*/
-
-        // dd($tabla_vins);
 
         return view('vin.index', compact('tabla_vins', 'tipo_campanias','users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas'));
     }
@@ -556,70 +536,7 @@ class VinController extends Controller
 
     }
 
-    public function downloadFile()
-    {
 
-        return Storage::downloadFile();
-    }
-
-    public function search(Request $request)
-    {
-        $estado = DB::table('vin_estado_inventarios')
-            ->where('vin_estado_inventario_id',$request->estadoinventario_id)
-            ->get();
-
-        if(!empty($estado[0]->vin_estado_inventario_id)){
-            $estado_id = $estado[0]->vin_estado_inventario_id;
-        }else{
-            $estado_id = 0;
-        }
-
-        $marca = DB::table('marcas')
-            ->where('marca_id',$request->marca_id)
-            ->get();
-
-        if(!empty($marca[0]->marca_nombre))
-        {
-            $marca_nombre = $marca[0]->marca_nombre;
-        }else{
-            $marca_nombre = 'Sin marca';
-        }
-
-        $user = DB::table('users')
-            ->where('user_id',$request->user_id)
-            ->get();
-
-        if(!empty($user[0]->user_id))
-        {
-            $user_id = $user[0]->user_id;
-        }else{
-            $user_id = 0;
-        }
-
-        $patio = DB::table('patios')
-            ->where('patio_id', $request->patio_id)
-            ->get();
-
-        if(!empty($patio[0]->patio_nombre))
-        {
-            $patio_id = $patio[0]->patio_id;
-        }else{
-            $patio_id = 0;
-        }
-
-        $tabla_vins = DB::table('vins')
-            ->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
-            ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-            ->join('patios','bloques.patio_id','=','patios.patio_id')
-            ->where('user_id',$user_id)
-            ->orWhere('vin_marca',$marca_nombre)
-            ->orWhere('vin_estado_inventario_id',$estado_id)
-            ->orWhere('patios.patio_id',$patio_id)
-            ->get();
-
-        return view('vin.index', compact('tabla_vins'));
-
-    }
 
     public function editarestado($id)
     {
@@ -641,6 +558,15 @@ class VinController extends Controller
         $estadosInventario = DB::table('vin_estado_inventarios')
             ->select('vin_estado_inventario_id', 'vin_estado_inventario_desc')
             ->pluck('vin_estado_inventario_desc', 'vin_estado_inventario_id');
+
+        $posiciones_bloques = DB::table('patios')
+            ->join('bloques','patios.patio_id','=','bloques.patio_id')
+            ->join('ubic_patios','ubic_patios.bloque_id','=','bloques.bloque_id')
+            ->where('ubic_patio_ocupada',false)
+            ->select('ubic_patio_ocupada')
+            ->get();
+
+            dd($posiciones_bloques);
 
         return view('vin.cambiaestado', compact('vin', 'user', 'users','empresas', 'estadosInventario'));
     }

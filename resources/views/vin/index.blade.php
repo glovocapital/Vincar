@@ -194,7 +194,7 @@
                                         </small>
 
                                         <small>
-                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fa fa-flag-checkered"></i></a>
+                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fa fa-flag-checkered" data-toggle="modal" data-target="#exampleModal"></i></a>
                                         </small>
 
                                         <small>
@@ -203,9 +203,9 @@
                                         <small>
                                             <button class="btn btn-xs btn-info btn-campania"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
                                         </small>
-                                        <button  value="{{ $vin->vin_id }}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                            Launch demo modal
-                                          </button>
+
+
+
 
 
                                     </td>
@@ -221,7 +221,9 @@
 </div>
 
 
+
 @include('vin.partials.modal_solicitud_campania')
+
 
 
 
