@@ -316,14 +316,11 @@ class CampaniaController extends Controller
             // dd($request);
             DB::beginTransaction();
 
-            $hora = $request->tarea_hora_termino;
-            $carbon_date = \Carbon\Carbon::createFromFormat('h:i', $hora);
-
             $tarea = new Tarea();
 
             $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
             $tarea->tarea_prioridad = $request->tarea_prioridad;
-            $tarea->tarea_hora_termino = $carbon_date->toTimeString();
+            $tarea->tarea_hora_termino = $request->tarea_hora_termino;
             $tarea->vin_id = $request->vin_id;
             $tarea->user_id = $request->tarea_responsable_id;
             $tarea->tipo_tarea_id = $request->tipo_tarea_id;
