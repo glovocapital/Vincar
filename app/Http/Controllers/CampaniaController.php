@@ -218,6 +218,12 @@ class CampaniaController extends Controller
         ->orWhere('rol_id', 6)
         ->get();
 
+    $responsables_array= [];
+
+    foreach($responsables as $k => $v){
+        $responsables_array[$v->user_id] = $v->user_nombre. " " . $v->user_apellido;
+    }
+
     $tipo_tareas_array = DB::table('tipo_tareas')
         ->select('tipo_tarea_id', 'tipo_tarea_descripcion')
         ->pluck('tipo_tarea_descripcion', 'tipo_tarea_id');
@@ -247,7 +253,7 @@ class CampaniaController extends Controller
                 array_push($arrayTCampanias, $tCampanias);
         }
 
-        return view('planificacion.index', compact('tabla_vins', 'tipo_campanias', 'tipo_campanias_array','users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables', 'tipo_tareas_array', 'tipo_destinos_array','campanias', 'tipo_campanias', 'arrayTCampanias'));
+        return view('planificacion.index', compact('tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
 
     }
 

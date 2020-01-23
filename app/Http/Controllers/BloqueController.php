@@ -9,6 +9,7 @@ use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\CheckSession;
 use App\Imports\UbicPatiosImport;
 use App\UbicPatio;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;

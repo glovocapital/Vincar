@@ -23,8 +23,12 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tipo_campanias" >Campañas Disponibles <strong>*</strong></label>
-                            {!! Form::select('tipo_campanias[]', $tipo_campanias_array, null,['id' => 'tipo_campanias', 'rows' => '7', 'class'=>'form-control col-sm-12 select-tipo-campanias', 'multiple' => 'multiple', 'required'=>'required']) !!}
+                            <label for="tipo_campanias" >Campañas Seleccionadas <strong>*</strong></label>
+                            <select name="tipo_campanias" id="tipo_campanias" multiple disabled class="form-control col-sm-12 select-tipo-campanias">
+                            @foreach($arrayTCampanias as $key => $tCamp)
+                                <option value="" selected>{{ $tCamp[$key]->tipo_campania_descripcion }}</option>
+                            @endforeach
+                            </select>
                         </div>
                         
                         <label for="campania_fecha_finalizacion">Fecha de finalización de tareas solicitadas</label>
@@ -36,7 +40,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="tarea_responsable" >Usuario Responsable <strong>*</strong></label>
-                            {!! Form::select('tarea_responsable', $responsables, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-responsable']) !!}
+                            {!! Form::select('tarea_responsable', $responsables_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-responsable']) !!}
                         </div>
 
                         <div class="form-group">
