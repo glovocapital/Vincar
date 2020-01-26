@@ -128,7 +128,7 @@
                                 <tbody>
                                 <tr>
                                     <td class="text-center">
-                                        <img src="{{asset('base/img/svg/car.svg')}}" class="img-fluid" />
+                                        <img style="max-width:70%"  src="{{asset('base/img/svg/homework.svg')}}" class="img-fluid" />
                                         {{trans('comun.Tareas')}}
                                     </td>
                                     <td style='width: 90%' class="text-right">
@@ -147,7 +147,7 @@
 
                                 <tr>
                                     <td class="text-center">
-                                        <img src="{{asset('base/img/svg/car.svg')}}" class="img-fluid" />
+                                        <img style="max-width:70%"  src="{{asset('base/img/svg/dyp.svg')}}" class="img-fluid" />
                                         {{trans('DyP')}}
                                     </td>
                                     <td style='width: 90%' class="text-right">
@@ -166,7 +166,7 @@
 
                                 <tr>
                                     <td class="text-center">
-                                        <img src="{{asset('base/img/svg/car.svg')}}" class="img-fluid" />
+                                        <img style="max-width:70%"  src="{{asset('base/img/svg/car-wash.svg')}}" class="img-fluid" />
                                         {{trans('comun.Lavados')}}
                                     </td>
                                     <td style='width: 90%' class="text-right">
@@ -185,7 +185,7 @@
 
                                 <tr>
                                     <td class="text-center">
-                                        <img src="{{asset('base/img/svg/car.svg')}}" class="img-fluid" />
+                                        <img style="max-width:70%" src="{{asset('base/img/svg/picking.svg')}}" class="img-fluid" />
                                         {{trans('comun.Carga')}}
                                     </td>
                                     <td style='width: 90%' class="text-right">
@@ -269,6 +269,7 @@
             float: left;
             margin-top: 8px;
             padding: 3px;
+
         }
 
         .stat-circle h3 {
@@ -278,6 +279,7 @@
             text-align: center;
             width: 100%;
             font-weight: 100;
+            left:0px;
         }
 
         .stat-circle h5 {
@@ -289,15 +291,7 @@
     <script>
         $(function(){
 
-            var defaultMap = {
-                zoom: 14,
-                center: {
-                    lat: 40.712784,
-                    lng: -74.005941
-                },
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            new google.maps.Map(document.getElementById("base_map"), defaultMap);
+
 
             $.ajax({
                 url: '{{ route('home.dashboard') }}',
@@ -330,6 +324,21 @@
                 }
             });
 
+
+
+            var defaultMap = {
+                zoom: 14,
+                center: {
+                    lat: 40.712784,
+                    lng: -74.005941
+                },
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            
+            if(!(typeof google === 'undefined'))
+
+            google.maps.Map(document.getElementById("base_map"), defaultMap);
 
         });
     </script>
