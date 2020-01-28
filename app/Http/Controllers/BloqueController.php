@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\CheckSession;
 use App\Imports\UbicPatiosImport;
+use App\UbicPatio;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -85,6 +87,8 @@ class BloqueController extends Controller
     public function store(Request $request)
     {
         try {
+            DB::beginTransaction();
+
             $bloque = new Bloque();
             $bloque->bloque_nombre = $request->bloque_nombre;
             $bloque->bloque_filas = $request->bloque_filas;
@@ -93,11 +97,25 @@ class BloqueController extends Controller
             
             $bloque->save();
 
+            for ($i=1; $i <= $bloque->bloque_filas; $i++) { 
+                for ($j=1; $j <= $bloque->bloque_columnas; $j++) { 
+                    $ubic_patio = new UbicPatio();
+
+                    $ubic_patio->ubic_patio_fila = $i;
+                    $ubic_patio->ubic_patio_columna = $j;
+                    $ubic_patio->bloque_id = $bloque->bloque_id;
+                    
+                    $ubic_patio->save();
+                }
+            }
+
+            DB::commit();
+
             flash('Bloque registrado correctamente.')->success();
             return redirect()->route('bloque.index', ['id_patio' => Crypt::encrypt($request->patio_id)]);
 
         }catch (\Exception $e) {
-
+            DB::rollBack();
             flash('Error registrando el bloque.')->error();
             flash($e->getMessage())->error();
             return redirect()->route('bloque.index', ['id_patio' => Crypt::encrypt($request->patio_id)]);
@@ -153,12 +171,26 @@ class BloqueController extends Controller
 
         try {
             
+            $filas = 0;
+            $columnas = 0;
+            
             $bloque->bloque_nombre = $request->bloque_nombre;
-            $bloque->bloque_filas = $request->bloque_filas;
-            $bloque->bloque_columnas = $request->bloque_columnas;
+            
+            if($bloque->filas != $request->bloque_filas){
+                $bloque->bloque_filas = $request->bloque_filas;
+                $filas = $request->bloque_filas;
+            }
+
+            if($bloque->columnas != $request->bloque_columnas){
+                $bloque->bloque_columnas = $request->bloque_columnas;
+                $columnas = $request->bloque_columnas;
+            }
+
             $bloque->patio_id = $request->patio_id;
 
             $bloque->save();
+
+
 
             flash('Bloque modificado correctamente.')->success();
             return redirect()->route('bloque.index', ['id_patio' => Crypt::encrypt($request->patio_id)]);

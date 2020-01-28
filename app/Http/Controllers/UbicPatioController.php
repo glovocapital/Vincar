@@ -43,7 +43,9 @@ class UbicPatioController extends Controller
         $patio_id = $bloque->patio_id;
 
         $ubic_patios = UbicPatio::where('bloque_id',$bloque_id)
+            ->select('ubic_patio_id', 'vin_id', 'ubic_patio_fila', 'ubic_patio_columna', 'ubic_patio_ocupada')
             ->where('deleted_at', null)
+            ->orderBy('ubic_patio_id')
             ->get();
 
         if($ubic_patios->count() > 0) {

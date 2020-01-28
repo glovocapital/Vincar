@@ -86,8 +86,13 @@
                     <div class="row">
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
+<<<<<<< HEAD
                                     <label for="vin_numero" >Vin / Patente</label>
                                     {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none']) !!}
+=======
+                                    <label for="vin_numero" >Vin <strong>*</strong></label>
+                                    {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
+>>>>>>> master
                             </div>
                         </div>
 
@@ -115,12 +120,15 @@
                         </div>
                     </div>
                     <div class="text-right pb-5">
+
                         {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
-                        {!! Form::close() !!}
-                    </div>
-                    <div class="row">
+
                         <a href="{{ route('campania.index') }}" class = 'btn btn-success'>Ver Campañas</a>
+
+                        {!! Form::close() !!}
+
                     </div>
+
 
                 </div>
             </div>
@@ -190,15 +198,19 @@
                                     <td>
 
                                         <small>
-                                            <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
+                                            <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-light"  title="Editar"><i class="far fa-edit"></i></a>
                                         </small>
 
                                         <small>
+<<<<<<< HEAD
                                             <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fa fa-flag-checkered" data-toggle="modal" data-target="#exampleModal"></i></a>
+=======
+                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-warning"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
+>>>>>>> master
                                         </small>
 
                                         <small>
-                                            <button value="{{ $vin->vin_id }}" class="btn btn-xs btn-success btn-campania"  title="Solicitar Campaña"><i class="far fa-lightbulb"></i></button>
+                                            <button value="{{ $vin->vin_id }}" class="btn btn-xs btn-success btn-campania"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></button>
                                         </small>
                                         <small>
                                             <button class="btn btn-xs btn-info btn-campania"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
@@ -211,6 +223,8 @@
                                     </td>
                                 </tr>
                                 @endforeach
+
+
                                 </tbody>
                             </table>
                         </div>

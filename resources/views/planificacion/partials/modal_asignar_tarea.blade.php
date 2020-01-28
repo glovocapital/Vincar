@@ -23,30 +23,34 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tipo_campanias" >Campañas Disponibles <strong>*</strong></label>
-                            {!! Form::select('tipo_campanias[]', $tipo_campanias_array, null,['id' => 'tipo_campanias', 'rows' => '7', 'class'=>'form-control col-sm-12 select-tipo-campanias', 'multiple' => 'multiple', 'required'=>'required']) !!}
+                            <label for="tipo_campanias" >Campañas Seleccionadas <strong>*</strong></label>
+                            <select name="tipo_campanias" id="tipo_campanias" multiple disabled class="form-control col-sm-12 select-tipo-campanias">
+                            @foreach($arrayTCampanias as $key => $tCamp)
+                                <option value="" selected>{{ $tCamp[$key]->tipo_campania_descripcion }}</option>
+                            @endforeach
+                            </select>
                         </div>
                         
-                        <label for="campania_fecha_finalizacion">Fecha de finalización de tareas solicitadas</label>
+                        <label for="tarea_fecha_finalizacion">Fecha de finalización de tareas solicitadas</label>
                         <div class="input-group">
-                            <input type="date" id="campania_fecha_finalizacion" class="form-control"  name="campania_fecha_finalizacion" required/><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                            <input type="date" id="tarea_fecha_finalizacion" class="form-control"  name="tarea_fecha_finalizacion" required/><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                         </div>
                         <div id="mensaje1" class="error" style="color: red; font-weight: bold"> Fecha requerida.</div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="tarea_responsable" >Usuario Responsable <strong>*</strong></label>
-                            {!! Form::select('tarea_responsable', $responsables, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-responsable']) !!}
+                            <label for="tarea_responsable_id" >Usuario Responsable <strong>*</strong></label>
+                            {!! Form::select('tarea_responsable_id', $responsables_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-responsable']) !!}
                         </div>
 
                         <div class="form-group">
-                            <label for="tipo_tarea" >Tarea <strong>*</strong></label>
-                            {!! Form::select('tipo_tarea', $tipo_tareas_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-tarea']) !!}
+                            <label for="tipo_tarea_id" >Tarea <strong>*</strong></label>
+                            {!! Form::select('tipo_tarea_id', $tipo_tareas_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-tarea']) !!}
                         </div>
                         
                         <div class="form-group">
-                            <label for="tipo_destino" >Destino <strong>*</strong></label>
-                            {!! Form::select('tipo_destino', $tipo_destinos_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-destino']) !!}
+                            <label for="tipo_destino_id" >Destino <strong>*</strong></label>
+                            {!! Form::select('tipo_destino_id', $tipo_destinos_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-destino']) !!}
                         </div>
                         
                         <div class="form-group">
