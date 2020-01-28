@@ -86,13 +86,10 @@
                     <div class="row">
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
-<<<<<<< HEAD
+
                                     <label for="vin_numero" >Vin / Patente</label>
                                     {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none']) !!}
-=======
-                                    <label for="vin_numero" >Vin <strong>*</strong></label>
-                                    {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
->>>>>>> master
+
                             </div>
                         </div>
 
@@ -202,11 +199,9 @@
                                         </small>
 
                                         <small>
-<<<<<<< HEAD
-                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fa fa-flag-checkered" data-toggle="modal" data-target="#exampleModal"></i></a>
-=======
+
                                             <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-warning"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
->>>>>>> master
+
                                         </small>
 
                                         <small>
