@@ -566,8 +566,6 @@ class VinController extends Controller
             ->select('ubic_patio_ocupada')
             ->get();
 
-          //  dd($posiciones_bloques);
-
         return view('vin.cambiaestado', compact('vin', 'user', 'users','empresas', 'estadosInventario'));
     }
 

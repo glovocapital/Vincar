@@ -88,7 +88,7 @@
                             <div class="form-group">
 
                                     <label for="vin_numero" >Vin / Patente</label>
-                                    {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none']) !!}
+                                    {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VIN', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none']) !!}
 
                             </div>
                         </div>
@@ -139,7 +139,7 @@
             <div class="ibox float-e-margins">
                 <div class="card card-default">
                     <div class="card-header">
-                        <h3 class="card-title">Listado de Vins</h3>
+                        <h3 class="card-title">Listado de Vin</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                             <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
