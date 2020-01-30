@@ -74,7 +74,7 @@ class UsersSeeder extends Seeder
             'email'			    =>  'email1@email_falso.com',
             'user_telefono'     =>  '9876543210',
             'password' 		    => bcrypt('123456'),
-            'rol_id'            => '4',
+            'rol_id'            => '3',
             'empresa_id'        => '2',
         ]);
 
@@ -113,7 +113,7 @@ class UsersSeeder extends Seeder
             'email'			    =>  'email4@email_falso.com',
             'user_telefono'     =>  '8731235689',
             'password' 		    => bcrypt('123456'),
-            'rol_id'            => '4',
+            'rol_id'            => '3',
             'empresa_id'        => '3',
         ]);
 
@@ -152,7 +152,7 @@ class UsersSeeder extends Seeder
             'email'			    =>  'email7@email_falso.com',
             'user_telefono'     =>  '7245618497',
             'password' 		    => bcrypt('123456'),
-            'rol_id'            => '4',
+            'rol_id'            => '3',
             'empresa_id'        => '2',
         ]);
     }
