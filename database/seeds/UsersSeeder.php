@@ -165,7 +165,7 @@ class UsersSeeder extends Seeder
             'email'			    =>  'email8@email.falso.com',
             'user_telefono'     =>  '7245618497',
             'password' 		    => bcrypt('123456'),
-            'rol_id'            => '3',
+            'rol_id'            => '2',
             'empresa_id'        => '2',
         ]);
     }
