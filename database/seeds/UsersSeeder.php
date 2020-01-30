@@ -155,5 +155,18 @@ class UsersSeeder extends Seeder
             'rol_id'            => '3',
             'empresa_id'        => '2',
         ]);
+
+        User::create([
+            'user_nombre'		=>	'Pedro',
+            'user_apellido'		=>	'Perez',
+            'user_rut'          =>  '12587423-9',
+            'user_cargo'        =>  'Administrador',
+            'user_estado'       =>  '1',
+            'email'			    =>  'email8@email_falso.com',
+            'user_telefono'     =>  '7245618497',
+            'password' 		    => bcrypt('123456'),
+            'rol_id'            => '3',
+            'empresa_id'        => '2',
+        ]);
     }
 }
