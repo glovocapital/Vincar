@@ -18,12 +18,21 @@ class CheckRol
 
     public function handle($request, Closure $next, $role)
     {
-        if (! $request->user()->hasRole($role)) {
-            flash('No tiene el Rol para acceder a esta instancia')->error();
-            return back()->withInput();
+        $roles = array_slice(func_get_args(), 2);
+        foreach ($roles as $key => $rol) {
+            if( Auth::user()->oneRol->rol_desc == $rol ) {
+                //if (! $request->user()->hasRole($role)) {
+                    return $next($request);
+                    //flash('No tiene el Rol para acceder a esta instancia')->error();
+                    //return back()->withInput();
+                }
         }
 
-        return $next($request);
+
+
+        //return $next($request);
+        flash('No tiene el Rol para acceder a esta instancia')->error();
+            return back()->withInput();
 
 
 

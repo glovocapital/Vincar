@@ -20,19 +20,19 @@ class RolesSeeder extends Seeder
         ]);
 
     	DB::table('roles')->insert([
-        	'rol_desc' => 'Cliente',
+        	'rol_desc' => 'Operador Logistico',
     	]);
 
         DB::table('roles')->insert([
-            'rol_desc' => 'Operador',
+            'rol_desc' => 'Customer',
         ]);
 
         DB::table('roles')->insert([
-            'rol_desc' => 'Conductor',
+            'rol_desc' => 'Transportista',
         ]);
 
         DB::table('roles')->insert([
-            'rol_desc' => 'Pickero',
+            'rol_desc' => 'Picking',
         ]);
 
     }

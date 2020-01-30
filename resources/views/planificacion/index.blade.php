@@ -56,7 +56,7 @@
     <div class="ibox float-e-margins">
         <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">Listado de VINs (Resultado de la búsqueda)</h3>
+                <h3 class="card-title">Listado de VIN (Resultado de la búsqueda)</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -142,7 +142,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            
+
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
@@ -163,7 +163,7 @@
                             <td><small>
                             @foreach($arrayTCampanias as $tipoCamp)
                                 @foreach($tipoCamp as $tCamp)
-                                    @if($campania->campania_id === $tCamp->campania_id)   
+                                    @if($campania->campania_id === $tCamp->campania_id)
                                         <button class="btn btn-xs btn-info">{{ $tCamp->tipo_campania_descripcion }}</button>
                                     @endif
                                 @endforeach
@@ -191,7 +191,7 @@
 </div>
 
 <div class="col-lg-12">
-    
+
 </div>
 
 @include('planificacion.partials.modal_asignar_tarea')
@@ -208,7 +208,7 @@
 
                 var vin_id = $(this).val();
                 var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
-                
+
                 $(".vin-id").val(vin_id);
                 $("#vin_codigo").html("VIN: " +vin_codigo);
 

@@ -49,7 +49,6 @@ class User extends Authenticatable
             ->where('rol_id', '=', $this->rol_id)
             ->first();
         $rol_name = $user_rol->rol_desc;
-
         return ($rol_name == $role) ? true:false;
     }
 
