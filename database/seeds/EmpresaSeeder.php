@@ -24,7 +24,8 @@ class EmpresaSeeder extends Seeder
             'tipo_proveedor_id' => '1',
 
         ]);
-        
+
+        /*
         DB::table('empresas')->insert([
         	'empresa_rut' => '11111111-1',
             'empresa_razon_social' => 'Empresa de Prueba 1',
@@ -36,7 +37,7 @@ class EmpresaSeeder extends Seeder
             'empresa_email_contacto' => 'contacto@email_ficticio.com',
             'pais_id' => '4',
         ]);
-        
+
         DB::table('empresas')->insert([
         	'empresa_rut' => '22222222-2',
             'empresa_razon_social' => 'Empresa de Prueba 2',
@@ -47,6 +48,7 @@ class EmpresaSeeder extends Seeder
             'empresa_telefono_contacto' => '666666666',
             'empresa_email_contacto' => 'contacto2@otro_email_ficticio.com',
             'pais_id' => '4',
-    	]);
+        ]);
+        */
     }
 }

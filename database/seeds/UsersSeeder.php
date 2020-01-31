@@ -64,7 +64,7 @@ class UsersSeeder extends Seeder
             'rol_id'            => '1',
             'empresa_id'        => '1',
         ]);
-
+/*
         User::create([
             'user_nombre'		=>	'José',
             'user_apellido'		=>	'Pérez',
@@ -168,5 +168,6 @@ class UsersSeeder extends Seeder
             'rol_id'            => '2',
             'empresa_id'        => '2',
         ]);
+        */
     }
 }
