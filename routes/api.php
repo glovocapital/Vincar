@@ -32,4 +32,14 @@ Route::get('listbloq/{patio_id}','ApiController@ListBloques')->name('api.listblo
 Route::get('listpos/{bloque_id}','ApiController@ListPosicion')->name('api.listpos');
 
 
-Route::post('guardarposicion','ApiController@CambiarPosicion')->name('api.Ccmbiar_posicion');
+Route::post('guardarposicion','ApiController@CambiarPosicion')->name('api.Cambiar_posicion');
+
+Route::get('dararribo/{vins_id}','ApiController@DarArribo')->name('api.Cambiar_arribo');
+
+Route::get('sindano/{vins_id}','ApiController@InpeccionarSinDano')->name('api.sin_dano');
+
+Route::post('condano','ApiController@InpeccionarConDano')->name('api.con_dano');
+
+Route::get('cargainicialinspeccionar/{vins_id}','ApiController@CargaInicialInspeccionar')->name('api.Carga_ini_inspeccionar');
+
+
