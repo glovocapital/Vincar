@@ -221,7 +221,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador']], function () {
 
                 /********SUPER ADMINISTRADOR Y OPERADOR LOGISTICO ********/
 
-Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico']], function () {
+Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,Customer']], function () {
 
     //Rutas mantenedor vin
     Route::get('vin', 'VinController@index')->name('vin.index');
@@ -253,8 +253,43 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico']
     Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
     Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
 
-
-
-
-
 });
+
+
+
+    /******** CLIENTES ********/
+/*
+Route::group(['middleware' => ['CheckRol:SuperAdministrador,Customer']], function () {
+
+        //Rutas mantenedor vin
+    Route::get('vin', 'VinController@index')->name('vin.index');
+    Route::get('vin/create','VinController@create')->name('vin.create');
+    Route::get('vin/{id}/edit','VinController@edit')->name('vin.edit');
+    Route::post('vin','VinController@store')->name('vin.store');
+    Route::patch('vin/{id}/update','VinController@update')->name('vin.update');
+    Route::get('vin/{id}/delete','VinController@destroy')->name('vin.destroy');
+    Route::get('vin/obtener_usuarios_empresa/{id_empresa}', ['as' => 'vin.clientes', 'uses' => 'VinController@empresa']);
+    Route::get('vin/obtener_sub_estados/{id_estado_inventario}', ['as' => 'vin.sub_estados', 'uses' => 'VinController@estadoInventario']);
+    Route::get('vin/cargamasiva','VinController@cargamasiva')->name('vin.cargamasiva');
+    Route::post('vin/loadexcel','VinController@loadexcel')->name('vin.loadexcel');
+    Route::get('vin/download/{file}' , 'VinController@downloadFile');
+    Route::post('vin/search','VinController@search')->name('vin.search');
+    Route::get('vin/{id}/editarestado','VinController@editarestado')->name('vin.editarestado');
+    Route::patch('vin/{id}/cambiaestado','VinController@cambiaestado')->name('vin.cambiaestado');
+
+    //Jc
+    Route::get('patio/vins_patio','PatioController@indexVinsPatio')->name('patio.vins_patio');
+    Route::get('patioDashboard', 'PatioController@dashboard')->name('patio.dashboard');
+    Route::get('patioBloques', 'PatioController@bloques')->name('patio.bloques');
+    Route::get('TodospatioBloques', 'PatioController@Todosbloques')->name('patio.todos_bloques');
+
+    //ruta mantenedor tipo de campaña
+    Route::get('tipo_campania', 'TipoCampaniaController@index')->name('tipo_campania.index');
+    Route::get('tipo_campania/create','TipoCampaniaController@create')->name('tipo_campania.create');
+    Route::get('tipo_campania/{id}/edit','TipoCampaniaController@edit')->name('tipo_campania.edit');
+    Route::post('tipo_campania','TipoCampaniaController@store')->name('tipo_campania.store');
+    Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
+    Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
+
+                });
+*/
