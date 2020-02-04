@@ -8,13 +8,14 @@ use App\Patio;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Row;
 class PatioController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(PreventBackHistory::class);
+        //$this->middleware(PreventBackHistory::class);
         $this->middleware(CheckSession::class);
     }
     /**
@@ -268,6 +269,11 @@ class PatioController extends Controller
                 'bloques' => $bloques,
             ]);
         }
+    }
+
+    public function downloadFile()
+    {
+        return Storage::response("PlanillasDescargas/CargaPatios.xlsx");
     }
 
     public function Todosbloques(Request $request){

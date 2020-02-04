@@ -18,6 +18,11 @@
                         {!! Form::submit('Registrar vin ', ['class' => 'btn btn-success block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>
+                    <div class="text pb-5">
+                        {!! Form::open(['route'=> 'vin.download', 'method'=>'GET']) !!}
+                        {!! Form::submit('Descargar planilla ', ['class' => 'btn btn-warning block full-width m-b']) !!}
+                        {!! Form::close() !!}
+                    </div>
                     </div>
                 </div>
 

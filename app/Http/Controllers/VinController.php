@@ -22,6 +22,7 @@ use Illuminate\Support\Collection as Collection;
 
 
 
+
 class VinController extends Controller
 {
 
@@ -29,7 +30,7 @@ class VinController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(PreventBackHistory::class);
+       // $this->middleware(PreventBackHistory::class);
         $this->middleware(CheckSession::class);
     }
 
@@ -586,5 +587,10 @@ class VinController extends Controller
             flash($e->getMessage())->error();
             return redirect('vin');
         }
+    }
+
+    public function downloadFile()
+    {
+        return Storage::response("PlanillasDescargas/CargaVin.xlsx");
     }
 }

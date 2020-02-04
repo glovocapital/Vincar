@@ -81,16 +81,25 @@
                 <div class="text-right pb-5" id="boton_patio">
 
                     {!! Form::submit('Registrar Patio', ['class' => 'btn btn-primary block full-width m-b']) !!}
-
-
-                    <a href="{{ route('patio.cargar_patios') }}" class = 'btn btn-success'>Carga Patios</a>
-
-
                     {!! Form::close() !!}
                 </div>
 
                 <div class="text-center texto-leyenda">
                         <p><strong>*</strong> Campos obligatorios</p>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <a href="{{ route('patio.cargar_patios') }}" class = 'btn btn-success'>Carga de Patios</a>
+                        </div>
+                        <div class="col-lg-2">
+                            {!! Form::open(['route'=> 'patio.download', 'method'=>'GET']) !!}
+                            {!! Form::submit('Descargar planilla ', ['class' => 'btn btn-warning block full-width m-b']) !!}
+                            {!! Form::close() !!}
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>

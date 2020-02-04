@@ -92,6 +92,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
     Route::get('patio/cargar_patios','PatioController@cargarPatios')->name('patio.cargar_patios');
     Route::post('patio/store_patios','PatioController@storePatios')->name('patio.store_patios');
     Route::get('patio/obtener_comunas/{id_region}', ['as' => 'patio.comunas', 'uses' => 'PatioController@comunas']);
+    Route::get('patio/download' , 'PatioController@downloadFile')->name('patio.download');
 
     //Rutas mantenedor bloques
     Route::get('bloque/{id_patio}/index', 'BloqueController@index')->name('bloque.index');
@@ -234,7 +235,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('vin/obtener_sub_estados/{id_estado_inventario}', ['as' => 'vin.sub_estados', 'uses' => 'VinController@estadoInventario']);
     Route::get('vin/cargamasiva','VinController@cargamasiva')->name('vin.cargamasiva');
     Route::post('vin/loadexcel','VinController@loadexcel')->name('vin.loadexcel');
-    Route::get('vin/download/{file}' , 'VinController@downloadFile');
+    Route::get('vin/download' , 'VinController@downloadFile')->name('vin.download');
     Route::post('vin/search','VinController@search')->name('vin.search');
     Route::get('vin/{id}/editarestado','VinController@editarestado')->name('vin.editarestado');
     Route::patch('vin/{id}/cambiaestado','VinController@cambiaestado')->name('vin.cambiaestado');
@@ -244,6 +245,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
      Route::get('patioDashboard', 'PatioController@dashboard')->name('patio.dashboard');
      Route::get('patioBloques', 'PatioController@bloques')->name('patio.bloques');
      Route::get('TodospatioBloques', 'PatioController@Todosbloques')->name('patio.todos_bloques');
+
 
      //ruta mantenedor tipo de campaña
     Route::get('tipo_campania', 'TipoCampaniaController@index')->name('tipo_campania.index');
