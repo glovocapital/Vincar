@@ -458,10 +458,10 @@ class ApiController extends Controller
 
             $inspeccion = new Inspeccion();
             $inspeccion->inspeccion_fecha = date('Y-m-d');
-            $inspeccion->responsable_id = $request->input('user_id');
+            $inspeccion->responsable_id = (int)$request->input('user_id');
             $inspeccion->vin_id = $Vin->vin_id;
             $inspeccion->cliente_id = $cliente_id;
-            $inspeccion->inspeccion_dano = "true";
+            $inspeccion->inspeccion_dano = true;
             $inspeccion->vin_estado_inventario_id = $Vin->vin_estado_inventario_id;
             //$inspeccion->vin_sub_estado_inventario_id = $datosInspeccion['vin_sub_estado_inventario_id'];
 
