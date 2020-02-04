@@ -417,7 +417,7 @@ class ApiController extends Controller
             $inspeccion->responsable_id = $request->input('user_id');
             $inspeccion->vin_id = $Vin->vin_id;
             $inspeccion->cliente_id = $cliente_id;
-            $inspeccion->inspeccion_dano = "false";
+            $inspeccion->inspeccion_dano = false;
             $inspeccion->vin_estado_inventario_id = $Vin->vin_estado_inventario_id;
             //$inspeccion->vin_sub_estado_inventario_id = $datosInspeccion['vin_sub_estado_inventario_id'];
 
