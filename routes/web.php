@@ -129,7 +129,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
 
     //ruta mantenedor campaña
     Route::get('campania', 'CampaniaController@index')->name('campania.index');
-    Route::get('planificacion', 'CampaniaController@index2')->name('planificacion.index');
+    Route::get('solicitud_campania', 'CampaniaController@index2')->name('solicitud_campania.index');
+    Route::get('planificacion', 'CampaniaController@index3')->name('planificacion.index');
     Route::get('campania/create','CampaniaController@create')->name('campania.create');
     Route::get('campania/{id}/edit','CampaniaController@edit')->name('campania.edit');
     Route::post('campania','CampaniaController@store')->name('campania.store');
