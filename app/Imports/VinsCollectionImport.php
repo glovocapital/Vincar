@@ -22,7 +22,8 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
     {
         foreach ($rows as $row)
         {
-            $fecha = Carbon::now();
+            //$fecha = Carbon::now();
+            $fecha = date('Y-m-d');
 
             $vin = DB::table('vins')
                 ->where('vin_codigo', $row['vin'])
