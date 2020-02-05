@@ -345,26 +345,41 @@ class CampaniaController extends Controller
                     ->exists();
 
                 if($validate == true){
-                    $vins_selec = DB::table('vins')
+                    $query = DB::table('vins')
                         ->join('users','users.user_id','=','vins.user_id')
                         ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                         ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                        ->where('vin_codigo',$v)
-                        ->orWhere('vins.user_id',$user_empresa_id)
-                        ->orWhere('vin_marca',$marca_nombre)
-                        ->orWhere('vins.vin_estado_inventario_id',$estado_id)
-                        ->first();
+                        ->where('vin_codigo',$v);
+
+                    if($user_empresa_id > 0){
+                        $query->where('empresas.empresa_id',$user_empresa_id);
+                    }
+
+                    if($marca_nombre != 'Sin marca'){
+                        $query->where('vin_marca',$marca_nombre);
+                    }
+
+                    if($estado_id > 0){
+                        $query->where('vins.vin_estado_inventario_id', $estado_id);
+                    }
                     
-                    $tabla_vins[] = $vins_selec;
+                    $tabla_vins[] = $query->first();
                 } else {
-                    $tabla_vins = DB::table('vins')
+                    $query = DB::table('vins')
                         ->join('users','users.user_id','=','vins.user_id')
                         ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                         ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                        ->where('vins.user_id',$user_empresa_id)
-                        ->orWhere('vin_marca',$marca_nombre)
-                        ->orWhere('vins.vin_estado_inventario_id',$estado_id)
-                        ->get();
+                        ->where('vins.user_id',$user_empresa_id);
+                    
+                    if($marca_nombre != 'Sin marca'){
+                        $query->where('vin_marca',$marca_nombre);
+                    }
+
+                    if($estado_id > 0){
+                        $query->where('vins.vin_estado_inventario_id', $estado_id);
+                    }
+                    
+                    $tabla_vins = $query->first();
                 }
             }
         }else{
