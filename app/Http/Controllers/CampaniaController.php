@@ -159,6 +159,8 @@ class CampaniaController extends Controller
 
             if(!empty($request->vin_numero)){
 
+                $tabla_vins = [];
+
                 foreach(explode(',',$request->vin_numero) as $row){
                     $arreglo_vins[] = trim($row);
                 }
@@ -167,6 +169,7 @@ class CampaniaController extends Controller
 
                     $validate = DB::table('vins')
                         ->where('vin_codigo', $v)
+                        ->orWhere('vin_patente', $v)
                         ->exists();
 
                     if($validate == true){
@@ -175,6 +178,7 @@ class CampaniaController extends Controller
                             ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
                             ->where('vin_codigo',$v)
+                            ->orWhere('vin_patente',$v)
                             ->where('empresas.empresa_id', $user_empresa_id);
 
                         if($marca_nombre != 'Sin marca'){
@@ -192,7 +196,7 @@ class CampaniaController extends Controller
                                 ->where('patios.patio_id', $patio_id);
                         }
                             
-                        $tabla_vins[] = $query->first();
+                        array_push($tabla_vins, $query->first());
                     } else {
                         $query = DB::table('vins')
                             ->join('users','users.user_id','=','vins.user_id')
@@ -215,7 +219,7 @@ class CampaniaController extends Controller
                                 ->where('patios.patio_id', $patio_id);
                         }
                             
-                        $tabla_vins = $query->get();
+                        array_push($tabla_vins, $query->get());
                     }
                 }
             }else{
@@ -335,6 +339,8 @@ class CampaniaController extends Controller
 
         if(!empty($request->vin_numero)){
 
+            $tabla_vins = [];
+
             foreach(explode(',',$request->vin_numero) as $row){
                 $arreglo_vins[] = trim($row);
             }
@@ -342,6 +348,7 @@ class CampaniaController extends Controller
             foreach($arreglo_vins as $v){
                 $validate = DB::table('vins')
                     ->where('vin_codigo', $v)
+                    ->orWhere('vin_patente', $v)
                     ->exists();
 
                 if($validate == true){
@@ -349,7 +356,8 @@ class CampaniaController extends Controller
                         ->join('users','users.user_id','=','vins.user_id')
                         ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                         ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                        ->where('vin_codigo',$v);
+                        ->where('vin_codigo',$v)
+                        ->orWhere('vin_patente', $v);
 
                     if($user_empresa_id > 0){
                         $query->where('empresas.empresa_id',$user_empresa_id);
@@ -363,7 +371,7 @@ class CampaniaController extends Controller
                         $query->where('vins.vin_estado_inventario_id', $estado_id);
                     }
                     
-                    $tabla_vins[] = $query->first();
+                    array_push($tabla_vins, $query->first());
                 } else {
                     $query = DB::table('vins')
                         ->join('users','users.user_id','=','vins.user_id')
@@ -379,26 +387,29 @@ class CampaniaController extends Controller
                         $query->where('vins.vin_estado_inventario_id', $estado_id);
                     }
                     
-                    $tabla_vins = $query->first();
+                    array_push($tabla_vins, $query->get());
                 }
             }
         }else{
             $query = DB::table('vins')
-            ->join('users','users.user_id','=','vins.user_id')
-            ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-            ->where('vins.user_id',$user_empresa_id)
-            ->orWhere('vin_marca',$marca_nombre)
-            ->orWhere('vins.vin_estado_inventario_id',$estado_id);
+                    ->join('users','users.user_id','=','vins.user_id')
+                    ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
+                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                    ->where('empresas.empresa_id', $user_empresa_id);
 
+            if($marca_nombre != 'Sin marca'){
+                $query->where('vin_marca', $marca_nombre);
+            }
+
+            if($estado_id > 0){
+                $query->where('vins.vin_estado_inventario_id', $estado_id);
+            }
+                
             if($estado_id == 5 || $estado_id == 6) {
                 $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                     ->join('patios','bloques.patio_id','=','patios.patio_id')
-                    ->orWhere('patios.patio_id',$patio_id)
-                    ->get();
-            }else{
-                $query->get();
+                    ->where('patios.patio_id', $patio_id);
             }
 
             $tabla_vins = $query->get();
