@@ -376,8 +376,11 @@ class CampaniaController extends Controller
                     $query = DB::table('vins')
                         ->join('users','users.user_id','=','vins.user_id')
                         ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                        ->where('vins.user_id',$user_empresa_id);
+                        ->join('empresas','users.empresa_id','=','empresas.empresa_id');
+
+                    if($user_empresa_id > 0){
+                        $query->where('empresas.empresa_id',$user_empresa_id);
+                    }
                     
                     if($marca_nombre != 'Sin marca'){
                         $query->where('vin_marca',$marca_nombre);
@@ -394,8 +397,11 @@ class CampaniaController extends Controller
             $query = DB::table('vins')
                     ->join('users','users.user_id','=','vins.user_id')
                     ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                    ->where('empresas.empresa_id', $user_empresa_id);
+                    ->join('empresas','users.empresa_id','=','empresas.empresa_id');
+
+            if($user_empresa_id > 0){
+                $query->where('empresas.empresa_id',$user_empresa_id);
+            }
 
             if($marca_nombre != 'Sin marca'){
                 $query->where('vin_marca', $marca_nombre);
