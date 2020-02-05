@@ -264,7 +264,6 @@ class CampaniaController extends Controller
             ->select('patio_id', 'patio_nombre')
             ->pluck('patio_nombre', 'patio_id');
 
-
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
             ->pluck('user_nombres', 'user_id')
@@ -290,16 +289,11 @@ class CampaniaController extends Controller
 
     /** A partir de aqui las consultas del cuadro de busqueda */
 
-
-
         $estado = DB::table('vin_estado_inventarios')
             ->where('vin_estado_inventario_id',$request->estadoinventario_id)
             ->get();
 
-
-
         if(!empty($estado[0]->vin_estado_inventario_id)){
-            dd(empty($request->request->parameters));
             $estado_id = $estado[0]->vin_estado_inventario_id;
         }else{
             $estado_id = 0;
@@ -308,7 +302,6 @@ class CampaniaController extends Controller
         $marca = DB::table('marcas')
             ->where('marca_id',$request->marca_id)
             ->get();
-
 
         if(!empty($marca[0]->marca_nombre))
         {
@@ -321,8 +314,6 @@ class CampaniaController extends Controller
             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
             ->where('user_id',$request->user_id)
             ->get();
-
-
 
         if(!empty($user[0]->empresa_id))
         {
@@ -342,7 +333,6 @@ class CampaniaController extends Controller
             $patio_id = 0;
         }
 
-
         if(!empty($request->vin_numero)){
 
             foreach(explode(',',$request->vin_numero) as $row){
@@ -350,13 +340,11 @@ class CampaniaController extends Controller
             }
 
             foreach($arreglo_vins as $v){
-
                 $validate = DB::table('vins')
                     ->where('vin_codigo', $v)
                     ->exists();
 
                 if($validate == true){
-
                     $vins_selec = DB::table('vins')
                         ->join('users','users.user_id','=','vins.user_id')
                         ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
@@ -366,9 +354,9 @@ class CampaniaController extends Controller
                         ->orWhere('vin_marca',$marca_nombre)
                         ->orWhere('vins.vin_estado_inventario_id',$estado_id)
                         ->first();
+                    
                     $tabla_vins[] = $vins_selec;
                 } else {
-
                     $tabla_vins = DB::table('vins')
                         ->join('users','users.user_id','=','vins.user_id')
                         ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
@@ -377,11 +365,9 @@ class CampaniaController extends Controller
                         ->orWhere('vin_marca',$marca_nombre)
                         ->orWhere('vins.vin_estado_inventario_id',$estado_id)
                         ->get();
-
                 }
             }
         }else{
-
             $query = DB::table('vins')
             ->join('users','users.user_id','=','vins.user_id')
             ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
@@ -396,39 +382,37 @@ class CampaniaController extends Controller
                     ->join('patios','bloques.patio_id','=','patios.patio_id')
                     ->orWhere('patios.patio_id',$patio_id)
                     ->get();
-
             }else{
                 $query->get();
             }
-
 
             $tabla_vins = $query->get();
         }
 
         // dd($tabla_vins);
 
-    /** Valores necesarios para poblar los selects del modal de asignación de tarea */
+        /** Valores necesarios para poblar los selects del modal de asignación de tarea */
 
-    $responsables = User::where('rol_id', 4)
-        ->orWhere('rol_id', 5)
-        ->orWhere('rol_id', 6)
-        ->get();
+        $responsables = User::where('rol_id', 4)
+            ->orWhere('rol_id', 5)
+            ->orWhere('rol_id', 6)
+            ->get();
 
-    $responsables_array= [];
+        $responsables_array= [];
 
-    foreach($responsables as $k => $v){
-        $responsables_array[$v->user_id] = $v->user_nombre. " " . $v->user_apellido;
-    }
+        foreach($responsables as $k => $v){
+            $responsables_array[$v->user_id] = $v->user_nombre. " " . $v->user_apellido;
+        }
 
-    $tipo_tareas_array = DB::table('tipo_tareas')
-        ->select('tipo_tarea_id', 'tipo_tarea_descripcion')
-        ->pluck('tipo_tarea_descripcion', 'tipo_tarea_id');
+        $tipo_tareas_array = DB::table('tipo_tareas')
+            ->select('tipo_tarea_id', 'tipo_tarea_descripcion')
+            ->pluck('tipo_tarea_descripcion', 'tipo_tarea_id');
 
-    $tipo_destinos_array = DB::table('tipo_destinos')
-        ->select('tipo_destino_id', 'tipo_destino_descripcion')
-        ->pluck('tipo_destino_descripcion', 'tipo_destino_id');
+        $tipo_destinos_array = DB::table('tipo_destinos')
+            ->select('tipo_destino_id', 'tipo_destino_descripcion')
+            ->pluck('tipo_destino_descripcion', 'tipo_destino_id');
 
-    /** Listado de Campañas para la vista de planificación */
+        /** Listado de Campañas para la vista de planificación */
         $campanias = Campania::all()
             ->sortBy('campania_id');
 
@@ -448,9 +432,7 @@ class CampaniaController extends Controller
 
                 array_push($arrayTCampanias, $tCampanias);
         }
-
         return view('planificacion.index', compact('tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
-
     }
 
     /**
