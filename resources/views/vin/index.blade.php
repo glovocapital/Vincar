@@ -2,81 +2,191 @@
 @section('title','Vin index')
 @section('content')
 
+@if(Auth::user()->rol_id == 1)
 <div class="row">
-<div class="col-lg-4">
-    <div class="ibox float-e-margins">
-        <div class="card card-default text-center">
-            <div class="card-header">
-                <h3 class="card-title text-center">Cargar Vehiculos </h3>
+    <div class="col-lg-4">
+        <div class="ibox float-e-margins">
+            <div class="card card-default text-center">
+                <div class="card-header">
+                    <h3 class="card-title text-center">Cargar Vehiculos </h3>
 
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                    {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
-                    <div class="text pb-5">
-                        {!! Form::submit('Registrar vin ', ['class' => 'btn btn-success block full-width m-b']) !!}
-                        {!! Form::close() !!}
-                    </div>
-                    <div class="text pb-5">
-                        {!! Form::open(['route'=> 'vin.download', 'method'=>'GET']) !!}
-                        {!! Form::submit('Descargar planilla ', ['class' => 'btn btn-warning block full-width m-b']) !!}
-                        {!! Form::close() !!}
-                    </div>
-                    </div>
                 </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="col-lg-4">
-    <div class="ibox float-e-margins">
-        <div class="card card-default text-center">
-            <div class="card-header">
-                <h3 class="card-title">Vehiculos N/N  </h3>
-
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                    {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
-                    <div class="text pb-5">
-                        {!! Form::submit('Vehiculos N/N ', ['class' => 'btn btn-primary block full-width m-b']) !!}
-                        {!! Form::close() !!}
-                    </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="col-lg-4">
-    <div class="ibox float-e-margins">
-        <div class="card card-default text-center">
-            <div class="card-header">
-                <h3 class="card-title">Exportar Tabla</h3>
-
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                    {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
-                    <div class="text pb-5">
-
-                        {!! Form::submit('Exportar VIN ', ['class' => 'btn btn-info block full-width m-b']) !!}
-                        {!! Form::close() !!}
-                    </div>
-
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                        {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                        <div class="text pb-5">
+                            {!! Form::submit('Registrar vin ', ['class' => 'btn btn-success block full-width m-b']) !!}
+                            {!! Form::close() !!}
+                        </div>
+                        <div class="text pb-5">
+                            {!! Form::open(['route'=> 'vin.download', 'method'=>'GET']) !!}
+                            {!! Form::submit('Descargar planilla ', ['class' => 'btn btn-warning block full-width m-b']) !!}
+                            {!! Form::close() !!}
+                        </div>
+                        </div>
                     </div>
 
                 </div>
             </div>
         </div>
     </div>
+    <div class="col-lg-4">
+        <div class="ibox float-e-margins">
+            <div class="card card-default text-center">
+                <div class="card-header">
+                    <h3 class="card-title">Vehiculos N/N  </h3>
+
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                            <div class="text pb-5">
+                                {!! Form::submit('Vehiculos N/N ', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                                {!! Form::close() !!}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="ibox float-e-margins">
+            <div class="card card-default text-center">
+                <div class="card-header">
+                    <h3 class="card-title">Exportar Tabla</h3>
+
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                        {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                        <div class="text pb-5">
+
+                            {!! Form::submit('Exportar VIN ', ['class' => 'btn btn-info block full-width m-b']) !!}
+                            {!! Form::close() !!}
+                        </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+@endif
+
+@if(Auth::user()->rol_id == 3 /*Operador Logistico*/)
+<div class="row">
+    <div class="col-lg-6">
+        <div class="ibox float-e-margins">
+            <div class="card card-default text-center">
+                <div class="card-header">
+                    <h3 class="card-title">Vehiculos N/N  </h3>
+
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                            <div class="text pb-5">
+                                {!! Form::submit('Vehiculos N/N ', ['class' => 'btn btn-primary block full-width m-b', 'disabled']) !!}
+                                {!! Form::close() !!}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="ibox float-e-margins">
+            <div class="card card-default text-center">
+                <div class="card-header">
+                    <h3 class="card-title">Exportar Tabla</h3>
+
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                        {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                        <div class="text pb-5">
+
+                            {!! Form::submit('Exportar VIN ', ['class' => 'btn btn-info block full-width m-b', 'disabled']) !!}
+                            {!! Form::close() !!}
+                        </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+@endif
+
+@if(Auth::user()->rol_id == 4 /*Customer*/ )
+<div class="row">
+    <div class="col-lg-6">
+        <div class="ibox float-e-margins">
+            <div class="card card-default text-center">
+                <div class="card-header">
+                    <h3 class="card-title text-center">Cargar Vehiculos </h3>
+
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                        {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                        <div class="text pb-5">
+                            {!! Form::submit('Registrar vin ', ['class' => 'btn btn-success block full-width m-b']) !!}
+                            {!! Form::close() !!}
+                        </div>
+                        <div class="text pb-5">
+                            {!! Form::open(['route'=> 'vin.download', 'method'=>'GET']) !!}
+                            {!! Form::submit('Descargar planilla ', ['class' => 'btn btn-warning block full-width m-b']) !!}
+                            {!! Form::close() !!}
+                        </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="ibox float-e-margins">
+            <div class="card card-default text-center">
+                <div class="card-header">
+                    <h3 class="card-title">Exportar Tabla</h3>
+
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                        {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                        <div class="text pb-5">
+
+                            {!! Form::submit('Exportar VIN ', ['class' => 'btn btn-info block full-width m-b', 'disabled']) !!}
+                            {!! Form::close() !!}
+                        </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+
 
 <div class="row">
 <div class="col-lg-12">
@@ -99,10 +209,12 @@
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
+                            @if(Auth::user()->rol_id != 4 /*Customer*/ )
                             <div class="form-group">
                                     <label for="user_id" >Seleccionar Cliente </label>
                                     {!! Form::select('user_id', $empresas, null,['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
+                            @endif()
 
                             <div class="form-group">
                                 <label for="estado_nombre" >Seleccionar Estado </label>
