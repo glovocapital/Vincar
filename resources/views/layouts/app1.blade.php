@@ -7,7 +7,7 @@
 <body class="login hold-transition">
 <!-- Site wrapper -->
 <div class="wrapper">
-        @include('layouts.partials.header')
+
         <section class="content">
             <div class="container-fluid">
                 <div class="row">

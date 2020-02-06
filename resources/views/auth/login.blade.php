@@ -6,7 +6,7 @@
 
         <div class="col-md-6">
             
-            <div class="card">
+            <div class="card card-login">
                 
                 
                 <div class="card-body">
@@ -16,8 +16,6 @@
                             <img src="{{ URL::asset('img/vincar2.png') }}"
                                 alt="Logo Vincar"
                                 class="brand-image-xs img-responsive"
-                                style="opacity: .8"
-                                height="100%"
                                 width="70%">
                         </div>
 

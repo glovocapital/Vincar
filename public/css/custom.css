@@ -1,5 +1,5 @@
 body.login {
-    background-image: url(../img/background_home.png);
+    background-image: url(../img/background_home.jpg);
 }
 
 .bg-gradient-primary {
@@ -9,7 +9,13 @@ body.login {
     background-size: cover;
 }
 
+.custom-class{
+text-align: center;
+}
 
+.card-login{
+    background-color: #ffffffb0 !important;
+}
 /*--img menu--*/
 
 .sidebar-brand-icon img {
