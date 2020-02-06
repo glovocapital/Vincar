@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Row;
+use Illuminate\Support\Facades\Storage;
 class PatioController extends Controller
 {
     public function __construct()
