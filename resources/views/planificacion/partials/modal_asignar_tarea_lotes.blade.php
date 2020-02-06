@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div id="asignarTareaModal" class="modal fade" role="dialog">
+<div id="asignarTareaModalLote" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
         <!-- Modal content-->
         <div class="modal-content">
@@ -8,13 +8,14 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                {!! Form::open(['route'=> 'campania.storeModalTarea', 'method'=>'POST']) !!}
+                {!! Form::open(['route'=> 'campania.storeModalTareaLotes', 'method'=>'POST']) !!}
                 @csrf
                 <div class="row row-fluid">
                     <div class="col-md-12">
                         <div class="form-group" id="codigos_vin">
-                            <div name="vin_codigo" id="vin_codigo"></div>
-                            <input type="hidden" class="vin-id" name="vin_id" value="" />
+                            <div name="vin_codigo_lote" id="vin_codigo_lote">
+
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -25,7 +26,7 @@
 
                         <div class="form-group">
                             <label for="tipo_campanias" >Campañas Seleccionadas <strong>*</strong></label>
-                            <select name="tipo_campanias" id="tipo_campanias" multiple disabled class="form-control col-sm-12 select-tipo-campanias">
+                            <select name="tipo_campanias" id="tipo_campanias_lotes" multiple disabled class="form-control col-sm-12 select-tipo-campanias">
                             @foreach($arrayTCampanias as $key => $tCamp)
                                 <option value="" selected>{{ $tCamp[$key]->tipo_campania_descripcion }}</option>
                             @endforeach
@@ -34,7 +35,7 @@
                         
                         <label for="tarea_fecha_finalizacion">Fecha de finalización de tareas solicitadas</label>
                         <div class="input-group">
-                            <input type="date" id="tarea_fecha_finalizacion" class="form-control"  name="tarea_fecha_finalizacion" required/><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                            <input type="date" id="tarea_fecha_finalizacion_lotes" class="form-control"  name="tarea_fecha_finalizacion" required/><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                         </div>
                         <div id="mensaje1" class="error" style="color: red; font-weight: bold"> Fecha requerida.</div>
                     </div>
@@ -63,7 +64,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                {!! Form::submit('Guardar', ['class' => 'btn btn-primary block full-width m-b btn-guardar-campania', 'id'=>'btn-guardar-campania']) !!}
+                {!! Form::submit('Guardar', ['class' => 'btn btn-primary block full-width m-b btn-guardar-campania-lotes', 'id'=>'btn-guardar-campania-lotes']) !!}
                 {!! Form::close() !!}
             </div>
         </div>

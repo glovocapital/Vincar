@@ -131,11 +131,13 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
     Route::get('campania', 'CampaniaController@index')->name('campania.index');
     Route::get('solicitud_campania', 'CampaniaController@index2')->name('solicitud_campania.index');
     Route::get('planificacion', 'CampaniaController@index3')->name('planificacion.index');
+    Route::post('planificacion/obtener_codigos_vins', ['as' => 'planificacion.codigos_vins', 'uses' => 'CampaniaController@vinCodigos']);
     Route::get('campania/create','CampaniaController@create')->name('campania.create');
     Route::get('campania/{id}/edit','CampaniaController@edit')->name('campania.edit');
     Route::post('campania','CampaniaController@store')->name('campania.store');
     Route::post('campania/modal','CampaniaController@storeModal')->name('campania.storeModal');
     Route::post('campania/modal_tarea','CampaniaController@storeModalTarea')->name('campania.storeModalTarea');
+    Route::post('campania/modal_tarea_lotes','CampaniaController@storeModalTareaLotes')->name('campania.storeModalTareaLotes');
     Route::patch('campania/{id}/update','CampaniaController@update')->name('campania.update');
     Route::get('campania/{id}/delete','CampaniaController@destroy')->name('campania.destroy');
 

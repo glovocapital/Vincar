@@ -72,6 +72,7 @@
                             <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
+                                        <th><i class="far fa-check-square"></i></th>
                                         <th>Vin</th>
                                         <th>Patente</th>
 

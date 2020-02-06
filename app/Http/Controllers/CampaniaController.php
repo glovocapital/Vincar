@@ -571,6 +571,46 @@ class CampaniaController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeModalTareaLotes(Request $request)
+    {
+        dd($request);
+        try {
+
+            // dd($request);
+            DB::beginTransaction();
+
+            $tarea = new Tarea();
+
+            $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
+            $tarea->tarea_prioridad = $request->tarea_prioridad;
+            $tarea->tarea_hora_termino = $request->tarea_hora_termino;
+            $tarea->vin_id = $request->vin_id;
+            $tarea->user_id = $request->tarea_responsable_id;
+            $tarea->tipo_tarea_id = $request->tipo_tarea_id;
+            $tarea->tipo_destino_id = $request->tipo_destino_id;
+            
+            $tarea->save();
+            
+            // foreach ($request->tipo_campanias as $t_campania_id) {
+            //     $tipo_campania_id = (int)$t_campania_id;
+            //     DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $campania->campania_id]);
+            // }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('planificacion.index')->with('error-msg', 'Error asignando tarea.');
+        }
+
+        return redirect()->route('planificacion.index')->with('success', 'Tarea asignada con éxito.');; 
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \App\Campania  $campania
