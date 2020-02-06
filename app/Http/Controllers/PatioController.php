@@ -8,7 +8,6 @@ use App\Patio;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Row;
 class PatioController extends Controller
 {
@@ -255,7 +254,6 @@ class PatioController extends Controller
 
         $id_patio =   $request->get("patio_id");
 
-
         if ($request->ajax()){
             $bloques = DB::table('bloques')
                 ->where('patio_id', '=', $id_patio)
@@ -295,14 +293,29 @@ class PatioController extends Controller
             else
                 $bloques = DB::table('bloques')
                     ->where('patio_id', '=', $id_patio)
-                    ->select('patio_id','bloque_nombre','bloque_filas', 'bloque_columnas')
+                    ->select('patio_id','bloque_nombre','bloque_filas', 'bloque_columnas', 'bloque_id')
                     ->orderBy('bloque_nombre')
                     ->get();
+
+            $grupo_bloques=Array(); $sep = "";
+            foreach($bloques as $bloque){
+                $grupo_bloques[] = $bloque->bloque_id;
+            }
+
+
+
+             $ubicados = DB::table('ubic_patios')
+                 ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+                 ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vin_estado_inventario_id","bloque_id")
+                 ->whereIn('bloque_id', $grupo_bloques)
+                 ->get();
+
 
 
             return response()->json([
                 'success' => true,
                 'bloques' => $bloques,
+                'ubicados' => $ubicados
             ]);
         }
 

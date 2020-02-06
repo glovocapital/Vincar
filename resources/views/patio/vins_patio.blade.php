@@ -139,10 +139,28 @@
         .col_bloque{
         padding:5px;
         font-size:9px;
-        background: #dedede;
+        min-width:30px;
         margin:1px !important;
         text-align:center;
         }
+
+        .col_bloque_gris{
+            background: #dedede;
+        }
+
+        .col_bloque_verde{
+            background: #00ff20;
+        }
+
+        .col_bloque_amarillo{
+            background: #feee00;
+        }
+        .col_bloque_rojo{
+            background: #fc0102;
+        }
+        .col_bloque_azul{
+            background: #02c1ff;
+         }
 
         .col_bloqueH{
         padding:3px;
@@ -359,6 +377,8 @@
 
                                         $("#Loading_2").hide();
 
+                                        $("#TodosBloques").html("");
+
                                         res.bloques.forEach(function(datos) {
 
                                         totalsector= datos.bloque_filas*datos.bloque_columnas;
@@ -377,8 +397,40 @@
                                            Bloque_ = Bloque_ + '<div class="row "><div class="col col_bloqueH"> Fila: '+ i + '</div>';
 
                                            for (var ijc = 1; ijc <= datos.bloque_columnas; ijc++) {
+                                             color = 'col_bloque_gris';
+                                             num = ijc;
+                                           res.ubicados.forEach(function(ubic) {
+                                                if(ubic.ubic_patio_columna == ijc && ubic.ubic_patio_fila == i && datos.bloque_id == ubic.bloque_id){
+                                                    var fecha1 = moment(ubic.vin_fec_ingreso);
+                                                    var f = new Date();
+                                                    var fecha2 = moment(f.getFullYear()+"-"+(f.getMonth() +1)+"-"+f.getDate());
+                                                    var dias =fecha2.diff(fecha1, 'days');
 
-                                                Bloque_ = Bloque_+'<div class="col col_bloque">'+ijc+'</div>';
+
+
+                                                    if(ubic.vin_estado_inventario_id==4) color = 'col_bloque_verde';
+                                                    if(ubic.vin_estado_inventario_id==5){
+                                                     color = 'col_bloque_verde';
+                                                     if(parseInt(dias)>30) color = 'col_bloque_amarillo';
+
+                                                    }
+
+                                                    if(ubic.vin_estado_inventario_id==6)  color = 'col_bloque_rojo';
+                                                    if(ubic.vin_estado_inventario_id==7)  color = 'col_bloque_rojo';
+
+                                                    var vin_marca = new String(ubic.vin_marca);
+                                                    console.log(vin_marca.toLowerCase());
+
+
+                                                    num = "<img style='width:24px' src ='{{asset('base/img/svg/')}}/"+vin_marca.toLowerCase()+".svg'/>";
+
+                                                }
+                                           });
+
+
+                                                Bloque_ = Bloque_+'<div class="col col_bloque '+color+'">'+num+'</div>';
+
+
 
                                            }
 
