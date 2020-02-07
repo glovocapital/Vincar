@@ -584,22 +584,19 @@ class CampaniaController extends Controller
             // dd($request);
             DB::beginTransaction();
 
-            $tarea = new Tarea();
+            foreach($request->vin_ids as $vin_id){
+                $tarea = new Tarea();
 
-            $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
-            $tarea->tarea_prioridad = $request->tarea_prioridad;
-            $tarea->tarea_hora_termino = $request->tarea_hora_termino;
-            $tarea->vin_id = $request->vin_id;
-            $tarea->user_id = $request->tarea_responsable_id;
-            $tarea->tipo_tarea_id = $request->tipo_tarea_id;
-            $tarea->tipo_destino_id = $request->tipo_destino_id;
-            
-            $tarea->save();
-            
-            // foreach ($request->tipo_campanias as $t_campania_id) {
-            //     $tipo_campania_id = (int)$t_campania_id;
-            //     DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $campania->campania_id]);
-            // }
+                $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
+                $tarea->tarea_prioridad = $request->tarea_prioridad;
+                $tarea->tarea_hora_termino = $request->tarea_hora_termino;
+                $tarea->vin_id = $request->vin_id;
+                $tarea->user_id = $request->tarea_responsable_id;
+                $tarea->tipo_tarea_id = $request->tipo_tarea_id;
+                $tarea->tipo_destino_id = $request->tipo_destino_id;
+                
+                $tarea->save();
+            }
 
             DB::commit();
         } catch (\Throwable $th) {
