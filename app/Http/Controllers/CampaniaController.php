@@ -578,7 +578,6 @@ class CampaniaController extends Controller
      */
     public function storeModalTareaLotes(Request $request)
     {
-        dd($request);
         try {
 
             // dd($request);
