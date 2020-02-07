@@ -229,6 +229,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
     //Rutas mantenedor vin
     Route::get('vin', 'VinController@index')->name('vin.index');
+    Route::get('vin/index2', 'VinController@index2')->name('vin.index2');
     Route::get('vin/create','VinController@create')->name('vin.create');
     Route::get('vin/{id}/edit','VinController@edit')->name('vin.edit');
     Route::post('vin','VinController@store')->name('vin.store');

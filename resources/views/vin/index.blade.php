@@ -185,7 +185,7 @@
 @endif
 
 <!-- BUSQUEDA DE VIN   -->
-
+@if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 3)
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins text-center">
@@ -204,12 +204,12 @@
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
-                            @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 3)
+
                             <div class="form-group">
                                     <label for="user_id" >Seleccionar Cliente <strong>*</strong></label>
-                                    {!! Form::select('user_id', $empresas, null,['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                    {!! Form::select('empresa_id', $empresas, null,['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
-                            @ENDIF
+
 
                             <div class="form-group">
                                 <label for="estado_nombre" >Seleccionar Estado <strong>*</strong></label>
@@ -244,6 +244,65 @@
         </div>
     </div>
 </div>
+@endif
+
+
+
+@if(Auth::user()->rol_id == 4)
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins text-center">
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title">Buscar Vin</h3>
+                </div>
+                <div class="card-body">
+                    {!! Form::open(['route'=> 'vin.index2', 'method'=>'get']) !!}
+                    <div class="row">
+                        <div class="col-md-4" id="wrapper_2">
+                            <div class="form-group">
+                                    <label for="vin_numero" >Vin <strong>*</strong></label>
+                                    {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4" id="wrapper_2">
+
+                            <div class="form-group">
+                                <label for="estado_nombre" >Seleccionar Estado <strong>*</strong></label>
+                                {!! Form::select('estadoinventario_id', $estadosInventario, null,['id' => 'estadoinventario', 'placeholder'=>'Estado', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4" id="wrapper_2">
+                            <div class="form-group">
+                                    <label for="user_id" >Seleccionar Patio <strong>*</strong></label>
+                                    {!! Form::select('patio_id', $patios, null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                            </div>
+                            <div class="form-group">
+                                <label for="marca_nombre" >Seleccionar Marca <strong>*</strong></label>
+                                {!! Form::select('marca_id', $marcas, null,['id' => 'marca', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right pb-5">
+
+                        {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
+
+                        <a href="{{ route('campania.index') }}" class = 'btn btn-success'>Ver Campañas</a>
+
+                        {!! Form::close() !!}
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
 
 
 <div class="row">
