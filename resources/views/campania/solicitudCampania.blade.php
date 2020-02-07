@@ -72,7 +72,7 @@
                             <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th><i class="far fa-check-square"></i></th>
+                                        <!-- <th><i class="far fa-check-square"></i></th> -->
                                         <th>Vin</th>
                                         <th>Patente</th>
 
@@ -94,7 +94,7 @@
 
                                 @foreach($tabla_vins as $vin)
                                 <tr>
-                                    <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
+                                    <!-- <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td> -->
                                     <td><small>{{ $vin->vin_patente }}</small></td>
                                     <td><small>{{ $vin->vin_marca }}</small></td>
                                     <td><small>{{ $vin->vin_modelo }}</small></td>
