@@ -24,8 +24,8 @@
 
                     <div class="col-md-4" id="wrapper_2">
                         <div class="form-group">
-                                <label for="user_id" >Seleccionar Cliente <strong>*</strong></label>
-                                {!! Form::select('user_id', $empresas, null,['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                <label for="empresa_id" >Seleccionar Cliente <strong>*</strong></label>
+                                {!! Form::select('empresa_id', $empresas, null,['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                         </div>
 
                         <div class="form-group">

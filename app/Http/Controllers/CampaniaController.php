@@ -293,7 +293,7 @@ class CampaniaController extends Controller
         $tabla_vins = [];
 
         /** A partir de aqui las consultas del cuadro de busqueda */
-        if($request->has('vin_numero') || $request->has('estadoinventario_id') || $request->has('patio_id') || $request->has('marca_id') || $request->has('user_id')){
+        if($request->has('empresa_id') || $request->has('vin_numero') || $request->has('estadoinventario_id') || $request->has('patio_id') || $request->has('marca_id')){
 
             $estado = DB::table('vin_estado_inventarios')
                 ->where('vin_estado_inventario_id',$request->estadoinventario_id)
@@ -318,7 +318,7 @@ class CampaniaController extends Controller
 
             $user = DB::table('users')
                 ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                ->where('user_id',$request->user_id)
+                ->where('empresas.empresa_id',$request->empresa_id)
                 ->get();
 
             if(!empty($user[0]->empresa_id))
