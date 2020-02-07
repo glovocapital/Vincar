@@ -51,7 +51,7 @@
               <li class="sidebar-item @if(request()->route()->getName()=='planificacion.index') active @endif">
                 <a class="sidebar-link " href="{{ route('planificacion.index') }}">Tareas</a>
               </li>
-              <li class="sidebar-item @if(request()->route()->getName()=='campania.storeModal') active @endif">
+              <li class="sidebar-item @if(request()->route()->getName()=='solicitud_campania.index') active @endif">
                 <a class="sidebar-link" href="{{ route('solicitud_campania.index') }}">Campañas</a>
               </li>
 
