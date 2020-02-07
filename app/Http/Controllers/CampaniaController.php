@@ -182,7 +182,8 @@ class CampaniaController extends Controller
                             ->where('empresas.empresa_id', $user_empresa_id);
 
                         if($marca_nombre != 'Sin marca'){
-                            $query->where('vin_marca', $marca_nombre);
+                            // $query->where('vin_marca', $marca_nombre);
+                            $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
         
                         if($estado_id > 0){
@@ -205,7 +206,8 @@ class CampaniaController extends Controller
                             ->where('vins.user_id',$user_empresa_id);
 
                         if($marca_nombre != 'Sin marca'){
-                            $query->where('vin_marca', $marca_nombre);
+                            // $query->where('vin_marca', $marca_nombre);
+                            $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
         
                         if($estado_id > 0){
@@ -230,7 +232,8 @@ class CampaniaController extends Controller
                     ->where('empresas.empresa_id', $user_empresa_id);
 
                 if($marca_nombre != 'Sin marca'){
-                    $query->where('vin_marca', $marca_nombre);
+                    // $query->where('vin_marca', $marca_nombre);
+                    $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                 }
 
                 if($estado_id > 0){
@@ -364,7 +367,8 @@ class CampaniaController extends Controller
                         }
 
                         if($marca_nombre != 'Sin marca'){
-                            $query->where('vin_marca',$marca_nombre);
+                            // $query->where('vin_marca',$marca_nombre);
+                            $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
 
                         if($estado_id > 0){
@@ -383,7 +387,8 @@ class CampaniaController extends Controller
                         }
                         
                         if($marca_nombre != 'Sin marca'){
-                            $query->where('vin_marca',$marca_nombre);
+                            // $query->where('vin_marca',$marca_nombre);
+                            $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
 
                         if($estado_id > 0){
@@ -404,7 +409,8 @@ class CampaniaController extends Controller
                 }
 
                 if($marca_nombre != 'Sin marca'){
-                    $query->where('vin_marca', $marca_nombre);
+                    // $query->where('vin_marca', $marca_nombre);
+                    $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                 }
 
                 if($estado_id > 0){

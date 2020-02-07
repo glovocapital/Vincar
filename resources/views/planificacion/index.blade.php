@@ -215,6 +215,8 @@
                     return this.value;
                 }).get();
 
+                alert(vin_ids);
+
                 var url = "/planificacion/obtener_codigos_vins/";
 
                 var request = {
