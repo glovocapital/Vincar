@@ -115,7 +115,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
     Route::post('ubic_patio/store_patios','UbicPatioController@storePatios')->name('ubic_patio.store_patios');
 
     //Manejo de Thumbnail de imágenes
-    Route::resource('thumbnail', 'ThumbnailController');
+    // Route::resource('thumbnail', 'ThumbnailController');
 
 
     //ruta mantenedor tipo de proveedor

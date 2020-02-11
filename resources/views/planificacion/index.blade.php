@@ -215,7 +215,7 @@
                     return this.value;
                 }).get();
 
-                var url = "/planificacion/obtener_codigos_vins/";
+                var url = "/planificacion/obtener_codigos_vins";
 
                 var request = {
                     _token: $("input[name='_token']").attr("value"),
