@@ -380,6 +380,11 @@
                                             <button class="btn btn-xs btn-info btn-campania"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
                                         </small>
 
+                                        <small>
+                                            <a href="{{ route('vin.guia', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-warning"  title="Add Guía"><i class="fas fa fa-barcode  "></i></a>
+
+                                        </small>
+
 
 
                                     </td>

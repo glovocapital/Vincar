@@ -243,6 +243,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post('vin/search','VinController@search')->name('vin.search');
     Route::get('vin/{id}/editarestado','VinController@editarestado')->name('vin.editarestado');
     Route::patch('vin/{id}/cambiaestado','VinController@cambiaestado')->name('vin.cambiaestado');
+    Route::get('vin/guia','VinController@guia')->name('vin.guia');
 
      //Jc
      Route::get('patio/vins_patio','PatioController@indexVinsPatio')->name('patio.vins_patio');
