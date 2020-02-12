@@ -161,7 +161,7 @@ class CampaniaController extends Controller
 
                 $tabla_vins = [];
 
-                foreach(explode(',',$request->vin_numero) as $row){
+                foreach(explode(PHP_EOL,$request->vin_numero) as $row){
                     $arreglo_vins[] = trim($row);
                 }
 
@@ -221,7 +221,7 @@ class CampaniaController extends Controller
                                 ->where('patios.patio_id', $patio_id);
                         }
                             
-                        array_push($tabla_vins, $query->get());
+                        $tabla_vins = $query->get();
                     }
                 }
             }else{
@@ -343,8 +343,7 @@ class CampaniaController extends Controller
             }
 
             if(!empty($request->vin_numero)){
-
-                foreach(explode(',',$request->vin_numero) as $row){
+                foreach(explode(PHP_EOL,$request->vin_numero) as $row){
                     $arreglo_vins[] = trim($row);
                 }
 
@@ -394,8 +393,8 @@ class CampaniaController extends Controller
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
                         }
-                        
-                        array_push($tabla_vins, $query->get());
+
+                        $tabla_vins = $query->get();
                     }
                 }
             }else{
@@ -471,6 +470,7 @@ class CampaniaController extends Controller
 
                 array_push($arrayTCampanias, $tCampanias);
         }
+
         return view('planificacion.index', compact('tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
     }
 
