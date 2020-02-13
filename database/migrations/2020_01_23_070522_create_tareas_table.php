@@ -19,7 +19,7 @@ class CreateTareasTable extends Migration
             $table->date('tarea_fecha_finalizacion');
             $table->integer('tarea_prioridad')->default(0);
             $table->time('tarea_hora_termino');
-            $table->boolean('tarea_finalizada');
+            $table->boolean('tarea_finalizada')->default(false);
             
             $table->unsignedBigInteger('vin_id');
             $table->foreign('vin_id')->references('vin_id')->on('vins')->onUpdate('cascade')->onDelete('cascade');
