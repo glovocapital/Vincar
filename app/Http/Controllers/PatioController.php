@@ -307,7 +307,8 @@ class PatioController extends Controller
 
              $ubicados = DB::table('ubic_patios')
                  ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
-                 ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vin_estado_inventario_id","bloque_id")
+                 ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
+                 ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloque_id","vin_estado_inventario_desc")
                  ->whereIn('bloque_id', $grupo_bloques)
                  ->get();
 
