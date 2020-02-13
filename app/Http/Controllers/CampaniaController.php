@@ -14,6 +14,7 @@ use App\Vin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class CampaniaController extends Controller
@@ -534,7 +535,7 @@ class CampaniaController extends Controller
             return redirect()->route('vin.index')->with('error-msg', 'Error asignando campaña.');
         }
 
-        return redirect()->route('campania.index')->with('success', 'Campaña asignada con éxito.');; 
+        return redirect()->route('campania.index')->with('success', 'Campaña asignada con éxito.'); 
     }
 
     /**
@@ -629,9 +630,28 @@ class CampaniaController extends Controller
      * @param  \App\Campania  $campania
      * @return \Illuminate\Http\Response
      */
-    public function edit(Campania $campania)
+    public function edit($id_campania)
     {
-        //
+        $campania_id =  Crypt::decrypt($id_campania);
+        $campania = Campania::findOrfail($campania_id);
+
+        $vin_codigo = $campania->oneVin->vin_codigo;
+
+        $tipo_campanias_array = TipoCampania::all()
+            ->sortBy('tipo_campania_id')
+            ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
+
+        $arrayTCampanias = [];
+
+        $tCampanias = DB::table('campania_vins')
+            ->join('tipo_campanias', 'campania_vins.tipo_campania_id', '=', 'tipo_campanias.tipo_campania_id')
+            ->select('campania_vins.campania_id', 'tipo_campanias.tipo_campania_id', 'tipo_campanias.tipo_campania_descripcion')
+            ->where('campania_vins.campania_id', $campania->campania_id)
+            ->where('campania_vins.deleted_at', null)
+            ->where('tipo_campanias.deleted_at', null)
+            ->get();
+
+        return view('campania.edit', compact('campania', 'vin_codigo','tipo_campanias_array', 'tCampanias'));
     }
 
     /**
@@ -641,9 +661,67 @@ class CampaniaController extends Controller
      * @param  \App\Campania  $campania
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Campania $campania)
+    public function update(Request $request)
     {
-        //
+        try {
+                DB::beginTransaction();
+
+                $campania = Campania::find($request->campania_id);
+                
+                $campania->campania_fecha_finalizacion = $request->campania_fecha_finalizacion;
+                $campania->campania_observaciones = $request->campania_observaciones;
+                
+                $campania->save();
+
+                $campania_tipos = DB::table('campania_vins')
+                    ->where('campania_id', '=', $request->campania_id)
+                    ->where('deleted_at', '=', null)
+                    ->get();
+
+                /** Insertar tipos de campaña nuevos */
+                foreach ($request->tipo_campanias as $t_campania_id) {
+                    $tipo_campania_id = (int)$t_campania_id;
+
+                    $existe = DB::table('campania_vins')
+                        ->where('campania_id', '=', $request->campania_id)
+                        ->where('tipo_campania_id', '=', $tipo_campania_id)
+                        ->where('deleted_at', '=', null)
+                        ->get();
+                        
+                    if(count($existe) == 0){
+                        DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $request->campania_id]);
+                    } 
+                }
+
+                /** Eliminar de los tipos de campaña aquellos que hayan sido desmarcados */
+                    
+                foreach($campania_tipos as $tipoCamp){
+                    $enc = false;
+                    $tipo_campania_id = $tipoCamp->tipo_campania_id;
+
+                    foreach($request->tipo_campanias as $t_campania_id){
+                        if((int)$t_campania_id === $tipo_campania_id){
+                            $enc = true;
+                            continue;
+                        }
+                    }
+
+                    if(!$enc){
+                        DB::table('campania_vins')
+                            ->where('campania_id', '=', $request->campania_id)
+                            ->where('tipo_campania_id', '=', $tipo_campania_id)
+                            ->where('deleted_at', '=', null)
+                            ->update(['deleted_at' => now()]);
+                    }
+                }
+
+                DB::commit();
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return redirect()->route('campania.index')->with('error-msg', 'Error actualizando campaña.');
+            }
+
+        return redirect()->route('campania.index')->with('success', 'Campaña actualizada con éxito.'); 
     }
 
     /**
