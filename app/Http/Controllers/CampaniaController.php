@@ -811,8 +811,43 @@ class CampaniaController extends Controller
      * @param  \App\Campania  $campania
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Campania $campania)
+    public function destroy($id_campania)
     {
-        //
+        $campania_id =  Crypt::decrypt($id_campania);
+
+        try {
+            $campania = Campania::findOrfail($campania_id)->delete();
+
+            flash('Los datos de la campaña han sido eliminados satisfactoriamente.')->success();
+            return redirect('campania');
+        }catch (\Exception $e) {
+
+            flash('Error al intentar eliminar los datos de la campaña.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('campania');
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Campania  $campania
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyTarea($id_tarea)
+    {
+        $tarea_id =  Crypt::decrypt($id_tarea);
+
+        try {
+            $tarea = Tarea::findOrfail($tarea_id)->delete();
+
+            flash('Los datos de la tarea han sido eliminados satisfactoriamente.')->success();
+            return redirect('planificacion');
+        }catch (\Exception $e) {
+
+            flash('Error al intentar eliminar los datos de la tarea.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('planificacion');
+        }
     }
 }
