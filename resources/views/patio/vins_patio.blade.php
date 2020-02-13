@@ -381,32 +381,39 @@
 
                                         res.bloques.forEach(function(datos) {
 
+
+
                                         totalsector= datos.bloque_filas*datos.bloque_columnas;
+
                                         Dtotalsector= totalsector;
 
 
-                                        Bloque_='<div class="row "> <div class="col col_bloqueT">'+datos.bloque_nombre+'</div>'
-                                        +'<div class="col col_bloqueT text-rigth">'
-                                        +'<button class="btn btn-danger btn-sm">Vaciar Bloque</button> </div> </div>'
-                                        +'<div class="row"><div class="col col_bloqueT">utilizados 0 de '+totalsector+' [Disponibles: '+Dtotalsector+']</div></div>';
+                                        Bloque_c=''
 
 
 
                                         for (var i = 1; i <= datos.bloque_filas; i++) {
 
-                                           Bloque_ = Bloque_ + '<div class="row "><div class="col col_bloqueH"> Fila: '+ i + '</div>';
+                                        if(i<10) i = "0"+i;
+
+                                           Bloque_c = Bloque_c + '<div class="row "><div class="col col_bloqueH"> Fila: '+ i + '</div>';
+
+                                           usados=0;
 
                                            for (var ijc = 1; ijc <= datos.bloque_columnas; ijc++) {
                                              color = 'col_bloque_gris';
                                              num = ijc;
                                            res.ubicados.forEach(function(ubic) {
-                                                if(ubic.ubic_patio_columna == ijc && ubic.ubic_patio_fila == i && datos.bloque_id == ubic.bloque_id){
+
+                                                if(parseInt(ubic.ubic_patio_columna) == ijc && parseInt(ubic.ubic_patio_fila) == i && parseInt(datos.bloque_id) == ubic.bloque_id){
+
+
                                                     var fecha1 = moment(ubic.vin_fec_ingreso);
                                                     var f = new Date();
                                                     var fecha2 = moment(f.getFullYear()+"-"+(f.getMonth() +1)+"-"+f.getDate());
                                                     var dias =fecha2.diff(fecha1, 'days');
 
-
+                                                    usados++;
 
                                                     if(ubic.vin_estado_inventario_id==4) color = 'col_bloque_verde';
                                                     if(ubic.vin_estado_inventario_id==5){
@@ -422,24 +429,34 @@
                                                     console.log(vin_marca.toLowerCase());
 
 
-                                                    num = "<img style='width:24px' src ='{{asset('base/img/svg/')}}/"+vin_marca.toLowerCase()+".svg'/>";
+                                                    num = "<img style='width:24px' data-toggle='tooltip' data-html='true' title='VIN:"+ubic.vin_codigo+"<br>["+ubic.vin_estado_inventario_desc+"]' src ='{{asset('base/img/svg/')}}/"+vin_marca.toLowerCase()+".svg'/>";
 
                                                 }
                                            });
 
 
-                                                Bloque_ = Bloque_+'<div class="col col_bloque '+color+'">'+num+'</div>';
+                                                Bloque_c = Bloque_c+'<div class="col col_bloque '+color+'">'+num+'</div>';
 
 
 
                                            }
 
-                                           Bloque_ = Bloque_ + '<div class="col col_bloqueH"><button class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button></div></div>';
+
+                                           Bloque_c = Bloque_c + '<div class="col col_bloqueH"><button class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button></div></div>';
                                         }
 
-                                        $("#TodosBloques").append('<div class="float-left cuadro">'+Bloque_+'</div>');
+                                          Bloque_='<div class="row "> <div class="col col_bloqueT">'+datos.bloque_nombre+'</div>'
+                                                                                                                           +'<div class="col col_bloqueT text-rigth">'
+                                                                                                                           +'<button class="btn btn-danger btn-sm">Vaciar Bloque</button> </div> </div>'
+                                                                                                                           +'<div class="row"><div class="col col_bloqueT">utilizados '+usados+' de '+totalsector+' [Disponibles: '+Dtotalsector+']</div></div>';
+
+
+
+                                        $("#TodosBloques").append('<div class="float-left cuadro">'+Bloque_+Bloque_c+'</div>');
 
                                         });
+
+                                        $('[data-toggle="tooltip"]').tooltip();
 
                                         }
 
@@ -551,6 +568,8 @@
 
                 }
             });
+
+
 
 
 
