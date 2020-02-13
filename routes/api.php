@@ -36,6 +36,8 @@ Route::post('guardarposicion','ApiController@CambiarPosicion')->name('api.Cambia
 
 Route::get('dararribo/{vins_id}','ApiController@DarArribo')->name('api.Cambiar_arribo');
 
+Route::get('tareafinalizada/{tarea_id}','ApiController@TareaFinalizada')->name('api.Tarea_Finalizada');
+
 Route::get('sindano/{vins_id}','ApiController@InpeccionarSinDano')->name('api.sin_dano');
 
 Route::post('condano','ApiController@InpeccionarConDano')->name('api.con_dano');

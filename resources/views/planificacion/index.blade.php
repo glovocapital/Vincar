@@ -141,7 +141,7 @@
     <div class="ibox float-e-margins">
         <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">Tareas Solicitadas (Campañas Solicitadas)</strong></h3>
+                <h3 class="card-title">Campañas Solicitadas</strong></h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -196,7 +196,69 @@
 </div>
 
 <div class="col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">Tareas Solicitadas</strong></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                </div>
+            </div>
 
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Código VIN</th>
+                                <th>Prioridad</th>
+                                <th>Fecha Finalización</th>
+                                <th>Hora Término</th>
+                                <th>Responsable</th>
+                                <th>¿Finalizada?</th>
+                                <th>Tipo Tarea</th>
+                                <th>Destino</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($tareas as $tarea)
+                        <tr>
+                            <td><small>{{ $tarea->codigoVin() }}</small></td>
+                            @if($tarea->tarea_prioridad == 0)
+                            <td><small>Baja</small></td>
+                            @elseif($tarea->tarea_prioridad == 1)
+                            <td><small>Media</small></td>
+                            @elseif($tarea->tarea_prioridad == 2)
+                            <td><small>Alta</small></td>
+                            @endif
+                            <td><small>{{ $tarea->tarea_fecha_finalizacion }}</small></td>
+                            <td><small>{{ $tarea->tarea_hora_termino }}</small></td>
+                            <td><small>{{ $tarea->nombreResponsable() }}</small></td>
+                            @if($tarea->tarea_finalizada)
+                            <td><small>Sí</small></td>
+                            @else
+                            <td><small>No</small></td>
+                            @endif
+                            <td><small>{{ $tarea->oneTipoTarea() }}</small></td>
+                            <td><small>{{ $tarea->oneTipoDestino() }}</small></td>
+                            <td>
+                                <small>
+                                    <a href="{{ route('planificacion.edit', Crypt::encrypt($tarea->tarea_id)) }}" class="btn-bloque" title="Editar Tarea"><i class="far fa-edit"></i></a>
+                                </small>
+                                <small>
+                                    <a href = "{{ route('planificacion.destroy', Crypt::encrypt($tarea->tarea_id)) }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-bloque" title="Eliminar tarea"><i class="far fa-trash-alt"></i></a>
+                                </small>
+                            </td>
+                        </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @include('planificacion.partials.modal_asignar_tarea')

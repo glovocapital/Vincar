@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -23,12 +24,26 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $lasthomework =DB::table('tareas')
+            ->join('vins', 'vins.vin_id','=', 'tareas.vin_id')
+            ->join('tipo_tareas', 'tipo_tareas.tipo_tarea_id','=', 'tareas.tipo_tarea_id')
+            ->join('users', 'users.user_id','=', 'tareas.user_id')
+            ->select('tarea_fecha_finalizacion','tipo_tarea_descripcion', 'user_nombre', 'user_apellido', 'vin_codigo')
+            ->where('tarea_finalizada',true)
+            ->orderBy('tarea_fecha_finalizacion','desc')
+            ->get();
+
+        $cantidad = $lasthomework->count();
+
+        return view('home',compact('lasthomework','cantidad'));
     }
 
     public function dashboard()
     {
+
+
         $datos = Array(
+
             'Total_Recibido'=>Array("Cantidad"=>5, "Porcentaje"=>34),
             'Total_Salidas'=>Array("Cantidad"=>55, "Porcentaje"=>78),
             'Unidades_Danadas'=>Array("Cantidad"=>15, "Porcentaje"=>94),

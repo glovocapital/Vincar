@@ -14,6 +14,7 @@ use App\Vin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class CampaniaController extends Controller
@@ -261,6 +262,12 @@ class CampaniaController extends Controller
      */
     public function index3(Request $request)
     {
+        /** Tareas creadas para mostrares */
+
+        $tareas = Tarea::where('tarea_finalizada', false)
+            ->orderBy('tarea_id')
+            ->get();
+
         /** Búsqueda de vins para la cabecera de la vista de planificación */
         $vins = Vin::all();
 
@@ -471,7 +478,7 @@ class CampaniaController extends Controller
                 array_push($arrayTCampanias, $tCampanias);
         }
 
-        return view('planificacion.index', compact('tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
+        return view('planificacion.index', compact('tareas', 'tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
     }
 
     public function vinCodigos(Request $request){
@@ -534,7 +541,7 @@ class CampaniaController extends Controller
             return redirect()->route('vin.index')->with('error-msg', 'Error asignando campaña.');
         }
 
-        return redirect()->route('campania.index')->with('success', 'Campaña asignada con éxito.');; 
+        return redirect()->route('campania.index')->with('success', 'Campaña asignada con éxito.'); 
     }
 
     /**
@@ -629,9 +636,28 @@ class CampaniaController extends Controller
      * @param  \App\Campania  $campania
      * @return \Illuminate\Http\Response
      */
-    public function edit(Campania $campania)
+    public function edit($id_campania)
     {
-        //
+        $campania_id =  Crypt::decrypt($id_campania);
+        $campania = Campania::findOrfail($campania_id);
+
+        $vin_codigo = $campania->oneVin->vin_codigo;
+
+        $tipo_campanias_array = TipoCampania::all()
+            ->sortBy('tipo_campania_id')
+            ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
+
+        $arrayTCampanias = [];
+
+        $tCampanias = DB::table('campania_vins')
+            ->join('tipo_campanias', 'campania_vins.tipo_campania_id', '=', 'tipo_campanias.tipo_campania_id')
+            ->select('campania_vins.campania_id', 'tipo_campanias.tipo_campania_id', 'tipo_campanias.tipo_campania_descripcion')
+            ->where('campania_vins.campania_id', $campania->campania_id)
+            ->where('campania_vins.deleted_at', null)
+            ->where('tipo_campanias.deleted_at', null)
+            ->get();
+
+        return view('campania.edit', compact('campania', 'vin_codigo','tipo_campanias_array', 'tCampanias'));
     }
 
     /**
@@ -641,9 +667,142 @@ class CampaniaController extends Controller
      * @param  \App\Campania  $campania
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Campania $campania)
+    public function update(Request $request)
     {
-        //
+        try {
+                DB::beginTransaction();
+
+                $campania = Campania::find($request->campania_id);
+                
+                $campania->campania_fecha_finalizacion = $request->campania_fecha_finalizacion;
+                $campania->campania_observaciones = $request->campania_observaciones;
+                
+                $campania->save();
+
+                $campania_tipos = DB::table('campania_vins')
+                    ->where('campania_id', '=', $request->campania_id)
+                    ->where('deleted_at', '=', null)
+                    ->get();
+
+                /** Insertar tipos de campaña nuevos */
+                foreach ($request->tipo_campanias as $t_campania_id) {
+                    $tipo_campania_id = (int)$t_campania_id;
+
+                    $existe = DB::table('campania_vins')
+                        ->where('campania_id', '=', $request->campania_id)
+                        ->where('tipo_campania_id', '=', $tipo_campania_id)
+                        ->where('deleted_at', '=', null)
+                        ->get();
+                        
+                    if(count($existe) == 0){
+                        DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $request->campania_id]);
+                    } 
+                }
+
+                /** Eliminar de los tipos de campaña aquellos que hayan sido desmarcados */
+                    
+                foreach($campania_tipos as $tipoCamp){
+                    $enc = false;
+                    $tipo_campania_id = $tipoCamp->tipo_campania_id;
+
+                    foreach($request->tipo_campanias as $t_campania_id){
+                        if((int)$t_campania_id === $tipo_campania_id){
+                            $enc = true;
+                            continue;
+                        }
+                    }
+
+                    if(!$enc){
+                        DB::table('campania_vins')
+                            ->where('campania_id', '=', $request->campania_id)
+                            ->where('tipo_campania_id', '=', $tipo_campania_id)
+                            ->where('deleted_at', '=', null)
+                            ->update(['deleted_at' => now()]);
+                    }
+                }
+
+                DB::commit();
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return redirect()->route('campania.index')->with('error-msg', 'Error actualizando campaña.');
+            }
+
+        return redirect()->route('campania.index')->with('success', 'Campaña actualizada con éxito.'); 
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Campania  $campania
+     * @return \Illuminate\Http\Response
+     */
+    public function editTarea($id_tarea)
+    {
+        $tarea_id =  Crypt::decrypt($id_tarea);
+        $tarea = Tarea::findOrfail($tarea_id);
+
+        $vin_codigo = $tarea->codigoVin();
+
+        $tipo_tareas_array = DB::table('tipo_tareas')
+            ->orderBy('tipo_tarea_id')
+            ->pluck('tipo_tarea_descripcion', 'tipo_tarea_id');
+
+        $tipo_destinos_array = DB::table('tipo_destinos')
+            ->orderBy('tipo_destino_id')
+            ->pluck('tipo_destino_descripcion', 'tipo_destino_id');
+        
+        $tipo_campanias_array = TipoCampania::all()
+            ->sortBy('tipo_campania_id')
+            ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
+        
+        $campania = Campania::where('vin_id', $tarea->vin_id)
+            ->where('deleted_at', null)
+            ->first();
+
+        $campania_id = $campania->campania_id;
+
+        $tCampanias = DB::table('campania_vins')
+            ->join('tipo_campanias', 'campania_vins.tipo_campania_id', '=', 'tipo_campanias.tipo_campania_id')
+            ->select('campania_vins.campania_id', 'tipo_campanias.tipo_campania_id', 'tipo_campanias.tipo_campania_descripcion')
+            ->where('campania_vins.campania_id', $campania_id)
+            ->where('campania_vins.deleted_at', null)
+            ->where('tipo_campanias.deleted_at', null)
+            ->get();
+
+        $responsables = User::where('rol_id', 4)
+            ->orWhere('rol_id', 5)
+            ->orWhere('rol_id', 6)
+            ->get();
+
+        $responsables_array= [];
+
+        foreach($responsables as $k => $v){
+            $responsables_array[$v->user_id] = $v->user_nombre. " " . $v->user_apellido;
+        }
+        
+        return view('planificacion.edit', compact('tarea', 'vin_codigo', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'tCampanias', 'responsables_array', 'campania_id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Campania  $campania
+     * @return \Illuminate\Http\Response
+     */
+    public function updateTarea(Request $request)
+    {
+        $tarea = Tarea::find($request->tarea_id);
+        
+        $tarea->tarea_prioridad = $request->tarea_prioridad;
+        $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
+        $tarea->tarea_hora_termino = $request->tarea_hora_termino;
+        $tarea->tipo_tarea_id = $request->tipo_tarea_id;
+        $tarea->tipo_destino_id = $request->tipo_destino_id;
+        
+        $tarea->save();
+
+        return redirect()->route('planificacion.index')->with('success', 'Tarea actualizada con éxito.'); 
     }
 
     /**
@@ -652,8 +811,43 @@ class CampaniaController extends Controller
      * @param  \App\Campania  $campania
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Campania $campania)
+    public function destroy($id_campania)
     {
-        //
+        $campania_id =  Crypt::decrypt($id_campania);
+
+        try {
+            $campania = Campania::findOrfail($campania_id)->delete();
+
+            flash('Los datos de la campaña han sido eliminados satisfactoriamente.')->success();
+            return redirect('campania');
+        }catch (\Exception $e) {
+
+            flash('Error al intentar eliminar los datos de la campaña.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('campania');
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Campania  $campania
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyTarea($id_tarea)
+    {
+        $tarea_id =  Crypt::decrypt($id_tarea);
+
+        try {
+            $tarea = Tarea::findOrfail($tarea_id)->delete();
+
+            flash('Los datos de la tarea han sido eliminados satisfactoriamente.')->success();
+            return redirect('planificacion');
+        }catch (\Exception $e) {
+
+            flash('Error al intentar eliminar los datos de la tarea.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('planificacion');
+        }
     }
 }
