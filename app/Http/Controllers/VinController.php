@@ -13,6 +13,8 @@ use App\Patio;
 use App\TipoCampania;
 use App\Vin;
 use App\Campania;
+Use App\Guia;
+Use App\Guia_Vin;
 use Auth;
 use Illuminate\Support\Facades\Crypt;
 use DB;
@@ -874,8 +876,76 @@ public function index2(Request $request)
         return Storage::response("PlanillasDescargas/CargaVin.xlsx");
     }
 
-    public function guia()
+    public function guia($id)
     {
-        dd(1234);
+        $vin_id =  Crypt::decrypt($id);
+        $vin = Vin::findOrfail($vin_id);
+
+        return view('vin.addguia', compact('vin'));
+    }
+
+    public function addguia(Request $request, $id)
+    {
+        $vin_id =  Crypt::decrypt($id);
+        $vin = Vin::findOrfail($vin_id);
+
+        $guiaVin = $request->file('guia_vin');
+        $extensionGuia = $guiaVin->extension();
+        $path = $guiaVin->storeAs(
+            'GuiaVin',
+            "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
+        );
+
+        try {
+
+            $guia = new Guia();
+            $guia->guia_ruta = $path;
+            $guia->save();
+
+            $guia_vin = new Guia_Vin();
+            $guia_vin->vin_id = $vin_id;
+            $guia_vin->guia_id = $guia->guia_id;
+            $guia_vin->save();
+
+
+            flash('La guia fue almacenada correctamente.')->success();
+            return redirect('vin');
+
+        }catch (\Exception $e) {
+
+
+            flash('Error registrando de la guia.')->error();
+            dd($e->getMessage());
+            flash($e->getMessage())->error();
+            return redirect('vin');
+        }
+
+    }
+
+    public function downloadGuia($id)
+    {
+
+
+        $vin_id =  Crypt::decrypt($id);
+        $vin = Vin::findOrfail($vin_id);
+
+        $guia = $vin
+            ->join('guias_vins','guias_vins.vin_id','vins.vin_id')
+            ->join('guias','guias_vins.guia_id','guias.guia_id')
+            ->select('guias.guia_ruta')
+            ->first();
+
+        if(!is_null($guia->guia_ruta))
+        {
+
+            return Storage::download("$guia->guia_ruta");
+
+        }else{
+            flash('El vinb no tiene guia asociada.')->error();
+            return redirect('vin');
+
+        }
+
+
     }
 }

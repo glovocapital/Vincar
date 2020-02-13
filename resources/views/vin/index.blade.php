@@ -228,14 +228,13 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="text-right pb-5">
-
+                        @if(count($tabla_vins) > 0)
+                        <button type="button" class="btn btn-success btn-lote-vins">Asignar Tareas por lotes</i></button>
+                        @endif
                         {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
-
-                        <a href="{{ route('campania.index') }}" class = 'btn btn-success'>Ver Campañas</a>
-
                         {!! Form::close() !!}
-
                     </div>
 
 
@@ -285,14 +284,13 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="text-right pb-5">
-
+                        @if(count($tabla_vins) > 0)
+                        <button type="button" class="btn btn-success btn-lote-vins">Asignar Tareas por lotes</i></button>
+                        @endif
                         {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
-
-                        <a href="{{ route('campania.index') }}" class = 'btn btn-success'>Ver Campañas</a>
-
                         {!! Form::close() !!}
-
                     </div>
 
 
@@ -321,17 +319,20 @@
                             <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
+                                        <th><i class="far fa-check-square"></i></th>
                                         <th>Vin</th>
                                         <th>Patente</th>
 
                                         <th>Marca</th>
                                         <th>Modelo</th>
                                         <th>Color</th>
-                                       <!-- <th>Motor</th> -->
                                         <th>Segmento</th>
                                         <th>Fecha de Ingreso</th>
                                         <th>Cliente</th>
                                         <th>Estado</th>
+                                        <th>Guia</th>
+
+
                                     <!--  <th>Sub Estado Inventario </th>  -->
                                      <!--   <th>Gestión de Registro</th> -->
                                         <th>Acciones de VIN</th>
@@ -342,28 +343,20 @@
 
                                 @foreach($tabla_vins as $vin)
                                 <tr>
+
+                                    <td><input type="checkbox" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
                                     <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
                                     <td><small>{{ $vin->vin_patente }}</small></td>
                                     <td><small>{{ $vin->vin_marca }}</small></td>
                                     <td><small>{{ $vin->vin_modelo }}</small></td>
                                     <td><small>{{ $vin->vin_color }}</small></td>
-                                   <!-- <td><small>{{ $vin->vin_motor }}</small></td> -->
                                     <td><small>{{ $vin->vin_segmento }}</small></td>
                                     <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
                                     <td><small>{{ $vin->empresa_razon_social }}</small></td>
                                     <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
-
-                                 <!--   <td>
-
-
-                                        <small>
-                                            <a href = "{{ route('vin.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
-                                        </a>
-                                        </small>
-
-                                    </td> -->
-
+                                    <td><small> <a href="{{route('vin.downloadGuia', Crypt::encrypt($vin->vin_id)) }}">Guia</small> </td>
                                     <td>
+
 
                                         <small>
                                             <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-light"  title="Editar"><i class="far fa-edit"></i></a>
@@ -374,14 +367,7 @@
                                         </small>
 
                                         <small>
-                                            <button value="{{ $vin->vin_id }}" class="btn btn-xs btn-success btn-campania"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></button>
-                                        </small>
-                                        <small>
-                                            <button class="btn btn-xs btn-info btn-campania"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
-                                        </small>
-
-                                        <small>
-                                            <a href="{{ route('vin.guia', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-warning"  title="Add Guía"><i class="fas fa fa-barcode  "></i></a>
+                                            <a href="{{ route('vin.guia', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-danger"  title="Cargar Guía"><i class="fas fa fa-barcode  "></i></a>
 
                                         </small>
 
@@ -402,8 +388,8 @@
 </div>
 
 
-@include('vin.partials.modal_solicitud_campania')
-
+@include('planificacion.partials.modal_asignar_tarea')
+@include('planificacion.partials.modal_asignar_tarea_lotes')
 
 @stop
 @section('local-scripts')
@@ -411,130 +397,62 @@
 
 <script>
         $(document).ready(function () {
-
-            $(".select-empresa").change(function (e) {
-
+            $('.btn-lote-vins').click(function (e){
                 e.preventDefault();
 
-                var id = $(this).val();
+                var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
+                    return this.value;
+                }).get();
 
-                if (id != ''){
+                var url = "/planificacion/obtener_codigos_vins";
 
-                    var url = "/vin/obtener_usuarios_empresa/";
+                var request = {
+                    _token: $("input[name='_token']").attr("value"),
+                    vin_ids: vin_ids,
+                };
 
-                    $.get(url + id, id, function (res) {
-                        //Validar primero si algo salió mal
-                        if(!res.success){
-                            alert(
-                                "Error inesperado al solicitar la información.\n\n" +
-                                "MENSAJE DEL SISTEMA:\n" +
-                                res.message + "\n\n"
-                            );
-                            return;  // Finaliza el intento de obtener
-                        }
+                $.post(url, request, function (res) {
+                    //Validar primero si algo salió mal
+                    if(!res.success){
+                        alert(
+                            "Error inesperado al solicitar la información.\n\n" +
+                            "MENSAJE DEL SISTEMA:\n" +
+                            res.message + "\n\n"
+                        );
+                        return;  // Finaliza el intento de obtener
+                    }
 
-                        var arr_ids = $.map(res.ids, function (e1) {
-                            return e1;
-                        });
-
-                        var arr_users = $.map(res.users, function (e1) {
-                            return e1;
-                        });
-
-                        $("#user_id").html("<option value=''>Seleccione el Cliente</option>");
-                        for (var i = 0; i < arr_ids.length; i++){
-                            $("#user_id").append("<option value='" + arr_ids[i] + "'>" + arr_users[i] + "</option>");
-
-                        }
-
-
-                    }).fail(function () {
-                        alert('Error: Respuesta de datos inválida');
+                    var arr_codigos = $.map(res.codigos, function (e1) {
+                        return e1;
                     });
-                }else{
-                    $("#user_id").html("<option value=''>Seleccione el Cliente</option>");
-                }
 
+                    $("#vin_codigo_lote").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
+                    $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + vin_ids[0] + "]'  value='" + vin_ids[0] + "'/>");
 
+                    for (var i = 1; i < arr_codigos.length; i++){
+                        $("#vin_codigo_lote").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
+                        $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + vin_ids[i] + "]' value='" + vin_ids[i] + "'/>");
+                    }
 
-                /**/
+                    $("#asignarTareaModalLote").modal('show');
 
+                }).fail(function () {
+                    alert('Error: Respuesta de datos inválida');
+                });
             });
 
-            $(".select-estado-inventario").change(function (e) {
-
-                e.preventDefault();
-
-                if($(".select-estado-inventario option:selected").text() == "Disponible para la venta" || $(".select-estado-inventario option:selected").text() == "No disponible para la venta")
-                {
-                    //alert($(".select-estado-inventario option:selected").text());
-
-                    $('#bloque_sub_estado').show();
-                }else
-                {
-                    $('#bloque_sub_estado').hide();
-                }
-
-                var id = $(this).val();
-
-                if (id != ''){
-
-                    var url = "/vin/obtener_sub_estados/";
-
-                    $.get(url + id, id, function (res) {
-                        //Validar primero si algo salió mal
-                        if(!res.success){
-                            alert(
-                                "Error inesperado al solicitar la información.\n\n" +
-                                "MENSAJE DEL SISTEMA:\n" +
-                                res.message + "\n\n"
-                            );
-                            return;  // Finaliza el intento de obtener
-                        }
-
-                        if(res.ids != null && res.subEstados != null ){
-                            //alert(JSON.stringify(res));
-                            var arr_ids = $.map(res.ids, function (e1) {
-                                return e1;
-                            });
-
-                            var arr_subEstados = $.map(res.subEstados, function (e1) {
-                                return e1;
-                            });
-
-                            $("#vin_sub_estado_inventario_id").html("<option value=''>Seleccione Sub Estado de Inventario</option>");
-                            for (var i = 0; i < arr_ids.length; i++){
-                                $("#vin_sub_estado_inventario_id").append("<option value='" + arr_ids[i] + "'>" + arr_subEstados[i] + "</option>");
-
-                            }
-                        } else {
-                            $("#vin_sub_estado_inventario_id").html("<option value=''>Seleccione Sub Estado de Inventario</option>");
-                        }
-                    }).fail(function () {
-                        alert('Error: Respuesta de datos inválida');
-                    });
-                }else{
-                    $("#vin_sub_estado_inventario_id").html("<option value=''>Seleccione Sub Estado de Inventario</option>");
-                }
-                /**/
-
-            });
-
-
-            //Modal Solicitar Campaña
-            $('.btn-campania').click(function (e) {
+            //Modal Solicitar Tarea
+            $('.btn-tarea').click(function (e) {
                 e.preventDefault();
 
                 var vin_id = $(this).val();
                 var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
 
                 $(".vin-id").val(vin_id);
-                $("#vin_codigo").html("VIN: " +vin_codigo);
+                $("#vin_codigo").html("<h4>VIN: " + vin_codigo + "</h4>");
 
-                $("#solicitudCampaniaModal").modal('show');
+                $("#asignarTareaModal").modal('show');
             });
         });
     </script>
 @endsection
-
-

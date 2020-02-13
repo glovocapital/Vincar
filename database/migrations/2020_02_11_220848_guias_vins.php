@@ -21,6 +21,7 @@ class GuiasVins extends Migration
 
             $table->unsignedBigInteger('guia_id');
             $table->foreign('guia_id')->references('guia_id')->on('guias')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
 
 
         });

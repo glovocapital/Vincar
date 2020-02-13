@@ -16,6 +16,7 @@ class Guias extends Migration
         Schema::create('guias', function (Blueprint $table) {
             $table->bigIncrements('guia_id');
             $table->string('guia_ruta')->nullable();
+            $table->timestamps();
 
         });
     }

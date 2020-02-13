@@ -55,7 +55,7 @@
                     </div>
                     <div class="row">
                         <div class="text-right  pb-5">
-                        <a href="{{ route('vin.index') }}" class = 'btn btn-success'>Regresar a VINs</a>
+                        <a href="{{ route('vin.index') }}" class = 'btn btn-success'>Regresar a VIN</a>
 
                             {!! Form::submit('Actualizar estado', ['class' => 'btn btn-primary block full-width m-b']) !!}
                             {!! Form::close() !!}
