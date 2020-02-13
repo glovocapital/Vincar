@@ -738,26 +738,71 @@ class CampaniaController extends Controller
      */
     public function editTarea($id_tarea)
     {
-        $tarea_id =  Crypt::decrypt($id_campania);
-        $tarea = Tarea::findOrfail($campania_id);
+        $tarea_id =  Crypt::decrypt($id_tarea);
+        $tarea = Tarea::findOrfail($tarea_id);
 
-        $vin_codigo = $campania->oneVin->vin_codigo;
+        $vin_codigo = $tarea->codigoVin();
 
+        $tipo_tareas_array = DB::table('tipo_tareas')
+            ->orderBy('tipo_tarea_id')
+            ->pluck('tipo_tarea_descripcion', 'tipo_tarea_id');
+
+        $tipo_destinos_array = DB::table('tipo_destinos')
+            ->orderBy('tipo_destino_id')
+            ->pluck('tipo_destino_descripcion', 'tipo_destino_id');
+        
         $tipo_campanias_array = TipoCampania::all()
             ->sortBy('tipo_campania_id')
             ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
+        
+        $campania = Campania::where('vin_id', $tarea->vin_id)
+            ->where('deleted_at', null)
+            ->first();
 
-        $arrayTCampanias = [];
+        $campania_id = $campania->campania_id;
 
         $tCampanias = DB::table('campania_vins')
             ->join('tipo_campanias', 'campania_vins.tipo_campania_id', '=', 'tipo_campanias.tipo_campania_id')
             ->select('campania_vins.campania_id', 'tipo_campanias.tipo_campania_id', 'tipo_campanias.tipo_campania_descripcion')
-            ->where('campania_vins.campania_id', $campania->campania_id)
+            ->where('campania_vins.campania_id', $campania_id)
             ->where('campania_vins.deleted_at', null)
             ->where('tipo_campanias.deleted_at', null)
             ->get();
 
-        return view('campania.edit', compact('campania', 'vin_codigo','tipo_campanias_array', 'tCampanias'));
+        $responsables = User::where('rol_id', 4)
+            ->orWhere('rol_id', 5)
+            ->orWhere('rol_id', 6)
+            ->get();
+
+        $responsables_array= [];
+
+        foreach($responsables as $k => $v){
+            $responsables_array[$v->user_id] = $v->user_nombre. " " . $v->user_apellido;
+        }
+        
+        return view('planificacion.edit', compact('tarea', 'vin_codigo', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'tCampanias', 'responsables_array', 'campania_id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Campania  $campania
+     * @return \Illuminate\Http\Response
+     */
+    public function updateTarea(Request $request)
+    {
+        $tarea = Tarea::find($request->tarea_id);
+        
+        $tarea->tarea_prioridad = $request->tarea_prioridad;
+        $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
+        $tarea->tarea_hora_termino = $request->tarea_hora_termino;
+        $tarea->tipo_tarea_id = $request->tipo_tarea_id;
+        $tarea->tipo_destino_id = $request->tipo_destino_id;
+        
+        $tarea->save();
+
+        return redirect()->route('planificacion.index')->with('success', 'Tarea actualizada con éxito.'); 
     }
 
     /**

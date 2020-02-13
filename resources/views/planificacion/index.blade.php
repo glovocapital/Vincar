@@ -245,10 +245,10 @@
                             <td><small>{{ $tarea->oneTipoDestino() }}</small></td>
                             <td>
                                 <small>
-                                    <a href="{{ route('planificacion.edit', Crypt::encrypt($campania->campania_id)) }}" class="btn-bloque" title="Editar Campania"><i class="far fa-edit"></i></a>
+                                    <a href="{{ route('planificacion.edit', Crypt::encrypt($tarea->tarea_id)) }}" class="btn-bloque" title="Editar Tarea"><i class="far fa-edit"></i></a>
                                 </small>
                                 <small>
-                                    <a href = "{{ route('planificacion.destroy', Crypt::encrypt($campania->campania_id)) }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-bloque" title="Eliminar campaña"><i class="far fa-trash-alt"></i></a>
+                                    <a href = "{{ route('planificacion.destroy', Crypt::encrypt($tarea->tarea_id)) }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-bloque" title="Eliminar tarea"><i class="far fa-trash-alt"></i></a>
                                 </small>
                             </td>
                         </tr>
