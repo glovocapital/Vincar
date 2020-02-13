@@ -262,6 +262,12 @@ class CampaniaController extends Controller
      */
     public function index3(Request $request)
     {
+        /** Tareas creadas para mostrares */
+
+        $tareas = Tarea::where('tarea_finalizada', false)
+            ->orderBy('tarea_id')
+            ->get();
+
         /** Búsqueda de vins para la cabecera de la vista de planificación */
         $vins = Vin::all();
 
@@ -472,7 +478,7 @@ class CampaniaController extends Controller
                 array_push($arrayTCampanias, $tCampanias);
         }
 
-        return view('planificacion.index', compact('tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
+        return view('planificacion.index', compact('tareas', 'tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
     }
 
     public function vinCodigos(Request $request){
@@ -722,6 +728,36 @@ class CampaniaController extends Controller
             }
 
         return redirect()->route('campania.index')->with('success', 'Campaña actualizada con éxito.'); 
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Campania  $campania
+     * @return \Illuminate\Http\Response
+     */
+    public function editTarea($id_tarea)
+    {
+        $tarea_id =  Crypt::decrypt($id_campania);
+        $tarea = Tarea::findOrfail($campania_id);
+
+        $vin_codigo = $campania->oneVin->vin_codigo;
+
+        $tipo_campanias_array = TipoCampania::all()
+            ->sortBy('tipo_campania_id')
+            ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
+
+        $arrayTCampanias = [];
+
+        $tCampanias = DB::table('campania_vins')
+            ->join('tipo_campanias', 'campania_vins.tipo_campania_id', '=', 'tipo_campanias.tipo_campania_id')
+            ->select('campania_vins.campania_id', 'tipo_campanias.tipo_campania_id', 'tipo_campanias.tipo_campania_descripcion')
+            ->where('campania_vins.campania_id', $campania->campania_id)
+            ->where('campania_vins.deleted_at', null)
+            ->where('tipo_campanias.deleted_at', null)
+            ->get();
+
+        return view('campania.edit', compact('campania', 'vin_codigo','tipo_campanias_array', 'tCampanias'));
     }
 
     /**
