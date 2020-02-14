@@ -232,50 +232,8 @@ class VinController extends Controller
 
 
 
-        /** Valores necesarios para poblar los selects del modal de asignación de tarea */
 
-        $responsables = User::where('rol_id', 4)
-            ->orWhere('rol_id', 5)
-            ->orWhere('rol_id', 6)
-            ->get();
-
-        $responsables_array= [];
-
-        foreach($responsables as $k => $v){
-            $responsables_array[$v->user_id] = $v->user_nombre. " " . $v->user_apellido;
-        }
-
-        $tipo_tareas_array = DB::table('tipo_tareas')
-            ->select('tipo_tarea_id', 'tipo_tarea_descripcion')
-            ->pluck('tipo_tarea_descripcion', 'tipo_tarea_id');
-
-        $tipo_destinos_array = DB::table('tipo_destinos')
-            ->select('tipo_destino_id', 'tipo_destino_descripcion')
-            ->pluck('tipo_destino_descripcion', 'tipo_destino_id');
-
-        /** Listado de Campañas para la vista de planificación */
-        $campanias = Campania::all()
-            ->sortBy('campania_id');
-
-        $tipo_campanias = TipoCampania::all()
-            ->sortBy('tipo_campania_id');
-
-        $arrayTCampanias = [];
-
-        foreach ($campanias as $campania) {
-            $tCampanias = DB::table('campania_vins')
-                ->join('tipo_campanias', 'campania_vins.tipo_campania_id', '=', 'tipo_campanias.tipo_campania_id')
-                ->select('campania_vins.campania_id', 'tipo_campanias.tipo_campania_descripcion')
-                ->where('campania_vins.campania_id', $campania->campania_id)
-                ->where('campania_vins.deleted_at', null)
-                ->where('tipo_campanias.deleted_at', null)
-                ->get();
-
-                array_push($arrayTCampanias, $tCampanias);
-        }
-
-
-        return view('vin.index', compact('tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
+        return view('vin.index', compact('tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas'));
     }
 
 
@@ -305,26 +263,7 @@ public function index2(Request $request)
             ->select('patio_id', 'patio_nombre')
             ->pluck('patio_nombre', 'patio_id');
 
-        /** Listado de Campañas para la vista de planificación */
-        $campanias = Campania::all()
-            ->sortBy('campania_id');
 
-        $tipo_campanias = TipoCampania::all()
-            ->sortBy('tipo_campania_id');
-
-        $arrayTCampanias = [];
-
-        foreach ($campanias as $campania) {
-            $tCampanias = DB::table('campania_vins')
-                ->join('tipo_campanias', 'campania_vins.tipo_campania_id', '=', 'tipo_campanias.tipo_campania_id')
-                ->select('campania_vins.campania_id', 'tipo_campanias.tipo_campania_descripcion')
-                ->where('campania_vins.campania_id', $campania->campania_id)
-                ->where('campania_vins.deleted_at', null)
-                ->where('tipo_campanias.deleted_at', null)
-                ->get();
-
-            array_push($arrayTCampanias, $tCampanias);
-        }
 
         /** Búsqueda de los Vins */
 
@@ -475,7 +414,7 @@ public function index2(Request $request)
             }
         }
 
-        return view('vin.index', compact('tabla_vins', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
+        return view('vin.index', compact('tabla_vins', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas'));
     }
 
 

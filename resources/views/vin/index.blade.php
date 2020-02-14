@@ -231,7 +231,7 @@
 
                     <div class="text-right pb-5">
                         @if(count($tabla_vins) > 0)
-                        <button type="button" class="btn btn-success btn-lote-vins">Asignar Tareas por lotes</i></button>
+                        <button type="button" class="btn btn-success btn-lote-vins">Carga de guías por lotes</i></button>
                         @endif
                         {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
                         {!! Form::close() !!}
@@ -287,7 +287,7 @@
 
                     <div class="text-right pb-5">
                         @if(count($tabla_vins) > 0)
-                        <button type="button" class="btn btn-success btn-lote-vins">Asignar Tareas por lotes</i></button>
+                        <button type="button" class="btn btn-success btn-lote-vins">Carga de guías por lotes</i></button>
                         @endif
                         {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
                         {!! Form::close() !!}
