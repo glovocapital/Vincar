@@ -924,8 +924,6 @@ public function index2(Request $request)
 
     public function downloadGuia($id)
     {
-
-
         $vin_id =  Crypt::decrypt($id);
         $vin = Vin::findOrfail($vin_id);
 
@@ -941,11 +939,49 @@ public function index2(Request $request)
             return Storage::download("$guia->guia_ruta");
 
         }else{
-            flash('El vinb no tiene guia asociada.')->error();
+            flash('El vin no tiene guia asociada.')->error();
             return redirect('vin');
 
         }
 
 
+    }
+
+    public function storeModalTareaLotes(Request $request)
+    {
+
+        $guiaVin = $request->file('guia_vin');
+        $extensionGuia = $guiaVin->extension();
+        $path = $guiaVin->storeAs(
+            'GuiaVin',
+            "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
+        );
+        try {
+
+            // dd($request);
+            DB::beginTransaction();
+
+
+            $guia = new Guia();
+            $guia->guia_ruta = $path;
+            $guia->save();
+
+            foreach($request->vin_ids as $vin_id){
+
+
+                $guia_vin = new Guia_Vin();
+                $guia_vin->vin_id = $vin_id;
+                $guia_vin->guia_id = $guia->guia_id;
+                $guia_vin->save();
+
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('vin.index')->with('error-msg', 'Error asignando guias.');
+        }
+
+        return redirect()->route('vin.index')->with('success', 'Guias cargadas con éxito.');;
     }
 }

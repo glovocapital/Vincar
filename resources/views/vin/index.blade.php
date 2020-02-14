@@ -388,8 +388,8 @@
 </div>
 
 
-@include('planificacion.partials.modal_asignar_tarea')
-@include('planificacion.partials.modal_asignar_tarea_lotes')
+
+@include('vin.partials.modal_asignar_tarea_lotes')
 
 @stop
 @section('local-scripts')
