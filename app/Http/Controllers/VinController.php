@@ -599,7 +599,7 @@ public function index2(Request $request)
         $vin = Vin::findOrfail($vin_id);
 
         $user = User::find($vin->user_id)->first();
-        dd($vin);
+        //dd($vin);
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
