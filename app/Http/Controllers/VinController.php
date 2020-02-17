@@ -927,19 +927,16 @@ public function index2(Request $request)
         $vin_id =  Crypt::decrypt($id);
         $vin = Vin::findOrfail($vin_id);
 
-        $guia = DB::table('vins')
+        $guia = $vin
             ->join('guias_vins','guias_vins.vin_id','vins.vin_id')
             ->join('guias','guias_vins.guia_id','guias.guia_id')
             ->select('guias.guia_ruta')
-            ->where('guias_vins.vin_id', $vin_id)
-            ->get();
+            ->first();
 
-            //dd(empty($guia[0]->guia_ruta));
-
-        if(!empty($guia[0]->guia_ruta))
+        if(!is_null($guia->guia_ruta))
         {
 
-            return Storage::download($guia[0]->guia_ruta);
+            return Storage::download("$guia->guia_ruta");
 
         }else{
             flash('El vin no tiene guia asociada.')->error();
