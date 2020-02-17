@@ -164,7 +164,7 @@ class ApiController extends Controller
             ->join('tipo_tareas', 'tipo_tareas.tipo_tarea_id','=', 'tareas.tipo_tarea_id')
             ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id','=', 'tareas.tipo_destino_id')
 
-            ->select('tarea_prioridad','tarea_id','tipo_tarea_descripcion as ico','vins.vin_codigo as vin','vins.vin_modelo as modelo','vins.vin_marca as marca', 'vins.created_at as fecha'
+            ->select('tarea_prioridad','tarea_id','tipo_tarea_descripcion as ico','vins.vin_codigo as vin','vins.vin_modelo as modelo', 'vins.vin_color as color','vins.vin_marca as marca', 'vins.created_at as fecha'
                 ,'vin_estado_inventario_desc as estado','tipo_destino_descripcion as destino',
                 'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','bloque_nombre' )
             ->where('tareas.user_id',$request->user_id)
@@ -259,7 +259,7 @@ class ApiController extends Controller
                 ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
                 ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
                 ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','vins.vin_marca as marca', 'vins.created_at as fecha'
-                    ,'vin_estado_inventario_desc as estado', 'vins.vin_color','vins.vin_estado_inventario_id as vin_estado_inventario_id',
+                    ,'vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id',
                     'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id' );
 
             if(strlen($vins_id)==6){
@@ -278,6 +278,13 @@ class ApiController extends Controller
                     ->where('bloque_id','=',$vin[0]->bloque_id)
                     ->get();
 
+                $ubicados = DB::table('ubic_patios')
+                    ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+                    ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
+                    ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
+                    ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc", 'patio_id')
+                    ->get();
+
                if(count($_patio)==0) $vin[0]->patio_id=null;
                else {
                    $vin[0]->bloque_nombre=$_patio[0]->bloque_nombre;
@@ -290,25 +297,22 @@ class ApiController extends Controller
                        ->where('patio_id','=',$_patio[0]->patio_id)
                        ->get();
 
+                   $ubicados = DB::table('ubic_patios')
+                       ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+                       ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
+                       ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
+                       ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc")
+                       ->where('patio_id','=',$_patio[0]->patio_id)
+                       ->get();
+
 
                }
-
-                $vin[0]->color="";
-
-                if($vin[0]->vin_estado_inventario_id==4) $vin[0]->color = 'Verde';
-                if($vin[0]->vin_estado_inventario_id==5){
-                    $vin[0]->color = 'Verde';
-                    if($dias>30) $vin[0]->color = 'Amarillo';
-                }
-                if($vin[0]->vin_estado_inventario_id==6)  $vin[0]->color = 'Rojo';
-                if($vin[0]->vin_estado_inventario_id==7)  $vin[0]->color = 'Rojo';
-
 
                 $vin[0]->activo = true;
 
              //  if($vin[0]->estado=="Arribado")  $vin[0]->activo = false;
 
-                $usersf = Array("Err"=>0,"items"=>$vin[0], "patios"=>$patios, "bloques"=>$bloques);
+                $usersf = Array("Err"=>0,"items"=>$vin[0], "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
             }else{
                 $usersf = Array("Err" => 1, "Msg" => "No se encuentra el Vin");
             }
