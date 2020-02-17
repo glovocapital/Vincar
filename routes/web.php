@@ -134,12 +134,15 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
     Route::post('planificacion/obtener_codigos_vins', ['as' => 'planificacion.codigos_vins', 'uses' => 'CampaniaController@vinCodigos']);
     Route::get('campania/create','CampaniaController@create')->name('campania.create');
     Route::get('campania/{id}/edit','CampaniaController@edit')->name('campania.edit');
+    Route::get('planificacion/{id}/edit','CampaniaController@editTarea')->name('planificacion.edit');
     Route::post('campania','CampaniaController@store')->name('campania.store');
     Route::post('campania/modal','CampaniaController@storeModal')->name('campania.storeModal');
     Route::post('campania/modal_tarea','CampaniaController@storeModalTarea')->name('campania.storeModalTarea');
     Route::post('campania/modal_tarea_lotes','CampaniaController@storeModalTareaLotes')->name('campania.storeModalTareaLotes');
     Route::patch('campania/{id}/update','CampaniaController@update')->name('campania.update');
+    Route::patch('planificacion/{id}/update','CampaniaController@updateTarea')->name('planificacion.update');
     Route::get('campania/{id}/delete','CampaniaController@destroy')->name('campania.destroy');
+    Route::get('planificacion/{id}/delete','CampaniaController@destroyTarea')->name('planificacion.destroy');
 
     //ruta mantenedor destinos
     Route::get('destinos', 'DestinoController@index')->name('destinos.index');
@@ -243,13 +246,17 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post('vin/search','VinController@search')->name('vin.search');
     Route::get('vin/{id}/editarestado','VinController@editarestado')->name('vin.editarestado');
     Route::patch('vin/{id}/cambiaestado','VinController@cambiaestado')->name('vin.cambiaestado');
+    Route::get('vin/{id}/guia','VinController@guia')->name('vin.guia');
+    Route::patch('vin/{id}/addguia','VinController@addguia')->name('vin.addguia');
+    Route::get('vin/{id}/downloadGuia','VinController@downloadGuia')->name('vin.downloadGuia');
+    Route::post('vin/modal_tarea_lotes','VinController@storeModalTareaLotes')->name('vin.storeModalTareaLotes');
+
 
      //Jc
      Route::get('patio/vins_patio','PatioController@indexVinsPatio')->name('patio.vins_patio');
      Route::get('patioDashboard', 'PatioController@dashboard')->name('patio.dashboard');
      Route::get('patioBloques', 'PatioController@bloques')->name('patio.bloques');
      Route::get('TodospatioBloques', 'PatioController@Todosbloques')->name('patio.todos_bloques');
-    Route::get('VaciarBloques', 'PatioController@Vaciarbloques')->name('patio.vaciar_bloques');
 
 
      //ruta mantenedor tipo de campaña
