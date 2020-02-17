@@ -5,6 +5,8 @@ use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\CheckSession;
 use App\Imports\PatiosImport;
 use App\Patio;
+use App\Vin;
+use App\UbicPatio;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -222,29 +224,108 @@ class PatioController extends Controller
         return view('patio.vins_patio', compact('patios'));
     }
 
+    private function ColorRamdom(){
+
+        $rgbColor= Array(mt_rand(0,255),mt_rand(0,255),mt_rand(0,255));
+
+        return "rgb(". implode(",",$rgbColor).")";
+    }
+
     public function dashboard()
     {
+        $capacidad = DB::table('patios')
+            ->join('bloques','patios.patio_id','bloques.patio_id')
+            ->select('patio_nombre','bloque_nombre','bloque_filas','bloque_columnas')
+            ->get();
+
+        $vehiculos_patio = DB::table('patios')
+            ->join('bloques','patios.patio_id','bloques.patio_id')
+            ->join('ubic_patios','ubic_patios.bloque_id','bloques.bloque_id')
+            ->select(DB::raw("count(patio_nombre) AS can_vin"), "patio_nombre")
+            ->where('ubic_patio_ocupada',true)
+            ->groupBy('patio_nombre')
+            ->get();
+
+        $vehiculos30 = DB::table('vins')
+            ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
+            ->select(DB::raw("count(vin_id) AS can_vin"))
+            ->where('vins.vin_estado_inventario_id','<>',1)
+            ->where('vins.vin_estado_inventario_id','<>',8)
+            ->where('vin_fec_ingreso','<',date('Y-m-d',strtotime( '-30 day' , strtotime ( date('Y-m-d') ) )))
+            ->get();
+
+        $vehiculosTotal = DB::table('vins')
+            ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
+            ->select(DB::raw("count(vin_id) AS can_vin"))
+            ->where('vins.vin_estado_inventario_id','<>',1)
+            ->where('vins.vin_estado_inventario_id','<>',8)
+            ->get();
+
+        $Unidades_Danadas = DB::table('vins')
+            ->select(DB::raw("count(vin_id) AS can_vin"))
+            ->where('vin_estado_inventario_id',"=",6)
+            ->where('vin_estado_inventario_id',"=",7)
+            ->get();
+
+        $colores = Array("#f79663","#feca7a","#16d8d8","#ff005c","#dee4e4","#ff0000","#26dbdb");
+
+        $Capacidad_Total=0;
+        $Espacios_Disponibles=0;
+
+        $Porc_vehiculo=Array();
+        $Capacidad=Array();
+
+        $ip=0;
+        foreach ($capacidad as $cap){
+
+            if($ip>=count($colores)) $colores[$ip] = self::ColorRamdom();
+
+            if(array_key_exists($cap->patio_nombre,$Capacidad))
+                $Capacidad[$cap->patio_nombre]["Data"]+=($cap->bloque_filas * $cap->bloque_columnas);
+            else {
+                $Capacidad[$cap->patio_nombre] = Array("Patio" => $cap->patio_nombre, "Data" => ($cap->bloque_filas * $cap->bloque_columnas), "backgroundColor" => $colores[$ip]);
+                $ip++;
+            }
+
+            $Capacidad_Total +=($cap->bloque_filas * $cap->bloque_columnas);
+        }
+
+        $Porc_vehiculos=Array();
+        $Capacidads=Array();
+        foreach ($Capacidad as $Capac){
+            $Capacidads[] = $Capac;
+
+
+        }
+
+        $ip=0; $Vehiculos_Total_enpatio=0;
+        foreach ($vehiculos_patio as $vh_pat){
+
+            if($ip>=count($colores)) $colores[$ip] = self::ColorRamdom();
+
+            $Porc_vehiculo[] = Array("Patio" => $vh_pat->patio_nombre, "Data" => $vh_pat->can_vin, "backgroundColor" => $colores[$ip]);
+            $ip++;
+
+            $Vehiculos_Total_enpatio +=$vh_pat->can_vin;
+        }
+
+        $Espacios_Disponibles = $Capacidad_Total - $Vehiculos_Total_enpatio;
+
+
+
 
         $datos = Array(
-            'Capacidad_Total'=>300,
-            'Espacios_Disponibles'=>100,
-            'Porc_vehiculo'=>Array(
-                Array("Patio"=>"Patio 1", "Data"=>20, "backgroundColor"=>"#f79663"),
-                Array("Patio"=>"Patio 2", "Data"=>30, "backgroundColor"=>"#feca7a"),
-                Array("Patio"=>"Patio 3", "Data"=>30, "backgroundColor"=>"#16d8d8"),
-                Array("Patio"=>"Patio 4", "Data"=>50, "backgroundColor"=>"#ff005c")
-            ),
-            'Capacidad'=>Array(
-                Array("Patio"=>"Patio 1", "Data"=>300, "backgroundColor"=>"#ff005c"),
-                Array("Patio"=>"Patio 2", "Data"=>400, "backgroundColor"=>"#16d8d8")
-            ),
+            'Capacidad_Total'=>$Capacidad_Total,
+            'Espacios_Disponibles'=>$Espacios_Disponibles,
+            'Porc_vehiculo'=>$Porc_vehiculo,
+            'Capacidad'=>$Capacidads,
             'Vehiculos_30dias'=>Array(
-                Array("Vehiculos"=>"Mas de 30 días", "Data"=>20, "backgroundColor"=>"#feca7a"),
-                Array("Vehiculos"=>"Menos de 30 días", "Data"=>30, "backgroundColor"=>"#dee4e4")
+                Array("Vehiculos"=>"Mas de 30 días", "Data"=>$vehiculos30[0]->can_vin, "backgroundColor"=>"#feca7a"),
+                Array("Vehiculos"=>"Menos de 30 días", "Data"=>($vehiculosTotal[0]->can_vin-$vehiculos30[0]->can_vin), "backgroundColor"=>"#dee4e4")
             ),
             'Vehiculos_danos'=>Array(
-                Array("Vehiculos"=>"Dañados", "Data"=>20, "backgroundColor"=>"#ff0000"),
-                Array("Vehiculos"=>"Optimos", "Data"=>60, "backgroundColor"=>"#26dbdb")
+                Array("Vehiculos"=>"Dañados", "Data"=>$Unidades_Danadas[0]->can_vin, "backgroundColor"=>"#ff0000"),
+                Array("Vehiculos"=>"Optimos", "Data"=>($vehiculosTotal[0]->can_vin-$Unidades_Danadas[0]->can_vin), "backgroundColor"=>"#26dbdb")
             )
 
         );
@@ -319,6 +400,78 @@ class PatioController extends Controller
                 'bloques' => $bloques,
                 'ubicados' => $ubicados
             ]);
+        }
+
+
+
+    }
+
+
+    public function Vaciarbloques(Request $request){
+
+        $id_patio =   $request->get("patio_id");
+
+        $id_bloque =   $request->get("bloque_id");
+
+        $id_estado =   $request->get("estado_id");
+
+        if ($request->ajax()){
+
+            $partes =  explode('_', $id_bloque);
+
+            if(count($partes)==1){
+                $ubicados = DB::table('ubic_patios')
+                    ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+                    ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
+                    ->select('vins.vin_id as vin_id')
+                    ->where('patio_id', '=', $id_patio)
+                    ->where('ubic_patios.bloque_id', '=', $partes[0])
+                    ->get();
+            }else {
+                $ubicados = DB::table('ubic_patios')
+                    ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+                    ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
+                    ->select('vins.vin_id as vin_id')
+                    ->where('patio_id', '=', $id_patio)
+                    ->where('ubic_patios.bloque_id', '=', $partes[0])
+                    ->where('ubic_patio_fila', '=', intval($partes[1]))
+                    ->get();
+
+            }
+
+
+            $grupo_vin=Array(); $sep = "";
+            foreach($ubicados as $v){
+                $grupo_vin[] = $v->vin_id;
+            }
+
+            if($ubicados){
+
+                foreach($ubicados as $v){
+                    $Vin_= Vin::findOrFail($v->vin_id);
+                    $Vin_->vin_estado_inventario_id = $id_estado;
+                    $Vin_->update();
+
+                    $UbicPatio = UbicPatio::where('vin_id','=', $v->vin_id)->get();
+                    if(count($UbicPatio)>0){
+                        $UbicPatios = UbicPatio::findOrFail($UbicPatio[0]->ubic_patio_id);
+                        $UbicPatios->ubic_patio_ocupada = false;
+                        $UbicPatios->vin_id = null;
+                        $UbicPatios->update();
+                    }
+
+                }
+
+
+                $usersf = Array("Err" => 0, "Msg" => "Vaciado Exitoso", "Vin"=>$partes);
+
+            }else{
+                $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
+            }
+
+
+
+            return response()->json($usersf);
         }
 
 
