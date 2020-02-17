@@ -257,6 +257,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
      Route::get('patioDashboard', 'PatioController@dashboard')->name('patio.dashboard');
      Route::get('patioBloques', 'PatioController@bloques')->name('patio.bloques');
      Route::get('TodospatioBloques', 'PatioController@Todosbloques')->name('patio.todos_bloques');
+     Route::get('VaciarBloques', 'PatioController@Vaciarbloques')->name('patio.vaciar_bloques');
 
 
      //ruta mantenedor tipo de campaña
