@@ -63,8 +63,8 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="empresa_id" >Empresa <strong>*</strong></label>
-                                 {!! Form::select('empresa_id', $empresas, $user->belongsToEmpresa->empresa_id, ['class'=>'form-control col-sm-12', 'required'=>'required']) !!}
-                             {{--   <select name="empresa_id" id="empresa" class="form-control select-empresa">
+                                {{-- {!! Form::select('empresa_id', $empresas, $user->belongsToEmpresa->empresa_id, ['class'=>'form-control col-sm-12', 'required'=>'required']) !!}  --}}
+                                <select name="empresa_id" id="empresa" class="form-control select-empresa">
                                     <option value="">Seleccionar Empresa</option>
                                 @foreach($empresas as $k => $v)
                                     @if($k == $user->belongsToEmpresa->empresa_id)
@@ -73,7 +73,7 @@
                                         <option value="{!! Crypt::encrypt($k) !!}">{{$v}}</option>
                                     @endif
                                 @endforeach
-                                </select>  --}}
+                                </select>
                             </div>
 
                             <div class="form-group">
