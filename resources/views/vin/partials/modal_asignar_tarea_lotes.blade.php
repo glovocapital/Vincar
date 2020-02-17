@@ -4,7 +4,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Cargar Guías</h4>
+                <h4 class="modal-title">Carga de guía por lote</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -18,6 +18,8 @@
                             </div>
                         </div>
                     </div>
+
+
                     <div class="col-md-6">
                             <div class="form-group">
                                 <label for="">Cargar Guia del VIN </label>

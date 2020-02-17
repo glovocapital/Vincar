@@ -47,7 +47,6 @@
                             <div class="form-group">
                                 <label for="vin_estado_inventario_id" >Estado de Inventario </label>
                                 {!! Form::select('vin_estado_inventario_id', $estadosInventario, $vin->vin_estado_inventario_id,['class'=>'form-control col-sm-9']) !!}
-
                             </div>
                         </div>
 
