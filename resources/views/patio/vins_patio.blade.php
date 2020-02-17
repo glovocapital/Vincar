@@ -111,39 +111,6 @@
 		</div>
 
     </div>
-
-    <div id="ModalVaciar" class="modal fade" role="dialog">
-      <div class="modal-dialog">
-
-        <div class="modal-content">
-          <div class="modal-header">
-          <h4 style="color:red;"> Confirmar Vaciado</h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-
-          </div>
-          <div class="modal-body">
-
-          <input id="data" name="data" type="hidden">
-          <input id="patio_data" name="patio_data" type="hidden">
-
-             <div class="form-group">
-                          <label for="usrname"><span class="glyphicon glyphicon-user"></span> Seleccione estado de los VIN</label>
-
-                          <select  class="form-control"  id="estado" name="estado">
-                          <option value="2">Arribado</option>
-                           <option value="8">Entregado</option>
-                            <option value="7">Suprimido</option>
-                          </select>
-                        </div>
-          </div>
-          <div class="modal-footer">
-            <button id="enviar" type="button" class="btn btn-primary">Enviar</button>
-            <button type="button" class="btn btn-success" data-dismiss="modal">Cerrar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
 @endsection
 
 @section('local-scripts')
@@ -157,7 +124,7 @@
 
         .stat-circle h3 {
             position: absolute;
-            font-size: 40px;
+            font-size: 50px;
             line-height: 170px;
             text-align: center;
             width: 100%;
@@ -367,8 +334,6 @@
     <script>
         $(function(){
 
-
-
             $("#Patios").change(function(){
             $("#Bloques").html("");
             $("#Bloques").append("<option value='' selected>{{trans('vins_patio.Seleccione')}}</option>");
@@ -416,19 +381,24 @@
 
                                         res.bloques.forEach(function(datos) {
 
+
+
                                         totalsector= datos.bloque_filas*datos.bloque_columnas;
 
-                                        Bloque_c='';
+                                        Dtotalsector= totalsector;
 
-                                        usados=0;
+
+                                        Bloque_c=''
+
+
 
                                         for (var i = 1; i <= datos.bloque_filas; i++) {
-
-                                        usados_l=0;
 
                                         if(i<10) i = "0"+i;
 
                                            Bloque_c = Bloque_c + '<div class="row "><div class="col col_bloqueH"> Fila: '+ i + '</div>';
+
+                                           usados=0;
 
                                            for (var ijc = 1; ijc <= datos.bloque_columnas; ijc++) {
                                              color = 'col_bloque_gris';
@@ -437,12 +407,13 @@
 
                                                 if(parseInt(ubic.ubic_patio_columna) == ijc && parseInt(ubic.ubic_patio_fila) == i && parseInt(datos.bloque_id) == ubic.bloque_id){
 
+
                                                     var fecha1 = moment(ubic.vin_fec_ingreso);
                                                     var f = new Date();
                                                     var fecha2 = moment(f.getFullYear()+"-"+(f.getMonth() +1)+"-"+f.getDate());
                                                     var dias =fecha2.diff(fecha1, 'days');
 
-                                                    usados++; usados_l++;
+                                                    usados++;
 
                                                     if(ubic.vin_estado_inventario_id==4) color = 'col_bloque_verde';
                                                     if(ubic.vin_estado_inventario_id==5){
@@ -457,10 +428,12 @@
                                                     var vin_marca = new String(ubic.vin_marca);
                                                     console.log(vin_marca.toLowerCase());
 
+
                                                     num = "<img style='width:24px' data-toggle='tooltip' data-html='true' title='VIN:"+ubic.vin_codigo+"<br>["+ubic.vin_estado_inventario_desc+"]' src ='{{asset('base/img/svg/')}}/"+vin_marca.toLowerCase()+".svg'/>";
 
                                                 }
                                            });
+
 
                                                 Bloque_c = Bloque_c+'<div class="col col_bloque '+color+'">'+num+'</div>';
 
@@ -469,14 +442,12 @@
                                            }
 
 
-                                           Bloque_c = Bloque_c + '<div class="col col_bloqueH"><button class="btn btn-danger btn-sm vaciar" data="'+datos.bloque_id+'_'+i+'" usados="'+usados_l+'"><i class="fas fa-times"></i></button></div></div>';
+                                           Bloque_c = Bloque_c + '<div class="col col_bloqueH"><button class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button></div></div>';
                                         }
-
-                                          Dtotalsector= totalsector-usados;
 
                                           Bloque_='<div class="row "> <div class="col col_bloqueT">'+datos.bloque_nombre+'</div>'
                                                                                                                            +'<div class="col col_bloqueT text-rigth">'
-                                                                                                                           +'<button class="btn btn-danger btn-sm vaciar" data="'+datos.bloque_id+'" usados="'+usados+'">Vaciar Bloque</button> </div> </div>'
+                                                                                                                           +'<button class="btn btn-danger btn-sm">Vaciar Bloque</button> </div> </div>'
                                                                                                                            +'<div class="row"><div class="col col_bloqueT">utilizados '+usados+' de '+totalsector+' [Disponibles: '+Dtotalsector+']</div></div>';
 
 
@@ -487,60 +458,7 @@
 
                                         $('[data-toggle="tooltip"]').tooltip();
 
-                                                                                 $(".vaciar").on("click",function(){
-                                                                                 data = $(this).attr('data');
-                                                                                 usado = $(this).attr('usados');
-                                                                                 patio = $("#Patios").val();
-
-                                                                                 if(parseInt(usado)>0){
-
-                                                                                 $('.modal-body input[name=data]').val(data);
-
-                                                                                 $('.modal-body input[name=patio_data]').val(patio);
-
-
-                                                                                    $("#ModalVaciar").modal("show");
-
-
-
-
-                                                                                   $("#enviar").on("click",function(){
-
-                                                                                    estado_ = $('.modal-body select[name=estado]').val();
-
-                                                                                    data_ = $('.modal-body input[name=data] ').val();
-
-                                                                                    patio_data_ = $('.modal-body input[name=patio_data]').val()
-
-
-
-                                                                                     $.ajax({
-                                                                                                                            url: '{{route('patio.vaciar_bloques')}}',
-                                                                                                                            type: 'GET',
-                                                                                                                            dataType: 'json',
-                                                                                                                            data:'patio_id='+patio_data_+'&bloque_id='+data_+'&estado_id='+estado_,
-                                                                                                                            success: function(res) {
-
-                                                                                                                             console.log(res);
-
-                                                                                                                            if(res.Err==0){
-                                                                                                                             $("#ModalVaciar").modal("hide");
-                                                                                                                             $("#Buscar").click();
-                                                                                                                            }
-
-
-                                                                                                                            }
-
-                                                                                       });
-
-                                                                                    });
-                                                                                 }
-
-                                                                                 });
-
                                         }
-
-
 
                                          });
                         });

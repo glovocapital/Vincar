@@ -42,31 +42,11 @@ class HomeController extends Controller
     {
 
 
-        $Total_Recibido = DB::table('vins')
-            ->select(DB::raw("count(vin_id) AS recibido"))
-            ->where('vin_estado_inventario_id',"=",2)
-            ->get();
-
-        $Unidades_Danadas = DB::table('vins')
-            ->select(DB::raw("count(vin_id) AS danadas"))
-            ->where('vin_estado_inventario_id',"=",6)
-            ->where('vin_estado_inventario_id',"=",7)
-            ->get();
-
-        $Total_Salidas = DB::table('vins')
-            ->select(DB::raw("count(vin_id) AS salidas"))
-            ->where('vin_estado_inventario_id',"=",8)
-            ->where('vin_estado_inventario_id',"=",3)
-            ->get();
-
-        $totales = $Total_Recibido[0]->recibido + $Unidades_Danadas[0]->danadas + $Total_Salidas[0]->salidas;
-
-
         $datos = Array(
 
-            'Total_Recibido'=>Array("Cantidad"=>$Total_Recibido[0]->recibido, "Porcentaje"=>(($totales>0)?$Total_Recibido[0]->recibido*100/$totales:0)),
-            'Total_Salidas'=>Array("Cantidad"=>$Total_Salidas[0]->salidas, "Porcentaje"=>(($totales>0)?$Total_Salidas[0]->salidas*100/$totales:0)),
-            'Unidades_Danadas'=>Array("Cantidad"=>$Unidades_Danadas[0]->danadas, "Porcentaje"=>(($totales>0)?$Unidades_Danadas[0]->danadas*100/$totales:0)),
+            'Total_Recibido'=>Array("Cantidad"=>5, "Porcentaje"=>34),
+            'Total_Salidas'=>Array("Cantidad"=>55, "Porcentaje"=>78),
+            'Unidades_Danadas'=>Array("Cantidad"=>15, "Porcentaje"=>94),
 
             'Tareas'=>35,
             'DyP'=>70,
