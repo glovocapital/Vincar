@@ -180,7 +180,7 @@ class ApiController extends Controller
             ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
 
             ->select('vins.vin_estado_inventario_id as vin_estado_inventario_id','tarea_prioridad','tarea_id','tipo_tarea_descripcion as ico','vins.vin_codigo as vin','vins.vin_modelo as modelo','vins.vin_marca as marca', 'vins.created_at as fecha'
-                ,'vin_estado_inventario_desc as estado','tipo_destino_descripcion as destino'
+                ,'vin_estado_inventario_desc as estado','tipo_destino_descripcion as destino','vins.vin_color as color'
 
                  )
             ->where('tareas.user_id',$request->user_id)
@@ -209,16 +209,6 @@ class ApiController extends Controller
                 $Vins->bandera = "red";
             }
 
-
-            $Vins->color="";
-
-            if($Vins->vin_estado_inventario_id==4) $Vins->color = 'Verde';
-            if($Vins->vin_estado_inventario_id==5){
-                $Vins->color = 'Verde';
-                if($dias>30) $Vins->color = 'Amarillo';
-            }
-            if($Vins->vin_estado_inventario_id==6)  $Vins->color = 'Rojo';
-            if($Vins->vin_estado_inventario_id==7)  $Vins->color = 'Rojo';
 
             $Vins->check ="false";
         }
