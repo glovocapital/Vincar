@@ -270,6 +270,17 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
 });
 
+Route::group(['middleware' => ['CheckRol:SuperAdministrador,Customer']], function () {
+//ruta mantenedor tipo de campaña
+Route::get('tipo_campania', 'TipoCampaniaController@index')->name('tipo_campania.index');
+Route::get('tipo_campania/create','TipoCampaniaController@create')->name('tipo_campania.create');
+Route::get('tipo_campania/{id}/edit','TipoCampaniaController@edit')->name('tipo_campania.edit');
+Route::post('tipo_campania','TipoCampaniaController@store')->name('tipo_campania.store');
+Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
+Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
+
+});
+
 
 
     /******** CLIENTES ********/
