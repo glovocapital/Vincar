@@ -129,7 +129,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
 
     //ruta mantenedor campaña
     Route::get('campania', 'CampaniaController@index')->name('campania.index');
-    Route::get('solicitud_campania', 'CampaniaController@index2')->name('solicitud_campania.index');
+
     Route::get('planificacion', 'CampaniaController@index3')->name('planificacion.index');
     Route::post('planificacion/obtener_codigos_vins', ['as' => 'planificacion.codigos_vins', 'uses' => 'CampaniaController@vinCodigos']);
     Route::get('campania/create','CampaniaController@create')->name('campania.create');
@@ -268,16 +268,19 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
     Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
 
-});
-
-Route::group(['middleware' => ['CheckRol:SuperAdministrador,Customer']], function () {
-//ruta mantenedor tipo de campaña
+    //ruta mantenedor tipo de campaña
 Route::get('tipo_campania', 'TipoCampaniaController@index')->name('tipo_campania.index');
 Route::get('tipo_campania/create','TipoCampaniaController@create')->name('tipo_campania.create');
 Route::get('tipo_campania/{id}/edit','TipoCampaniaController@edit')->name('tipo_campania.edit');
 Route::post('tipo_campania','TipoCampaniaController@store')->name('tipo_campania.store');
 Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
 Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
+
+});
+
+
+Route::group(['middleware' => ['CheckRol:SuperAdministrador,Customer']], function () {
+    Route::get('solicitud_campania', 'CampaniaController@index2')->name('solicitud_campania.index');
 
 });
 
