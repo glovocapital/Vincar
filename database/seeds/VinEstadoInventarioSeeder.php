@@ -24,15 +24,15 @@ class VinEstadoInventarioSeeder extends Seeder
         ]);
 
         DB::table('vin_estado_inventarios')->insert([
-        	'vin_estado_inventario_desc' => 'En Patio Disponible para la venta',
+        	'vin_estado_inventario_desc' => 'En Patio',
         ]);
 
         DB::table('vin_estado_inventarios')->insert([
-        	'vin_estado_inventario_desc' => 'Agendado para entrega',
+        	'vin_estado_inventario_desc' => 'Disponible para la venta',
         ]);
 
         DB::table('vin_estado_inventarios')->insert([
-        	'vin_estado_inventario_desc' => 'En Patio No disponible para la venta',
+        	'vin_estado_inventario_desc' => 'No disponible para la venta',
         ]);
 
         DB::table('vin_estado_inventarios')->insert([

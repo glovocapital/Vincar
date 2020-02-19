@@ -250,6 +250,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::patch('vin/{id}/addguia','VinController@addguia')->name('vin.addguia');
     Route::get('vin/{id}/downloadGuia','VinController@downloadGuia')->name('vin.downloadGuia');
     Route::post('vin/modal_tarea_lotes','VinController@storeModalTareaLotes')->name('vin.storeModalTareaLotes');
+    Route::post('vin/modal_cambia_estado','VinController@storeModalCambiaEstado')->name('vin.storeModalCambiaEstado');
 
 
      //Jc
