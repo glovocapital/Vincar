@@ -619,7 +619,7 @@
 
                     window.chart_3.update();
 
-                    $("#Vehiculos_30dias").text((ht_1*100/ht_)+"%");
+                    $("#Vehiculos_30dias").text(Math.round(ht_1*100/ht_)+"%");
 
                     ht_=0;
                     ht_1=0;
@@ -644,7 +644,7 @@
 
                     window.chart_4.update();
 
-                    $("#Vehiculos_danos").text((ht_1*100/ht_)+"%");
+                    $("#Vehiculos_danos").text(Math.round(ht_1*100/ht_)+"%");
 
 
 
