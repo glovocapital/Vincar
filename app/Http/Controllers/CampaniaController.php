@@ -262,12 +262,17 @@ class CampaniaController extends Controller
      */
     public function index3(Request $request)
     {
-        /** Tareas creadas para mostrares */
+        /** Tareas creadas para mostrarse */
 
         $tareas = Tarea::where('tarea_finalizada', false)
             ->orderBy('tarea_id')
             ->get();
 
+        $tareas_finalizadas = Tarea::where('tarea_finalizada', true)
+            ->where('updated_at',  '>', Carbon::now()->subDays(1)->toDateTimeString())
+            ->orderBy('tarea_id')
+            ->get();
+ 
         /** Búsqueda de vins para la cabecera de la vista de planificación */
         $vins = Vin::all();
 
@@ -478,7 +483,7 @@ class CampaniaController extends Controller
                 array_push($arrayTCampanias, $tCampanias);
         }
 
-        return view('planificacion.index', compact('tareas', 'tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
+        return view('planificacion.index', compact('tareas', 'tareas_finalizadas', 'tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
     }
 
     public function vinCodigos(Request $request){

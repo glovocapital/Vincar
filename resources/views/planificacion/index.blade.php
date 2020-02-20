@@ -196,70 +196,151 @@
 </div>
 
 <div class="col-lg-12">
-    <div class="ibox float-e-margins">
-        <div class="card card-default">
-            <div class="card-header">
-                <h3 class="card-title">Tareas Asignadas</strong></h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+<div class="mx-auto col-sm-12 main-section" id="myTab" role="tablist">
+    <ul class="nav nav-tabs justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link active" id="tareas-asignadas-tab" data-toggle="tab" href="#tareas-asignadas" role="tab" aria-controls="tareas-asignadas" aria-selected="true">Tareas Asignadas</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="tareas-finalizadas-tab" data-toggle="tab" href="#tareas-finalizadas" role="tab" aria-controls="tareas-finalizadas" aria-selected="false">Tareas Finalizadas</a>				   	
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="tareas-asignadas" role="tabpanel" aria-labelledby="tareas-asignadas-tab">
+            <div class="ibox float-e-margins">
+                <div class="card card-default">
+                    <div class="card-header">
+                        <h3 class="card-title">Tareas Asignadas</strong></h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Código VIN</th>
+                                        <th>Prioridad</th>
+                                        <th>Fecha Finalización</th>
+                                        <th>Hora Término</th>
+                                        <th>Responsable</th>
+                                        <th>¿Finalizada?</th>
+                                        <th>Tipo Tarea</th>
+                                        <th>Destino</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($tareas as $tarea)
+                                <tr>
+                                    <td><small>{{ $tarea->codigoVin() }}</small></td>
+                                    @if($tarea->tarea_prioridad == 0)
+                                    <td><small>Baja</small></td>
+                                    @elseif($tarea->tarea_prioridad == 1)
+                                    <td><small>Media</small></td>
+                                    @elseif($tarea->tarea_prioridad == 2)
+                                    <td><small>Alta</small></td>
+                                    @endif
+                                    <td><small>{{ $tarea->tarea_fecha_finalizacion }}</small></td>
+                                    <td><small>{{ $tarea->tarea_hora_termino }}</small></td>
+                                    <td><small>{{ $tarea->nombreResponsable() }}</small></td>
+                                    @if($tarea->tarea_finalizada)
+                                    <td><small>Sí</small></td>
+                                    @else
+                                    <td><small>No</small></td>
+                                    @endif
+                                    <td><small>{{ $tarea->oneTipoTarea() }}</small></td>
+                                    <td><small>{{ $tarea->oneTipoDestino() }}</small></td>
+                                    <td>
+                                        <small>
+                                            <a href="{{ route('planificacion.edit', Crypt::encrypt($tarea->tarea_id)) }}" class="btn-bloque" title="Editar Tarea"><i class="far fa-edit"></i></a>
+                                        </small>
+                                        <small>
+                                            <a href = "{{ route('planificacion.destroy', Crypt::encrypt($tarea->tarea_id)) }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-bloque" title="Eliminar tarea"><i class="far fa-trash-alt"></i></a>
+                                        </small>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="tab-pane fade" id="tareas-finalizadas" role="tabpanel" aria-labelledby="tareas-finalizadas-tab">
+            <div class="ibox float-e-margins">
+                <div class="card card-default">
+                    <div class="card-header">
+                        <h3 class="card-title">Tareas Finalizadas</strong></h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                        </div>
+                    </div>
 
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Código VIN</th>
-                                <th>Prioridad</th>
-                                <th>Fecha Finalización</th>
-                                <th>Hora Término</th>
-                                <th>Responsable</th>
-                                <th>¿Finalizada?</th>
-                                <th>Tipo Tarea</th>
-                                <th>Destino</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($tareas as $tarea)
-                        <tr>
-                            <td><small>{{ $tarea->codigoVin() }}</small></td>
-                            @if($tarea->tarea_prioridad == 0)
-                            <td><small>Baja</small></td>
-                            @elseif($tarea->tarea_prioridad == 1)
-                            <td><small>Media</small></td>
-                            @elseif($tarea->tarea_prioridad == 2)
-                            <td><small>Alta</small></td>
-                            @endif
-                            <td><small>{{ $tarea->tarea_fecha_finalizacion }}</small></td>
-                            <td><small>{{ $tarea->tarea_hora_termino }}</small></td>
-                            <td><small>{{ $tarea->nombreResponsable() }}</small></td>
-                            @if($tarea->tarea_finalizada)
-                            <td><small>Sí</small></td>
-                            @else
-                            <td><small>No</small></td>
-                            @endif
-                            <td><small>{{ $tarea->oneTipoTarea() }}</small></td>
-                            <td><small>{{ $tarea->oneTipoDestino() }}</small></td>
-                            <td>
-                                <small>
-                                    <a href="{{ route('planificacion.edit', Crypt::encrypt($tarea->tarea_id)) }}" class="btn-bloque" title="Editar Tarea"><i class="far fa-edit"></i></a>
-                                </small>
-                                <small>
-                                    <a href = "{{ route('planificacion.destroy', Crypt::encrypt($tarea->tarea_id)) }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-bloque" title="Eliminar tarea"><i class="far fa-trash-alt"></i></a>
-                                </small>
-                            </td>
-                        </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Código VIN</th>
+                                        <th>Prioridad</th>
+                                        <th>Fecha Finalización</th>
+                                        <th>Hora Término</th>
+                                        <th>Responsable</th>
+                                        <th>¿Finalizada?</th>
+                                        <th>Tipo Tarea</th>
+                                        <th>Destino</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($tareas_finalizadas as $tarea_finalizada)
+                                <tr>
+                                    <td><small>{{ $tarea_finalizada->codigoVin() }}</small></td>
+                                    @if($tarea_finalizada->tarea_prioridad == 0)
+                                    <td><small>Baja</small></td>
+                                    @elseif($tarea_finalizada->tarea_prioridad == 1)
+                                    <td><small>Media</small></td>
+                                    @elseif($tarea_finalizada->tarea_prioridad == 2)
+                                    <td><small>Alta</small></td>
+                                    @endif
+                                    <td><small>{{ $tarea_finalizada->tarea_fecha_finalizacion }}</small></td>
+                                    <td><small>{{ $tarea_finalizada->tarea_hora_termino }}</small></td>
+                                    <td><small>{{ $tarea_finalizada->nombreResponsable() }}</small></td>
+                                    @if($tarea_finalizada->tarea_finalizada)
+                                    <td><small>Sí</small></td>
+                                    @else
+                                    <td><small>No</small></td>
+                                    @endif
+                                    <td><small>{{ $tarea_finalizada->oneTipoTarea() }}</small></td>
+                                    <td><small>{{ $tarea_finalizada->oneTipoDestino() }}</small></td>
+                                    <td>
+                                        <small>
+                                            <a href="{{ route('planificacion.edit', Crypt::encrypt($tarea_finalizada->tarea_id)) }}" class="btn-bloque" title="Editar Tarea"><i class="far fa-edit"></i></a>
+                                        </small>
+                                        <small>
+                                            <a href = "{{ route('planificacion.destroy', Crypt::encrypt($tarea_finalizada->tarea_id)) }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-bloque" title="Eliminar tarea"><i class="far fa-trash-alt"></i></a>
+                                        </small>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</div>
+
 
 @include('planificacion.partials.modal_asignar_tarea')
 @include('planificacion.partials.modal_asignar_tarea_lotes')
