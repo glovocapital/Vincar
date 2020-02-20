@@ -115,8 +115,8 @@ class CampaniaController extends Controller
                 ->join('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id')
                 ->join('bloques', 'bloques.bloque_id', '=', 'ubic_patios.bloque_id')
                 ->join('patios', 'patios.patio_id', '=', 'bloques.patio_id')
-                ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_motor', 
-                'empresas.empresa_razon_social', 'vin_fec_ingreso', 'patio_nombre', 'bloque_nombre', 'ubic_patio_fila', 
+                ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_motor',
+                'empresas.empresa_razon_social', 'vin_fec_ingreso', 'patio_nombre', 'bloque_nombre', 'ubic_patio_fila',
                 'ubic_patio_columna')
                 ->orderByRaw('ubic_patio_fila, ubic_patio_columna ASC')
                 ->where('users.empresa_id', $user_empresa_id )
@@ -186,18 +186,18 @@ class CampaniaController extends Controller
                             // $query->where('vin_marca', $marca_nombre);
                             $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
-        
+
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
                         }
-                            
+
                         if($estado_id == 5 || $estado_id == 6) {
                             $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                 ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                 ->join('patios','bloques.patio_id','=','patios.patio_id')
                                 ->where('patios.patio_id', $patio_id);
                         }
-                            
+
                         array_push($tabla_vins, $query->first());
                     } else {
                         $query = DB::table('vins')
@@ -210,18 +210,18 @@ class CampaniaController extends Controller
                             // $query->where('vin_marca', $marca_nombre);
                             $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
-        
+
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
                         }
-                            
+
                         if($estado_id == 5 || $estado_id == 6) {
                             $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                 ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                 ->join('patios','bloques.patio_id','=','patios.patio_id')
                                 ->where('patios.patio_id', $patio_id);
                         }
-                            
+
                         $tabla_vins = $query->get();
                     }
                 }
@@ -240,7 +240,7 @@ class CampaniaController extends Controller
                 if($estado_id > 0){
                     $query->where('vins.vin_estado_inventario_id', $estado_id);
                 }
-                    
+
                 if($estado_id == 5 || $estado_id == 6) {
                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
@@ -251,7 +251,7 @@ class CampaniaController extends Controller
                 $tabla_vins = $query->get();
             }
         }
-        
+
         return view('campania.solicitudCampania', compact('tabla_vins', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
     }
 
@@ -380,7 +380,7 @@ class CampaniaController extends Controller
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
                         }
-                        
+
                         array_push($tabla_vins, $query->first());
                     } else {
                         $query = DB::table('vins')
@@ -391,7 +391,7 @@ class CampaniaController extends Controller
                         if($user_empresa_id > 0){
                             $query->where('empresas.empresa_id',$user_empresa_id);
                         }
-                        
+
                         if($marca_nombre != 'Sin marca'){
                             // $query->where('vin_marca',$marca_nombre);
                             $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
@@ -422,7 +422,7 @@ class CampaniaController extends Controller
                 if($estado_id > 0){
                     $query->where('vins.vin_estado_inventario_id', $estado_id);
                 }
-                    
+
                 if($estado_id == 5 || $estado_id == 6) {
                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
@@ -438,9 +438,9 @@ class CampaniaController extends Controller
 
         /** Valores necesarios para poblar los selects del modal de asignación de tarea */
 
-        $responsables = User::where('rol_id', 4)
-            ->orWhere('rol_id', 5)
+        $responsables = User::where('rol_id', 5)
             ->orWhere('rol_id', 6)
+         //   ->orWhere('rol_id', 6)
             ->get();
 
         $responsables_array= [];
@@ -529,7 +529,7 @@ class CampaniaController extends Controller
             $campania->user_id = Auth::user()->user_id;
 
             $campania->save();
-            
+
             foreach ($request->tipo_campanias as $t_campania_id) {
                 $tipo_campania_id = (int)$t_campania_id;
                 DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $campania->campania_id]);
@@ -541,7 +541,7 @@ class CampaniaController extends Controller
             return redirect()->route('vin.index')->with('error-msg', 'Error asignando campaña.');
         }
 
-        return redirect()->route('campania.index')->with('success', 'Campaña asignada con éxito.'); 
+        return redirect()->route('campania.index')->with('success', 'Campaña asignada con éxito.');
     }
 
     /**
@@ -566,9 +566,9 @@ class CampaniaController extends Controller
             $tarea->user_id = $request->tarea_responsable_id;
             $tarea->tipo_tarea_id = $request->tipo_tarea_id;
             $tarea->tipo_destino_id = $request->tipo_destino_id;
-            
+
             $tarea->save();
-            
+
             // foreach ($request->tipo_campanias as $t_campania_id) {
             //     $tipo_campania_id = (int)$t_campania_id;
             //     DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $campania->campania_id]);
@@ -580,7 +580,7 @@ class CampaniaController extends Controller
             return redirect()->route('planificacion.index')->with('error-msg', 'Error asignando tarea.');
         }
 
-        return redirect()->route('planificacion.index')->with('success', 'Tarea asignada con éxito.');; 
+        return redirect()->route('planificacion.index')->with('success', 'Tarea asignada con éxito.');;
     }
 
     /**
@@ -597,26 +597,28 @@ class CampaniaController extends Controller
             DB::beginTransaction();
 
             foreach($request->vin_ids as $vin_id){
+//dd($request);
                 $tarea = new Tarea();
-
                 $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
                 $tarea->tarea_prioridad = $request->tarea_prioridad;
                 $tarea->tarea_hora_termino = $request->tarea_hora_termino;
-                $tarea->vin_id = $request->vin_id;
+                $tarea->vin_id = $request->vin_ids[$vin_id];
                 $tarea->user_id = $request->tarea_responsable_id;
                 $tarea->tipo_tarea_id = $request->tipo_tarea_id;
                 $tarea->tipo_destino_id = $request->tipo_destino_id;
-                
+
                 $tarea->save();
             }
 
             DB::commit();
         } catch (\Throwable $th) {
+           // dd($th);
             DB::rollBack();
             return redirect()->route('planificacion.index')->with('error-msg', 'Error asignando tarea.');
         }
 
-        return redirect()->route('planificacion.index')->with('success', 'Tarea asignada con éxito.');; 
+
+        return redirect()->route('planificacion.index')->with('success', 'Tarea asignada con éxito.');;
     }
 
     /**
@@ -673,10 +675,10 @@ class CampaniaController extends Controller
                 DB::beginTransaction();
 
                 $campania = Campania::find($request->campania_id);
-                
+
                 $campania->campania_fecha_finalizacion = $request->campania_fecha_finalizacion;
                 $campania->campania_observaciones = $request->campania_observaciones;
-                
+
                 $campania->save();
 
                 $campania_tipos = DB::table('campania_vins')
@@ -693,14 +695,14 @@ class CampaniaController extends Controller
                         ->where('tipo_campania_id', '=', $tipo_campania_id)
                         ->where('deleted_at', '=', null)
                         ->get();
-                        
+
                     if(count($existe) == 0){
                         DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $request->campania_id]);
-                    } 
+                    }
                 }
 
                 /** Eliminar de los tipos de campaña aquellos que hayan sido desmarcados */
-                    
+
                 foreach($campania_tipos as $tipoCamp){
                     $enc = false;
                     $tipo_campania_id = $tipoCamp->tipo_campania_id;
@@ -727,7 +729,7 @@ class CampaniaController extends Controller
                 return redirect()->route('campania.index')->with('error-msg', 'Error actualizando campaña.');
             }
 
-        return redirect()->route('campania.index')->with('success', 'Campaña actualizada con éxito.'); 
+        return redirect()->route('campania.index')->with('success', 'Campaña actualizada con éxito.');
     }
 
     /**
@@ -750,11 +752,11 @@ class CampaniaController extends Controller
         $tipo_destinos_array = DB::table('tipo_destinos')
             ->orderBy('tipo_destino_id')
             ->pluck('tipo_destino_descripcion', 'tipo_destino_id');
-        
+
         $tipo_campanias_array = TipoCampania::all()
             ->sortBy('tipo_campania_id')
             ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
-        
+
         $campania = Campania::where('vin_id', $tarea->vin_id)
             ->where('deleted_at', null)
             ->first();
@@ -779,7 +781,7 @@ class CampaniaController extends Controller
         foreach($responsables as $k => $v){
             $responsables_array[$v->user_id] = $v->user_nombre. " " . $v->user_apellido;
         }
-        
+
         return view('planificacion.edit', compact('tarea', 'vin_codigo', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'tCampanias', 'responsables_array', 'campania_id'));
     }
 
@@ -793,16 +795,16 @@ class CampaniaController extends Controller
     public function updateTarea(Request $request)
     {
         $tarea = Tarea::find($request->tarea_id);
-        
+
         $tarea->tarea_prioridad = $request->tarea_prioridad;
         $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
         $tarea->tarea_hora_termino = $request->tarea_hora_termino;
         $tarea->tipo_tarea_id = $request->tipo_tarea_id;
         $tarea->tipo_destino_id = $request->tipo_destino_id;
-        
+
         $tarea->save();
 
-        return redirect()->route('planificacion.index')->with('success', 'Tarea actualizada con éxito.'); 
+        return redirect()->route('planificacion.index')->with('success', 'Tarea actualizada con éxito.');
     }
 
     /**
