@@ -70,7 +70,7 @@
                     <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th><i class="far fa-check-square"></i></th>
+                                <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
                                 <th>Vin</th>
                                 <th>Patente</th>
                                 <th>Modelo</th>
@@ -90,7 +90,7 @@
                         <tbody>
                         @foreach($tabla_vins as $vin)
                             <tr>
-                                <td><input type="checkbox" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
+                                <td><input type="checkbox" class="check-tarea" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
                                 <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
                                 <td><small>{{ $vin->vin_patente }}</small></td>
                                 <td><small>{{ $vin->vin_modelo }}</small></td>
@@ -199,7 +199,7 @@
     <div class="ibox float-e-margins">
         <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">Tareas Solicitadas</strong></h3>
+                <h3 class="card-title">Tareas Asignadas</strong></h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -270,6 +270,19 @@
 
 <script>
         $(document).ready(function () {
+            var checked = false;
+
+            $('.check-all').on('click',function(){
+
+                if(checked == false) {
+                $('.check-tarea').prop('checked', true);
+                    checked = true;
+                } else {
+                $('.check-tarea').prop('checked', false);
+                    checked = false;
+                }
+            });
+
             $('.btn-lote-vins').click(function (e){
                 e.preventDefault();
 
