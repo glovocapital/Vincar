@@ -75,6 +75,8 @@ class LoginController extends Controller
 
                     Session::put('activo', true);
 
+                    Session::put('lang', 'es');
+
                     return redirect('home');
 
                 } else {
