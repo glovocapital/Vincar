@@ -802,7 +802,7 @@ class CampaniaController extends Controller
             ->where('deleted_at', null)
             ->first();
 
-        if ( isset($campania)_){
+        if (isset($campania)){
             $campania_id = $campania->campania_id;
         } else {
             $campania_id = 0;
