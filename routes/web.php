@@ -139,6 +139,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
     Route::post('campania/modal','CampaniaController@storeModal')->name('campania.storeModal');
     Route::post('campania/modal_tarea','CampaniaController@storeModalTarea')->name('campania.storeModalTarea');
     Route::post('campania/modal_tarea_lotes','CampaniaController@storeModalTareaLotes')->name('campania.storeModalTareaLotes');
+    Route::post('campania/modal_campania_lotes','CampaniaController@storeModalCampaniaLotes')->name('campania.storeModalCampaniaLotes');
     Route::patch('campania/{id}/update','CampaniaController@update')->name('campania.update');
     Route::patch('planificacion/{id}/update','CampaniaController@updateTarea')->name('planificacion.update');
     Route::get('campania/{id}/delete','CampaniaController@destroy')->name('campania.destroy');

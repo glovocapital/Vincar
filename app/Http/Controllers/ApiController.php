@@ -156,21 +156,7 @@ class ApiController extends Controller
     public function Lists(Request $request) {
         $this->cors();
 
-        $Vin =DB::table('ubic_patios')
-            ->Join('vins', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
-            ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
-            ->join('bloques', 'bloques.bloque_id','=', 'ubic_patios.bloque_id')
-            ->join('tareas', 'tareas.vin_id','=', 'vins.vin_id')
-            ->join('tipo_tareas', 'tipo_tareas.tipo_tarea_id','=', 'tareas.tipo_tarea_id')
-            ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id','=', 'tareas.tipo_destino_id')
 
-            ->select('tarea_prioridad','tarea_id','tipo_tarea_descripcion as ico','vins.vin_codigo as vin','vins.vin_modelo as modelo', 'vins.vin_color as color','vins.vin_marca as marca', 'vins.created_at as fecha'
-                ,'vin_estado_inventario_desc as estado','tipo_destino_descripcion as destino',
-                'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','bloque_nombre' )
-            ->where('tareas.user_id',$request->user_id)
-            ->where('tareas.tarea_finalizada',false)
-            ->orderBy('vins.updated_at','desc')
-            ->get();
 
 
         $Vin =DB::table('tareas')
@@ -178,10 +164,10 @@ class ApiController extends Controller
             ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id','=', 'tareas.tipo_destino_id')
             ->join('vins', 'tareas.vin_id','=', 'vins.vin_id')
             ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
+            ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id')
 
             ->select('vins.vin_estado_inventario_id as vin_estado_inventario_id','tarea_prioridad','tarea_id','tipo_tarea_descripcion as ico','vins.vin_codigo as vin','vins.vin_modelo as modelo','vins.vin_marca as marca', 'vins.created_at as fecha'
-                ,'vin_estado_inventario_desc as estado','tipo_destino_descripcion as destino','vins.vin_color as color'
-
+                ,'vin_estado_inventario_desc as estado','tipo_destino_descripcion as destino','vins.vin_color as color','ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id'
                  )
             ->where('tareas.user_id',$request->user_id)
             ->where('tareas.tarea_finalizada',false)
@@ -189,7 +175,9 @@ class ApiController extends Controller
             ->get();
 
 
-
+        $bloques =DB::table('bloques')
+            ->select('bloque_id', 'bloque_nombre', 'bloque_filas', 'bloque_columnas')
+            ->get();
 
 
         foreach($Vin as $Vins){
@@ -209,6 +197,12 @@ class ApiController extends Controller
                 $Vins->bandera = "red";
             }
 
+
+            foreach($bloques as $bloq){
+
+                if($bloq->bloque_id == $Vins->bloque_id) $Vins->bloque_nombre = $bloq->bloque_nombre;
+
+            }
 
             $Vins->check ="false";
         }
@@ -232,7 +226,6 @@ class ApiController extends Controller
 
         return response()->json($resul);
     }
-
 
     public function ListVIN(Request $request, $vins_id)
     {
@@ -261,6 +254,13 @@ class ApiController extends Controller
             $vin = $Vin->get();
 
             if(count($vin)){
+
+                $tarea =DB::table('tareas')
+                    ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id','=', 'tareas.tipo_destino_id')
+                    ->select('tipo_destino_descripcion as destino')
+                    ->where('tareas.vin_id',$vin[0]->vin_id)
+                    ->get();
+                $vin[0]->destino = $tarea[0]->destino;
 
                $_patio =DB::table('bloques')
                    ->join('patios', 'patios.patio_id','=','bloques.patio_id')
@@ -597,6 +597,8 @@ class ApiController extends Controller
 
         echo json_encode(Array("Err"=>0,"badgeData"=>Array("list"=>count($Vin), "car"=>0, "boat"=>0)));
     }
+
+
 
 
 
