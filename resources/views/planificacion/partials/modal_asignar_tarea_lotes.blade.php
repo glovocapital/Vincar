@@ -21,7 +21,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="tarea_prioridad" >Prioridad <strong>*</strong></label>
-                            {!! Form::select('tarea_prioridad', [0 => 'Baja', '1' => 'Media', '2' => 'Alta', '3' => 'Urgente'], null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-prioridad']) !!}
+                            {!! Form::select('tarea_prioridad', [0 => 'Baja', '1' => 'Media', '2' => 'Alta', '3' => 'Urgente'], null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-prioridad', 'required' => 'required']) !!}
                         </div>
 
                         <div class="form-group">
@@ -42,22 +42,22 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="tarea_responsable_id" >Usuario Responsable <strong>*</strong></label>
-                            {!! Form::select('tarea_responsable_id', $responsables_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-responsable']) !!}
+                            {!! Form::select('tarea_responsable_id', $responsables_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-responsable', 'required' => 'required']) !!}
                         </div>
 
                         <div class="form-group">
                             <label for="tipo_tarea_id" >Tarea <strong>*</strong></label>
-                            {!! Form::select('tipo_tarea_id', $tipo_tareas_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-tarea']) !!}
+                            {!! Form::select('tipo_tarea_id', $tipo_tareas_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-tarea', 'required' => 'required']) !!}
                         </div>
                         
                         <div class="form-group">
                             <label for="tipo_destino_id" >Destino <strong>*</strong></label>
-                            {!! Form::select('tipo_destino_id', $tipo_destinos_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-destino']) !!}
+                            {!! Form::select('tipo_destino_id', $tipo_destinos_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-destino', 'required' => 'required']) !!}
                         </div>
                         
                         <div class="form-group">
                             <label for="tarea_hora_termino" >Hora de Término <strong>*</strong></label>
-                            {{ Form::time('tarea_hora_termino', null, ['class'=>'form-control col-sm-12 select-tipo-destino']) }}
+                            {{ Form::time('tarea_hora_termino', null, ['class'=>'form-control col-sm-12 select-tipo-destino', 'required' => 'required']) }}
                         </div>
                     </div>
                 </div>
