@@ -17,8 +17,8 @@ class AlterServiciosTable extends Migration
 
             $table->unsignedBigInteger('marca_id')->nullable()->change();
 
-            $table->unsignedBigInteger('caracteristica_vin_id');
-            $table->foreign('caracteristica_vin_id')->references('caracteristica_vin_id')->on('caracteristica_vins')->onUpdate('cascade')->onDelete('cascade')->nullable();
+            $table->unsignedBigInteger('caracteristica_vin_id')->nullable();
+            $table->foreign('caracteristica_vin_id')->references('caracteristica_vin_id')->on('caracteristica_vins')->onUpdate('cascade')->onDelete('cascade');
 
             $table->decimal('servicios_precio', 8, 2)->change();
         });
