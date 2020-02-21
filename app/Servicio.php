@@ -16,7 +16,7 @@ class Servicio extends Model
      * @var array
      */
     protected $fillable = [
-        'caracteristica_vin_id'
+        
     ];
 
     public function oneDivisa (){
