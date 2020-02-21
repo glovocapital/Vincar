@@ -602,7 +602,7 @@ class CampaniaController extends Controller
             foreach($request->vin_ids as $vin_id){
                 $tarea = new Tarea();
                 $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
-                $tarea->tarea_prioridad = $request->tarea_prioridad;
+                $tarea->tarea_prioridad = (int)$request->tarea_prioridad;
                 $tarea->tarea_hora_termino = $request->tarea_hora_termino;
                 $tarea->vin_id = (int)$request->vin_ids[$vin_id];
                 $tarea->user_id = $request->tarea_responsable_id;
@@ -802,7 +802,12 @@ class CampaniaController extends Controller
             ->where('deleted_at', null)
             ->first();
 
-        $campania_id = $campania->campania_id;
+        if ( isset($campania)_){
+            $campania_id = $campania->campania_id;
+        } else {
+            $campania_id = 0;
+        }
+
 
         $tCampanias = DB::table('campania_vins')
             ->join('tipo_campanias', 'campania_vins.tipo_campania_id', '=', 'tipo_campanias.tipo_campania_id')
