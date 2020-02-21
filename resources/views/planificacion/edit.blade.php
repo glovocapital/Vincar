@@ -36,6 +36,11 @@
                                 <option value="0">Baja</option>
                                 <option value="1">Media</option>
                                 <option value="2" selected>Alta</option>
+                                @else
+                                <option value="">Seleccionar Prioridad</option>
+                                <option value="0">Baja</option>
+                                <option value="1">Media</option>
+                                <option value="2">Alta</option>
                                 @endif
                             </select>
                         </div>
