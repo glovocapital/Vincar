@@ -10,6 +10,15 @@ class Servicio extends Model
     use SoftDeletes;
     protected $primaryKey = 'servicios_id';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'caracteristica_vin_id'
+    ];
+
     public function oneDivisa (){
         return $this->hasOne(Divisa::class, 'divisa_id', 'divisa_id');
     }
