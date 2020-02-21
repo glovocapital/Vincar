@@ -802,7 +802,12 @@ class CampaniaController extends Controller
             ->where('deleted_at', null)
             ->first();
 
-        $campania_id = $campania->campania_id;
+        if ( isset($campania)_){
+            $campania_id = $campania->campania_id;
+        } else {
+            $campania_id = 0;
+        }
+
 
         $tCampanias = DB::table('campania_vins')
             ->join('tipo_campanias', 'campania_vins.tipo_campania_id', '=', 'tipo_campanias.tipo_campania_id')
