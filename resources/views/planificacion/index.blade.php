@@ -244,6 +244,8 @@
                                     <td><small>Media</small></td>
                                     @elseif($tarea->tarea_prioridad == 2)
                                     <td><small>Alta</small></td>
+                                    @else
+                                    <td><small>Sin prioridad</small></td>
                                     @endif
                                     <td><small>{{ $tarea->tarea_fecha_finalizacion }}</small></td>
                                     <td><small>{{ $tarea->tarea_hora_termino }}</small></td>
@@ -309,6 +311,8 @@
                                     <td><small>Media</small></td>
                                     @elseif($tarea_finalizada->tarea_prioridad == 2)
                                     <td><small>Alta</small></td>
+                                    @else
+                                    <td><small>Sin prioridad</small></td>
                                     @endif
                                     <td><small>{{ $tarea_finalizada->tarea_fecha_finalizacion }}</small></td>
                                     <td><small>{{ $tarea_finalizada->tarea_hora_termino }}</small></td>
