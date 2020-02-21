@@ -602,7 +602,7 @@ class CampaniaController extends Controller
             foreach($request->vin_ids as $vin_id){
                 $tarea = new Tarea();
                 $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
-                $tarea->tarea_prioridad = $request->tarea_prioridad;
+                $tarea->tarea_prioridad = (int)$request->tarea_prioridad;
                 $tarea->tarea_hora_termino = $request->tarea_hora_termino;
                 $tarea->vin_id = (int)$request->vin_ids[$vin_id];
                 $tarea->user_id = $request->tarea_responsable_id;
