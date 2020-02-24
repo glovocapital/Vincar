@@ -81,14 +81,16 @@
                                 <th>Fecha de Ingreso</th>
                                 <th>Cliente</th>
                                 <th>Estado</th>
-                                <!--  <th>Sub Estado Inventario </th>  -->
-                                <!--   <th>Gestión de Registro</th> -->
+                                <th>Patio</th> 
+                                <th>Bloque</th>
+                                <th>Ubicación</th>
                                 <th>Acciones de VIN</th>
 
                             </tr>
                         </thead>
                         <tbody>
                         @foreach($tabla_vins as $vin)
+                            @if(isset($vin))
                             <tr>
                                 <td><input type="checkbox" class="check-tarea" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
                                 <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
@@ -101,6 +103,21 @@
                                 <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
                                 <td><small>{{ $vin->empresa_razon_social }}</small></td>
                                 <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
+                                @if(isset($vin->patio_nombre))
+                                <td><small>{{ $vin->patio_nombre }}</small></td>
+                                @else
+                                <td><small></small></td>
+                                @endif
+                                @if(isset($vin->bloque_nombre))
+                                <td><small>{{ $vin->bloque_nombre }}</small></td>
+                                @else
+                                <td><small></small></td>
+                                @endif
+                                @if(isset($vin->ubic_patio_id))
+                                <td><small>Fila: {{ $vin->ubic_patio_fila }}, Columna: {{ $vin->ubic_patio_columna }}</small></td>
+                                @else
+                                <td><small></small></td>
+                                @endif
 
                                 <!--   <td>
 
@@ -126,6 +143,7 @@
                                     </small>
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>

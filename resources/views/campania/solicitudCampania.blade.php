@@ -87,8 +87,9 @@
                                         <th>Fecha de Ingreso</th>
                                         <th>Cliente</th>
                                         <th>Estado</th>
-                                    <!--  <th>Sub Estado Inventario </th>  -->
-                                     <!--   <th>Gestión de Registro</th> -->
+                                        <th>Patio</th> 
+                                        <th>Bloque</th>
+                                        <th>Ubicación</th>
                                         <th>Acciones de VIN</th>
 
                                     </tr>
@@ -96,54 +97,67 @@
                                 <tbody>
 
                                 @foreach($tabla_vins as $vin)
-                                <tr>
-                                    <td><input type="checkbox" class="check-campania" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
-                                    <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
-                                    <td><small>{{ $vin->vin_patente }}</small></td>
-                                    <td><small>{{ $vin->vin_marca }}</small></td>
-                                    <td><small>{{ $vin->vin_modelo }}</small></td>
-                                    <td><small>{{ $vin->vin_color }}</small></td>
-                                   <!-- <td><small>{{ $vin->vin_motor }}</small></td> -->
-                                    <td><small>{{ $vin->vin_segmento }}</small></td>
-                                    <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
-                                    <td><small>{{ $vin->empresa_razon_social }}</small></td>
-                                    <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
+                                    @if(isset($vin))
+                                    <tr>
+                                        <td><input type="checkbox" class="check-campania" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
+                                        <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
+                                        <td><small>{{ $vin->vin_patente }}</small></td>
+                                        <td><small>{{ $vin->vin_marca }}</small></td>
+                                        <td><small>{{ $vin->vin_modelo }}</small></td>
+                                        <td><small>{{ $vin->vin_color }}</small></td>
+                                    <!-- <td><small>{{ $vin->vin_motor }}</small></td> -->
+                                        <td><small>{{ $vin->vin_segmento }}</small></td>
+                                        <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
+                                        <td><small>{{ $vin->empresa_razon_social }}</small></td>
+                                        <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
+                                        @if(isset($vin->patio_nombre))
+                                        <td><small>{{ $vin->patio_nombre }}</small></td>
+                                        @else
+                                        <td><small></small></td>
+                                        @endif
+                                        @if(isset($vin->bloque_nombre))
+                                        <td><small>{{ $vin->bloque_nombre }}</small></td>
+                                        @else
+                                        <td><small></small></td>
+                                        @endif
+                                        @if(isset($vin->ubic_patio_id))
+                                        <td><small>Fila: {{ $vin->ubic_patio_fila }}, Columna: {{ $vin->ubic_patio_columna }}</small></td>
+                                        @else
+                                        <td><small></small></td>
+                                        @endif
 
-                                 <!--   <td>
-
-
-                                        <small>
-                                            <a href = "{{ route('vin.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
-                                        </a>
-                                        </small>
-
-                                    </td> -->
-
-                                    <td>
-
-                                        <small>
-                                            <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-light"  title="Editar"><i class="far fa-edit"></i></a>
-                                        </small>
-
-                                        <small>
-
-                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-warning"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
-
-                                        </small>
-
-                                        <small>
-                                            <button value="{{ $vin->vin_id }}" class="btn btn-xs btn-success btn-campania"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></button>
-                                        </small>
-                                        <small>
-                                            <button class="btn btn-xs btn-info btn-campania"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
-                                        </small>
+                                    <!--   <td>
 
 
+                                            <small>
+                                                <a href = "{{ route('vin.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
+                                            </a>
+                                            </small>
 
+                                        </td> -->
 
+                                        <td>
 
-                                    </td>
-                                </tr>
+                                            <small>
+                                                <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-light"  title="Editar"><i class="far fa-edit"></i></a>
+                                            </small>
+
+                                            <small>
+
+                                                <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-warning"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
+
+                                            </small>
+
+                                            <small>
+                                                <button value="{{ $vin->vin_id }}" class="btn btn-xs btn-success btn-campania"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></button>
+                                            </small>
+                                            <small>
+                                                <button class="btn btn-xs btn-info btn-campania"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
+                                            </small>
+
+                                        </td>
+                                    </tr>
+                                    @endif
                                 @endforeach
 
 
