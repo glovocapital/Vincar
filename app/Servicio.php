@@ -16,7 +16,7 @@ class Servicio extends Model
      * @var array
      */
     protected $fillable = [
-        
+
     ];
 
     public function oneDivisa (){
@@ -38,6 +38,10 @@ class Servicio extends Model
     public function oneEmpresa(){
         return $this->hasOne(Empresa::class, 'empresa_id', 'cliente_id');
 
+    }
+
+    public function oneCaracteristicas (){
+        return $this->hasOne(CaracteristicaVin::class, 'caracteristica_vin_id', 'caracteristica_vin_id');
     }
 
 }

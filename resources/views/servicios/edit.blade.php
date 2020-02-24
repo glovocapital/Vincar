@@ -36,9 +36,11 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="marca_id" >Marca <strong>*</strong></label>
-                                {!! Form::select('marca_id', $marca, $servicio->marca_id,['placeholder'=>'Marca', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                                <label for="marca_id" >Caracteristicas <strong>*</strong></label>
+                                {!! Form::select('caracteristica_id', $caracteristicasvin, $servicio->caracteristica_vin_id,['placeholder'=>'Caracteristicas', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                             </div>
+
+
 
 
                         </div>
@@ -50,12 +52,17 @@
                                 {!! Form::select('valor_asociado_id', $valor_asociado, $servicio->valor_asociado_id,['placeholder'=>'Valor Asociado', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                             </div>
 
+                            <div class="form-group">
+                                <label for="marca_id" >Marca </label>
+                                {!! Form::select('marca_id', $marca, $servicio->marca_id,['placeholder'=>'Marca', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            </div>
+
                         </div>
 
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="" >Costo Servicio <strong>*</strong></label>
-                                {{ Form::number('servicio_costo', $servicio->servicios_precio, ['min' => '0','placeholder'=>'Costo', 'class'=>'form-control col-sm-9', 'required'=>'required']) }}
+                                {{ Form::number('servicio_costo', $servicio->servicios_precio, ['min' => '0','placeholder'=>'Costo', 'class'=>'form-control col-sm-9', 'required'=>'required', 'step' => '0.1']) }}
                             </div>
 
                         </div>
