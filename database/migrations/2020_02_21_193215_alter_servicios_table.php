@@ -32,6 +32,7 @@ class AlterServiciosTable extends Migration
     public function down()
     {
         Schema::table('servicios', function (Blueprint $table) {
+
             $table->dropColumn('caracteristica_vin_id');
         });
     }
