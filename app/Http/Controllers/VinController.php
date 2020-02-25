@@ -907,7 +907,6 @@ public function index2(Request $request)
 
     public function storeModalCambiaEstado(Request $request)
     {
-
         try {
 
             DB::beginTransaction();
