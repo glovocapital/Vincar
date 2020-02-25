@@ -70,6 +70,10 @@ class ApiController extends Controller
                         "user_rol_id"=> $user->rol_id
                         ));
 
+                    $Users= User::findOrFail($user->user_id);
+                    $Users->user_firebase = $request->input('firebase');
+                    $Users->update();
+
 
                 } else {
                     //credenciales incorrectas
@@ -171,6 +175,7 @@ class ApiController extends Controller
                  )
             ->where('tareas.user_id',$request->user_id)
             ->where('tareas.tarea_finalizada',false)
+            ->where('deleted_at',null)
             ->orderBy('vins.updated_at','desc')
             ->get();
 
@@ -327,8 +332,6 @@ class ApiController extends Controller
             $request->user_id = $Tarea->user_id;
 
             $itemlist =self::Lists($request);
-
-
 
           $itemlistData = json_decode($itemlist->content(),true);
 
