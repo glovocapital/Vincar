@@ -160,9 +160,6 @@ class ApiController extends Controller
     public function Lists(Request $request) {
         $this->cors();
 
-
-
-
         $Vin =DB::table('tareas')
             ->join('tipo_tareas', 'tipo_tareas.tipo_tarea_id','=', 'tareas.tipo_tarea_id')
             ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id','=', 'tareas.tipo_destino_id')
@@ -175,7 +172,7 @@ class ApiController extends Controller
                  )
             ->where('tareas.user_id',$request->user_id)
             ->where('tareas.tarea_finalizada',false)
-            ->where('deleted_at',null)
+            ->where('tareas.deleted_at',null)
             ->orderBy('vins.updated_at','desc')
             ->get();
 
