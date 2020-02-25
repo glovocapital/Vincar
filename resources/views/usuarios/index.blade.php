@@ -18,10 +18,6 @@
                             {!! Form::open(['route'=> 'usuarios.store', 'method'=>'POST']) !!}
 
 
-                        <div class="form-group">
-                            <label for="user_nombre" >Apellido  <strong>*</strong></label>
-                            {!! Form::text('user_apellido', null, ['placeholder'=>'Apellido del usuario', 'class'=>'form-control col-sm-9', 'required']) !!}
-                        </div>
                                 <label for="user_rut" >Rut <strong>*</strong></label>
 
                             <div class="input-group" >
@@ -91,16 +87,6 @@
                                 <label for="rol_id" >Rol <strong>*</strong></label>
                                 {!! Form::select('rol_id', $roles, null,['placeholder'=>'Seleccionar Rol', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="user_pass_rep" >Repita Contraseña <strong>*</strong></label>
-                            {{ Form::password('user_pass_confirmation',array('placeholder'=>'Repita la contraseña','class' => 'form-control col-sm-9', 'required')) }}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="rol_id" >Rol <strong>*</strong></label>
-                            {!! Form::select('rol_id', $roles, null,['placeholder'=>'Seleccionar Rol', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                         </div>
                     </div>
 
