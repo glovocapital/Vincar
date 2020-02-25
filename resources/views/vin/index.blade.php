@@ -356,20 +356,25 @@
                                     <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
                                     <td><small>{{ $vin->empresa_razon_social }}</small></td>
                                     <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
-                                    <td><small> <a href="{{route('vin.downloadGuia', Crypt::encrypt($vin->vin_id)) }}">Guia</small> </td>
+                                    <td>
+                                        <small>
+                                            <a href="{{route('vin.downloadGuia', Crypt::encrypt($vin->vin_id)) }}">
+                                                Guia
+                                        </small>
+                                    </td>
                                     <td>
 
 
                                         <small>
-                                            <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-light"  title="Editar"><i class="far fa-edit"></i></a>
+                                            <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
                                         </small>
 
                                         <small>
-                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-warning"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
+                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
                                         </small>
 
                                         <small>
-                                            <a href="{{ route('vin.guia', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-danger"  title="Cargar Guía"><i class="fas fa fa-barcode  "></i></a>
+                                            <a href="{{ route('vin.guia', Crypt::encrypt($vin->vin_id)) }}" class=" btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>
 
                                         </small>
 

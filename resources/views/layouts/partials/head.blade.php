@@ -31,6 +31,79 @@
     label{
         font-weight: bold !important;
     }
+
+    .fa-edit{
+        font-family:none !important;
+        width: 30px;
+        height: 30px;
+        content: url(base/img/svg/edit_1.svg) !important;
+        margin-right: 5px;
+    }
+    .fa-edit::before{
+        content: none !important;
+    }
+
+    .fa-trash-alt{
+        font-family:none !important;
+        width: 30px;
+        height: 30px;
+        content: url(base/img/svg/deleted_1.svg) !important;
+        margin-right: 5px;
+    }
+    .fa-trash-alt::before{
+        content: none !important;
+    }
+
+    .fa-flag-checkered{
+        font-family:none !important;
+        width: 30px;
+        height: 30px;
+        content: url(base/img/svg/historial_1.svg) !important;
+        margin-right: 5px;
+    }
+    .fa-flag-checkered::before{
+        content: none !important;
+    }
+
+    .fa-barcode{
+        font-family:none !important;
+        width: 30px;
+        height: 30px;
+        content: url(base/img/svg/guia_1.svg) !important;
+        margin-right: 5px;
+    }
+    .fa-barcode::before{
+        content: none !important;
+    }
+
+    .fa-address-book{
+        font-family:none !important;
+        width: 30px;
+        height: 30px;
+        content: url(base/img/svg/inspec_1.svg) !important;
+        margin-right: 5px;
+    }
+    .fa-address-book::before{
+        content: none !important;
+    }
+
+    .fa-lightbulb{
+        font-family:none !important;
+        width: 30px;
+        height: 30px;
+        content: url(base/img/svg/inspec_1.svg) !important;
+        margin-right: 5px;
+    }
+    .fa-lightbulb::before{
+        content: none !important;
+    }
+
+
+
+
+
+
+    /*
     .fa-edit{
         color: #fad430;
         font-size: 16px !important;
@@ -41,6 +114,7 @@
         color: #ca4949;
         font-size: 16px !important;
     }
+    */
 
 </style>
 <script  src="{{ asset('base/js/settings.js') }}"></script>
