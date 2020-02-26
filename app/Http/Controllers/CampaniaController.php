@@ -295,6 +295,7 @@ class CampaniaController extends Controller
     {
         /** Tareas creadas para mostrarse */
         $tareas = Tarea::where('tarea_finalizada', false)
+            ->where('deleted_at', '=', null)
             ->orderBy('tarea_id')
             ->get();
 
