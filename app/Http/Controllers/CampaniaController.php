@@ -91,9 +91,11 @@ class CampaniaController extends Controller
         // Campañas para los roles SúperAdministrador (1), Administrador (2) y Operador (3)
         if($user_rol_id == 1 || $user_rol_id == 2 || $user_rol_id == 3){
             $campanias = Campania::all()
+                ->where('deleted_at', null)
                 ->sortBy('campania_id');
         } elseif($user_rol_id == 4){  // Campañas para ser vistas por el perfil Customer (4)
             $campanias = Campania::where('user_id', Auth::user()->user_id)
+                ->where('deleted_at', null)
                 ->orderBy('campania_id')
                 ->get();
         } else {  // Para los demás perfiles devuelve conjunto vacío.
