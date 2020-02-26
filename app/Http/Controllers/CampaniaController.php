@@ -735,13 +735,13 @@ class CampaniaController extends Controller
                 $campania->campania_observaciones = $request->campania_observaciones;
                 $campania->vin_id = (int)$request->vin_ids[$vin_id];
                 $campania->user_id = Auth::user()->user_id;
-
+                
                 $campania->save();
-            }
 
-            foreach ($request->tipo_campanias as $t_campania_id) {
-                $tipo_campania_id = (int)$t_campania_id;
-                DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $campania->campania_id]);
+                foreach ($request->tipo_campanias as $t_campania_id) {
+                    $tipo_campania_id = (int)$t_campania_id;
+                    DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $campania->campania_id]);
+                }
             }
 
             DB::commit();

@@ -15,7 +15,7 @@
             
             <div class="card-body">
                 <div class="row">
-                    <a href="{{ route('vin.index') }}" class = 'btn btn-success'>Regresar a VINs</a>
+                    <a href="{{ route('solicitud_campania.index') }}" class = 'btn btn-success'>Regresar a Solicitud Campañas</a>
                 </div>
 
                 <br />

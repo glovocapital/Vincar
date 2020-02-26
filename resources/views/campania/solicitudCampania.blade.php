@@ -147,10 +147,10 @@
                                             </small>
 
                                             <small>
-                                                <button value="{{ $vin->vin_id }}" class="btn btn-xs btn-success btn-campania"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></button>
+                                                <button type="button" value="{{ $vin->vin_id }}" class="btn-campania-modal btn btn-xs btn-success"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></button>
                                             </small>
                                             <small>
-                                                <button class="btn btn-xs btn-info btn-campania"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
+                                                <button type="button"  class="btn btn-xs btn-info btn-agendar"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
                                             </small>
 
                                         </td>
@@ -239,6 +239,19 @@
 
 <script>
         $(document).ready(function () {
+            //Modal Solicitar Campaña
+            $(".btn-campania-modal").click(function (e) {
+                e.preventDefault();
+
+                var vin_id = $(this).val();
+                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
+
+                $(".vin-id").val(vin_id);
+                $("#vin_codigo").html("VIN: " + vin_codigo);
+
+                $("#solicitudCampaniaModal").modal('show');
+            });
+
             var checked = false;
 
             $('.check-all').on('click',function(){
@@ -259,54 +272,45 @@
                     return this.value;
                 }).get();
 
-                var url = "/planificacion/obtener_codigos_vins";
+                if (vin_ids.length == 0){
+                    alert("Debe seleccionar al menos un vin")
+                } else {
+                    var url = "/planificacion/obtener_codigos_vins";
 
-                var request = {
-                    _token: $("input[name='_token']").attr("value"),
-                    vin_ids: vin_ids,
-                };
+                    var request = {
+                        _token: $("input[name='_token']").attr("value"),
+                        vin_ids: vin_ids,
+                    };
 
-                $.post(url, request, function (res) {
-                    //Validar primero si algo salió mal
-                    if(!res.success){
-                        alert(
-                            "Error inesperado al solicitar la información.\n\n" +
-                            "MENSAJE DEL SISTEMA:\n" +
-                            res.message + "\n\n"
-                        );
-                        return;  // Finaliza el intento de obtener
-                    }
+                    $.post(url, request, function (res) {
+                        //Validar primero si algo salió mal
+                        if(!res.success){
+                            alert(
+                                "Error inesperado al solicitar la información.\n\n" +
+                                "MENSAJE DEL SISTEMA:\n" +
+                                res.message + "\n\n"
+                            );
+                            return;  // Finaliza el intento de obtener
+                        }
 
-                    var arr_codigos = $.map(res.codigos, function (e1) {
-                        return e1;
+                        var arr_codigos = $.map(res.codigos, function (e1) {
+                            return e1;
+                        });
+
+                        $("#vin_codigo_lote").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
+                        $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + vin_ids[0] + "]'  value='" + vin_ids[0] + "'/>");
+
+                        for (var i = 1; i < arr_codigos.length; i++){
+                            $("#vin_codigo_lote").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
+                            $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + vin_ids[i] + "]' value='" + vin_ids[i] + "'/>");
+                        }
+
+                        $("#solicitarCampaniaModalLote").modal('show');
+
+                    }).fail(function () {
+                        alert('Error: Respuesta de datos inválida');
                     });
-
-                    $("#vin_codigo_lote").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
-                    $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + vin_ids[0] + "]'  value='" + vin_ids[0] + "'/>");
-
-                    for (var i = 1; i < arr_codigos.length; i++){
-                        $("#vin_codigo_lote").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
-                        $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + vin_ids[i] + "]' value='" + vin_ids[i] + "'/>");
-                    }
-
-                    $("#solicitarCampaniaModalLote").modal('show');
-
-                }).fail(function () {
-                    alert('Error: Respuesta de datos inválida');
-                });
-            });
-
-            //Modal Solicitar Campaña
-            $('.btn-campania').click(function (e) {
-                e.preventDefault();
-
-                var vin_id = $(this).val();
-                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
-
-                $(".vin-id").val(vin_id);
-                $("#vin_codigo").html("VIN: " +vin_codigo);
-
-                $("#solicitudCampaniaModal").modal('show');
+                }
             });
         });
     </script>
