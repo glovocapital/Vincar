@@ -262,6 +262,8 @@
                                     <td><small>Media</small></td>
                                     @elseif($tarea->tarea_prioridad == 2)
                                     <td><small>Alta</small></td>
+                                    @elseif($tarea->tarea_prioridad == 3)
+                                    <td><small>Urgente</small></td>
                                     @else
                                     <td><small>Sin prioridad</small></td>
                                     @endif

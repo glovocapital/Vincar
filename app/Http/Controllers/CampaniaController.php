@@ -63,8 +63,9 @@ class CampaniaController extends Controller
      */
     public function index2(Request $request)
     {
-
         $user_empresa_id  = Auth::user()->belongsToEmpresa->empresa_id;
+
+        $user_rol_id = Auth::user()->oneRol->rol_id;
 
         $estadosInventario = DB::table('vin_estado_inventarios')
             ->select('vin_estado_inventario_id', 'vin_estado_inventario_desc')
@@ -86,8 +87,20 @@ class CampaniaController extends Controller
             ->pluck('patio_nombre', 'patio_id');
 
         /** Listado de Campañas para la vista de planificación */
-        $campanias = Campania::all()
-            ->sortBy('campania_id');
+
+        // Campañas para los roles SúperAdministrador (1), Administrador (2) y Operador (3)
+        if($user_rol_id == 1 || $user_rol_id == 2 || $user_rol_id == 3){
+            $campanias = Campania::all()
+                ->where('deleted_at', null)
+                ->sortBy('campania_id');
+        } elseif($user_rol_id == 4){  // Campañas para ser vistas por el perfil Customer (4)
+            $campanias = Campania::where('user_id', Auth::user()->user_id)
+                ->where('deleted_at', null)
+                ->orderBy('campania_id')
+                ->get();
+        } else {  // Para los demás perfiles devuelve conjunto vacío.
+            $campanias = [];
+        }
 
         $tipo_campanias = TipoCampania::all()
             ->sortBy('tipo_campania_id');
@@ -295,6 +308,7 @@ class CampaniaController extends Controller
     {
         /** Tareas creadas para mostrarse */
         $tareas = Tarea::where('tarea_finalizada', false)
+            ->where('deleted_at', '=', null)
             ->orderBy('tarea_id')
             ->get();
 
