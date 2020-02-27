@@ -47,7 +47,8 @@ Auth::routes(['register' => false]);
 
 /***** Una vez creado los middleware se dividen las rutas por rol *****/
 
-    /********SUPER ADMINISTRADOR Y ADMINISTRADOR ********/
+
+/********SUPER ADMINISTRADOR Y ADMINISTRADOR ********/
 
 Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], function () {
 
@@ -127,23 +128,6 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
     Route::get('proveedor/{id}/delete','TipoProveedorController@destroy')->name('proveedor.destroy');
 
 
-    //ruta mantenedor campaña
-    Route::get('campania', 'CampaniaController@index')->name('campania.index');
-
-    Route::get('planificacion', 'CampaniaController@index3')->name('planificacion.index');
-    Route::post('planificacion/obtener_codigos_vins', ['as' => 'planificacion.codigos_vins', 'uses' => 'CampaniaController@vinCodigos']);
-    Route::get('campania/create','CampaniaController@create')->name('campania.create');
-    Route::get('campania/{id}/edit','CampaniaController@edit')->name('campania.edit');
-    Route::get('planificacion/{id}/edit','CampaniaController@editTarea')->name('planificacion.edit');
-    Route::post('campania','CampaniaController@store')->name('campania.store');
-    Route::post('campania/modal','CampaniaController@storeModal')->name('campania.storeModal');
-    Route::post('campania/modal_tarea','CampaniaController@storeModalTarea')->name('campania.storeModalTarea');
-    Route::post('campania/modal_tarea_lotes','CampaniaController@storeModalTareaLotes')->name('campania.storeModalTareaLotes');
-    Route::post('campania/modal_campania_lotes','CampaniaController@storeModalCampaniaLotes')->name('campania.storeModalCampaniaLotes');
-    Route::patch('campania/{id}/update','CampaniaController@update')->name('campania.update');
-    Route::patch('planificacion/{id}/update','CampaniaController@updateTarea')->name('planificacion.update');
-    Route::get('campania/{id}/delete','CampaniaController@destroy')->name('campania.destroy');
-    Route::get('planificacion/{id}/delete','CampaniaController@destroyTarea')->name('planificacion.destroy');
 
     //ruta mantenedor destinos
     Route::get('destinos', 'DestinoController@index')->name('destinos.index');
@@ -261,6 +245,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
      Route::get('TodospatioBloques', 'PatioController@Todosbloques')->name('patio.todos_bloques');
      Route::get('VaciarBloques', 'PatioController@Vaciarbloques')->name('patio.vaciar_bloques');
 
+     Route::post('planificacion/obtener_codigos_vins', ['as' => 'planificacion.codigos_vins', 'uses' => 'CampaniaController@vinCodigos']);
+     Route::get('campania', 'CampaniaController@index')->name('campania.index');
 
      //ruta mantenedor tipo de campaña
     Route::get('tipo_campania', 'TipoCampaniaController@index')->name('tipo_campania.index');
@@ -270,13 +256,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
     Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
 
-    //ruta mantenedor tipo de campaña
-Route::get('tipo_campania', 'TipoCampaniaController@index')->name('tipo_campania.index');
-Route::get('tipo_campania/create','TipoCampaniaController@create')->name('tipo_campania.create');
-Route::get('tipo_campania/{id}/edit','TipoCampaniaController@edit')->name('tipo_campania.edit');
-Route::post('tipo_campania','TipoCampaniaController@store')->name('tipo_campania.store');
-Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
-Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
+
 
 });
 
@@ -285,6 +265,28 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Customer']], functio
     Route::get('solicitud_campania', 'CampaniaController@index2')->name('solicitud_campania.index');
 
 });
+
+Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico, Administrador']], function () {
+
+    Route::get('planificacion', 'CampaniaController@index3')->name('planificacion.index');
+    Route::get('campania/create','CampaniaController@create')->name('campania.create');
+    Route::get('campania/{id}/edit','CampaniaController@edit')->name('campania.edit');
+    Route::get('planificacion/{id}/edit','CampaniaController@editTarea')->name('planificacion.edit');
+    Route::post('campania','CampaniaController@store')->name('campania.store');
+    Route::post('campania/modal','CampaniaController@storeModal')->name('campania.storeModal');
+    Route::post('campania/modal_tarea','CampaniaController@storeModalTarea')->name('campania.storeModalTarea');
+    Route::post('campania/modal_tarea_lotes','CampaniaController@storeModalTareaLotes')->name('campania.storeModalTareaLotes');
+    Route::post('campania/modal_campania_lotes','CampaniaController@storeModalCampaniaLotes')->name('campania.storeModalCampaniaLotes');
+    Route::patch('campania/{id}/update','CampaniaController@update')->name('campania.update');
+    Route::patch('planificacion/{id}/update','CampaniaController@updateTarea')->name('planificacion.update');
+    Route::get('campania/{id}/delete','CampaniaController@destroy')->name('campania.destroy');
+    Route::get('planificacion/{id}/delete','CampaniaController@destroyTarea')->name('planificacion.destroy');
+
+
+});
+
+
+
 
 
 
@@ -322,5 +324,5 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Customer']], functio
     Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
     Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
 
-                });
+});
 */
