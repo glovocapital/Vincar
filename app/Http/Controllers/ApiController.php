@@ -257,6 +257,8 @@ class ApiController extends Controller
 
             $vin = $Vin->get();
 
+            var_dump($vin);
+
             if(count($vin)>0){
 
                 $tarea =DB::table('tareas')
