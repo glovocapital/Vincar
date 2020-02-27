@@ -257,7 +257,7 @@ class ApiController extends Controller
 
             $vin = $Vin->get();
 
-            var_dump($vin);
+            
 
             if(count($vin)>0){
 
@@ -266,7 +266,8 @@ class ApiController extends Controller
                     ->select('tipo_destino_descripcion as destino')
                     ->where('tareas.vin_id',$vin[0]->vin_id)
                     ->get();
-                $vin[0]->destino = $tarea[0]->destino;
+
+               $vin[0]->destino = (count($tarea)>0)?$tarea[0]->destino:'';
 
                $_patio =DB::table('bloques')
                    ->join('patios', 'patios.patio_id','=','bloques.patio_id')
