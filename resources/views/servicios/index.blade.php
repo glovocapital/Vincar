@@ -37,10 +37,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="marca_id" >Marca <strong>*</strong></label>
-                            {!! Form::select('marca_id', $marca, null,['placeholder'=>'Marca', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            <label for="marca_id" >Caracteristicas <strong>*</strong></label>
+                            {!! Form::select('caracteristica_id', $caracteristicasvin, null,['placeholder'=>'Caracteristicas', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                         </div>
-
 
                     </div>
 
@@ -51,12 +50,17 @@
                             {!! Form::select('valor_asociado_id', $valor_asociado, null,['placeholder'=>'Valor Asociado', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                         </div>
 
+                        <div class="form-group">
+                            <label for="marca_id" >Marca </label>
+                            {!! Form::select('marca_id', $marca, null,['placeholder'=>'Marca', 'class'=>'form-control col-sm-9']) !!}
+                        </div>
+
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="" >Costo Servicio <strong>*</strong></label>
-                            {{ Form::number('servicio_costo','0', ['min' => '0','placeholder'=>'Costo', 'class'=>'form-control col-sm-9', 'required'=>'required']) }}
+                            {{ Form::number('servicio_costo','0', ['min' => '0','placeholder'=>'Costo', 'class'=>'form-control col-sm-9', 'required'=>'required','step' => '0.1']) }}
                         </div>
 
                     </div>
@@ -97,7 +101,7 @@
                             <tr>
                                 <th>C. Producto</th>
                                 <th>Cliente</th>
-                                <th>Marca</th>
+                                <th>Tamaño</th>
                                 <th>Valor Asociado</th>
                                 <th>Divisa</th>
                                 <th>Costo</th>
@@ -110,7 +114,7 @@
                             <tr>
                                 <td><small>{{ $us->oneProducto->producto_codigo }}</small></td>
                                 <td><small>{{ $us->oneEmpresa->empresa_razon_social }}</small></td>
-                                <td><small>{{ $us->oneMarca->marca_nombre }}</small></td>
+                                <td><small>{{ $us->oneCaracteristicas->caracteristica_vin_nombre }}</small></td>
                                 <td><small>{{ $us->oneValorA->valor_asociado_tipo }}</small></td>
                                 <td><small>{{ $us->oneDivisa->divisa_tipo }}</small></td>
                                 <td><small>{{ $us->servicios_precio }}</small></td>

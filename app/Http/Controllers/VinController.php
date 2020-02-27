@@ -157,6 +157,38 @@ class VinController extends Controller
 
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
+
+                            if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
+                                if($patio_id > 0){
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                        ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                        ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->where('patios.patio_id', $patio_id);
+                                } else {
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                    ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id');
+                                }
+                            }
+                        } else {
+                            $vin_estado_id = Vin::where('vin_codigo', $v)
+                                ->orWhere('vin_patente', $v)
+                                ->value('vin_estado_inventario_id');
+
+                            $query->where('vins.vin_estado_inventario_id', $vin_estado_id);
+
+                            if($vin_estado_id == 4 || $vin_estado_id == 5 || $vin_estado_id == 6) {
+                                if($patio_id > 0){
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                        ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                        ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->where('patios.patio_id', $patio_id);
+                                } else {
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                    ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id');
+                                }
+                            }
                         }
 
                         array_push($tabla_vins, $query->first());
@@ -177,6 +209,19 @@ class VinController extends Controller
 
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
+
+                            if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
+                                if($patio_id > 0){
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                        ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                        ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->where('patios.patio_id', $patio_id);
+                                } else {
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                    ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id');
+                                }
+                            }
                         }
 
                         $tabla_vins = $query->get();
@@ -199,13 +244,19 @@ class VinController extends Controller
 
                 if($estado_id > 0){
                     $query->where('vins.vin_estado_inventario_id', $estado_id);
-                }
-//5 y 6
-                if($estado_id == 9 || $estado_id == 10) {
-                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
-                        ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                        ->join('patios','bloques.patio_id','=','patios.patio_id')
-                        ->where('patios.patio_id', $patio_id);
+
+                    if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
+                        if($patio_id > 0){
+                            $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                ->where('patios.patio_id', $patio_id);
+                        } else {
+                            $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                            ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                            ->join('patios','bloques.patio_id','=','patios.patio_id');
+                        }
+                    }
                 }
 
                 $tabla_vins = $query->get();
@@ -329,13 +380,32 @@ public function index2(Request $request)
 
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
-                        }
 
-                        if($estado_id == 5 || $estado_id == 6) {
-                            $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
-                                ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                                ->join('patios','bloques.patio_id','=','patios.patio_id')
-                                ->where('patios.patio_id', $patio_id);
+                            if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
+                                $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                    ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                    ->where('patios.patio_id', $patio_id);
+                            }
+                        } else {
+                            $vin_estado_id = Vin::where('vin_codigo', $v)
+                                ->orWhere('vin_patente', $v)
+                                ->value('vin_estado_inventario_id');
+
+                            $query->where('vins.vin_estado_inventario_id', $vin_estado_id);
+
+                            if($vin_estado_id == 4 || $vin_estado_id == 5 || $vin_estado_id == 6) {
+                                if($patio_id > 0){
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                        ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                        ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->where('patios.patio_id', $patio_id);
+                                } else {
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                    ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id');
+                                }
+                            }
                         }
 
                         array_push($tabla_vins, $query->first());
@@ -353,13 +423,19 @@ public function index2(Request $request)
 
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
-                        }
 
-                        if($estado_id == 5 || $estado_id == 6) {
-                            $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
-                                ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                                ->join('patios','bloques.patio_id','=','patios.patio_id')
-                                ->where('patios.patio_id', $patio_id);
+                            if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
+                                if($patio_id > 0){
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                        ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                        ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->where('patios.patio_id', $patio_id);
+                                } else {
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                    ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id');
+                                }
+                            }
                         }
 
                         $tabla_vins = $query->get();
@@ -379,13 +455,19 @@ public function index2(Request $request)
 
                 if($estado_id > 0){
                     $query->where('vins.vin_estado_inventario_id', $estado_id);
-                }
 
-                if($estado_id == 5 || $estado_id == 6) {
-                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
-                        ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                        ->join('patios','bloques.patio_id','=','patios.patio_id')
-                        ->where('patios.patio_id', $patio_id);
+                    if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
+                        if($patio_id > 0){
+                            $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                ->where('patios.patio_id', $patio_id);
+                        } else {
+                            $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                            ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                            ->join('patios','bloques.patio_id','=','patios.patio_id');
+                        }
+                    }
                 }
 
                 $tabla_vins = $query->get();
@@ -907,7 +989,6 @@ public function index2(Request $request)
 
     public function storeModalCambiaEstado(Request $request)
     {
-
         try {
 
             DB::beginTransaction();

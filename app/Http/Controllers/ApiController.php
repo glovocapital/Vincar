@@ -11,6 +11,8 @@ use App\Patio;
 use App\Inspeccion;
 use App\DanoPieza;
 use App\Tarea;
+use App\Foto;
+use App\Thumbnail;
 
 
 class ApiController extends Controller
@@ -160,9 +162,6 @@ class ApiController extends Controller
     public function Lists(Request $request) {
         $this->cors();
 
-
-
-
         $Vin =DB::table('tareas')
             ->join('tipo_tareas', 'tipo_tareas.tipo_tarea_id','=', 'tareas.tipo_tarea_id')
             ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id','=', 'tareas.tipo_destino_id')
@@ -175,7 +174,7 @@ class ApiController extends Controller
                  )
             ->where('tareas.user_id',$request->user_id)
             ->where('tareas.tarea_finalizada',false)
-            ->where('deleted_at',null)
+            ->where('tareas.deleted_at',null)
             ->orderBy('vins.updated_at','desc')
             ->get();
 
@@ -258,7 +257,7 @@ class ApiController extends Controller
 
             $vin = $Vin->get();
 
-            if(count($vin)){
+            if(count($vin)>0){
 
                 $tarea =DB::table('tareas')
                     ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id','=', 'tareas.tipo_destino_id')
@@ -519,7 +518,8 @@ class ApiController extends Controller
         $dano_pieza_observaciones = $request->input('dano_pieza_observaciones');
 
 
-        $target_path = "uploads/";
+
+       /* $target_path = "uploads/";
 
         $target_path = $target_path . basename( $_FILES['file']['name']);
 
@@ -531,7 +531,7 @@ class ApiController extends Controller
 
             $data = ['success' => false, 'message' => 'There was an error uploading the file, please try again!'];
 
-        }
+        }*/
 
         $Vin =DB::table('vins')
             ->select('vins.*')
@@ -568,12 +568,56 @@ class ApiController extends Controller
 
                 $danoPieza->save();
 
+                $foto = new Foto();
+                $foto->foto_fecha = date('Y-m-d');
+                $foto->foto_descripcion = "Inspección con daño";
+                $foto->foto_ubic_archivo = "fotos/";
+                $foto->foto_coord_lat = 0;
+                $foto->foto_coord_lon = 0;
+                $foto->dano_pieza_id = $danoPieza->dano_pieza_id;
+                $foto->save();
+
+
+
+                $fotoArchivo = $request->file('file');
+                $extensionFoto = $fotoArchivo->extension();
+                $path = $fotoArchivo->storeAs(
+                    'fotos',
+                    "foto_de_inspeccion".'-'.Auth::id().'-'.date('Y-m-d').'-'.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+                );
+
+                //Creamos una instancia de la libreria instalada
+                $image = \Image::make($fotoArchivo);
+
+                //Ruta donde queremos guardar las imagenes
+                $path2 = storage_path().'/app/thumbnails/';
+
+                // Cambiar de tamaño
+                $image->resize(240,200);
+
+                // Guardar
+                $image->save($path2.'thumb_'.$fotoArchivo->getClientOriginalName());
+
+                //Guardamos nombre y nombreOriginal en la BD
+                $thumbnail = new Thumbnail();
+                $thumbnail->thumbnail_nombre = "Foto de Inspección";
+                $thumbnail->thumbnail_imagen = $fotoArchivo->getClientOriginalName();
+                $thumbnail->foto_id = $foto->foto_id;
+
+                $thumbnail->save();
+
+                $foto1 = Foto::find($foto->foto_id);
+
+                $foto1->foto_ubic_archivo = $path;
+
+                $foto1->save();
+
 
                 $itemlist =self::ListVIN($request, $Vin->vin_codigo);
 
                 $itemlistData = json_decode($itemlist->content(),true);
 
-                $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items'], 'foto'=>$data);
+                $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items'], 'foto'=>$fotoArchivo->getClientOriginalName());
 
 
             }else{

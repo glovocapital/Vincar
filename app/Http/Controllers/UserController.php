@@ -117,7 +117,8 @@ class UserController extends Controller
 
 
             flash('Error al crear usuario.')->error();
-           // flash($e->getMessage())->error();
+            dd($e);
+            //flash($e->getMessage())->error();
             return redirect('usuarios');
         }
 

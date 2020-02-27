@@ -317,11 +317,11 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="tab le-responsive">
+                        <div class="table-responsive">
                             <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th><i class="far fa-check-square"></i></th>
+                                        <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
                                         <th>Vin</th>
                                         <th>Patente</th>
 
@@ -333,6 +333,10 @@
                                         <th>Cliente</th>
                                         <th>Estado</th>
                                         <th>Guia</th>
+                                        <th>Patio</th>
+                                        <th>Bloque</th>
+                                        <th>Ubicación</th>
+
 
 
                                     <!--  <th>Sub Estado Inventario </th>  -->
@@ -344,9 +348,10 @@
                                 <tbody>
 
                                 @foreach($tabla_vins as $vin)
+                                @if(isset($vin))
                                 <tr>
+                                    <td><input type="checkbox" class="check-tarea" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
 
-                                    <td><input type="checkbox" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
                                     <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
                                     <td><small>{{ $vin->vin_patente }}</small></td>
                                     <td><small>{{ $vin->vin_marca }}</small></td>
@@ -356,20 +361,40 @@
                                     <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
                                     <td><small>{{ $vin->empresa_razon_social }}</small></td>
                                     <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
-                                    <td><small> <a href="{{route('vin.downloadGuia', Crypt::encrypt($vin->vin_id)) }}">Guia</small> </td>
+                                    <td>
+                                        <small>
+                                            <a href="{{route('vin.downloadGuia', Crypt::encrypt($vin->vin_id)) }}">
+                                                Guia
+                                        </small>
+                                    </td>
+                                    @if(isset($vin->patio_nombre))
+                                    <td><small>{{ $vin->patio_nombre }}</small></td>
+                                    @else
+                                    <td><small></small></td>
+                                    @endif
+                                    @if(isset($vin->bloque_nombre))
+                                    <td><small>{{ $vin->bloque_nombre }}</small></td>
+                                    @else
+                                    <td><small></small></td>
+                                    @endif
+                                    @if(isset($vin->ubic_patio_id))
+                                    <td><small>Fila: {{ $vin->ubic_patio_fila }}, Columna: {{ $vin->ubic_patio_columna }}</small></td>
+                                    @else
+                                    <td><small></small></td>
+                                    @endif
                                     <td>
 
 
                                         <small>
-                                            <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-light"  title="Editar"><i class="far fa-edit"></i></a>
+                                            <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
                                         </small>
 
                                         <small>
-                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-warning"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
+                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
                                         </small>
 
                                         <small>
-                                            <a href="{{ route('vin.guia', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-danger"  title="Cargar Guía"><i class="fas fa fa-barcode  "></i></a>
+                                            <a href="{{ route('vin.guia', Crypt::encrypt($vin->vin_id)) }}" class=" btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>
 
                                         </small>
 
@@ -377,9 +402,8 @@
 
                                     </td>
                                 </tr>
+                                @endif
                                 @endforeach
-
-
                                 </tbody>
                             </table>
                         </div>
@@ -401,6 +425,19 @@
 
 <script>
     $(document).ready(function () {
+        var checked = false;
+
+        $('.check-all').on('click',function(){
+
+            if(checked == false) {
+            $('.check-tarea').prop('checked', true);
+                checked = true;
+            } else {
+            $('.check-tarea').prop('checked', false);
+                checked = false;
+            }
+        });
+
         $('.btn-edo-vins').click(function (e){
             e.preventDefault();
 
@@ -460,10 +497,20 @@
     });
 </script>
 
-
-
 <script>
         $(document).ready(function () {
+            var checked = false;
+
+$('.check-all').on('click',function(){
+
+    if(checked == false) {
+    $('.check-tarea').prop('checked', true);
+        checked = true;
+    } else {
+    $('.check-tarea').prop('checked', false);
+        checked = false;
+    }
+});
             $('.btn-lote-vins').click(function (e){
                 e.preventDefault();
 
@@ -522,4 +569,11 @@
             });
         });
     </script>
+
+
+
+
+
+
+
 @endsection

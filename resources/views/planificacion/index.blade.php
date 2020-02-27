@@ -81,14 +81,16 @@
                                 <th>Fecha de Ingreso</th>
                                 <th>Cliente</th>
                                 <th>Estado</th>
-                                <!--  <th>Sub Estado Inventario </th>  -->
-                                <!--   <th>Gestión de Registro</th> -->
+                                <th>Patio</th> 
+                                <th>Bloque</th>
+                                <th>Ubicación</th>
                                 <th>Acciones de VIN</th>
 
                             </tr>
                         </thead>
                         <tbody>
                         @foreach($tabla_vins as $vin)
+                            @if(isset($vin))
                             <tr>
                                 <td><input type="checkbox" class="check-tarea" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
                                 <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
@@ -101,6 +103,21 @@
                                 <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
                                 <td><small>{{ $vin->empresa_razon_social }}</small></td>
                                 <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
+                                @if(isset($vin->patio_nombre))
+                                <td><small>{{ $vin->patio_nombre }}</small></td>
+                                @else
+                                <td><small></small></td>
+                                @endif
+                                @if(isset($vin->bloque_nombre))
+                                <td><small>{{ $vin->bloque_nombre }}</small></td>
+                                @else
+                                <td><small></small></td>
+                                @endif
+                                @if(isset($vin->ubic_patio_id))
+                                <td><small>Fila: {{ $vin->ubic_patio_fila }}, Columna: {{ $vin->ubic_patio_columna }}</small></td>
+                                @else
+                                <td><small></small></td>
+                                @endif
 
                                 <!--   <td>
 
@@ -126,6 +143,7 @@
                                     </small>
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>
@@ -244,6 +262,8 @@
                                     <td><small>Media</small></td>
                                     @elseif($tarea->tarea_prioridad == 2)
                                     <td><small>Alta</small></td>
+                                    @elseif($tarea->tarea_prioridad == 3)
+                                    <td><small>Urgente</small></td>
                                     @else
                                     <td><small>Sin prioridad</small></td>
                                     @endif
@@ -375,41 +395,45 @@
                     return this.value;
                 }).get();
 
-                var url = "/planificacion/obtener_codigos_vins";
+                if (vin_ids.length == 0){
+                    alert("Debe seleccionar al menos un vin")
+                } else {
+                    var url = "/planificacion/obtener_codigos_vins";
 
-                var request = {
-                    _token: $("input[name='_token']").attr("value"),
-                    vin_ids: vin_ids,
-                };
+                    var request = {
+                        _token: $("input[name='_token']").attr("value"),
+                        vin_ids: vin_ids,
+                    };
 
-                $.post(url, request, function (res) {
-                    //Validar primero si algo salió mal
-                    if(!res.success){
-                        alert(
-                            "Error inesperado al solicitar la información.\n\n" +
-                            "MENSAJE DEL SISTEMA:\n" +
-                            res.message + "\n\n"
-                        );
-                        return;  // Finaliza el intento de obtener
-                    }
+                    $.post(url, request, function (res) {
+                        //Validar primero si algo salió mal
+                        if(!res.success){
+                            alert(
+                                "Error inesperado al solicitar la información.\n\n" +
+                                "MENSAJE DEL SISTEMA:\n" +
+                                res.message + "\n\n"
+                            );
+                            return;  // Finaliza el intento de obtener
+                        }
 
-                    var arr_codigos = $.map(res.codigos, function (e1) {
-                        return e1;
+                        var arr_codigos = $.map(res.codigos, function (e1) {
+                            return e1;
+                        });
+
+                        $("#vin_codigo_lote").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
+                        $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + vin_ids[0] + "]'  value='" + vin_ids[0] + "'/>");
+
+                        for (var i = 1; i < arr_codigos.length; i++){
+                            $("#vin_codigo_lote").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
+                            $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + vin_ids[i] + "]' value='" + vin_ids[i] + "'/>");
+                        }
+
+                        $("#asignarTareaModalLote").modal('show');
+
+                    }).fail(function () {
+                        alert('Error: Respuesta de datos inválida');
                     });
-
-                    $("#vin_codigo_lote").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
-                    $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + vin_ids[0] + "]'  value='" + vin_ids[0] + "'/>");
-
-                    for (var i = 1; i < arr_codigos.length; i++){
-                        $("#vin_codigo_lote").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
-                        $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + vin_ids[i] + "]' value='" + vin_ids[i] + "'/>");
-                    }
-
-                    $("#asignarTareaModalLote").modal('show');
-
-                }).fail(function () {
-                    alert('Error: Respuesta de datos inválida');
-                });
+                }
             });
 
             //Modal Solicitar Tarea

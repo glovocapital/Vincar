@@ -50,9 +50,17 @@ class ServicioController extends Controller
         ->select('producto_id', 'producto_codigo')
         ->pluck('producto_codigo', 'producto_id');
 
+        $caracteristicasvin = DB::table('caracteristica_vins')
+        ->select('caracteristica_vin_id', 'caracteristica_vin_nombre')
+        ->pluck('caracteristica_vin_nombre', 'caracteristica_vin_id');
+
+        $marca = DB::table('marcas')
+        ->select('marca_id', 'marca_nombre')
+        ->pluck('marca_nombre', 'marca_id');
 
 
-        return view('servicios.index', compact('servicios','marca','divisa','cliente','valor_asociado','producto'));
+
+        return view('servicios.index', compact('servicios','marca','divisa','cliente','valor_asociado','producto','caracteristicasvin'));
     }
 
     /**
@@ -103,8 +111,11 @@ class ServicioController extends Controller
             $servicio->cliente_id = $request->cliente_id;
             $servicio->divisa_id = $request->divisa_id;
             $servicio->marca_id = $request->marca_id;
+            $servicio->caracteristica_vin_id = $request->caracteristica_id;
             $servicio->valor_asociado_id = $request->valor_asociado_id;
             $servicio->servicios_precio = $request->servicio_costo;
+
+
 
             $servicio->save();
 
@@ -165,7 +176,11 @@ class ServicioController extends Controller
         ->select('producto_id', 'producto_codigo')
         ->pluck('producto_codigo', 'producto_id');
 
-        return view('servicios.edit', compact('servicio','marca','divisa','cliente','valor_asociado','producto'));
+        $caracteristicasvin = DB::table('caracteristica_vins')
+        ->select('caracteristica_vin_id', 'caracteristica_vin_nombre')
+        ->pluck('caracteristica_vin_nombre', 'caracteristica_vin_id');
+
+        return view('servicios.edit', compact('caracteristicasvin','servicio','marca','divisa','cliente','valor_asociado','producto'));
 
     }
 
@@ -187,6 +202,7 @@ class ServicioController extends Controller
             $servicio->cliente_id = $request->cliente_id;
             $servicio->divisa_id = $request->divisa_id;
             $servicio->marca_id = $request->marca_id;
+            $servicio->caracteristica_vin_id = $request->caracteristica_id;
             $servicio->valor_asociado_id = $request->valor_asociado_id;
             $servicio->servicios_precio = $request->servicio_costo;
 
