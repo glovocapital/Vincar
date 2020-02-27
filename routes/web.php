@@ -256,8 +256,6 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
     Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
 
-
-
 });
 
 
