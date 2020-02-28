@@ -240,19 +240,18 @@
 <script>
         $(document).ready(function () {
             //Modal Solicitar Campaña
-            setTimeout(function() {
-                $(".btn-campania-modal").on("click",function (e) {
-                    e.preventDefault();
+            
+            $(".btn-campania-modal").on("click",function (e) {
+                e.preventDefault();
 
-                    var vin_id = $(this).val();
-                    var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
+                var vin_id = $(this).val();
+                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
 
-                    $(".vin-id").val(vin_id);
-                    $("#vin_codigo").html("VIN: " + vin_codigo);
+                $(".vin-id").val(vin_id);
+                $("#vin_codigo").html("VIN: " + vin_codigo);
 
-                    $("#solicitudCampaniaModal").modal('show');
-                });
-            },5000);
+                $("#solicitudCampaniaModal").modal('show');
+            });
 
             var checked = false;
 
