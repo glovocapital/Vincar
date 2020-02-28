@@ -48,7 +48,7 @@
                                 <tr>
                                     <td><small>{{ $inspeccion->inspeccion_fecha }}</small></td>
                                     <td><small>{{ $inspeccion->inspeccion_id }}</small></td>
-                                    <td><small>{{ $inspeccion->vin_id }}</small></td>
+                                    <td><small>{{ $inspeccion->oneVin->vin_codigo }}</small></td>
                                     <td><small>{{ $inspeccion->oneResponsable->user_nombre.' '.$inspeccion->oneResponsable->user_apellido }}</small></td>
                                     <td><small>{{ $inspeccion->oneCliente->user_nombre.' '.$inspeccion->oneCliente->user_apellido }}</small></td>
                                     <td><small>{{ $inspeccion->oneVinEstadoInventario() }}</small></td>
