@@ -10,6 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+use Illuminate\Support\Facades\Storage;
+
 Auth::routes();
 
 Route::group(['middleware' => 'guest'], function () {
@@ -82,6 +85,9 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
     Route::get('inspeccion/{id}/delete_dano','InspeccionController@destroyDano')->name('inspeccion.destroy_dano');
     Route::get('inspeccion/obtener_subcategorias_pieza/{id_categoria}', ['as' => 'inspeccion.subcategorias', 'uses' => 'InspeccionController@subcategorias']);
     Route::get('inspeccion/obtener_piezas/{id_subcategoria}', ['as' => 'inspeccion.piezas', 'uses' => 'InspeccionController@piezas']);
+    Route::get('/fotos/{file}', function ($file) {
+    return Storage::response("fotos/$file");
+    });
 
     //Rutas mantenedor patios
     Route::get('patio', 'PatioController@index')->name('patio.index');
