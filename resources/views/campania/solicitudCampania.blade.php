@@ -16,7 +16,7 @@
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                     <label for="vin_numero" >Vin / Patente</label>
-                                    {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VIN', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none']) !!}
+                                    {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VIN', 'id' => 'vin_numero','rows' => 4, 'class'=>"form-control"]) !!}
                             </div>
                         </div>
 
@@ -137,20 +137,20 @@
                                         <td>
 
                                             <small>
-                                                <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-light"  title="Editar"><i class="far fa-edit"></i></a>
+                                                <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
                                             </small>
 
                                             <small>
 
-                                                <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn btn-xs btn-vin btn-warning"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
+                                                <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
 
                                             </small>
 
                                             <small>
-                                                <button type="button" value="{{ $vin->vin_id }}" class="btn-campania-modal btn btn-xs btn-success"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></button>
+                                                <a type="button" value="{{ $vin->vin_id }}" class="btn-campania-modal"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></a>
                                             </small>
                                             <small>
-                                                <button type="button"  class="btn btn-xs btn-info btn-agendar"  title="Agendar Entrega"><i class="far fa-address-book"></i></button>
+                                                <a type="button"  class="btn-agendar"  title="Agendar Entrega"><i class="far fa-address-book"></i></a>
                                             </small>
 
                                         </td>
@@ -240,17 +240,19 @@
 <script>
         $(document).ready(function () {
             //Modal Solicitar Campaña
-            $(".btn-campania-modal").click(function (e) {
-                e.preventDefault();
+            setTimeout(function() {
+                $(".btn-campania-modal").on("click",function (e) {
+                    e.preventDefault();
 
-                var vin_id = $(this).val();
-                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
+                    var vin_id = $(this).val();
+                    var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
 
-                $(".vin-id").val(vin_id);
-                $("#vin_codigo").html("VIN: " + vin_codigo);
+                    $(".vin-id").val(vin_id);
+                    $("#vin_codigo").html("VIN: " + vin_codigo);
 
-                $("#solicitudCampaniaModal").modal('show');
-            });
+                    $("#solicitudCampaniaModal").modal('show');
+                });
+            },5000);
 
             var checked = false;
 
