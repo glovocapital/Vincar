@@ -68,7 +68,7 @@
                                     <td><small>{{ $dano->oneSubArea() }}</small></td>
                                     <td><small>
                                             <div class="thumbnail">
-                                                <img src="{{ $dano->oneFoto->foto_ubic_archivo }}" alt="{{ $dano->oneFoto->foto_ubic_archivo }}">
+                                                <img src="{{ asset($dano->oneFoto->foto_ubic_archivo) }}" alt="{{ $dano->oneFoto->foto_ubic_archivo }}">
                                             </div>
                                         </small>
                                     </td>
