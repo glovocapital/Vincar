@@ -652,7 +652,7 @@ class CampaniaController extends Controller
     {
         try {
 
-            // dd($request);
+
             DB::beginTransaction();
 
             $tarea = new Tarea();
