@@ -136,7 +136,7 @@
     @if(auth()->user()->rol_id == 1)
         <li class="sidebar-item">
             <a href="#KPI" data-toggle="collapse" class="sidebar-link collapsed">
-                i class="align-middle" data-feather="grid"></i> <span class="align-middle">KPI</span>
+                <i class="align-middle" data-feather="grid"></i> <span class="align-middle">KPI</span>
             </a>
             <ul id="KPI" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
 
