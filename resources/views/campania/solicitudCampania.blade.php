@@ -70,7 +70,7 @@
                     </div>
                     <div class="card-body">
                         <div class="tab le-responsive">
-                            <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
+                            <table class="table table-hover" id="dataTableCamp" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
@@ -240,18 +240,20 @@
 <script>
         $(document).ready(function () {
             //Modal Solicitar Campaña
-            
-            $(".btn-campania-modal").on("click",function (e) {
-                e.preventDefault();
 
-                var vin_id = $(this).val();
-                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
+            $("#dataTableCamp tbody").on("click",".btn-campania-modal", function (e) {
+
+                    e.preventDefault();
+
+                    var vin_id = $(this).attr("value");
+                    var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
 
                 $(".vin-id").val(vin_id);
                 $("#vin_codigo").html("VIN: " + vin_codigo);
 
-                $("#solicitudCampaniaModal").modal('show');
-            });
+                    $("#solicitudCampaniaModal").modal('show');
+                });
+
 
             var checked = false;
 
