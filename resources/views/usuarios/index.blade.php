@@ -46,14 +46,14 @@
 
                             <div class="form-group">
                                 <label for="user_telefono" >Teléfono <strong>*</strong></label>
-                                {!! Form::text('user_telefono', null, ['placeholder'=>'Telefono', 'class'=>'form-control col-sm-9']) !!}
+                                {!! Form::text('user_telefono', null, ['placeholder'=>'Telefono', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="user_email" >Email <strong>*</strong></label>
-                                {!! Form::text('user_email', old('email'), ['class'=>'form-control col-sm-9', 'placeholder'=>'Email']) !!}
+                                {!! Form::text('user_email', old('email'), ['class'=>'form-control col-sm-9', 'placeholder'=>'Email', 'required']) !!}
                             </div>
 
                             <div class="form-group">
