@@ -273,7 +273,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Customer']], functio
 
 });
 
-Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico, Administrador']], function () {
+Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,Administrador']], function () {
 
     Route::get('planificacion', 'CampaniaController@index3')->name('planificacion.index');
     Route::get('campania/create','CampaniaController@create')->name('campania.create');
