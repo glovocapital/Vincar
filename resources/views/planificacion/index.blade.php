@@ -81,7 +81,7 @@
                                 <th>Fecha de Ingreso</th>
                                 <th>Cliente</th>
                                 <th>Estado</th>
-                                <th>Patio</th> 
+                                <th>Patio</th>
                                 <th>Bloque</th>
                                 <th>Ubicación</th>
                                 <th>Acciones de VIN</th>
@@ -220,7 +220,7 @@
             <a class="nav-link active" id="tareas-asignadas-tab" data-toggle="tab" href="#tareas-asignadas" role="tab" aria-controls="tareas-asignadas" aria-selected="true">Tareas Asignadas</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="tareas-finalizadas-tab" data-toggle="tab" href="#tareas-finalizadas" role="tab" aria-controls="tareas-finalizadas" aria-selected="false">Tareas Finalizadas</a>				   	
+            <a class="nav-link" id="tareas-finalizadas-tab" data-toggle="tab" href="#tareas-finalizadas" role="tab" aria-controls="tareas-finalizadas" aria-selected="false">Tareas Finalizadas</a>
         </li>
     </ul>
 

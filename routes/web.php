@@ -219,7 +219,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador']], function () {
 
                 /********SUPER ADMINISTRADOR Y OPERADOR LOGISTICO ********/
 
-Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,Customer']], function () {
+Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,Customer,Administrador']], function () {
 
     //Rutas mantenedor vin
     Route::get('vin', 'VinController@index')->name('vin.index');
