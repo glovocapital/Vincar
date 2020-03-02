@@ -202,26 +202,26 @@ class CampaniaController extends Controller
 
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
-                            
+
                             if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
                                 $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                     ->join('patios','bloques.patio_id','=','patios.patio_id')
-                                    ->where('patios.patio_id', $patio_id);                                
+                                    ->where('patios.patio_id', $patio_id);
                             }
                         } else {
                             $vin_estado_id = Vin::where('vin_codigo', $v)
                                 ->orWhere('vin_patente', $v)
                                 ->value('vin_estado_inventario_id');
-                            
+
                             $query->where('vins.vin_estado_inventario_id', $vin_estado_id);
-                            
+
                             if($vin_estado_id == 4 || $vin_estado_id == 5 || $vin_estado_id == 6) {
                                 if($patio_id > 0){
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                         ->join('patios','bloques.patio_id','=','patios.patio_id')
-                                        ->where('patios.patio_id', $patio_id);                                
+                                        ->where('patios.patio_id', $patio_id);
                                 } else {
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
@@ -245,13 +245,13 @@ class CampaniaController extends Controller
 
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
-                            
+
                             if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
                                 if($patio_id > 0){
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                         ->join('patios','bloques.patio_id','=','patios.patio_id')
-                                        ->where('patios.patio_id', $patio_id);                                
+                                        ->where('patios.patio_id', $patio_id);
                                 } else {
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
@@ -277,13 +277,13 @@ class CampaniaController extends Controller
 
                 if($estado_id > 0){
                     $query->where('vins.vin_estado_inventario_id', $estado_id);
-                
+
                     if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
                         if($patio_id > 0){
                             $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                 ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                 ->join('patios','bloques.patio_id','=','patios.patio_id')
-                                ->where('patios.patio_id', $patio_id);                                
+                                ->where('patios.patio_id', $patio_id);
                         } else {
                             $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                             ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
@@ -316,7 +316,7 @@ class CampaniaController extends Controller
             ->where('updated_at',  '>', Carbon::now()->subDays(1)->toDateTimeString())
             ->orderBy('tarea_id')
             ->get();
- 
+
         /** Búsqueda de vins para la cabecera de la vista de planificación */
         $vins = Vin::all();
 
@@ -353,7 +353,7 @@ class CampaniaController extends Controller
 
         /** A partir de aqui las consultas del cuadro de busqueda */
         if($request->has('empresa_id') || $request->has('vin_numero') || $request->has('estadoinventario_id') || $request->has('patio_id') || $request->has('marca_id')){
-        
+
             $estado = DB::table('vin_estado_inventarios')
                 ->where('vin_estado_inventario_id',$request->estadoinventario_id)
                 ->get();
@@ -425,35 +425,35 @@ class CampaniaController extends Controller
                             // $query->where('vin_marca',$marca_nombre);
                             $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
-                        
+
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
-                            
+
                             if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
                                 if($patio_id > 0){
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                         ->join('patios','bloques.patio_id','=','patios.patio_id')
-                                        ->where('patios.patio_id', $patio_id);                                
+                                        ->where('patios.patio_id', $patio_id);
                                 } else {
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                     ->join('patios','bloques.patio_id','=','patios.patio_id');
                                 }
-                            } 
+                            }
                         } else {
                             $vin_estado_id = Vin::where('vin_codigo', $v)
                                 ->orWhere('vin_patente', $v)
                                 ->value('vin_estado_inventario_id');
-                            
+
                             $query->where('vins.vin_estado_inventario_id', $vin_estado_id);
-                            
+
                             if($vin_estado_id == 4 || $vin_estado_id == 5 || $vin_estado_id == 6) {
                                 if($patio_id > 0){
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                         ->join('patios','bloques.patio_id','=','patios.patio_id')
-                                        ->where('patios.patio_id', $patio_id);                                
+                                        ->where('patios.patio_id', $patio_id);
                                 } else {
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
@@ -480,18 +480,18 @@ class CampaniaController extends Controller
 
                         if($estado_id > 0){
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
-                            
+
                             if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
                                 if($patio_id > 0){
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                         ->join('patios','bloques.patio_id','=','patios.patio_id')
-                                        ->where('patios.patio_id', $patio_id);                                
+                                        ->where('patios.patio_id', $patio_id);
                                 } else {
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                     ->join('patios','bloques.patio_id','=','patios.patio_id');
-                                }                                
+                                }
                             }
                         }
 
@@ -515,13 +515,13 @@ class CampaniaController extends Controller
 
                 if($estado_id > 0){
                     $query->where('vins.vin_estado_inventario_id', $estado_id);
-                    
+
                     if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
                         if($patio_id > 0){
                             $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                 ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                 ->join('patios','bloques.patio_id','=','patios.patio_id')
-                                ->where('patios.patio_id', $patio_id);                                
+                                ->where('patios.patio_id', $patio_id);
                         } else {
                             $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                             ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
@@ -735,7 +735,7 @@ class CampaniaController extends Controller
                 $campania->campania_observaciones = $request->campania_observaciones;
                 $campania->vin_id = (int)$request->vin_ids[$vin_id];
                 $campania->user_id = Auth::user()->user_id;
-                
+
                 $campania->save();
 
                 foreach ($request->tipo_campanias as $t_campania_id) {
@@ -754,7 +754,7 @@ class CampaniaController extends Controller
 
         return redirect()->route('campania.index')->with('success', 'Campañas solicitadas con éxito.');;
     }
-    
+
     /**
      * Display the specified resource.
      *
