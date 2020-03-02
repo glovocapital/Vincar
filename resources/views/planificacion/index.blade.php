@@ -18,7 +18,7 @@
                     <div class="col-md-4" id="wrapper_2">
                         <div class="form-group">
                                 <label for="vin_numero" >Vin <strong>*</strong></label>
-                                {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'cols' => 40, 'style' => 'resize:none']) !!}
+                                {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
                         </div>
                     </div>
 
@@ -139,7 +139,7 @@
                                     </small>
 
                                     <small>
-                                        <button value="{{ $vin->vin_id }}" class="btn btn-xs btn-success btn-tarea"  title="Solicitar Tarea"><i class="far fa-lightbulb"></i></button>
+                                        <a value="{{ $vin->vin_id }}" class="btn-tarea"  title="Solicitar Tarea"><i class="far fa-lightbulb"></i></a>
                                     </small>
                                 </td>
                             </tr>
@@ -437,17 +437,21 @@
             });
 
             //Modal Solicitar Tarea
-            $('.btn-tarea').click(function (e) {
-                e.preventDefault();
+            setTimeout(function() {
 
-                var vin_id = $(this).val();
-                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
+                $('.btn-tarea').on("click", function (e) {
+                    e.preventDefault();
 
-                $(".vin-id").val(vin_id);
-                $("#vin_codigo").html("<h4>VIN: " + vin_codigo + "</h4>");
+                    var vin_id = $(this).val();
+                    var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
 
-                $("#asignarTareaModal").modal('show');
-            });
+                    $(".vin-id").val(vin_id);
+                    $("#vin_codigo").html("<h4>VIN: " + vin_codigo + "</h4>");
+
+                    $("#asignarTareaModal").modal('show');
+                });
+
+            },5000);
         });
     </script>
 @endsection

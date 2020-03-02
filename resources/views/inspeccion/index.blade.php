@@ -74,7 +74,7 @@
                                     </td>
                                     <td>
                                         <small>
-                                            <a href="{{ route('inspeccion.create_dano', Crypt::encrypt($dano->dano_pieza_id)) }}" class="btn-dano"  title="Añadir Daño"><i class="far fa-plus-square"></i></a>
+                                            <a href="{{ route('inspeccion.create_dano', Crypt::encrypt($inspeccion->inspeccion_id)) }}" class="btn-dano"  title="Añadir Daño a la inspección"><i class="far fa-plus-square"></i></a>
                                         </small>
                                         <small>
                                             <a href="{{ route('inspeccion.edit_dano', Crypt::encrypt($dano->dano_pieza_id)) }}" class="btn-dano"  title="Editar"><i class="far fa-edit"></i></a>
