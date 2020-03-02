@@ -13,6 +13,8 @@
           <i class="align-middle" data-feather="home"></i> <span class="align-middle">{{ trans('menu.Inicio') }}</span>
         </a>
       </li>
+
+    @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2)
       <li class="sidebar-item">
         <a href="#Administrador" data-toggle="collapse" class="sidebar-link">
           <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">{{trans('menu.Administrador')}}</span>
@@ -35,6 +37,10 @@
           <li class="sidebar-item @if(request()->route()->getName()=='patio.index') active @endif"><a class="sidebar-link" href="{{ route('patio.index') }}">{{trans('menu.Patios_Posiciones')}}</a></li>
         </ul>
       </li>
+    @endif
+
+    @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 3 || auth()->user()->rol_id == 4)
+
       <li class="sidebar-item">
         <a href="#Vins" data-toggle="collapse" class="sidebar-link collapsed">
           <i class="align-middle" data-feather="layout"></i> <span class="align-middle">Vins</span>
@@ -43,102 +49,113 @@
           <li class="sidebar-item @if(request()->route()->getName()=='patio.vins_patio') active @endif"><a class="sidebar-link" href="{{ route('patio.vins_patio') }}">{{trans('menu.Patios')}}</a></li>
           <li class="sidebar-item @if(request()->route()->getName()=='vin.index') active @endif"><a class="sidebar-link" href="{{ route('vin.index') }}">{{trans('menu.Vins')}}</a></li>
 
+          @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 3)
           <li class="sidebar-item">
             <a href="#projects" data-toggle="collapse" class="sidebar-link collapsed">
               {{trans('menu.Planificacion')}}
             </a>
             <ul id="projects" class="sidebar-dropdown list-unstyled collapse">
-              <li class="sidebar-item @if(request()->route()->getName()=='planificacion.index') active @endif">
-                <a class="sidebar-link " href="{{ route('planificacion.index') }}">Tareas</a>
-              </li>
-              <li class="sidebar-item @if(request()->route()->getName()=='solicitud_campania.index') active @endif">
-                <a class="sidebar-link" href="{{ route('solicitud_campania.index') }}">Campañas</a>
-              </li>
-
+                <li class="sidebar-item @if(request()->route()->getName()=='planificacion.index') active @endif">
+                    <a class="sidebar-link " href="{{ route('planificacion.index') }}">Tareas</a>
+                </li>
             </ul>
           </li>
+          @endif
 
         </ul>
       </li>
+      @endif
+
       <li class="sidebar-item">
         <a href="#Servicio" data-toggle="collapse" class="sidebar-link collapsed">
           <i class="align-middle" data-feather="users"></i> <span class="align-middle">{{trans('menu.Solicitud_Servicio')}}</span>
         </a>
         <ul id="Servicio" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
-          <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Solicitud_Campanas')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Rutas_entrega')}}</a></li>
 
+            @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 4)
+                <li class="sidebar-item @if(request()->route()->getName()=='solicitud_campania.index') active @endif">
+                    <a class="sidebar-link" href="{{ route('solicitud_campania.index') }}">Campañas</a>
+                </li>
+            @endif
+            @if(auth()->user()->rol_id == 1)
+                <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Rutas_entrega')}}</a></li>
+            @endif
         </ul>
       </li>
-      <li class="sidebar-item">
-        <a href="#Transporte" data-toggle="collapse" class="sidebar-link collapsed">
-          <i class="align-middle" data-feather="truck"></i> <span class="align-middle">{{trans('menu.Transporte')}}</span>
-        </a>
-        <ul id="Transporte" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
-          <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Generar_Guia')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Asignacion_Ruta')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Administracion_Ruta')}}</a></li>
-          <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Disponibilidad')}}</a></li>
-            </ul>
-      </li>
-      <li class="sidebar-item">
-        <a href="#Facturacion" data-toggle="collapse" class="sidebar-link collapsed">
-          <i class="align-middle" data-feather="book-open"></i> <span class="align-middle">{{trans('menu.Facturacion')}}</span>
-        </a>
-        <ul id="Facturacion" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
-          <li class="sidebar-item">
-            <a href="#Ventas" data-toggle="collapse" class="sidebar-link collapsed">
-              {{trans('menu.Ventas')}}
+
+      @if(auth()->user()->rol_id == 1)
+        <li class="sidebar-item">
+            <a href="#Transporte" data-toggle="collapse" class="sidebar-link collapsed">
+            <i class="align-middle" data-feather="truck"></i> <span class="align-middle">{{trans('menu.Transporte')}}</span>
             </a>
-            <ul id="Ventas" class="sidebar-dropdown list-unstyled collapse">
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="">{{trans('menu.Ventas_Electronicas')}}</a>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="">{{trans('menu.Notificaciones_SII')}} </a>
-              </li>
-            </ul>
-          </li>
+            <ul id="Transporte" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
+            <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Generar_Guia')}}</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Asignacion_Ruta')}}</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Administracion_Ruta')}}</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Disponibilidad')}}</a></li>
+                </ul>
+        </li>
+    @endif
 
-          <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Compras')}}</a></li>
-
-          <li class="sidebar-item">
-            <a href="#Guía" data-toggle="collapse" class="sidebar-link collapsed">
-              {{trans('menu.Guia_Despacho_SII')}}
+    @if(auth()->user()->rol_id == 1)
+        <li class="sidebar-item">
+            <a href="#Facturacion" data-toggle="collapse" class="sidebar-link collapsed">
+                <i class="align-middle" data-feather="book-open"></i> <span class="align-middle">{{trans('menu.Facturacion')}}</span>
             </a>
-            <ul id="Guía" class="sidebar-dropdown list-unstyled collapse">
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="">{{trans('menu.Nuevo_Guia_Despacho')}}</a>
-              </li>
+            <ul id="Facturacion" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="#Ventas" data-toggle="collapse" class="sidebar-link collapsed">
+                        {{trans('menu.Ventas')}}
+                    </a>
+                    <ul id="Ventas" class="sidebar-dropdown list-unstyled collapse">
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="">{{trans('menu.Ventas_Electronicas')}}</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="">{{trans('menu.Notificaciones_SII')}} </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Compras')}}</a></li>
+                <li class="sidebar-item">
+                    <a href="#Guía" data-toggle="collapse" class="sidebar-link collapsed">
+                        {{trans('menu.Guia_Despacho_SII')}}
+                    </a>
+                    <ul id="Guía" class="sidebar-dropdown list-unstyled collapse">
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="">{{trans('menu.Nuevo_Guia_Despacho')}}</a>
+                        </li>
+
+                    </ul>
+                </li>
+                <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Configuracion_Facturacion')}}</a></li>
+            </ul>
+        </li>
+    @endif
+
+    @if(auth()->user()->rol_id == 1)
+        <li class="sidebar-item">
+            <a href="#KPI" data-toggle="collapse" class="sidebar-link collapsed">
+                i class="align-middle" data-feather="grid"></i> <span class="align-middle">KPI</span>
+            </a>
+            <ul id="KPI" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
 
             </ul>
-          </li>
+        </li>
+    @endif
 
-          <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Configuracion_Facturacion')}}</a></li>
-        </ul>
-      </li>
+    @if(auth()->user()->rol_id == 1)
+        <li class="sidebar-item">
+            <a href="#Estadisticas" data-toggle="collapse" class="sidebar-link collapsed">
+                <i class="align-middle" data-feather="bar-chart"></i> <span class="align-middle">{{trans('menu.Estadisticas')}}</span>
+            </a>
+            <ul id="Estadisticas" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
 
+            </ul>
+        </li>
+     @endif
 
-      <li class="sidebar-item">
-        <a href="#KPI" data-toggle="collapse" class="sidebar-link collapsed">
-          <i class="align-middle" data-feather="grid"></i> <span class="align-middle">KPI</span>
-        </a>
-        <ul id="KPI" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
-
-        </ul>
-      </li>
-      <li class="sidebar-item">
-        <a href="#Estadisticas" data-toggle="collapse" class="sidebar-link collapsed">
-          <i class="align-middle" data-feather="bar-chart"></i> <span class="align-middle">{{trans('menu.Estadisticas')}}</span>
-        </a>
-
-
-          <ul id="Estadisticas" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
-
-          </ul>
-
-      </li>
+    <!-- FIN DE MENU-->
     </ul>
-
   </div>
 </nav>
