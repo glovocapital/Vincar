@@ -68,7 +68,7 @@
 
       <li class="sidebar-item">
         <a href="#DanoFaltante" data-toggle="collapse" class="sidebar-link collapsed">
-          <i class="align-middle" data-feather="clipboard"></i> <span class="align-middle">{{trans('menu.Dano_Faltante')}}</span>
+          <i class="align-middle" data-feather="alert-triangle"></i> <span class="align-middle">{{trans('menu.Dano_Faltante')}}</span>
         </a>
         <ul id="DanoFaltante" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
 
