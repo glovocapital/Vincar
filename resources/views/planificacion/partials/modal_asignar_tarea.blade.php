@@ -26,12 +26,14 @@
                         <div class="form-group">
                             <label for="tipo_campanias" >Campañas Seleccionadas <strong>*</strong></label>
                             <select name="tipo_campanias" id="tipo_campanias" multiple disabled class="form-control col-sm-12 select-tipo-campanias">
+                            @if(count($arrayTCampanias) > 0)
                             @foreach($arrayTCampanias as $key => $tCamp)
                                 <option value="" selected>{{ $tCamp[$key]->tipo_campania_descripcion }}</option>
                             @endforeach
+                            @endif
                             </select>
                         </div>
-
+                        
                         <label for="tarea_fecha_finalizacion">Fecha de finalización de tareas solicitadas</label>
                         <div class="input-group">
                             <input type="date" id="tarea_fecha_finalizacion" class="form-control"  name="tarea_fecha_finalizacion" required/><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
@@ -48,12 +50,12 @@
                             <label for="tipo_tarea_id" >Tarea <strong>*</strong></label>
                             {!! Form::select('tipo_tarea_id', $tipo_tareas_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-tarea']) !!}
                         </div>
-
+                        
                         <div class="form-group">
                             <label for="tipo_destino_id" >Destino <strong>*</strong></label>
                             {!! Form::select('tipo_destino_id', $tipo_destinos_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-destino']) !!}
                         </div>
-
+                        
                         <div class="form-group">
                             <label for="tarea_hora_termino" >Hora de Término <strong>*</strong></label>
                             {{ Form::time('tarea_hora_termino', null, ['class'=>'form-control col-sm-12 select-tipo-destino']) }}
