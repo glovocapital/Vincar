@@ -27,9 +27,13 @@
                         <div class="form-group">
                             <label for="tipo_campanias" >Campañas Seleccionadas <strong>*</strong></label>
                             <select name="tipo_campanias" id="tipo_campanias_lotes" multiple disabled class="form-control col-sm-12 select-tipo-campanias">
-                            @foreach($arrayTCampanias as $key => $tCamp)
-                                <option value="" selected>{{ $tCamp[$key]->tipo_campania_descripcion }}</option>
-                            @endforeach
+                            @if(count($arrayTCampanias) > 0)
+                                @foreach($arrayTCampanias as $tCamp)
+                                    @foreach($tCamp as $camp)
+                                    <option value="" selected>{{ $camp->tipo_campania_descripcion }}</option>
+                                    @endforeach
+                                @endforeach
+                            @endif
                             </select>
                         </div>
                         
