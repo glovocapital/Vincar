@@ -28,7 +28,7 @@
           <li class="sidebar-item @if(request()->route()->getName()=='conductores.index') active @endif"><a class="sidebar-link" href="{{ route('conductores.index') }}">{{trans('menu.Conductores')}}</a></li>
           <li class="sidebar-item @if(request()->route()->getName()=='destinos.index') active @endif"><a class="sidebar-link" href="{{ route('destinos.index') }}">{{trans('menu.Destinos')}}</a></li>
           <li class="sidebar-item @if(request()->route()->getName()=='pais.index') active @endif"><a class="sidebar-link" href="{{ route('pais.index') }}">{{trans('menu.Paises')}}</a></li>
-          <li class="sidebar-item @if(request()->route()->getName()=='inspeccion.index') active @endif"><a class="sidebar-link" href="{{ route('inspeccion.index') }}">{{trans('menu.Dano_Faltante')}}</a></li>
+
           <li class="sidebar-item @if(request()->route()->getName()=='marcas.index') active @endif"><a class="sidebar-link" href="{{ route('marcas.index') }}">{{trans('menu.Marca')}}</a></li>
           <li class="sidebar-item @if(request()->route()->getName()=='modelos.index') active @endif"><a class="sidebar-link" href="{{ route('modelos.index') }}">{{trans('menu.Modelos')}}</a></li>
           <li class="sidebar-item @if(request()->route()->getName()=='proveedor.index') active @endif"><a class="sidebar-link" href="{{ route('proveedor.index') }}">{{trans('menu.Proveedor')}}</a></li>
@@ -65,6 +65,21 @@
         </ul>
       </li>
       @endif
+
+      <li class="sidebar-item">
+        <a href="#DanoFaltante" data-toggle="collapse" class="sidebar-link collapsed">
+          <i class="align-middle" data-feather="clipboard"></i> <span class="align-middle">{{trans('menu.Dano_Faltante')}}</span>
+        </a>
+        <ul id="DanoFaltante" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
+
+            @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3)
+                <li class="sidebar-item @if(request()->route()->getName()=='inspeccion.index') active @endif"><a class="sidebar-link" href="{{ route('inspeccion.index') }}">{{trans('menu.Dano_Faltante')}}</a></li>
+
+                </li>
+            @endif
+
+        </ul>
+      </li>
 
       <li class="sidebar-item">
         <a href="#Servicio" data-toggle="collapse" class="sidebar-link collapsed">
