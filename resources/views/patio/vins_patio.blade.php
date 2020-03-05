@@ -383,6 +383,8 @@
                             success: function(res) {
                             console.log(res);
 
+                            mostrarEstadistica(res.dashboard);
+
                             $("#Loading_1").hide();
 
                             res.bloques.forEach(function(datos) {
@@ -552,104 +554,114 @@
                 type: 'GET',
                 dataType: 'json', // added data type
                 success: function(res) {
-                    console.log(res);
 
-                    $("#Capacidad_Total").text(res.Capacidad_Total);
-                    $("#Espacios_Disponibles").text(res.Espacios_Disponibles);
-
-                    config_1.data.labels=[];
-                    config_1.data.datasets.forEach(function(dataset) {
-                        dataset.data=[];
-                        dataset.backgroundColor=[];
-                    });
-
-                    res.Porc_vehiculo.forEach(function(datos) {
-
-                    config_1.data.labels.push(datos.Patio);
-
-                            config_1.data.datasets.forEach(function(dataset) {
-                             					dataset.data.push(datos.Data);
-                             					dataset.backgroundColor.push(datos.backgroundColor);
-                             });
-
-
-                    });
-
-                    window.chart_1.update();
-
-                    config_2.data.labels=[];
-                    config_2.data.datasets.forEach(function(dataset) {
-                        dataset.data=[];
-                        dataset.backgroundColor=[];
-                    });
-
-                    res.Capacidad.forEach(function(datos) {
-
-                    config_2.data.labels.push(datos.Patio);
-
-                            config_2.data.datasets.forEach(function(dataset) {
-                             					dataset.data.push(datos.Data);
-                             					dataset.backgroundColor.push(datos.backgroundColor);
-                             });
-
-                    });
-
-                    window.chart_2.update();
-
-                    ht_=0;
-                    ht_1=0;
-
-                    config_3.data.labels=[];
-                    config_3.data.datasets.forEach(function(dataset) {
-                        dataset.data=[];
-                        dataset.backgroundColor=[];
-                    });
-
-                    res.Vehiculos_30dias.forEach(function(datos) {
-
-                    config_3.data.labels.push(datos.Vehiculos);
-
-                            config_3.data.datasets.forEach(function(dataset) {
-                                if(ht_1==0) ht_1 = datos.Data; ht_=ht_+datos.Data;
-                             					dataset.data.push(datos.Data);
-                             					dataset.backgroundColor.push(datos.backgroundColor);
-                             });
-
-                    });
-
-                    window.chart_3.update();
-
-                    $("#Vehiculos_30dias").text(Math.round(ht_1*100/ht_)+"%");
-
-                    ht_=0;
-                    ht_1=0;
-
-                    config_4.data.labels=[];
-                    config_4.data.datasets.forEach(function(dataset) {
-                        dataset.data=[];
-                        dataset.backgroundColor=[];
-                    });
-
-                    res.Vehiculos_danos.forEach(function(datos) {
-
-                    config_4.data.labels.push(datos.Vehiculos);
-
-                            config_4.data.datasets.forEach(function(dataset) {
-                                if(ht_1==0) ht_1 = datos.Data; ht_=ht_+datos.Data;
-                             					dataset.data.push(datos.Data);
-                             					dataset.backgroundColor.push(datos.backgroundColor);
-                             });
-
-                    });
-
-                    window.chart_4.update();
-
-                    $("#Vehiculos_danos").text(Math.round(ht_1*100/ht_)+"%");
-
+                    mostrarEstadistica(res);
 
 
                 }
             });
+
+            function mostrarEstadistica(res){
+            console.log(res);
+
+                                $("#Capacidad_Total").text(res.Capacidad_Total);
+                                $("#Espacios_Disponibles").text(res.Espacios_Disponibles);
+
+                                config_1.data.labels=[];
+                                config_1.data.datasets.forEach(function(dataset) {
+                                    dataset.data=[];
+                                    dataset.backgroundColor=[];
+                                });
+
+                                res.Porc_vehiculo.forEach(function(datos) {
+
+                                config_1.data.labels.push(datos.Patio);
+
+                                        config_1.data.datasets.forEach(function(dataset) {
+                                         					dataset.data.push(datos.Data);
+                                         					dataset.backgroundColor.push(datos.backgroundColor);
+                                         });
+
+
+                                });
+
+                                window.chart_1.update();
+
+                                config_2.data.labels=[];
+                                config_2.data.datasets.forEach(function(dataset) {
+                                    dataset.data=[];
+                                    dataset.backgroundColor=[];
+                                });
+
+                                res.Capacidad.forEach(function(datos) {
+
+                                config_2.data.labels.push(datos.Patio);
+
+                                        config_2.data.datasets.forEach(function(dataset) {
+                                         					dataset.data.push(datos.Data);
+                                         					dataset.backgroundColor.push(datos.backgroundColor);
+                                         });
+
+                                });
+
+                                window.chart_2.update();
+
+                                ht_=0;
+                                ht_1=0;
+
+                                config_3.data.labels=[];
+                                config_3.data.datasets.forEach(function(dataset) {
+                                    dataset.data=[];
+                                    dataset.backgroundColor=[];
+                                });
+
+                                res.Vehiculos_30dias.forEach(function(datos) {
+
+                                config_3.data.labels.push(datos.Vehiculos);
+
+                                        config_3.data.datasets.forEach(function(dataset) {
+                                            if(ht_1==0) ht_1 = datos.Data; ht_=ht_+datos.Data;
+                                         					dataset.data.push(datos.Data);
+                                         					dataset.backgroundColor.push(datos.backgroundColor);
+                                         });
+
+                                });
+
+                                window.chart_3.update();
+
+                                if(ht_>0)
+                                $("#Vehiculos_30dias").text(Math.round(ht_1*100/ht_)+"%");
+                                else
+                                $("#Vehiculos_30dias").text("0%");
+
+                                ht_=0;
+                                ht_1=0;
+
+                                config_4.data.labels=[];
+                                config_4.data.datasets.forEach(function(dataset) {
+                                    dataset.data=[];
+                                    dataset.backgroundColor=[];
+                                });
+
+                                res.Vehiculos_danos.forEach(function(datos) {
+
+                                config_4.data.labels.push(datos.Vehiculos);
+
+                                        config_4.data.datasets.forEach(function(dataset) {
+                                            if(ht_1==0) ht_1 = datos.Data; ht_=ht_+datos.Data;
+                                         					dataset.data.push(datos.Data);
+                                         					dataset.backgroundColor.push(datos.backgroundColor);
+                                         });
+
+                                });
+
+                                window.chart_4.update();
+
+                                if(ht_>0)
+                                $("#Vehiculos_danos").text(Math.round(ht_1*100/ht_)+"%");
+                                 else
+                                 $("#Vehiculos_danos").text("0%");
+            }
 
 
 
