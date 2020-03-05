@@ -231,41 +231,72 @@ class PatioController extends Controller
         return "rgb(". implode(",",$rgbColor).")";
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
+        $patio = (isset($request->id_patio))?intval($request->id_patio):0;
+
+
         $capacidad = DB::table('patios')
             ->join('bloques','patios.patio_id','bloques.patio_id')
-            ->select('patio_nombre','bloque_nombre','bloque_filas','bloque_columnas')
-            ->get();
+            ->select('patio_nombre','bloque_nombre','bloque_filas','bloque_columnas', 'patios.patio_id as patio_id');
+        if($patio>0)
+            $capacidad->where("patios.patio_id","=",$patio);
+        $capacidad=$capacidad->get();
 
         $vehiculos_patio = DB::table('patios')
             ->join('bloques','patios.patio_id','bloques.patio_id')
             ->join('ubic_patios','ubic_patios.bloque_id','bloques.bloque_id')
             ->select(DB::raw("count(patio_nombre) AS can_vin"), "patio_nombre")
             ->where('ubic_patio_ocupada',true)
-            ->groupBy('patio_nombre')
-            ->get();
+            ->groupBy('patio_nombre');
+
+        if($patio>0)
+            $vehiculos_patio->where('patios.patio_id',"=",$patio);
+
+        $vehiculos_patio = $vehiculos_patio->get();
 
         $vehiculos30 = DB::table('vins')
             ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
-            ->select(DB::raw("count(vin_id) AS can_vin"))
+            ->select(DB::raw("count(vins.vin_id) AS can_vin"))
             ->where('vins.vin_estado_inventario_id','<>',1)
             ->where('vins.vin_estado_inventario_id','<>',8)
-            ->where('vin_fec_ingreso','<',date('Y-m-d',strtotime( '-30 day' , strtotime ( date('Y-m-d') ) )))
-            ->get();
+            ->where('vin_fec_ingreso','<',date('Y-m-d',strtotime( '-30 day' , strtotime ( date('Y-m-d') ) )));
+
+        if($patio>0){
+          $vehiculos30->join('ubic_patios','ubic_patios.vin_id','vins.vin_id');
+          $vehiculos30->join('bloques','bloques.bloque_id','ubic_patios.bloque_id');
+          $vehiculos30->where('bloques.patio_id',"=",$patio);
+
+        }
+
+        $vehiculos30 = $vehiculos30->get();
 
         $vehiculosTotal = DB::table('vins')
             ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
-            ->select(DB::raw("count(vin_id) AS can_vin"))
+            ->select(DB::raw("count(vins.vin_id) AS can_vin"))
             ->where('vins.vin_estado_inventario_id','<>',1)
-            ->where('vins.vin_estado_inventario_id','<>',8)
-            ->get();
+            ->where('vins.vin_estado_inventario_id','<>',8);
+
+        if($patio>0){
+            $vehiculosTotal->join('ubic_patios','ubic_patios.vin_id','vins.vin_id');
+            $vehiculosTotal->join('bloques','bloques.bloque_id','ubic_patios.bloque_id');
+            $vehiculosTotal->where('bloques.patio_id',"=",$patio);
+
+        }
+        $vehiculosTotal = $vehiculosTotal->get();
 
         $Unidades_Danadas = DB::table('vins')
-            ->select(DB::raw("count(vin_id) AS can_vin"))
+            ->select(DB::raw("count(vins.vin_id) AS can_vin"))
             ->where('vin_estado_inventario_id',"=",6)
-            ->where('vin_estado_inventario_id',"=",7)
-            ->get();
+            ->where('vin_estado_inventario_id',"=",7);
+
+        if($patio>0){
+            $Unidades_Danadas->join('ubic_patios','ubic_patios.vin_id','vins.vin_id');
+            $Unidades_Danadas->join('bloques','bloques.bloque_id','ubic_patios.bloque_id');
+            $Unidades_Danadas->where('bloques.patio_id',"=",$patio);
+        }
+
+        $Unidades_Danadas = $Unidades_Danadas->get();
 
         $colores = Array("#f79663","#feca7a","#16d8d8","#ff005c","#dee4e4","#ff0000","#26dbdb");
 
@@ -274,29 +305,6 @@ class PatioController extends Controller
 
         $Porc_vehiculo=Array();
         $Capacidad=Array();
-
-        $ip=0;
-        foreach ($capacidad as $cap){
-
-            if($ip>=count($colores)) $colores[$ip] = self::ColorRamdom();
-
-            if(array_key_exists($cap->patio_nombre,$Capacidad))
-                $Capacidad[$cap->patio_nombre]["Data"]+=($cap->bloque_filas * $cap->bloque_columnas);
-            else {
-                $Capacidad[$cap->patio_nombre] = Array("Patio" => $cap->patio_nombre, "Data" => ($cap->bloque_filas * $cap->bloque_columnas), "backgroundColor" => $colores[$ip]);
-                $ip++;
-            }
-
-            $Capacidad_Total +=($cap->bloque_filas * $cap->bloque_columnas);
-        }
-
-        $Porc_vehiculos=Array();
-        $Capacidads=Array();
-        foreach ($Capacidad as $Capac){
-            $Capacidads[] = $Capac;
-
-
-        }
 
         $ip=0; $Vehiculos_Total_enpatio=0;
         foreach ($vehiculos_patio as $vh_pat){
@@ -309,12 +317,44 @@ class PatioController extends Controller
             $Vehiculos_Total_enpatio +=$vh_pat->can_vin;
         }
 
+        $ip=0;
+        foreach ($capacidad as $cap){
+
+
+                if ($ip >= count($colores)) $colores[$ip] = self::ColorRamdom();
+
+                if (array_key_exists($cap->patio_nombre, $Capacidad))
+                    $Capacidad[$cap->patio_nombre]["Data"] += ($cap->bloque_filas * $cap->bloque_columnas);
+                else {
+                    $Capacidad[$cap->patio_nombre] = Array("Patio" => $cap->patio_nombre, "Data" => ($cap->bloque_filas * $cap->bloque_columnas), "backgroundColor" => $colores[$ip]);
+                    $ip++;
+                }
+
+                $Capacidad_Total += ($cap->bloque_filas * $cap->bloque_columnas);
+
+        }
+
         $Espacios_Disponibles = $Capacidad_Total - $Vehiculos_Total_enpatio;
+
+        if($patio>0){
+            $Capacidad["Ocupado"] = Array("Patio" => "Ocupado", "Data" => $Vehiculos_Total_enpatio, "backgroundColor" => $colores[$ip]);
+            $ip++;
+            $Porc_vehiculo[] = Array("Patio" => "Total", "Data" => $Capacidad_Total, "backgroundColor" => $colores[$ip]);
+
+        }
+
+        $Porc_vehiculos=Array();
+        $Capacidads=Array();
+        foreach ($Capacidad as $Capac){
+            $Capacidads[] = $Capac;
+
+        }
 
 
 
 
         $datos = Array(
+
             'Capacidad_Total'=>$Capacidad_Total,
             'Espacios_Disponibles'=>$Espacios_Disponibles,
             'Porc_vehiculo'=>$Porc_vehiculo,
@@ -329,7 +369,7 @@ class PatioController extends Controller
             )
 
         );
-        return json_encode($datos);
+        return response()->json($datos);
     }
 
     public function bloques(Request $request){
@@ -343,10 +383,15 @@ class PatioController extends Controller
                 ->orderBy('bloque_nombre')
                 ->get();
 
+            $request->id_patio=$id_patio;
+            $dashboard_ =self::dashboard($request);
+            $dashboard = json_decode($dashboard_->content(),true);
+
 
             return response()->json([
                 'success' => true,
                 'bloques' => $bloques,
+                'dashboard'=>$dashboard
             ]);
         }
     }
