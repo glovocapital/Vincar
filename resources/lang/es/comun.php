@@ -27,7 +27,13 @@ return [
     'Gestionados'=>'Gestionados',
     'Rechazados'=>'Rechazados',
 
-    'Ruta_dia'=>'Ruta del Día'
+    'Ruta_dia'=>'Ruta del Día',
+
+    'Picking'=>'Picking',
+    'Limpieza'=>'Limpieza',
+    'Inspeccion'=>'Inspección',
+    'Campana'=>'Campaña',
+    'Parking'=>'Parking'
 
 
 ];
