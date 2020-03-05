@@ -128,8 +128,8 @@
                                 <tbody>
                                 <tr>
                                     <td class="text-center">
-                                        <img style="max-width:70%"  src="{{asset('base/img/svg/homework.svg')}}" class="img-fluid" />
-                                        {{trans('comun.Tareas')}}
+                                        <img style="max-width:70%"  src="{{asset('base/img/svg/dyp.svg')}}" class="img-fluid" />
+                                        {{trans('comun.Picking')}}
                                     </td>
                                     <td style='width: 90%' class="text-right">
                                         <div style=" position: relative;">
@@ -147,8 +147,8 @@
 
                                 <tr>
                                     <td class="text-center">
-                                        <img style="max-width:70%"  src="{{asset('base/img/svg/dyp.svg')}}" class="img-fluid" />
-                                        {{trans('DyP')}}
+                                        <img style="max-width:70%"  src="{{asset('base/img/svg/car-wash.svg')}}" class="img-fluid" />
+                                        {{trans('comun.Limpieza')}}
                                     </td>
                                     <td style='width: 90%' class="text-right">
                                         <div style=" position: relative;">
@@ -166,8 +166,8 @@
 
                                 <tr>
                                     <td class="text-center">
-                                        <img style="max-width:70%"  src="{{asset('base/img/svg/car-wash.svg')}}" class="img-fluid" />
-                                        {{trans('comun.Lavados')}}
+                                        <img style="max-width:70%"  src="{{asset('base/img/svg/picking.svg')}}" class="img-fluid" />
+                                        {{trans('comun.Inspeccion')}}
                                     </td>
                                     <td style='width: 90%' class="text-right">
                                         <div style=" position: relative;">
@@ -185,8 +185,8 @@
 
                                 <tr>
                                     <td class="text-center">
-                                        <img style="max-width:70%" src="{{asset('base/img/svg/picking.svg')}}" class="img-fluid" />
-                                        {{trans('comun.Carga')}}
+                                        <img style="max-width:70%" src="{{asset('base/img/svg/car.svg')}}" class="img-fluid" />
+                                        {{trans('comun.Parking')}}
                                     </td>
                                     <td style='width: 90%' class="text-right">
                                         <div style=" position: relative;">
