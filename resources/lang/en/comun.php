@@ -29,7 +29,7 @@ return [
 
     'Ruta_dia'=>'Route of the Day',
 
-    'Picking'=>'Picking'
+    'Picking'=>'Picking',
     'Limpieza'=>'Cleaning',
     'Inspeccion'=>'Inspection',
     'Campana'=>'campaign',
