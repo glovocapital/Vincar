@@ -12,6 +12,7 @@ use App\Inspeccion;
 use App\DanoPieza;
 use App\Tarea;
 use App\Foto;
+use App\Empresa;
 use App\Thumbnail;
 
 
@@ -307,7 +308,7 @@ class ApiController extends Controller
 
                 $vin[0]->activo = true;
 
-             //  if($vin[0]->estado=="Arribado")  $vin[0]->activo = false;
+              if($vin[0]->estado=="Arribado")  $vin[0]->activo = false;
 
                 $usersf = Array("Err"=>0,"items"=>$vin[0], "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
             }else{
@@ -331,13 +332,17 @@ class ApiController extends Controller
             $Tareas->tarea_finalizada = true;
             $Tareas->update();
 
+            $Vin =DB::table('vins')->select('*')->where('vin_id','=',$Tareas->vin_id)->get();
+
+            $vins=$Vin[0]->vin_codigo;
+
             $request->user_id = $Tarea->user_id;
 
             $itemlist =self::Lists($request);
 
-          $itemlistData = json_decode($itemlist->content(),true);
+            $itemlistData = json_decode($itemlist->content(),true);
 
-            $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['listData']);
+            $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['listData'], "vins"=>$vins);
 
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Tarea obligatorio");
@@ -382,7 +387,7 @@ class ApiController extends Controller
     public function CargaInicialInspeccionar(Request $request, $vins_codigo){
         $this->cors();
 
-        $Vin =DB::table('vins')->select('vins.*');
+        $Vin =DB::table('vins')->join('users','users.user_id','vins.user_id')->select('vins.*','empresa_id');
 
         if(strlen($vins_codigo)==6){
             $Vin->where('vins.vin_codigo', 'like', '%'.$vins_codigo);
@@ -435,9 +440,16 @@ class ApiController extends Controller
                 ->pluck('user_nombres', 'user_id')
                 ->all();
 
+            $empresa = Empresa::select(DB::raw("CONCAT(empresa_razon_social,' ') AS empresa"), 'empresa_id')
+                ->orderBy('empresa_id')
+                ->pluck('empresa', 'empresa_id')
+                ->all();
+
+            $inspecciones->cliente = $empresa[$Vin->empresa_id];
+
             if($inspecciones) {
                 $inspecciones->responsable = $users[$inspecciones->responsable_id];
-                $inspecciones->cliente = $users[$inspecciones->cliente_id];
+
                 $inspecciones->inspeccion_fecha = date('d/m/Y', strtotime($inspecciones->inspeccion_fecha));
             }else{
                 $inspecciones = Array();
