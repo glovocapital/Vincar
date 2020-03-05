@@ -27,5 +27,11 @@ return [
     'Gestionados'=>'Managed',
     'Rechazados'=>'Rejected',
 
-    'Ruta_dia'=>'Route of the Day'
+    'Ruta_dia'=>'Route of the Day',
+
+    'Picking'=>'Picking'
+    'Limpieza'=>'Cleaning',
+    'Inspeccion'=>'Inspection',
+    'Campana'=>'campaign',
+    'Parking'=>'Parking'
 ];
