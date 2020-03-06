@@ -43,7 +43,7 @@
                             </div>
                                 {!! Form::close() !!}
                             <div class="text  pb-3">
-                                Hay [2] vehiculos sin ingresar
+                                
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                             </div>
                                 {!! Form::close() !!}
                             <div class="text  pb-3">
-                                Hay [2] vehiculos sin ingresar
+                                
                             </div>
                         </div>
                     </div>
