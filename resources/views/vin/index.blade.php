@@ -61,9 +61,14 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                            {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST']) !!}
                             <div class="text pb-3">
+                            @if(count($tabla_vins) > 0)
+                                {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b'] )  }}
+                                <input type="hidden" name="resultado_busqueda" value="{{json_encode($tabla_vins)}}" id="resultado_busqueda_vins" />
+                            @else
                                 {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
+                            @endif
                             </div>
                                 {!! Form::close() !!}
                             <div class="text  pb-3">
@@ -114,9 +119,14 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                            {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST']) !!}
                             <div class="text pb-3">
+                            @if(count($tabla_vins) > 0)
+                                {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b'] )  }}
+                                <input type="hidden" name="resultado_busqueda" value="{{json_encode($tabla_vins)}}" id="resultado_busqueda_vins" />
+                            @else
                                 {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
+                            @endif
                             </div>
                                 {!! Form::close() !!}
                             <div class="text  pb-3">
@@ -167,9 +177,14 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                            {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST']) !!}
                             <div class="text pb-3">
+                            @if(count($tabla_vins) > 0)
+                                {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b'] )  }}
+                                <input type="hidden" name="resultado_busqueda" value="{{json_encode($tabla_vins)}}" id="resultado_busqueda_vins" />
+                            @else
                                 {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
+                            @endif
                             </div>
                                 {!! Form::close() !!}
                             <div class="text  pb-3">
@@ -346,7 +361,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    
                                 @foreach($tabla_vins as $vin)
                                 @if(isset($vin))
                                 <tr>

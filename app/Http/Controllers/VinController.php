@@ -13,6 +13,7 @@ use App\Patio;
 use App\TipoCampania;
 use App\Vin;
 use App\Campania;
+use App\Exports\BusquedaVinsExport;
 Use App\Guia;
 Use App\Guia_Vin;
 use Auth;
@@ -143,6 +144,8 @@ class VinController extends Controller
                             ->join('users','users.user_id','=','vins.user_id')
                             ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                            ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                            'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc')
                             ->where('vin_codigo',$v)
                             ->orWhere('vin_patente', $v);
 
@@ -163,11 +166,18 @@ class VinController extends Controller
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                         ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc',
+                                        'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila',
+                                        'ubic_patio_columna')
                                         ->where('patios.patio_id', $patio_id);
                                 } else {
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                                    ->join('patios','bloques.patio_id','=','patios.patio_id');
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                    ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                    'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc','patio_nombre', 'bloque_nombre', 
+                                    'ubic_patio_id',  'ubic_patio_fila', 'ubic_patio_columna');
                                 }
                             }
                         } else {
@@ -182,11 +192,19 @@ class VinController extends Controller
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                         ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc',
+                                        'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila',
+                                        'ubic_patio_columna')
                                         ->where('patios.patio_id', $patio_id);
                                 } else {
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                                    ->join('patios','bloques.patio_id','=','patios.patio_id');
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                    ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc',
+                                        'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila',
+                                        'ubic_patio_columna');
                                 }
                             }
                         }
@@ -196,7 +214,9 @@ class VinController extends Controller
                         $query = DB::table('vins')
                             ->join('users','users.user_id','=','vins.user_id')
                             ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-                            ->join('empresas','users.empresa_id','=','empresas.empresa_id');
+                            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                            ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                            'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc');
 
                         if($user_empresa_id > 0){
                             $query->where('empresas.empresa_id',$user_empresa_id);
@@ -215,11 +235,19 @@ class VinController extends Controller
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                         ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc',
+                                        'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila',
+                                        'ubic_patio_columna')
                                         ->where('patios.patio_id', $patio_id);
                                 } else {
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                                    ->join('patios','bloques.patio_id','=','patios.patio_id');
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                    ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc',
+                                        'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila',
+                                        'ubic_patio_columna');
                                 }
                             }
                         }
@@ -231,7 +259,9 @@ class VinController extends Controller
                 $query = DB::table('vins')
                         ->join('users','users.user_id','=','vins.user_id')
                         ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-                        ->join('empresas','users.empresa_id','=','empresas.empresa_id');
+                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                        ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc');
 
                 if($user_empresa_id > 0){
                     $query->where('empresas.empresa_id',$user_empresa_id);
@@ -250,11 +280,19 @@ class VinController extends Controller
                             $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                 ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                 ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc',
+                                        'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila',
+                                        'ubic_patio_columna')
                                 ->where('patios.patio_id', $patio_id);
                         } else {
                             $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                             ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                            ->join('patios','bloques.patio_id','=','patios.patio_id');
+                            ->join('patios','bloques.patio_id','=','patios.patio_id')
+                            ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc',
+                                        'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila',
+                                        'ubic_patio_columna');
                         }
                     }
                 }
@@ -263,7 +301,7 @@ class VinController extends Controller
             }
         }
 
-
+        // dd($tabla_vins);
 
         return view('vin.index', compact('tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas'));
     }
@@ -306,15 +344,13 @@ public function index2(Request $request)
                 ->join('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id')
                 ->join('bloques', 'bloques.bloque_id', '=', 'ubic_patios.bloque_id')
                 ->join('patios', 'patios.patio_id', '=', 'bloques.patio_id')
-                ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_motor',
-                'empresas.empresa_razon_social', 'vin_fec_ingreso', 'patio_nombre', 'bloque_nombre', 'ubic_patio_fila',
-                'ubic_patio_columna')
+                ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc', 'patio_nombre', 'bloque_nombre', 
+                'ubic_patio_id', 'ubic_patio_fila', 'ubic_patio_columna')
                 ->orderByRaw('ubic_patio_fila, ubic_patio_columna ASC')
                 ->where('users.empresa_id', $user_empresa_id )
                 ->get();
         } else {
-            // dd($tabla_vins)
-
             /** A partir de aqui las consultas del cuadro de busqueda */
 
             $estado = DB::table('vin_estado_inventarios')
@@ -369,6 +405,8 @@ public function index2(Request $request)
                             ->join('users','users.user_id','=','vins.user_id')
                             ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                            ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                            'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc')
                             ->where('vin_codigo',$v)
                             ->orWhere('vin_patente',$v)
                             ->where('empresas.empresa_id', $user_empresa_id);
@@ -385,6 +423,9 @@ public function index2(Request $request)
                                 $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                     ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                    ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                    'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc', 'patio_nombre', 'bloque_nombre', 
+                                    'ubic_patio_id', 'ubic_patio_fila', 'ubic_patio_columna')
                                     ->where('patios.patio_id', $patio_id);
                             }
                         } else {
@@ -399,11 +440,17 @@ public function index2(Request $request)
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                         ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc', 'patio_nombre', 'bloque_nombre', 
+                                        'ubic_patio_id', 'ubic_patio_fila', 'ubic_patio_columna')
                                         ->where('patios.patio_id', $patio_id);
                                 } else {
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                                    ->join('patios','bloques.patio_id','=','patios.patio_id');
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                    ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                    'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc', 'patio_nombre', 'bloque_nombre', 
+                                    'ubic_patio_id', 'ubic_patio_fila', 'ubic_patio_columna');
                                 }
                             }
                         }
@@ -414,6 +461,8 @@ public function index2(Request $request)
                             ->join('users','users.user_id','=','vins.user_id')
                             ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                            ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                            'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc')
                             ->where('vins.user_id',$user_empresa_id);
 
                         if($marca_nombre != 'Sin marca'){
@@ -429,11 +478,17 @@ public function index2(Request $request)
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                         ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc', 'patio_nombre', 'bloque_nombre', 
+                                        'ubic_patio_id', 'ubic_patio_fila', 'ubic_patio_columna')
                                         ->where('patios.patio_id', $patio_id);
                                 } else {
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                                    ->join('patios','bloques.patio_id','=','patios.patio_id');
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                    ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                    'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc', 'patio_nombre', 'bloque_nombre', 
+                                    'ubic_patio_id', 'ubic_patio_fila', 'ubic_patio_columna');
                                 }
                             }
                         }
@@ -446,6 +501,8 @@ public function index2(Request $request)
                     ->join('users','users.user_id','=','vins.user_id')
                     ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                     ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                    ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                    'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc')
                     ->where('empresas.empresa_id', $user_empresa_id);
 
                 if($marca_nombre != 'Sin marca'){
@@ -461,11 +518,17 @@ public function index2(Request $request)
                             $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                 ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                 ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc', 'patio_nombre', 'bloque_nombre', 
+                                'ubic_patio_id', 'ubic_patio_fila', 'ubic_patio_columna')
                                 ->where('patios.patio_id', $patio_id);
                         } else {
                             $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                             ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                            ->join('patios','bloques.patio_id','=','patios.patio_id');
+                            ->join('patios','bloques.patio_id','=','patios.patio_id')
+                            ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                            'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_estado_inventario_desc', 'patio_nombre', 'bloque_nombre', 
+                            'ubic_patio_id', 'ubic_patio_fila', 'ubic_patio_columna');
                         }
                     }
                 }
@@ -1009,6 +1072,11 @@ public function index2(Request $request)
 
         return redirect()->route('vin.index')->with('success', 'Estados cambiados con éxito.');;
 
+    }
+
+    public function exportResultadoBusquedaVins(Request $request) 
+    {
+        return Excel::download(new BusquedaVinsExport(json_decode($request->resultado_busqueda)), 'busqueda_vins.xlsx');
     }
 
 }
