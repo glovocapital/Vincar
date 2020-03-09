@@ -36,7 +36,7 @@
         font-family:none !important;
         width: 30px;
         height: 30px;
-        content: url(base/img/svg/edit_1.svg) !important;
+        content: url({{ asset('base/img/svg/edit_1.svg') }})  !important;
         margin-right: 5px;
     }
     .fa-edit::before{
@@ -47,7 +47,7 @@
         font-family:none !important;
         width: 30px;
         height: 30px;
-        content: url(base/img/svg/deleted_1.svg) !important;
+        content: url({{ asset('base/img/svg/deleted_1.svg') }}) !important;
         margin-right: 5px;
     }
     .fa-trash-alt::before{
@@ -58,7 +58,7 @@
         font-family:none !important;
         width: 30px;
         height: 30px;
-        content: url(base/img/svg/historial_1.svg) !important;
+        content: url({{ asset('base/img/svg/historial_1.svg') }})  !important;
         margin-right: 5px;
     }
     .fa-flag-checkered::before{
@@ -69,7 +69,7 @@
         font-family:none !important;
         width: 30px;
         height: 30px;
-        content: url(base/img/svg/guia_1.svg) !important;
+        content: url({{ asset('base/img/svg/guia_1.svg') }})  !important;
         margin-right: 5px;
     }
     .fa-barcode::before{
@@ -80,7 +80,7 @@
         font-family:none !important;
         width: 30px;
         height: 30px;
-        content: url(base/img/svg/inspec_1.svg) !important;
+        content:  url({{ asset('base/img/svg/inspec_1.svg') }})  !important;
         margin-right: 5px;
     }
     .fa-address-book::before{
@@ -91,7 +91,7 @@
         font-family:none !important;
         width: 30px;
         height: 30px;
-        content: url(base/img/svg/inspec_1.svg) !important;
+        content:  url({{ asset('base/img/svg/inspec_1.svg') }}) !important;
         margin-right: 5px;
     }
     .fa-lightbulb::before{
