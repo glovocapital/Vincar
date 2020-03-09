@@ -194,6 +194,10 @@
         .col_bloque_azul{
             background: #02c1ff;
          }
+         .col_bloque_blanco{
+                     color: #ffffff;
+                  }
+
 
         .col_bloqueH{
         padding:3px;
@@ -388,7 +392,7 @@
                             $("#Loading_1").hide();
 
                             res.bloques.forEach(function(datos) {
-                            $("#Bloques").append("<option value='"+datos.patio_id+"'>"+datos.bloque_nombre+"</option>");
+                            $("#Bloques").append("<option value='"+datos.bloque_id+"'>"+datos.bloque_nombre+"</option>");
                             });
 
                             }
@@ -424,13 +428,24 @@
 
                                         usados=0;
 
+                                        Bloque_c = Bloque_c + '<div class="row "><div class="col col_bloqueH col_bloque_blanco">'+"Calle 01"+'</div>';
+
+                                                                                for (var ijc = 1; ijc <= datos.bloque_columnas; ijc++) {
+                                                                                if(i<ijc) i = "0"+ijc;
+                                                                                 Bloque_c = Bloque_c+'<div class="col col_bloque">P'+ijc+'</div>';
+                                                                                }
+
+                                                                                Bloque_c = Bloque_c+'<div class="col col_bloque"></div></div>';
+
                                         for (var i = 1; i <= datos.bloque_filas; i++) {
 
                                         usados_l=0;
 
                                         if(i<10) i = "0"+i;
 
-                                           Bloque_c = Bloque_c + '<div class="row "><div class="col col_bloqueH"> Fila: '+ i + '</div>';
+
+
+                                           Bloque_c = Bloque_c + '<div class="row "><div class="col col_bloqueH "> Calle: '+ i + '</div>';
 
                                            for (var ijc = 1; ijc <= datos.bloque_columnas; ijc++) {
                                              color = 'col_bloque_gris';
