@@ -9,6 +9,7 @@ use App\Vin;
 use App\UbicPatio;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Row;
 use Illuminate\Support\Facades\Storage;
@@ -219,9 +220,19 @@ class PatioController extends Controller
 
     public function indexVinsPatio()
     {
+        $rol_desc=Auth::user()->oneRol->rol_desc;
+        $empresa_id=Auth::user()->empresa_id;
+        $user_id=Auth::user()->user_id;
+
+        $permitir_borrar=true;
+
+        if($rol_desc=='Customer'){
+            $permitir_borrar=false;
+        }
+
         $patios = Patio::all();
 
-        return view('patio.vins_patio', compact('patios'));
+        return view('patio.vins_patio', compact('patios', 'permitir_borrar'));
     }
 
     private function ColorRamdom(){
@@ -234,6 +245,8 @@ class PatioController extends Controller
     public function dashboard(Request $request)
     {
         $patio = (isset($request->id_patio))?intval($request->id_patio):0;
+
+
 
 
         $capacidad = DB::table('patios')
@@ -404,6 +417,11 @@ class PatioController extends Controller
 
     public function Todosbloques(Request $request){
 
+        $rol_desc=Auth::user()->oneRol->rol_desc;
+        $empresa_id=Auth::user()->empresa_id;
+        $user_id=Auth::user()->user_id;
+
+
         $id_patio =   $request->get("patio_id");
 
         $id_bloque =   $request->get("bloque_id");
@@ -436,8 +454,12 @@ class PatioController extends Controller
                  ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
                  ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
                  ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloque_id","vin_estado_inventario_desc")
-                 ->whereIn('bloque_id', $grupo_bloques)
-                 ->get();
+                 ->whereIn('bloque_id', $grupo_bloques);
+
+                 if($rol_desc=='Customer')
+                     $ubicados = $ubicados->where('vins.user_id',"=",$user_id);
+
+                    $ubicados= $ubicados->get();
 
 
 
@@ -454,6 +476,14 @@ class PatioController extends Controller
 
 
     public function Vaciarbloques(Request $request){
+
+        $rol_desc=Auth::user()->oneRol->rol_desc;
+        $empresa_id=Auth::user()->empresa_id;
+        $user_id=Auth::user()->user_id;
+
+        if($rol_desc=='Customer'){
+            $usersf = Array("Err" => 1, "Msg" => "No tiene permiso para esta acción");
+        }
 
         $id_patio =   $request->get("patio_id");
 
