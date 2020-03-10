@@ -43,7 +43,7 @@
                             </div>
                                 {!! Form::close() !!}
                             <div class="text  pb-3">
-                                
+
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                             </div>
                                 {!! Form::close() !!}
                             <div class="text  pb-3">
-                                
+
                             </div>
                         </div>
                     </div>
@@ -247,7 +247,9 @@
                     <div class="text-right pb-5">
                         @if(count($tabla_vins) > 0)
                         <button type="button" class="btn btn-success btn-lote-vins">Carga de guías por lotes</i></button>
-                        <button type="button" class="btn btn-warning btn-edo-vins">Cambia Estado por lotes</i></button>
+                            @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3)
+                                <button type="button" class="btn btn-warning btn-edo-vins">Cambia Estado por lotes</i></button>
+                            @endif
                         @endif
                         {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
                         {!! Form::close() !!}
@@ -304,7 +306,9 @@
                     <div class="text-right pb-5">
                         @if(count($tabla_vins) > 0)
                         <button type="button" class="btn btn-success btn-lote-vins">Carga de guías por lotes</i></button>
-                        <button type="button" class="btn btn-warning btn-edo-vins">Cambia Estado por lotes</i></button>
+                            @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3)
+                                <button type="button" class="btn btn-warning btn-edo-vins">Cambia Estado por lotes</i></button>
+                            @endif
                         @endif
                         {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
                         {!! Form::close() !!}
@@ -361,7 +365,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+
                                 @foreach($tabla_vins as $vin)
                                 @if(isset($vin))
                                 <tr>
@@ -399,14 +403,15 @@
                                     @endif
                                     <td>
 
+                                        @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3)
+                                            <small>
+                                                <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
+                                            </small>
 
-                                        <small>
-                                            <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
-                                        </small>
-
-                                        <small>
-                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
-                                        </small>
+                                            <small>
+                                                <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
+                                            </small>
+                                        @endif
 
                                         <small>
                                             <a href="{{ route('vin.guia', Crypt::encrypt($vin->vin_id)) }}" class=" btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>
