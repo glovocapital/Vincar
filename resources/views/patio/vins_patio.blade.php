@@ -486,14 +486,14 @@
                                            }
 
 
-                                           Bloque_c = Bloque_c + '<div class="col col_bloqueH"><button class="btn btn-danger btn-sm vaciar" data="'+datos.bloque_id+'_'+i+'" usados="'+usados_l+'"><i class="fas fa-times"></i></button></div></div>';
+                                           Bloque_c = Bloque_c + '<div class="col col_bloqueH"><button @if(!$permitir_borrar) disabled @endif class="btn btn-danger btn-sm vaciar" data="'+datos.bloque_id+'_'+i+'" usados="'+usados_l+'"><i class="fas fa-times"></i></button></div></div>';
                                         }
 
                                           Dtotalsector= totalsector-usados;
 
                                           Bloque_='<div class="row "> <div class="col col_bloqueT">'+datos.bloque_nombre+'</div>'
                                                                                                                            +'<div class="col col_bloqueT text-rigth">'
-                                                                                                                           +'<button class="btn btn-danger btn-sm vaciar" data="'+datos.bloque_id+'" usados="'+usados+'">Vaciar Bloque</button> </div> </div>'
+                                                                                                                           +'<button @if(!$permitir_borrar) disabled @endif class="btn btn-danger btn-sm vaciar" data="'+datos.bloque_id+'" usados="'+usados+'">Vaciar Bloque</button> </div> </div>'
                                                                                                                            +'<div class="row"><div class="col col_bloqueT">utilizados '+usados+' de '+totalsector+' [Disponibles: '+Dtotalsector+']</div></div>';
 
 
