@@ -378,8 +378,9 @@ class PatioController extends Controller
 
         if ($request->ajax()){
             $bloques = DB::table('bloques')
+                ->select('bloque_nombre','patio_id', 'bloque_id')
                 ->where('patio_id', '=', $id_patio)
-                ->select('bloque_nombre','patio_id')
+                ->where('bloques.deleted_at','=',null)
                 ->orderBy('bloque_nombre')
                 ->get();
 

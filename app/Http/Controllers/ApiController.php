@@ -182,6 +182,7 @@ class ApiController extends Controller
 
         $bloques =DB::table('bloques')
             ->select('bloque_id', 'bloque_nombre', 'bloque_filas', 'bloque_columnas')
+            ->where('bloques.deleted_at','=',null)
             ->get();
 
 
@@ -224,6 +225,7 @@ class ApiController extends Controller
             $bloques =DB::table('bloques')
                 ->select('bloque_id', 'bloque_nombre', 'bloque_filas', 'bloque_columnas')
                 ->where('patio_id','=',$patio_id)
+                ->where('bloques.deleted_at','=',null)
                 ->get();
 
             $resul = Array("Err"=>0,"Bloques"=>$bloques);
@@ -258,7 +260,7 @@ class ApiController extends Controller
 
             $vin = $Vin->get();
 
-
+            
 
             if(count($vin)>0){
 
@@ -274,6 +276,7 @@ class ApiController extends Controller
                    ->join('patios', 'patios.patio_id','=','bloques.patio_id')
                     ->select('bloques.patio_id', 'bloque_nombre','patio_nombre')
                     ->where('bloque_id','=',$vin[0]->bloque_id)
+                   ->where('bloques.deleted_at','=',null)
                     ->get();
 
                 $ubicados = DB::table('ubic_patios')
@@ -293,6 +296,7 @@ class ApiController extends Controller
                    $bloques =DB::table('bloques')
                        ->select('bloque_id', 'bloque_nombre', 'bloque_filas', 'bloque_columnas')
                        ->where('patio_id','=',$_patio[0]->patio_id)
+                       ->where('bloques.deleted_at','=',null)
                        ->get();
 
                    $ubicados = DB::table('ubic_patios')
@@ -308,8 +312,7 @@ class ApiController extends Controller
 
                 $vin[0]->activo = true;
 
-             // if($vin[0]->estado=="Arribado")  $vin[0]->activo = false;
-             if($vin[0]->estado!="Anunciado")  $vin[0]->activo = false;
+              if($vin[0]->estado=="Arribado")  $vin[0]->activo = false;
 
                 $usersf = Array("Err"=>0,"items"=>$vin[0], "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
             }else{
@@ -535,19 +538,7 @@ class ApiController extends Controller
 
 
 
-       /* $target_path = "uploads/";
 
-        $target_path = $target_path . basename( $_FILES['file']['name']);
-
-        if(move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) {
-
-            $data = ['success' => true, 'message' => 'Upload and move success'];
-
-        } else{
-
-            $data = ['success' => false, 'message' => 'There was an error uploading the file, please try again!'];
-
-        }*/
 
         $Vin =DB::table('vins')
             ->select('vins.*')
