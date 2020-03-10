@@ -403,7 +403,7 @@
                                     @endif
                                     <td>
 
-                                        @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3)
+                                        @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2  || auth()->user()->rol_id == 3)
                                             <small>
                                                 <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
                                             </small>
