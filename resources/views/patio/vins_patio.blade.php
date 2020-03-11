@@ -79,9 +79,6 @@
                       @foreach($patios as $patio)
                       <option value="{{ $patio->patio_id }}">{{ $patio->patio_nombre }}</option>
                       @endforeach
-
-
-
                 </select>
 		    </div>
 		    <div class='col-lg-12 col-xl-5 d-flex'>

@@ -221,7 +221,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
     //Rutas mantenedor vin
     Route::get('vin', 'VinController@index')->name('vin.index');
-    Route::get('vin/index2', 'VinController@index2')->name('vin.index2');
+    Route::post('vin/index2', 'VinController@index2')->name('vin.index2');
+    Route::post ('vin/index3', 'VinController@index3')->name('vin.index3');
     Route::get('vin/create','VinController@create')->name('vin.create');
     Route::get('vin/{id}/edit','VinController@edit')->name('vin.edit');
     Route::post('vin','VinController@store')->name('vin.store');
@@ -261,6 +262,10 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
 
     Route::get('solicitud_campania', 'CampaniaController@index2')->name('solicitud_campania.index');
+
+      //Ruta para la funcionalidad por POST
+    Route::post('solicitud_campania/index2', 'CampaniaController@index4')->name('solicitud_campania.index2');
+
     Route::get('campania/{id}/edit','CampaniaController@edit')->name('campania.edit');
     Route::post('campania/modal','CampaniaController@storeModal')->name('campania.storeModal');
     Route::post('campania/modal_tarea','CampaniaController@storeModalTarea')->name('campania.storeModalTarea');
@@ -269,6 +274,10 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::patch('campania/{id}/update','CampaniaController@update')->name('campania.update');
 
     Route::get('planificacion', 'CampaniaController@index3')->name('planificacion.index');
+
+    //Ruta para la funcionalidad por POST
+    Route::post('planificacion/index2', 'CampaniaController@index5')->name('planificacion.index2');
+
     Route::get('campania/create','CampaniaController@create')->name('campania.create');
 
     Route::get('planificacion/{id}/edit','CampaniaController@editTarea')->name('planificacion.edit');

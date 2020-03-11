@@ -11,7 +11,7 @@
 
                 </div>
                 <div class="card-body">
-                    {!! Form::open(['route'=> 'solicitud_campania.index', 'method'=>'get']) !!}
+                    {!! Form::open(['route'=> 'solicitud_campania.index2', 'method'=>'post']) !!}
                     <div class="row">
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
@@ -85,7 +85,7 @@
                                         <th>Fecha de Ingreso</th>
                                         <th>Cliente</th>
                                         <th>Estado</th>
-                                        <th>Patio</th> 
+                                        <th>Patio</th>
                                         <th>Bloque</th>
                                         <th>Ubicación</th>
                                         <th>Acciones de VIN</th>
@@ -184,7 +184,7 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                     </div>
                 </div>
-                
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
@@ -205,7 +205,7 @@
                                 <td><small>
                                 @foreach($arrayTCampanias as $tipoCamp)
                                     @foreach($tipoCamp as $tCamp)
-                                        @if($campania->campania_id === $tCamp->campania_id)   
+                                        @if($campania->campania_id === $tCamp->campania_id)
                                             <button class="btn btn-xs btn-info">{{ $tCamp->tipo_campania_descripcion }}</button>
                                         @endif
                                     @endforeach

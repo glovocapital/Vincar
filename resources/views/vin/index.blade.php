@@ -206,10 +206,10 @@
         <div class="ibox float-e-margins text-center">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Buscar Vin</h3>
+                    <h3 class="card-title">Buscarrr Vin</h3>
                 </div>
                 <div class="card-body">
-                    {!! Form::open(['route'=> 'vin.index', 'method'=>'get']) !!}
+                    {!! Form::open(['route'=> 'vin.index3', 'method'=>'post']) !!}
                     <div class="row">
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
@@ -274,7 +274,7 @@
                     <h3 class="card-title">Buscar Vin</h3>
                 </div>
                 <div class="card-body">
-                    {!! Form::open(['route'=> 'vin.index2', 'method'=>'get']) !!}
+                    {!! Form::open(['route'=> 'vin.index2', 'method'=>'post']) !!}
                     <div class="row">
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">

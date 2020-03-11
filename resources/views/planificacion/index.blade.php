@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="card-body">
-                {!! Form::open(['route'=> 'planificacion.index', 'method'=>'get']) !!}
+                {!! Form::open(['route'=> 'planificacion.index2', 'method'=>'post']) !!}
                 <div class="row">
                     <div class="col-md-4" id="wrapper_2">
                         <div class="form-group">
