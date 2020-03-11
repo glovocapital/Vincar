@@ -261,10 +261,14 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::patch('tipo_campania/{id}/update','TipoCampaniaController@update')->name('tipo_campania.update');
     Route::get('tipo_campania/{id}/delete','TipoCampaniaController@destroy')->name('tipo_campania.destroy');
 
+
+
     Route::get('solicitud_campania', 'CampaniaController@index2')->name('solicitud_campania.index');
 
       //Ruta para la funcionalidad por POST
     Route::post('solicitud_campania/index2', 'CampaniaController@index4')->name('solicitud_campania.index2');
+
+
 
     Route::get('campania/{id}/edit','CampaniaController@edit')->name('campania.edit');
     Route::post('campania/modal','CampaniaController@storeModal')->name('campania.storeModal');
@@ -273,10 +277,14 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post('campania/modal_campania_lotes','CampaniaController@storeModalCampaniaLotes')->name('campania.storeModalCampaniaLotes');
     Route::patch('campania/{id}/update','CampaniaController@update')->name('campania.update');
 
+
+
     Route::get('planificacion', 'CampaniaController@index3')->name('planificacion.index');
 
     //Ruta para la funcionalidad por POST
     Route::post('planificacion/index2', 'CampaniaController@index5')->name('planificacion.index2');
+
+
 
     Route::get('campania/create','CampaniaController@create')->name('campania.create');
 

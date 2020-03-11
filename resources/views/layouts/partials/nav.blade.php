@@ -66,20 +66,22 @@
       </li>
       @endif
 
-      <li class="sidebar-item">
-        <a href="#DanoFaltante" data-toggle="collapse" class="sidebar-link collapsed">
-          <i class="align-middle" data-feather="alert-triangle"></i> <span class="align-middle">{{trans('menu.Dano_Faltante')}}</span>
-        </a>
-        <ul id="DanoFaltante" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
+
 
             @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3)
+            <li class="sidebar-item">
+                <a href="#DanoFaltante" data-toggle="collapse" class="sidebar-link collapsed">
+                  <i class="align-middle" data-feather="alert-triangle"></i> <span class="align-middle">{{trans('menu.Dano_Faltante')}}</span>
+                </a>
+                <ul id="DanoFaltante" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
                 <li class="sidebar-item @if(request()->route()->getName()=='inspeccion.index') active @endif"><a class="sidebar-link" href="{{ route('inspeccion.index') }}">{{trans('menu.Dano_Faltante')}}</a></li>
 
                 </li>
+            </ul>
+        </li>
             @endif
 
-        </ul>
-      </li>
+
 
       <li class="sidebar-item">
         <a href="#Servicio" data-toggle="collapse" class="sidebar-link collapsed">
