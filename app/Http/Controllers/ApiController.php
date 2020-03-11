@@ -312,7 +312,9 @@ class ApiController extends Controller
 
                 $vin[0]->activo = true;
 
-              if($vin[0]->estado=="Arribado")  $vin[0]->activo = false;
+             
+             if($vin[0]->estado!="Anunciado")  $vin[0]->activo = false;
+                // if($vin[0]->estado=="Arribado")  $vin[0]->activo = false;
 
                 $usersf = Array("Err"=>0,"items"=>$vin[0], "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
             }else{
