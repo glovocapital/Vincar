@@ -16,6 +16,7 @@ use App\Campania;
 use App\Exports\BusquedaVinsExport;
 Use App\Guia;
 Use App\Guia_Vin;
+use App\UbicPatio;
 use Auth;
 use Illuminate\Support\Facades\Crypt;
 use DB;
@@ -959,19 +960,42 @@ public function index2(Request $request)
     {
         $vin_id =  Crypt::decrypt($id);
         $vin = Vin::findOrfail($vin_id);
+
         try {
+            DB::beginTransaction();
+
+            if($request->vin_estado_inventario_id == 7 || $request->vin_estado_inventario_id == 8)
+            {
+              //  $ubic_patios = DB::table('ubic_patios')
+                $ubic_patios = UbicPatio::where('vin_id', $vin->vin_id)->first();
+
+
+                    if(isset($ubic_patios->ubic_patio_id))
+                    {
+
+                        $ubic_patios->vin_id = null;
+                        $ubic_patios->ubic_patio_ocupada = false;
+                        $ubic_patios->save();
+
+                    }
+            }
+
+
             $vin->vin_estado_inventario_id = $request->vin_estado_inventario_id;
             $vin->save();
 
-            flash('Estrado actualizado correctamente.')->success();
-            return redirect('vin');
+
+            DB::commit();
 
         }catch (\Exception $e) {
-
+            DB::rollBack();
             flash('Error al actualizar el estado del VIN.')->error();
             flash($e->getMessage())->error();
             return redirect('vin');
         }
+        flash('Estrado actualizado correctamente.')->success();
+        return redirect('vin');
+
     }
 
     public function downloadFile()
@@ -1018,7 +1042,7 @@ public function index2(Request $request)
 
 
             flash('Error registrando de la guia.')->error();
-            dd($e->getMessage());
+            //dd($e->getMessage());
             flash($e->getMessage())->error();
             return redirect('vin');
         }
@@ -1064,7 +1088,7 @@ public function index2(Request $request)
         );
         try {
 
-            // dd($request);
+
             DB::beginTransaction();
 
 
@@ -1100,6 +1124,21 @@ public function index2(Request $request)
             foreach($request->vin_ids as $vin_id){
 
                 $vin = Vin::findOrfail($vin_id);
+
+                if($request->vin_estado_inventario_id == 7 || $request->vin_estado_inventario_id == 8)
+                {
+                    $ubic_patios = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                        if(isset($ubic_patios->ubic_patio_id))
+                        {
+
+                            $ubic_patios->vin_id = null;
+                            $ubic_patios->ubic_patio_ocupada = false;
+                            $ubic_patios->save();
+
+                        }
+                }
+
+
                 $vin->vin_estado_inventario_id = $request->vin_estado_inventario_id;
                 $vin->save();
 
