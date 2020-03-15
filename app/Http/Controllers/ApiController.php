@@ -256,6 +256,7 @@ class ApiController extends Controller
                 $Vin->where('vins.vin_codigo', 'like', '%'.$vins_id);
             }else{
                 $Vin->where('vins.vin_codigo', '=', $vins_id);
+                $Vin->orWhere('vins.vin_patente', '=', $vins_id);
             }
 
             $vin = $Vin->get();
@@ -310,11 +311,55 @@ class ApiController extends Controller
 
                }
 
-                $vin[0]->activo = true;
+                $vin[0]->HabilitadoInspeccion = true;
+                $vin[0]->HabilitadoCambio = true;
+                $vin[0]->HabilitadoArribo = true;
 
-             
-             if($vin[0]->estado!="Anunciado")  $vin[0]->activo = false;
-                // if($vin[0]->estado=="Arribado")  $vin[0]->activo = false;
+                if($vin[0]->estado=="Anunciado") {
+                    $vin[0]->HabilitadoInspeccion = false;
+                    $vin[0]->HabilitadoCambio = false;
+                }
+
+                if($vin[0]->estado=="Arribado") {
+                    $vin[0]->HabilitadoArribo = false;
+                    $vin[0]->HabilitadoCambio = false;
+                }
+
+                if($vin[0]->estado=="Tránsito") {
+                    $vin[0]->HabilitadoInspeccion = false;
+                    $vin[0]->HabilitadoCambio = false;
+                    $vin[0]->HabilitadoArribo = false;
+                }
+
+                if($vin[0]->estado=="En patio, Disponible para la venta") {
+                    $vin[0]->HabilitadoArribo = false;
+                }
+
+                if($vin[0]->estado=="Agendado para entrega") {
+                    $vin[0]->HabilitadoInspeccion = false;
+                    $vin[0]->HabilitadoCambio = false;
+                    $vin[0]->HabilitadoArribo = false;
+                }
+
+                if($vin[0]->estado=="En patio NO disponible para la venta") {
+                    $vin[0]->HabilitadoArribo = false;
+                }
+
+                if($vin[0]->estado=="Suprimido") {
+                    $vin[0]->HabilitadoInspeccion = false;
+                    $vin[0]->HabilitadoCambio = false;
+                    $vin[0]->HabilitadoArribo = false;
+                }
+
+                if($vin[0]->estado=="Entregado") {
+                    $vin[0]->HabilitadoInspeccion = false;
+                    $vin[0]->HabilitadoCambio = false;
+                    $vin[0]->HabilitadoArribo = false;
+                }
+
+
+
+
 
                 $usersf = Array("Err"=>0,"items"=>$vin[0], "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
             }else{
