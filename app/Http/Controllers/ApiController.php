@@ -338,7 +338,7 @@ class ApiController extends Controller
                     $vin[0]->HabilitadoArribo = false;
                 }
 
-                if($vin[0]->estado=="En patio" || $vin[0]->estado=="Disponible para la venta") {
+                if($vin[0]->estado=="En Patio" || $vin[0]->estado=="Disponible para la venta") {
                     $vin[0]->HabilitadoArribo = false;
                 }
 
