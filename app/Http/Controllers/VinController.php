@@ -257,7 +257,7 @@ class VinController extends Controller
 
                        array_push($tabla_vins, $query->first());
                    } else {
-                       if(count($arreglo_vins) > 1){
+                       if(count($arreglo_vins) >= 1){
                            $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista"; 
                        } else {
                             $query = DB::table('vins')
