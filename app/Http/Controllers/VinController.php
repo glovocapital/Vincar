@@ -258,7 +258,7 @@ class VinController extends Controller
                        array_push($tabla_vins, $query->first());
                    } else {
                        if(count($arreglo_vins) >= 1){
-                           $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista"; 
+                           $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista";
                        } else {
                             $query = DB::table('vins')
                                 ->join('users','users.user_id','=','vins.user_id')
@@ -434,12 +434,14 @@ public function index2(Request $request)
             }
 
             if(!empty($request->vin_numero)){
-
                 $tabla_vins = [];
 
                 foreach(explode(PHP_EOL,$request->vin_numero) as $row){
                     $arreglo_vins[] = trim($row);
                 }
+
+                $message = [];
+
 
                 foreach($arreglo_vins as $v){
 
@@ -505,6 +507,9 @@ public function index2(Request $request)
 
                         array_push($tabla_vins, $query->first());
                     } else {
+                        if(count($arreglo_vins) >= 1){
+                            $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista";
+                        } else {
                         $query = DB::table('vins')
                             ->join('users','users.user_id','=','vins.user_id')
                             ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
