@@ -268,7 +268,7 @@ class ApiController extends Controller
 
             $vin = $Vin->get();
 
-            
+
 
             if(count($vin)>0){
 
@@ -338,7 +338,7 @@ class ApiController extends Controller
                     $vin[0]->HabilitadoArribo = false;
                 }
 
-                if($vin[0]->estado=="En patio, Disponible para la venta") {
+                if($vin[0]->estado=="En patio" || $vin[0]->estado=="Disponible para la venta") {
                     $vin[0]->HabilitadoArribo = false;
                 }
 
@@ -348,7 +348,7 @@ class ApiController extends Controller
                     $vin[0]->HabilitadoArribo = false;
                 }
 
-                if($vin[0]->estado=="En patio NO disponible para la venta") {
+                if($vin[0]->estado=="No disponible para la venta") {
                     $vin[0]->HabilitadoArribo = false;
                 }
 
