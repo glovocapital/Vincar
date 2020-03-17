@@ -139,7 +139,7 @@ class ApiController extends Controller
                     $UbicPatios->vin_id = $Vin->vin_id;
                     $UbicPatios->update();
 
-                    $itemlist =self::ListVIN($request, $Vin->vin_codigo);
+                    $itemlist =self::ListVIN($request);
 
                     $itemlistData = json_decode($itemlist->content(),true);
 
@@ -234,9 +234,13 @@ class ApiController extends Controller
         return response()->json($resul);
     }
 
-    public function ListVIN(Request $request, $vins_id)
+    public function ListVIN(Request $request)
     {
         $this->cors();
+
+        $vins_id = $request->vin;
+
+
 
         if(empty($vins_id)){
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
@@ -254,10 +258,13 @@ class ApiController extends Controller
 
             if(strlen($vins_id)==6){
                 $Vin->where('vins.vin_codigo', 'like', '%'.$vins_id);
+                $Vin->orWhere('vins.vin_patente', '=', $vins_id);
             }else{
                 $Vin->where('vins.vin_codigo', '=', $vins_id);
                 $Vin->orWhere('vins.vin_patente', '=', $vins_id);
             }
+
+
 
             $vin = $Vin->get();
 
@@ -403,8 +410,10 @@ class ApiController extends Controller
 
     }
 
-    public function DarArribo(Request $request, $vins_codigo){
+    public function DarArribo(Request $request){
         $this->cors();
+
+        $vins_codigo = $request->vin;
 
         $Vin =DB::table('vins')->select('vins.*');
 
@@ -421,7 +430,9 @@ class ApiController extends Controller
             $Vin_->vin_estado_inventario_id = 2;
             $Vin_->update();
 
-            $itemlist =self::ListVIN($request, $Vin->vin_codigo);
+
+
+            $itemlist =self::ListVIN($request);
 
             $itemlistData = json_decode($itemlist->content(),true);
 
@@ -435,8 +446,10 @@ class ApiController extends Controller
 
     }
 
-    public function CargaInicialInspeccionar(Request $request, $vins_codigo){
+    public function CargaInicialInspeccionar(Request $request){
         $this->cors();
+
+        $vins_codigo = $request->vin;
 
         $Vin =DB::table('vins')->join('users','users.user_id','vins.user_id')->select('vins.*','empresa_id');
 
@@ -526,9 +539,11 @@ class ApiController extends Controller
 
     }
 
-    public function InpeccionarSinDano(Request $request,  $vins_id){
+    public function InpeccionarSinDano(Request $request){
 
         $this->cors();
+
+        $vins_id = $request->vin;
 
         $Vin =DB::table('vins')
             ->select('vins.*')
@@ -554,7 +569,7 @@ class ApiController extends Controller
                 $Vin_->vin_estado_inventario_id = 4;
                 $Vin_->update();
 
-                $itemlist =self::ListVIN($request, $Vin->vin_codigo);
+                $itemlist =self::ListVIN($request);
 
                 $itemlistData = json_decode($itemlist->content(),true);
 
@@ -667,7 +682,7 @@ class ApiController extends Controller
                 $foto1->save();
 
 
-                $itemlist =self::ListVIN($request, $Vin->vin_codigo);
+                $itemlist =self::ListVIN($request);
 
                 $itemlistData = json_decode($itemlist->content(),true);
 
