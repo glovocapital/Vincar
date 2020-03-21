@@ -540,6 +540,9 @@
                     return e1;
                 });
 
+                // Limpiar la tabla del modal antes de mostrar el historial del vin
+                $("#eventos_vin").empty();
+
                 $("#eventos_vin").append("<tr>");
                 for (var i = 0; i < arr_eventos.length; i++){
                     $("#eventos_vin").append("<td>" + arr_eventos[i]['vin_codigo'] + "</td>");
