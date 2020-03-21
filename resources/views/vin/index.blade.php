@@ -543,8 +543,8 @@
                 // Limpiar la tabla del modal antes de mostrar el historial del vin
                 $("#eventos_vin").empty();
 
-                $("#eventos_vin").append("<tr>");
                 for (var i = 0; i < arr_eventos.length; i++){
+                    $("#eventos_vin").append("<tr>");
                     $("#eventos_vin").append("<td>" + arr_eventos[i]['vin_codigo'] + "</td>");
                     $("#eventos_vin").append("<td>" + arr_eventos[i]['historico_fecha'] + "</td>");
                     $("#eventos_vin").append("<td>" + arr_eventos[i]['historico_estado'] + "</td>");
@@ -553,8 +553,8 @@
                     $("#eventos_vin").append("<td>" + arr_eventos[i]['destino'] + "</td>");
                     $("#eventos_vin").append("<td>" + arr_eventos[i]['empresa'] + "</td>");
                     $("#eventos_vin").append("<td>" + arr_eventos[i]['descripcion'] + "</td>");
+                    $("#eventos_vin").append("</tr>");
                 }
-                $("#eventos_vin").append("</tr>");
 
                 $("#historicoVin").modal('show');
 
