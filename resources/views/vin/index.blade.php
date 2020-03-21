@@ -206,7 +206,7 @@
         <div class="ibox float-e-margins text-center">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Buscarrr Vin</h3>
+                    <h3 class="card-title">Buscar Vin</h3>
                 </div>
                 <div class="card-body">
                     {!! Form::open(['route'=> 'vin.index3', 'method'=>'post']) !!}
@@ -337,7 +337,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
+                            <table class="table table-hover" id="dataTableVins" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
@@ -402,6 +402,9 @@
                                     <td><small></small></td>
                                     @endif
                                     <td>
+                                        <small>
+                                            <button type="button" class="btn-historico"  value="{{ Crypt::encrypt($vin->vin_id) }}" title="Ver Historico"><i class="fas fa fa-file-invoice"></i></button>
+                                        </small>
 
                                         @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2  || auth()->user()->rol_id == 3)
                                             <small>
@@ -415,9 +418,7 @@
 
                                         <small>
                                             <a href="{{ route('vin.guia', Crypt::encrypt($vin->vin_id)) }}" class=" btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>
-
                                         </small>
-
 
 
                                     </td>
@@ -437,6 +438,7 @@
 
 @include('vin.partials.modal_asignar_tarea_lotes')
 @include('vin.partials.modal_cambia_estado')
+@include('vin.partials.modal_historico_vin')
 
 @stop
 @section('local-scripts')
@@ -514,6 +516,49 @@
 
             $("#cambiarEdoModalLote").modal('show');
         });
+
+        //Modal Histórico del VIN
+        $('#dataTableVins tbody').on('click', '.btn-historico', function (e) {
+            e.preventDefault();
+
+            var id_vin = $(this).val();
+
+            var url = "/historico_vin/historicoVin/" + id_vin;
+
+            $.get(url, function (res) {
+                //Validar primero si algo salió mal
+                if(!res.success){
+                    alert(
+                        "Error inesperado al solicitar la información.\n\n" +
+                        "MENSAJE DEL SISTEMA:\n" +
+                        res.message + "\n\n"
+                    );
+                    return;  // Finaliza el intento de obtener
+                }
+
+                var arr_eventos = $.map(res.historico_vin, function (e1) {
+                    return e1;
+                });
+
+                $("#eventos_vin").append("<tr>");
+                for (var i = 0; i < arr_eventos.length; i++){
+                    $("#eventos_vin").append("<td>" + arr_eventos[i]['vin_codigo'] + "</td>");
+                    $("#eventos_vin").append("<td>" + arr_eventos[i]['historico_fecha'] + "</td>");
+                    $("#eventos_vin").append("<td>" + arr_eventos[i]['historico_estado'] + "</td>");
+                    $("#eventos_vin").append("<td>" + arr_eventos[i]['responsable'] + "</td>");
+                    $("#eventos_vin").append("<td>" + arr_eventos[i]['origen'] + "</td>");
+                    $("#eventos_vin").append("<td>" + arr_eventos[i]['destino'] + "</td>");
+                    $("#eventos_vin").append("<td>" + arr_eventos[i]['empresa'] + "</td>");
+                    $("#eventos_vin").append("<td>" + arr_eventos[i]['descripcion'] + "</td>");
+                }
+                $("#eventos_vin").append("</tr>");
+
+                $("#historicoVin").modal('show');
+
+            }).fail(function () {
+                alert('Error: Datos no encontrados o incorrectos');
+            });
+        });
     });
 </script>
 
@@ -589,10 +634,6 @@ $('.check-all').on('click',function(){
             });
         });
     </script>
-
-
-
-
 
 
 
