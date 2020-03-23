@@ -1088,7 +1088,6 @@ public function index2(Request $request)
 
     public function storeModalTareaLotes(Request $request)
     {
-
         $guiaVin = $request->file('guia_vin');
         $extensionGuia = $guiaVin->extension();
         $path = $guiaVin->storeAs(
@@ -1153,6 +1152,8 @@ public function index2(Request $request)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
                         [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, null, null, $user->belongsToEmpresa->empresa_id, "VIN Arribado."]);
                 } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
+                    $bloque = null;
+
                     if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){ //VIN previamente en patio
                         $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
                         
@@ -1162,8 +1163,6 @@ public function index2(Request $request)
                             $ubic_patio->ubic_patio_ocupada = false;
                             $ubic_patio->save();
                             $bloque = $ubic_patio->bloque_id;
-                        } else {
-                            $bloque = null;
                         }
                     }
 
