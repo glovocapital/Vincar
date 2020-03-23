@@ -243,6 +243,10 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post('vin/modal_cambia_estado','VinController@storeModalCambiaEstado')->name('vin.storeModalCambiaEstado');
     Route::post('vin/export', 'VinController@exportResultadoBusquedaVins')->name('vin.exportResultadoBusquedaVins');
 
+    Route::post ('vin/index_json', 'VinController@index_json')->name('vin.index_json');
+
+
+
      //Jc
      Route::get('patio/vins_patio','PatioController@indexVinsPatio')->name('patio.vins_patio');
      Route::get('patioDashboard', 'PatioController@dashboard')->name('patio.dashboard');

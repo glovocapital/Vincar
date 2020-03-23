@@ -206,10 +206,10 @@
         <div class="ibox float-e-margins text-center">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Buscarrr Vin</h3>
+                    <h3 class="card-title">Buscar Vin</h3>
                 </div>
                 <div class="card-body">
-                    {!! Form::open(['route'=> 'vin.index3', 'method'=>'post']) !!}
+                   {!! Form::open(['route'=> 'vin.index3', 'method'=>'post', 'id' => 'VinForm']) !!}
                     <div class="row">
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
@@ -251,7 +251,8 @@
                                 <button type="button" class="btn btn-warning btn-edo-vins">Cambia Estado por lotes</i></button>
                             @endif
                         @endif
-                        {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
+                        <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
+                       {{-- {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src', 'name'=>'btn-src']) !!} --}}
                         {!! Form::close() !!}
                     </div>
 
@@ -337,7 +338,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
+                            <table class="table table-hover" id="TablaVins" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
@@ -444,8 +445,60 @@
 
 
 <script>
-    $(document).ready(function () {
+
+$(document).ready(function () {
         var checked = false;
+
+        datatablesButtons = $('[id="TablaVins"]').DataTable({
+            responsive: true,
+            lengthChange: !1,
+            pageLength: 100,
+            @if(Session::get('lang')=="es")
+            language: {
+                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+            },
+            @endif
+            buttons: ["copy", "print"],
+
+        });
+
+        $('#btn-src').on('click',function(e){
+            e.preventDefault();
+
+            $.post("{{route('vin.index_json')}}", $("#VinForm").serialize(), function (res) {
+
+                $(res).each(function( index , value ) {
+                    console.log( value );
+
+                    datatablesButtons.row.add( [
+                        '<input type="checkbox" class="check-tarea" value="'+value.vin_id+'" name="checked_vins[]" id="check-vin-'+value.vin_id+'">',
+                        value.vin_codigo,
+                        value.vin_patente,
+                        value.vin_marca,
+                        value.vin_modelo,
+                        value.vin_color,
+                        value.vin_segmento,
+                        value.vin_fec_ingreso,
+                        value.empresa_razon_social,
+                        value.empresa_razon_social,
+                        value.vin_estado_inventario_desc,
+                        value.patio_nombre,
+                        value.bloque_nombre,
+                        value.ubic_patio_fila,
+                        value.ubic_patio_columna,
+
+
+
+                    ] ).draw( false );
+                });
+
+
+            }).fail(function () {
+                alert('Error: ');
+            });
+
+        });
+
 
         $('.check-all').on('click',function(){
 
@@ -589,6 +642,8 @@ $('.check-all').on('click',function(){
             });
         });
     </script>
+
+
 
 
 
