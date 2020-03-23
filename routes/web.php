@@ -243,6 +243,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post('vin/modal_cambia_estado','VinController@storeModalCambiaEstado')->name('vin.storeModalCambiaEstado');
     Route::post('vin/export', 'VinController@exportResultadoBusquedaVins')->name('vin.exportResultadoBusquedaVins');
 
+    Route::post ('vin/index_json', 'VinController@index_json')->name('vin.index_json');
+
     //Rutas mantenedor Histórico de Vins
     Route::get('historico_vin', 'HistoricoVinController@index')->name('historico_vin.index');
     Route::get('historico_vin/create','HistoricoVinController@create')->name('historico_vin.create');
