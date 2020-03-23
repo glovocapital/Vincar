@@ -44,7 +44,7 @@ class Inspeccion extends Model
             ->where('vin_estado_inventario_id', $this->vin_estado_inventario_id)
             ->first();
 
-        return $estadoInventario->vin_estado_inventario_desc;;
+        return $estadoInventario->vin_estado_inventario_desc;
     }
 
     public function oneVinSubEstadoInventario()

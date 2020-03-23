@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class HistoricoVin extends Model
 {
@@ -26,7 +27,11 @@ class HistoricoVin extends Model
     }
     
     public function oneVinEstadoInventario(){
-        return $this->hasOne(Vin::class, 'vin_estado_inventario_id', 'vin_estado_inventario_id');
+        $estadoInventario = DB::table('vin_estado_inventarios')
+            ->where('vin_estado_inventario_id', $this->vin_estado_inventario_id)
+            ->first();
+
+        return $estadoInventario->vin_estado_inventario_desc;
     }
     
     public function oneOrigen(){
@@ -39,10 +44,6 @@ class HistoricoVin extends Model
     }
 
     public function oneEmpresa(){
-        // $vin = $this->oneVin();
-
-        // $user = $vin->oneUser();
-
         return $this->oneVin->oneUser->belongsToEmpresa();
     }
 }

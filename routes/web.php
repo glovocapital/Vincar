@@ -243,9 +243,14 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post('vin/modal_cambia_estado','VinController@storeModalCambiaEstado')->name('vin.storeModalCambiaEstado');
     Route::post('vin/export', 'VinController@exportResultadoBusquedaVins')->name('vin.exportResultadoBusquedaVins');
 
-    Route::post ('vin/index_json', 'VinController@index_json')->name('vin.index_json');
-
-
+    //Rutas mantenedor Histórico de Vins
+    Route::get('historico_vin', 'HistoricoVinController@index')->name('historico_vin.index');
+    Route::get('historico_vin/create','HistoricoVinController@create')->name('historico_vin.create');
+    Route::get('historico_vin/{id}/edit','HistoricoVinController@edit')->name('historico_vin.edit');
+    Route::post('historico_vin','HistoricoVinController@store')->name('historico_vin.store');
+    Route::patch('historico_vin/{id}/update','HistoricoVinController@update')->name('historico_vin.update');
+    Route::get('historico_vin/{id}/delete','HistoricoVinController@destroy')->name('historico_vin.destroy');
+    Route::get('historico_vin/historicoVin/{id_vin}','HistoricoVinController@historicoVin')->name('historico_vin.historicoVin');
 
      //Jc
      Route::get('patio/vins_patio','PatioController@indexVinsPatio')->name('patio.vins_patio');
