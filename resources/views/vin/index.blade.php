@@ -251,8 +251,8 @@
                                 <button type="button" class="btn btn-warning btn-edo-vins">Cambia Estado por lotes</i></button>
                             @endif
                         @endif
-                        <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
-                       {{-- {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src', 'name'=>'btn-src']) !!} --}}
+                       <!-- <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>  -->
+                        {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src', 'name'=>'btn-src']) !!}
                         {!! Form::close() !!}
                     </div>
 
@@ -450,7 +450,7 @@
 
 $(document).ready(function () {
         var checked = false;
-
+/*
         datatablesButtons = $('[id="TablaVins"]').DataTable({
             responsive: true,
             lengthChange: !1,
@@ -500,6 +500,7 @@ $(document).ready(function () {
             });
 
         });
+        */
 
 
         $('.check-all').on('click',function(){
