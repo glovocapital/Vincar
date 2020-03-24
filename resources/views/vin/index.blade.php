@@ -403,7 +403,7 @@
                                     @endif
                                     <td>
                                         <small>
-                                            <a href="#" type="button" class="btn-historico"  value="{{ Crypt::encrypt($vin->vin_id) }}" title="Ver Historico"><i class="fas fa fa-file-invoice"></i></a>
+                                            <a href="#" type="button" class="btn-historico"  value="{{ Crypt::encrypt($vin->vin_id) }}" title="Ver Historico"><i class="fas fa fa-lightbulb"></i></a>
                                         </small>
 
                                         @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2  || auth()->user()->rol_id == 3)
