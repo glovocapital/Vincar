@@ -712,6 +712,8 @@ public function index2(Request $request)
     public function store(Request $request)
     {
         $validate = DB::table('vins')->where('vin_codigo', $request->vin_codigo)->exists();
+        $fecha = date('Y-m-d');
+        $user = User::find(Auth::id());
 
         if($validate == true)
         {
@@ -722,6 +724,7 @@ public function index2(Request $request)
         $id_estado_inventario =  Crypt::decrypt($request->vin_estado_inventario_id);
 
         try {
+            DB::beginTransaction();
 
             $vin = new Vin();
             $vin->vin_codigo = $request->vin_codigo;
@@ -738,13 +741,23 @@ public function index2(Request $request)
 
             $vin->save();
 
+            // Guardar historial del cambio
+            DB::insert('INSERT INTO historico_vins 
+                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                [$vin->vin_id, $vin->vin_estado_inventario_id, $fecha, $user->user_id, null, null, $user->belongsToEmpresa->empresa_id, "VIN Creado."]);
+
+            DB::commit();
+
             flash('El VIN se registró correctamente.')->success();
             return redirect('vin');
 
         }catch (\Exception $e) {
-
+            DB::rollBack();
+            
             flash('Error registrando el VIN.')->error();
-           flash($e->getMessage())->error();
+            flash($e->getMessage())->error();
             return redirect('vin');
         }
     }
@@ -884,7 +897,8 @@ public function index2(Request $request)
             return redirect('vin');
 
         }catch (\Exception $e) {
-
+            DB::rollBack();
+            
             flash('Error al actualizar el VIN.')->error();
             flash($e->getMessage())->error();
             return redirect('vin');
