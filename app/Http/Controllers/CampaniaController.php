@@ -1183,7 +1183,11 @@ class CampaniaController extends Controller
             $user = User::find(Auth::id());
             $vin = Vin::findOrfail($campania->vin_id);
             $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-            $bloque_id = $ubic_patio->bloque_id;
+            if(isset($ubic_patio)){
+                $bloque_id = $ubic_patio->bloque_id;
+            } else {
+                $bloque_id = null;
+            }
 
             DB::insert('INSERT INTO historico_vins 
                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
@@ -1240,7 +1244,11 @@ class CampaniaController extends Controller
             $user = User::find(Auth::id());
             $vin = Vin::findOrfail($tarea->vin_id);
             $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-            $bloque_id = $ubic_patio->bloque_id;
+            if(isset($ubic_patio)){
+                $bloque_id = $ubic_patio->bloque_id;
+            } else {
+                $bloque_id = null;
+            }
 
             $tipo_tarea = DB::table("tareas")
                 ->where('tipo_tarea_id', $tarea->tipo_tarea_id)
@@ -1301,7 +1309,11 @@ class CampaniaController extends Controller
                 $user = User::find(Auth::id());
                 $vin = Vin::findOrfail($tarea->vin_id);
                 $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                $bloque_id = $ubic_patio->bloque_id;
+                if(isset($ubic_patio)){
+                    $bloque_id = $ubic_patio->bloque_id;
+                } else {
+                    $bloque_id = null;
+                }
 
                 $tipo_tarea = DB::table("tareas")
                     ->where('tipo_tarea_id', $tarea->tipo_tarea_id)
@@ -1377,7 +1389,11 @@ class CampaniaController extends Controller
                 $user = User::find(Auth::id());
                 $vin = Vin::findOrfail($campania->vin_id);
                 $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                $bloque_id = $ubic_patio->bloque_id;
+                if(isset($ubic_patio)){
+                    $bloque_id = $ubic_patio->bloque_id;
+                } else {
+                    $bloque_id = null;
+                }
 
                 DB::insert('INSERT INTO historico_vins 
                     (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
@@ -1484,6 +1500,36 @@ class CampaniaController extends Controller
 
                     if(count($existe) == 0){
                         DB::insert('INSERT INTO campania_vins (tipo_campania_id, campania_id) VALUES (?, ?)', [$tipo_campania_id, $request->campania_id]);
+
+                        // Guardar histórico de la asignación de la campaña
+                        $fecha = date('Y-m-d');
+                        $user = User::find(Auth::id());
+                        $vin = Vin::findOrfail($campania->vin_id);
+                        $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                        if(isset($ubic_patio)){
+                            $bloque_id = $ubic_patio->bloque_id;
+                        } else {
+                            $bloque_id = null;
+                        }
+
+                        $tipo_camp_desc = TipoCampania::find($tipo_campania_id)->tipo_campania_descripcion;
+                        
+
+                        DB::insert('INSERT INTO historico_vins 
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                            [
+                                $vin->vin_id, 
+                                $vin->vin_estado_inventario_id, 
+                                $fecha, 
+                                $user->user_id, 
+                                $bloque_id, 
+                                $bloque_id, 
+                                $user->belongsToEmpresa->empresa_id, 
+                                "Nuevo tipo de campaña asignado:" . $tipo_camp_desc
+                            ]
+                        );
                     }
                 }
 
@@ -1506,6 +1552,36 @@ class CampaniaController extends Controller
                             ->where('tipo_campania_id', '=', $tipo_campania_id)
                             ->where('deleted_at', '=', null)
                             ->update(['deleted_at' => now()]);
+                        
+                        // Guardar histórico de la asignación de la campaña
+                        $fecha = date('Y-m-d');
+                        $user = User::find(Auth::id());
+                        $vin = Vin::findOrfail($campania->vin_id);
+                        $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                        if(isset($ubic_patio)){
+                            $bloque_id = $ubic_patio->bloque_id;
+                        } else {
+                            $bloque_id = null;
+                        }
+
+                        $tipo_camp_desc = TipoCampania::find($tipo_campania_id)->tipo_campania_descripcion;
+                        
+
+                        DB::insert('INSERT INTO historico_vins 
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                            [
+                                $vin->vin_id, 
+                                $vin->vin_estado_inventario_id, 
+                                $fecha, 
+                                $user->user_id, 
+                                $bloque_id, 
+                                $bloque_id, 
+                                $user->belongsToEmpresa->empresa_id, 
+                                "Tipo de campaña removido:" . $tipo_camp_desc
+                            ]
+                        );
                     }
                 }
 
@@ -1587,6 +1663,8 @@ class CampaniaController extends Controller
     {
         $tarea = Tarea::find($request->tarea_id);
 
+        $tipo_tarea_id_anterior = $tarea->tipo_tarea_id;
+
         $tarea->tarea_prioridad = $request->tarea_prioridad;
         $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
         $tarea->tarea_hora_termino = $request->tarea_hora_termino;
@@ -1594,6 +1672,41 @@ class CampaniaController extends Controller
         $tarea->tipo_destino_id = $request->tipo_destino_id;
 
         $tarea->save();
+
+        if($tipo_tarea_id_anterior != $tarea->tipo_tarea_id){
+            // Guardar histórico de la asignación de la campaña
+            $fecha = date('Y-m-d');
+            $user = User::find(Auth::id());
+            $vin = Vin::findOrfail($tarea->vin_id);
+            $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+            if(isset($ubic_patio)){
+                $bloque_id = $ubic_patio->bloque_id;
+            } else {
+                $bloque_id = null;
+            }
+
+            $tipo_tarea = DB::table("tareas")
+                ->where('tipo_tarea_id', $tarea->tipo_tarea_id)
+                ->first();
+
+            $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
+
+            DB::insert('INSERT INTO historico_vins 
+                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                [
+                    $vin->vin_id, 
+                    $vin->vin_estado_inventario_id, 
+                    $fecha, 
+                    $user->user_id, 
+                    $bloque_id, 
+                    $bloque_id, 
+                    $user->belongsToEmpresa->empresa_id, 
+                    "Cambio de tarea previamente asignada a: " . $desc_tarea
+                ]
+            );
+        }
 
         return redirect()->route('planificacion.index')->with('success', 'Tarea actualizada con éxito.');
     }
