@@ -404,7 +404,7 @@
                                     @endif
                                     <td>
                                         <small>
-                                            <button type="button" class="btn-historico"  value="{{ Crypt::encrypt($vin->vin_id) }}" title="Ver Historico"><i class="fas fa fa-file-invoice"></i></button>
+                                            <a href="#" type="button" class="btn-historico"  value="{{ Crypt::encrypt($vin->vin_id) }}" title="Ver Historico"><i class="fas fa fa-lightbulb"></i></a>
                                         </small>
 
                                         @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2  || auth()->user()->rol_id == 3)
@@ -575,7 +575,7 @@ $(document).ready(function () {
         $('#dataTableVins tbody').on('click', '.btn-historico', function (e) {
             e.preventDefault();
 
-            var id_vin = $(this).val();
+            var id_vin = $(this).attr("value");
 
             var url = "/historico_vin/historicoVin/" + id_vin;
 

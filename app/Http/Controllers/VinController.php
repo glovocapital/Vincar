@@ -999,6 +999,8 @@ public function index2(Request $request)
     public function store(Request $request)
     {
         $validate = DB::table('vins')->where('vin_codigo', $request->vin_codigo)->exists();
+        $fecha = date('Y-m-d');
+        $user = User::find(Auth::id());
 
         if($validate == true)
         {
@@ -1009,6 +1011,7 @@ public function index2(Request $request)
         $id_estado_inventario =  Crypt::decrypt($request->vin_estado_inventario_id);
 
         try {
+            DB::beginTransaction();
 
             $vin = new Vin();
             $vin->vin_codigo = $request->vin_codigo;
@@ -1025,13 +1028,23 @@ public function index2(Request $request)
 
             $vin->save();
 
+            // Guardar historial del cambio
+            DB::insert('INSERT INTO historico_vins 
+                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                [$vin->vin_id, $vin->vin_estado_inventario_id, $fecha, $user->user_id, null, null, $user->belongsToEmpresa->empresa_id, "VIN Creado."]);
+
+            DB::commit();
+
             flash('El VIN se registró correctamente.')->success();
             return redirect('vin');
 
         }catch (\Exception $e) {
-
+            DB::rollBack();
+            
             flash('Error registrando el VIN.')->error();
-           flash($e->getMessage())->error();
+            flash($e->getMessage())->error();
             return redirect('vin');
         }
     }
@@ -1092,11 +1105,16 @@ public function index2(Request $request)
     public function update(Request $request, $id)
     {
         $vin_id =  Crypt::decrypt($id);
-        $vin = Vin::findOrfail($vin_id);
-
-        $id_estado_inventario =  Crypt::decrypt($request->vin_estado_inventario_id);
-
+        $fecha = date('Y-m-d');
+        $user = User::find(Auth::id());
+        
         try {
+            DB::beginTransaction();
+            
+            $vin = Vin::findOrfail($vin_id);
+
+            $estado_previo = $vin->vin_estado_inventario_id;
+            $estado_nuevo = Crypt::decrypt($request->vin_estado_inventario_id);
 
             $vin->vin_codigo = $request->vin_codigo;
             $vin->vin_patente = $request->vin_patente;
@@ -1107,16 +1125,67 @@ public function index2(Request $request)
             $vin->vin_segmento = $request->vin_segmento;
             $vin->vin_fec_ingreso = $request->vin_fec_ingreso;
             $vin->user_id = (int)$request->user_id;
-            $vin->vin_estado_inventario_id = $id_estado_inventario;
             $vin->vin_sub_estado_inventario_id = $request->vin_sub_estado_inventario_id;
 
-            $vin->save();
+            if($estado_previo != $estado_nuevo){
+                // Pasar el VIN de estado "Anunciado" a estado "Arribado"
+                if($estado_previo == 1 && $estado_nuevo == 2){
+                    $vin->vin_estado_inventario_id = $estado_nuevo;
+                    $vin->save();
+
+                    // Guardar historial del cambio
+                    DB::insert('INSERT INTO historico_vins 
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                        [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, null, null, $user->belongsToEmpresa->empresa_id, "VIN Arribado."]);
+                } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
+                    $bloque = null;
+
+                    if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){ //VIN previamente en patio
+                        $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                        
+                        if(isset($ubic_patio->ubic_patio_id)) // Liberar ubicación ocupada
+                        {
+                            $ubic_patio->vin_id = null;
+                            $ubic_patio->ubic_patio_ocupada = false;
+                            $ubic_patio->save();
+                            $bloque = $ubic_patio->bloque_id;
+                        }
+                    }
+
+                    $vin->vin_estado_inventario_id = $estado_nuevo;
+                    $vin->save();
+                    
+                    if($estado_nuevo == 8){ // Estado nuevo VIN Entregado
+                        // Guardar historial del cambio
+                        DB::insert('INSERT INTO historico_vins 
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                            [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, $bloque, null, $user->belongsToEmpresa->empresa_id, "VIN Entregado."]);
+                    } else{ // Estado nuevo VIN Suprimido
+                        DB::insert('INSERT INTO historico_vins 
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                            [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, $bloque, null, $user->belongsToEmpresa->empresa_id, "VIN Suprimido."]);
+                    }
+                } 
+
+            } else{
+                $vin->vin_estado_inventario_id = $estado_previo;
+                $vin->save();
+            }
+
+            DB::commit();
 
             flash('VIN actualizado correctamente.')->success();
             return redirect('vin');
 
         }catch (\Exception $e) {
-
+            DB::rollBack();
+            
             flash('Error al actualizar el VIN.')->error();
             flash($e->getMessage())->error();
             return redirect('vin');
@@ -1255,31 +1324,63 @@ public function index2(Request $request)
     public function cambiaestado(Request $request, $id)
     {
         $vin_id =  Crypt::decrypt($id);
-        $vin = Vin::findOrfail($vin_id);
+        $fecha = date('Y-m-d');
+
+        $user = User::find(Auth::id());
 
         try {
+
             DB::beginTransaction();
+            
+            $vin = Vin::findOrfail($vin_id);
 
-            if($request->vin_estado_inventario_id == 7 || $request->vin_estado_inventario_id == 8)
-            {
-              //  $ubic_patios = DB::table('ubic_patios')
-                $ubic_patios = UbicPatio::where('vin_id', $vin->vin_id)->first();
+            $estado_previo = $vin->vin_estado_inventario_id;
+            $estado_nuevo = $request->vin_estado_inventario_id;
 
+            // Pasar el VIN de estado "Anunciado" a estado "Arribado"
+            if($estado_previo == 1 && $estado_nuevo == 2){
+                $vin->vin_estado_inventario_id = $estado_nuevo;
+                $vin->save();
 
-                    if(isset($ubic_patios->ubic_patio_id))
+                // Guardar historial del cambio
+                DB::insert('INSERT INTO historico_vins 
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                    [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, null, null, $user->belongsToEmpresa->empresa_id, "VIN Arribado."]);
+            } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
+                $bloque = null;
+
+                if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){ //VIN previamente en patio
+                    $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                    
+                    if(isset($ubic_patio->ubic_patio_id)) // Liberar ubicación ocupada
                     {
-
-                        $ubic_patios->vin_id = null;
-                        $ubic_patios->ubic_patio_ocupada = false;
-                        $ubic_patios->save();
-
+                        $ubic_patio->vin_id = null;
+                        $ubic_patio->ubic_patio_ocupada = false;
+                        $ubic_patio->save();
+                        $bloque = $ubic_patio->bloque_id;
                     }
+                }
+
+                $vin->vin_estado_inventario_id = $estado_nuevo;
+                $vin->save();
+                
+                if($estado_nuevo == 8){ // Estado nuevo VIN Entregado
+                    // Guardar historial del cambio
+                    DB::insert('INSERT INTO historico_vins 
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                        [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, $bloque, null, $user->belongsToEmpresa->empresa_id, "VIN Entregado."]);
+                } else{ // Estado nuevo VIN Suprimido
+                    DB::insert('INSERT INTO historico_vins 
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                        [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, $bloque, null, $user->belongsToEmpresa->empresa_id, "VIN Suprimido."]);
+                }
             }
-
-
-            $vin->vin_estado_inventario_id = $request->vin_estado_inventario_id;
-            $vin->save();
-
 
             DB::commit();
 
@@ -1289,9 +1390,8 @@ public function index2(Request $request)
             flash($e->getMessage())->error();
             return redirect('vin');
         }
-        flash('Estrado actualizado correctamente.')->success();
+        flash('Estado actualizado correctamente.')->success();
         return redirect('vin');
-
     }
 
     public function downloadFile()
