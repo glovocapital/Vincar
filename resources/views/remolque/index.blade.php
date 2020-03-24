@@ -55,7 +55,7 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                    <label for="remolque_modelo" class="col-sm-3">Modelo <strong>*</strong></label>
+                                    <label for="remolque_modelo" class="col-sm-3">Modelo<strong>*</strong></label>
                                     {!! Form::text('remolque_modelo', null, ['placeholder'=>'Modelo', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
 

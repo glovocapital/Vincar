@@ -30,7 +30,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
         {
             try {
                 DB::beginTransaction();
-    
+
                 $vin = DB::table('vins')
                     ->where('vin_codigo', $row['vin'])
                     ->exists();
@@ -50,14 +50,15 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                         'user_id' =>  $user->user_id,
                     ]);
 
-                    DB::insert('INSERT INTO historico_vins 
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                    DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                             [$vin_nuevo->vin_id, 1, $fecha, $user->user_id, null, null, $user->belongsToEmpresa->empresa_id, "Anuncio de llegada del VIN."]);
                 }
                 DB::commit();
             } catch (\Throwable $th) {
+                dd($th);
                 DB::rollBack();
                 return back()->with('error-msg', 'Error inesperado al insertar datos masivos.');
             }

@@ -308,6 +308,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('planificacion/{id}/delete','CampaniaController@destroyTarea')->name('planificacion.destroy');
 
 
+    Route::get('tour', 'TourController@index')->name('transporte.index');
+
 });
 
 

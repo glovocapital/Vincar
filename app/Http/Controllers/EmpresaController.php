@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 
+
 class EmpresaController extends Controller
 {
 
@@ -167,9 +168,8 @@ class EmpresaController extends Controller
         $empresa_id =  Crypt::decrypt($id);
         $empresa =  Empresa::findOrfail($empresa_id);
 
-
-
         try {
+           //dd($request->es_proveedor);
 
             $empresa->empresa_rut = $request->empresa_rut;
             $empresa->empresa_razon_social = $request->empresa_nombre;
@@ -180,15 +180,16 @@ class EmpresaController extends Controller
             $empresa->empresa_telefono_contacto = $request->empresa_telefono_contacto;
             $empresa->empresa_email_contacto = $request->empresa_email_contacto;
 
-            if($request->es_proveedor == 1)
+            if($request->es_proveedor == true)
             {
-                $empresa->empresa_es_proveedor = 1;
+                $empresa->empresa_es_proveedor = true;
                 $empresa->tipo_proveedor_id = $request->tipo_proveedor;
             }else
             {
-                $empresa->empresa_es_proveedor = 0;
+                $empresa->empresa_es_proveedor = false;
                 $empresa->tipo_proveedor_id = NULL;
             }
+
 
             $empresa->save();
 
@@ -196,6 +197,7 @@ class EmpresaController extends Controller
             return redirect('empresa');
 
         }catch (\Exception $e) {
+            dd($e);
 
             flash('Error al actualizar la empresa.')->error();
            //flash($e->getMessage())->error();
