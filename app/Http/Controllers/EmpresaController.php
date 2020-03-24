@@ -197,7 +197,7 @@ class EmpresaController extends Controller
             return redirect('empresa');
 
         }catch (\Exception $e) {
-            dd($e);
+           // dd($e);
 
             flash('Error al actualizar la empresa.')->error();
            //flash($e->getMessage())->error();
