@@ -149,9 +149,6 @@ class ApiController extends Controller
                         $fecha = date('Y-m-d');
                         $user = User::find(Auth::id());
 
-                        $tipo_camp_desc = TipoCampania::find($tipo_campania_id)->tipo_campania_descripcion;
-                        
-
                         DB::insert('INSERT INTO historico_vins 
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                             origen_id, destino_id, empresa_id, historico_vin_descripcion) 
@@ -840,7 +837,7 @@ class ApiController extends Controller
                             $bloque_id, 
                             $bloque_id, 
                             $user->belongsToEmpresa->empresa_id, 
-                            "VIN Inspeccionado Sin Daño."
+                            "VIN Inspeccionado Con Daño."
                         ]
                     );
 
