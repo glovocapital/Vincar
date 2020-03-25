@@ -1315,14 +1315,14 @@ class CampaniaController extends Controller
                     $bloque_id = null;
                 }
 
-                $tipo_tarea = DB::table("tareas")
+                $tipo_tarea = DB::table("tipo_tareas")
                     ->where('tipo_tarea_id', $tarea->tipo_tarea_id)
                     ->first();
-                
+                    
                 $desc_tarea = "";
 
                 $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
-
+                
                 DB::insert('INSERT INTO historico_vins 
                     (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                     origen_id, destino_id, empresa_id, historico_vin_descripcion) 
