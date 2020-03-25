@@ -1390,7 +1390,8 @@ public function index2(Request $request)
                     [
                         $vin->vin_id, 
                         $estado_nuevo, 
-                        $fecha, $user->user_id, 
+                        $fecha, 
+                        $user->user_id, 
                         null, 
                         null, 
                         $user->belongsToEmpresa->empresa_id, 
@@ -1449,6 +1450,26 @@ public function index2(Request $request)
                         ]
                     );
                 }
+            } else if($estado_previo == 8 && $estado_nuevo == 1){
+                $vin->vin_estado_inventario_id = $estado_nuevo;
+                $vin->save();
+
+                // Guardar historial del cambio
+                DB::insert('INSERT INTO historico_vins 
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                    [
+                        $vin->vin_id, 
+                        $estado_nuevo, 
+                        $fecha, 
+                        $user->user_id, 
+                        null, 
+                        null, 
+                        $user->belongsToEmpresa->empresa_id, 
+                        "VIN nuevamente Anunciado luego de haber sido entregado."
+                    ]
+                );
             }
 
             DB::commit();
@@ -1669,8 +1690,28 @@ public function index2(Request $request)
                             ]
                         );
                     }
+                } else if($estado_previo == 8 && $estado_nuevo == 1){
+                    $vin->vin_estado_inventario_id = $estado_nuevo;
+                    $vin->save();
+    
+                    // Guardar historial del cambio
+                    DB::insert('INSERT INTO historico_vins 
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                        [
+                            $vin->vin_id, 
+                            $estado_nuevo, 
+                            $fecha, 
+                            $user->user_id, 
+                            null, 
+                            null, 
+                            $user->belongsToEmpresa->empresa_id, 
+                            "VIN nuevamente Anunciado luego de haber sido entregado."
+                        ]
+                    );
                 }
-            }
+            } 
 
             DB::commit();
         } catch (\Throwable $th) {
