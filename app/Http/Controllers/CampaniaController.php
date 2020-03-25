@@ -1687,7 +1687,7 @@ class CampaniaController extends Controller
                     $bloque_id = null;
                 }
 
-                $tipo_tarea = DB::table("tareas")
+                $tipo_tarea = DB::table("tipo_tareas")
                     ->where('tipo_tarea_id', $tarea->tipo_tarea_id)
                     ->first();
 
