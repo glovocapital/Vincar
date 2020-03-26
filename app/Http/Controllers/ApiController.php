@@ -500,7 +500,7 @@ class ApiController extends Controller
 
                 // Guardar historial del cambio
                 $fecha = date('Y-m-d');
-                $user = User::find(Auth::id());
+                $user = User::find($request->user_id);
 
                 DB::insert('INSERT INTO historico_vins 
                     (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
