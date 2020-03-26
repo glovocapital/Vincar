@@ -12,48 +12,49 @@
             </div>
             <div class="card-body">
 
-                    {!! Form::open(['route'=> 'pais.store', 'method'=>'POST']) !!}
+                    {!! Form::open(['route'=> 'tour.store', 'method'=>'POST']) !!}
                     <div class="form-group">
                         <div class="row">
 
                             <div class="col-md-4" >
-
                                 <div class="form-group">
                                     <label for="estado_nombre" >Cliente <strong> *</strong></label>
                                     {!! Form::select('cliente_id', $empresas, null,['id' => 'cliente_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                                 </div>
                                 <div class="form-group">
-                                    <label for="user_id" >Remolque<strong> *</strong></label>
-                                    {!! Form::select('patio_id', $remolque, null,['id' => 'patio', 'placeholder'=>'Remolque', 'class'=>'form-control col-sm-9 select-cliente']) !!}
-                            </div>
+                                    <label for="remolque_id" >Remolque<strong> *</strong></label>
+                                    {!! Form::select('remolque_id', $remolque, null,['id' => 'patio', 'placeholder'=>'Remolque', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                </div>
                             </div>
 
 
                             <div class="col-md-4" id="wrapper_2">
                                 <div class="form-group">
-
-                                        <label for="user_id" >Proveedor de Transporte <strong> *</strong></label>
-                                        {!! Form::select('patio_id', $transporte, null,['id' => 'proveedor_id', 'placeholder'=>'Proveedor de Transporte', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                    <label for="transporte_id" >Proveedor de Transporte <strong> *</strong></label>
+                                    {!! Form::select('transporte_id', $transporte, null,['id' => 'proveedor_id', 'placeholder'=>'Proveedor de Transporte', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                                 </div>
                                 <div class="form-group">
-                                    <label for="camion_id" ><strong> Conductor *</strong></label>
-                                    {!! Form::select('camion_id', $users, null,['id' => 'camion', 'placeholder'=>'Conductor', 'class'=>'form-control col-sm-9 select-cliente']) !!}
-                            </div>
-
+                                    <label for="conductor_id" ><strong> Conductor *</strong></label>
+                                    {!! Form::select('conductor_id', $users, null,['id' => 'camion', 'placeholder'=>'Conductor', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                </div>
                             </div>
 
                             <div class="col-md-4" id="wrapper_2">
-
                                 <div class="form-group">
                                     <label for="camion_id" >Camión<strong> *</strong></label>
                                     {!! Form::select('camion_id', $camion, null,['id' => 'camion', 'placeholder'=>'Camión', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                </div>
+                                <div class="form-group">
+                                    <label for="tour_fecha_inicio" >Fecha de Inicio <strong>*</strong></label>
+                                     {!! Form::date('tour_fecha_inicio', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
+                                </div>
                             </div>
-                        </div>
 
 
                         </div>
                     </div>
                     <div class="text-right pb-5">
+
                         {!! Form::submit('Agregar Rutas ', ['class' => 'btn btn-success block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>
@@ -125,5 +126,6 @@
     </div>
 </div>
 
-@stop
 
+
+@stop

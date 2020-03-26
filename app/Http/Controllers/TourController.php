@@ -79,7 +79,9 @@ class TourController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+
+        dd($request);
     }
 
     /**
@@ -125,5 +127,10 @@ class TourController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function storeModalAddRutas()
+    {
+        return 0;
     }
 }

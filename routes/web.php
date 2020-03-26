@@ -308,7 +308,10 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('planificacion/{id}/delete','CampaniaController@destroyTarea')->name('planificacion.destroy');
 
 
-    Route::get('tour', 'TourController@index')->name('transporte.index');
+    Route::get('tour', 'TourController@index')->name('tour.index');
+    Route::post('tour','TourController@store')->name('tour.store');
+    Route::post('tour/modal_add_rutas','TourController@storeModalAddRutas')->name('transporte.storeModalAddRutas');
+
 
 });
 
