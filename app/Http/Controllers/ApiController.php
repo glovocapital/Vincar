@@ -148,7 +148,7 @@ class ApiController extends Controller
                         // Guardar histórico de la asignación de la campaña
                         $fecha = date('Y-m-d');
                         $user = User::find($request->user_id);
-                        if($UbicPatio != null){
+                        if(count($UbicPatio)>0){
                             $bloque_origen = $UbicPatio[0]->bloque_id;
                         } else {
                             $bloque_origen = null;
@@ -164,7 +164,7 @@ class ApiController extends Controller
                                 $fecha, 
                                 $user->user_id, 
                                 $bloque_origen, 
-                                $UbicPatios->bloque_id, 
+                                $bloque, 
                                 $user->belongsToEmpresa->empresa_id, 
                                 "Cambio de ubicación en patio"
                             ]
@@ -861,11 +861,11 @@ class ApiController extends Controller
 
                 }else{
                     DB::rollBack();
-                    $usersf = Array("Err" => 0, "Msg" => "Error al registrar");
+                    $usersf = Array("Err" => 1, "Msg" => "Error al registrar");
                 }
             } catch (\Throwable $th) {     
                 DB::rollBack();
-                return back()->with('error-msg', 'Error inesperado al registrar datos.');
+                $usersf = Array("Err" => 1, "Msg" => "Error inesperado al registrar datos");
            }
 
         }else{
