@@ -83,8 +83,6 @@ class TourController extends Controller
     public function store(Request $request)
     {
 
-      //  dd($request);
-
         try {
 
             $tour = new Tour();
@@ -101,9 +99,9 @@ class TourController extends Controller
 
         }catch (\Exception $e) {
 
-dd($e);
+//dd($e);
 
-            flash('Error al crear el País.')->error();
+            flash('Error al crear el Tour.')->error();
            //flash($e->getMessage())->error();
             return redirect('tour');
         }

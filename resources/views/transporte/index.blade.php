@@ -91,7 +91,12 @@
                                     <table class="table table-hover" id="dataTablePais" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>Nombre</th>
+                                                <th>Cliente</th>
+                                                <th>Proveedor de Transporte</th>
+                                                <th>Patente Camión</th>
+                                                <th>Patente Remolque</th>
+                                                <th>Conductor</th>
+                                                <th>Fecha</th>
                                                 <th>Acción</th>
                                             </tr>
                                         </thead>
@@ -100,7 +105,12 @@
                                         @foreach($tour as $t)
 
                                             <tr>
-                                                <td><small>{{ $t->tour_fec_inicio }}</small></td>
+                                                <td><small>{{ $t->oneCliente->empresa_razon_social }} </small></td>
+                                                <td><small>{{ $t->oneProveedor->empresa_razon_social }}</small></td>
+                                                <td><small>{{ $t->belongsToCamion->camion_patente }}</small></td>
+                                                <td><small>{{ $t->belongsToRemolque->remolque_patente }}</small></td>
+                                                <td><small>{{ $t->OneConductor->user_nombre }} {{ $t->OneConductor->user_apellido }}</small></td>
+                                                <td><small>{{ $t->tour_fec_inicio}}</td><small>
                                               {{--  <td>
                                                    <small>
                                                    <a href="{{ route('pais.edit', Crypt::encrypt($t->tour_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
