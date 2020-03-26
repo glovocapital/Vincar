@@ -126,8 +126,8 @@ class ApiController extends Controller
                 if($UbicPatio_[0]->ubic_patio_ocupada){
                     $usersf = Array("Err" => 1, "Msg" => "Esta posición esta ocupada");
                 }else{
-                    // try {
-                        // DB::beginTransaction();
+                    try {
+                        DB::beginTransaction();
                         $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->get();
                         if(count($UbicPatio)>0){
                             $UbicPatios = UbicPatio::findOrFail($UbicPatio[0]->ubic_patio_id);
@@ -148,6 +148,11 @@ class ApiController extends Controller
                         // Guardar histórico de la asignación de la campaña
                         $fecha = date('Y-m-d');
                         $user = User::find($request->user_id);
+                        if($UbicPatio != null){
+                            $bloque_origen = $UbicPatio[0]->bloque_id;
+                        } else {
+                            $bloque_origen = null;
+                        }
 
                         DB::insert('INSERT INTO historico_vins 
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
@@ -158,7 +163,7 @@ class ApiController extends Controller
                                 $Vin->vin_estado_inventario_id, 
                                 $fecha, 
                                 $user->user_id, 
-                                $UbicPatio[0]->bloque_id, 
+                                $bloque_origen, 
                                 $UbicPatios->bloque_id, 
                                 $user->belongsToEmpresa->empresa_id, 
                                 "Cambio de ubicación en patio"
@@ -167,11 +172,11 @@ class ApiController extends Controller
 
                         $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
                         
-                        // DB::commit();
-                    // } catch (\Throwable $th) {
-                    //     DB::rollBack();
-                    //     $usersf = Array("Err" => 1, "Msg" => "Error actualizando datos.");
-                    // }       
+                        DB::commit();
+                    } catch (\Throwable $th) {
+                        DB::rollBack();
+                        $usersf = Array("Err" => 1, "Msg" => "Error actualizando datos.");
+                    }       
                 }
             }else{
                 $usersf = Array("Err" => 1, "Msg" => "La ubicacion en el bloque no esta creado");
