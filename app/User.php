@@ -63,6 +63,8 @@ class User extends Authenticatable
     }
 
 
+
+
 /*
     public function sendPasswordResetNotification($token)
     {

@@ -14,11 +14,15 @@ class Tour extends Model
      * @var array
      */
     protected $fillable = [
-        'tour_guia', 'tour_fec_inicio', 'tour_fec_fin', 'tour_finalizado'
+
     ];
-    
+
     public function belongsToCamion (){
         return $this->belongsTo(Camion::class, 'camion_id', 'camion_id');
+    }
+
+    public function OneConductor (){
+        return $this->belongsTo(User::class, 'conductor_id', 'user_id');
     }
 
     public function belongsToRemolque (){
@@ -26,13 +30,13 @@ class Tour extends Model
     }
 
     public function oneCliente (){
-        return $this->hasOne(User::class, 'cliente_id', 'user_id');
+        return $this->belongsTo(Empresa::class, 'cliente_id', 'empresa_id');
     }
-    
+
     public function oneProveedor (){
-        return $this->hasOne(Empresa::class, 'proveedor_id', 'empresa_id');
+        return $this->belongsTo(Empresa::class, 'proveedor_id', 'empresa_id');
     }
-    
+
     public function oneSalida (){
         return $this->hasOne(Destino::class, 'salida_destino_id', 'destino_id');
     }
