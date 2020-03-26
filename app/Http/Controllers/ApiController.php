@@ -126,8 +126,8 @@ class ApiController extends Controller
                 if($UbicPatio_[0]->ubic_patio_ocupada){
                     $usersf = Array("Err" => 1, "Msg" => "Esta posición esta ocupada");
                 }else{
-                    try {
-                        DB::beginTransaction();
+                    // try {
+                        // DB::beginTransaction();
                         $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->get();
                         if(count($UbicPatio)>0){
                             $UbicPatios = UbicPatio::findOrFail($UbicPatio[0]->ubic_patio_id);
@@ -167,11 +167,11 @@ class ApiController extends Controller
 
                         $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
                         
-                        DB::commit();
-                    } catch (\Throwable $th) {
-                        DB::rollBack();
-                        $usersf = Array("Err" => 1, "Msg" => "Error actualizando datos.");
-                    }       
+                        // DB::commit();
+                    // } catch (\Throwable $th) {
+                    //     DB::rollBack();
+                    //     $usersf = Array("Err" => 1, "Msg" => "Error actualizando datos.");
+                    // }       
                 }
             }else{
                 $usersf = Array("Err" => 1, "Msg" => "La ubicacion en el bloque no esta creado");
@@ -409,8 +409,8 @@ class ApiController extends Controller
         $Tarea=$Tarea->first();
 
         if($Tarea){
-            try {
-                DB::beginTransaction();
+            // try {
+                // DB::beginTransaction();
                 $Tareas= Tarea::findOrFail($Tarea->tarea_id);
                 $Tareas->tarea_finalizada = true;
                 $Tareas->update();
@@ -458,11 +458,11 @@ class ApiController extends Controller
                     ]
                 );
                 
-                DB::commit();
-            } catch (\Throwable $th) {
-                DB::rollBack();
-                $usersf = Array("Err" => 1, "Msg" => "Error finalizando tarea. Fallo en actualización de datos.");
-            }
+                // DB::commit();
+            // } catch (\Throwable $th) {
+            //     DB::rollBack();
+            //     $usersf = Array("Err" => 1, "Msg" => "Error finalizando tarea. Fallo en actualización de datos.");
+            // }
 
             $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['listData'], "vins"=>$vins);
 
@@ -490,8 +490,8 @@ class ApiController extends Controller
         $Vin=$Vin->first();
 
         if($Vin){
-            try {
-                DB::beginTransaction();
+            // try {
+                // DB::beginTransaction();
                 
                 $Vin_= Vin::findOrFail($Vin->vin_id);
                 $Vin_->vin_estado_inventario_id = 2;
@@ -524,11 +524,11 @@ class ApiController extends Controller
 
                 $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
                 
-                DB::commit();
-            }catch (\Exception $e) {
-                DB::rollBack();
-                $usersf = Array("Err" => 1, "Msg" => "Error actualizando datos para dar arribo al VIN");
-            }
+            //     DB::commit();
+            // }catch (\Exception $e) {
+            //     DB::rollBack();
+            //     $usersf = Array("Err" => 1, "Msg" => "Error actualizando datos para dar arribo al VIN");
+            // }
 
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
@@ -646,8 +646,8 @@ class ApiController extends Controller
         $estado_nuevo = 4; // Estado En Patio
 
         if($Vin){
-            try {
-                DB::beginTransaction();
+            // try {
+            //     DB::beginTransaction();
                 
                 $cliente_id = $request->input('user_id');
 
@@ -696,17 +696,17 @@ class ApiController extends Controller
                         ]
                     );
 
-                    DB::commit();
+                    // DB::commit();
 
                     $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items']);
                 }else{
-                    DB::rollBack();
+                    // DB::rollBack();
                     $usersf = Array("Err" => 0, "Msg" => "Error al registrar");
                 }
-            } catch (\Throwable $th) {     
-                 DB::rollBack();
-                 return back()->with('error-msg', 'Error inesperado al registrar datos.');
-            }
+            // } catch (\Throwable $th) {     
+            //      DB::rollBack();
+            //      return back()->with('error-msg', 'Error inesperado al registrar datos.');
+            // }
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
         }
@@ -735,8 +735,8 @@ class ApiController extends Controller
         $estado_nuevo = 6; // Estado No Disponible Para la Venta
 
         if($Vin){
-            try {
-                DB::beginTransaction();
+            // try {
+            //     DB::beginTransaction();
                 
                 $cliente_id = $request->input('user_id');
 
@@ -841,19 +841,19 @@ class ApiController extends Controller
                         ]
                     );
 
-                    DB::commit();
+                    // DB::commit();
 
                     $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items'], 'foto'=>$fotoArchivo->getClientOriginalName());
 
 
                 }else{
-                    DB::rollBack();
+                    // DB::rollBack();
                     $usersf = Array("Err" => 0, "Msg" => "Error al registrar");
                 }
-            } catch (\Throwable $th) {     
-                DB::rollBack();
-                return back()->with('error-msg', 'Error inesperado al registrar datos.');
-           }
+        //     } catch (\Throwable $th) {     
+        //         DB::rollBack();
+        //         return back()->with('error-msg', 'Error inesperado al registrar datos.');
+        //    }
 
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
