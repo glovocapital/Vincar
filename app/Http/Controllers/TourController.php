@@ -9,6 +9,7 @@ use App\Http\Middleware\CheckSession;
 use App\User;
 use App\Empresa;
 use App\Remolque;
+use App\Tour;
 use DB;
 
 class TourController extends Controller
@@ -58,7 +59,9 @@ class TourController extends Controller
         ->pluck('empresa_razon_social', 'empresa_id')
         ->all();
 
-        return view('transporte.index', compact('empresas','users','camion','transporte','remolque'));
+        $tour = Tour::all();
+
+        return view('transporte.index', compact('tour','empresas','users','camion','transporte','remolque'));
     }
 
     /**
@@ -79,6 +82,31 @@ class TourController extends Controller
      */
     public function store(Request $request)
     {
+
+      //  dd($request);
+
+        try {
+
+            $tour = new Tour();
+            $tour->camion_id = $request->camion_id;
+            $tour->cliente_id = $request->cliente_id;
+            $tour->remolque_id = $request->remolque_id;
+            $tour->proveedor_id = $request->transporte_id;
+            $tour->conductor_id = $request->conductor_id;
+            $tour->tour_fec_inicio = $request->tour_fecha_inicio;
+            $tour->save();
+
+            flash('El Tour se creo correctamente.')->success();
+            return redirect('tour');
+
+        }catch (\Exception $e) {
+
+dd($e);
+
+            flash('Error al crear el País.')->error();
+           //flash($e->getMessage())->error();
+            return redirect('tour');
+        }
 
 
         dd($request);

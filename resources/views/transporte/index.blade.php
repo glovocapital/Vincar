@@ -55,7 +55,7 @@
                     </div>
                     <div class="text-right pb-5">
 
-                        {!! Form::submit('Agregar Rutas ', ['class' => 'btn btn-success block full-width m-b']) !!}
+                        {!! Form::submit('Agregar Tour ', ['class' => 'btn btn-success block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>
                     <div class="text-center texto-leyenda">
@@ -95,27 +95,27 @@
                                                 <th>Acción</th>
                                             </tr>
                                         </thead>
-{{--
+
                                         <tbody>
-                                        @foreach($pais as $p)
+                                        @foreach($tour as $t)
 
                                             <tr>
-                                                <td><small>{{ $p->pais_nombre }}</small></td>
-                                                <td>
+                                                <td><small>{{ $t->tour_fec_inicio }}</small></td>
+                                              {{--  <td>
                                                    <small>
-                                                   <a href="{{ route('pais.edit', Crypt::encrypt($p->pais_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
+                                                   <a href="{{ route('pais.edit', Crypt::encrypt($t->tour_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
                                                     </small>
                                                     <small>
                                                             <a href = "{{ route('pais.destroy', Crypt::encrypt($p->pais_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
                                                             </a>
-                                                    </small>  -->
+                                                    </small>
                                                 </td>
-
+--}}
                                             </tr>
 
                                         @endforeach
                                         </tbody>
---}}
+
                                     </table>
 
                                 </div>

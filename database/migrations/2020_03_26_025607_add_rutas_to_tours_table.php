@@ -18,12 +18,11 @@ class AddRutasToToursTable extends Migration
             $table->date('tour_fec_inicio')->nullable()->change();
             $table->date('tour_fec_fin')->nullable()->change();
             $table->boolean('tour_finalizado')->nullable()->change();
+            $table->unsignedBigInteger('salida_destino_id')->nullable()->change();
+            $table->unsignedBigInteger('llegada_destino_id')->nullable()->change();
 
             $table->unsignedBigInteger('conductor_id');
             $table->foreign('conductor_id')->references('user_id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-
-            $table->unsignedBigInteger('ruta_id');
-            $table->foreign('ruta_id')->references('ruta_id')->on('rutas')->onUpdate('cascade')->onDelete('cascade');
 
         });
     }
