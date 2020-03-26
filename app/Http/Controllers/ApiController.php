@@ -424,7 +424,7 @@ class ApiController extends Controller
 
                 $vins=$Vin[0]->vin_codigo;
 
-                // $request->user_id = $Tarea->user_id;
+                $request->user_id = $Tarea->user_id;
 
                 $itemlist =self::Lists($request);
 
