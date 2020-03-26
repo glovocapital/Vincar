@@ -1033,7 +1033,17 @@ public function index2(Request $request)
                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                 origen_id, destino_id, empresa_id, historico_vin_descripcion) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-                [$vin->vin_id, $vin->vin_estado_inventario_id, $fecha, $user->user_id, null, null, $user->belongsToEmpresa->empresa_id, "VIN Creado."]);
+                [
+                    $vin->vin_id, 
+                    $vin->vin_estado_inventario_id, 
+                    $fecha, 
+                    $user->user_id, 
+                    null, 
+                    null, 
+                    $user->belongsToEmpresa->empresa_id, 
+                    "VIN Creado."
+                ]
+            );
 
             DB::commit();
 
@@ -1138,7 +1148,17 @@ public function index2(Request $request)
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                         origen_id, destino_id, empresa_id, historico_vin_descripcion) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-                        [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, null, null, $user->belongsToEmpresa->empresa_id, "VIN Arribado."]);
+                        [
+                            $vin->vin_id, 
+                            $estado_nuevo, 
+                            $fecha, 
+                            $user->user_id, 
+                            null, 
+                            null, 
+                            $user->belongsToEmpresa->empresa_id, 
+                            "VIN Arribado."
+                        ]
+                    );
                 } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
                     $bloque = null;
 
@@ -1163,13 +1183,33 @@ public function index2(Request $request)
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                             origen_id, destino_id, empresa_id, historico_vin_descripcion) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-                            [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, $bloque, null, $user->belongsToEmpresa->empresa_id, "VIN Entregado."]);
+                            [
+                                $vin->vin_id, 
+                                $estado_nuevo, 
+                                $fecha, 
+                                $user->user_id, 
+                                $bloque, 
+                                null, 
+                                $user->belongsToEmpresa->empresa_id, 
+                                "VIN Entregado."
+                            ]
+                        );
                     } else{ // Estado nuevo VIN Suprimido
                         DB::insert('INSERT INTO historico_vins 
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                             origen_id, destino_id, empresa_id, historico_vin_descripcion) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-                            [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, $bloque, null, $user->belongsToEmpresa->empresa_id, "VIN Suprimido."]);
+                            [
+                                $vin->vin_id, 
+                                $estado_nuevo, 
+                                $fecha, 
+                                $user->user_id, 
+                                $bloque, 
+                                null, 
+                                $user->belongsToEmpresa->empresa_id, 
+                                "VIN Suprimido."
+                            ]
+                        );
                     }
                 } 
 
@@ -1347,7 +1387,17 @@ public function index2(Request $request)
                     (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                     origen_id, destino_id, empresa_id, historico_vin_descripcion) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-                    [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, null, null, $user->belongsToEmpresa->empresa_id, "VIN Arribado."]);
+                    [
+                        $vin->vin_id, 
+                        $estado_nuevo, 
+                        $fecha, 
+                        $user->user_id, 
+                        null, 
+                        null, 
+                        $user->belongsToEmpresa->empresa_id, 
+                        "VIN Arribado."
+                    ]
+                );
             } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
                 $bloque = null;
 
@@ -1372,14 +1422,54 @@ public function index2(Request $request)
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                         origen_id, destino_id, empresa_id, historico_vin_descripcion) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-                        [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, $bloque, null, $user->belongsToEmpresa->empresa_id, "VIN Entregado."]);
+                        [
+                            $vin->vin_id, 
+                            $estado_nuevo, 
+                            $fecha, 
+                            $user->user_id, 
+                            $bloque, 
+                            null, 
+                            $user->belongsToEmpresa->empresa_id, 
+                            "VIN Entregado."
+                        ]
+                    );
                 } else{ // Estado nuevo VIN Suprimido
                     DB::insert('INSERT INTO historico_vins 
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                         origen_id, destino_id, empresa_id, historico_vin_descripcion) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-                        [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, $bloque, null, $user->belongsToEmpresa->empresa_id, "VIN Suprimido."]);
+                        [
+                            $vin->vin_id, 
+                            $estado_nuevo, 
+                            $fecha, 
+                            $user->user_id, 
+                            $bloque, 
+                            null, 
+                            $user->belongsToEmpresa->empresa_id, 
+                            "VIN Suprimido."
+                        ]
+                    );
                 }
+            } else if($estado_previo == 8 && $estado_nuevo == 1){
+                $vin->vin_estado_inventario_id = $estado_nuevo;
+                $vin->save();
+
+                // Guardar historial del cambio
+                DB::insert('INSERT INTO historico_vins 
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                    [
+                        $vin->vin_id, 
+                        $estado_nuevo, 
+                        $fecha, 
+                        $user->user_id, 
+                        null, 
+                        null, 
+                        $user->belongsToEmpresa->empresa_id, 
+                        "VIN nuevamente Anunciado luego de haber sido entregado."
+                    ]
+                );
             }
 
             DB::commit();
@@ -1537,7 +1627,17 @@ public function index2(Request $request)
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                         origen_id, destino_id, empresa_id, historico_vin_descripcion) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-                        [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, null, null, $user->belongsToEmpresa->empresa_id, "VIN Arribado."]);
+                        [
+                            $vin->vin_id, 
+                            $estado_nuevo, 
+                            $fecha, 
+                            $user->user_id, 
+                            null, 
+                            null, 
+                            $user->belongsToEmpresa->empresa_id, 
+                            "VIN Arribado."
+                        ]
+                    );
                 } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
                     $bloque = null;
 
@@ -1562,16 +1662,56 @@ public function index2(Request $request)
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                             origen_id, destino_id, empresa_id, historico_vin_descripcion) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-                            [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, $bloque, null, $user->belongsToEmpresa->empresa_id, "VIN Entregado."]);
+                            [
+                                $vin->vin_id, 
+                                $estado_nuevo, 
+                                $fecha, 
+                                $user->user_id, 
+                                $bloque, 
+                                null, 
+                                $user->belongsToEmpresa->empresa_id, 
+                                "VIN Entregado."
+                            ]
+                        );
                     } else{ // Estado nuevo VIN Suprimido
                         DB::insert('INSERT INTO historico_vins 
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
                             origen_id, destino_id, empresa_id, historico_vin_descripcion) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-                            [$vin->vin_id, $estado_nuevo, $fecha, $user->user_id, $bloque, null, $user->belongsToEmpresa->empresa_id, "VIN Suprimido."]);
+                            [
+                                $vin->vin_id, 
+                                $estado_nuevo, 
+                                $fecha, 
+                                $user->user_id, 
+                                $bloque, 
+                                null, 
+                                $user->belongsToEmpresa->empresa_id, 
+                                "VIN Suprimido."
+                            ]
+                        );
                     }
+                } else if($estado_previo == 8 && $estado_nuevo == 1){
+                    $vin->vin_estado_inventario_id = $estado_nuevo;
+                    $vin->save();
+    
+                    // Guardar historial del cambio
+                    DB::insert('INSERT INTO historico_vins 
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                        [
+                            $vin->vin_id, 
+                            $estado_nuevo, 
+                            $fecha, 
+                            $user->user_id, 
+                            null, 
+                            null, 
+                            $user->belongsToEmpresa->empresa_id, 
+                            "VIN nuevamente Anunciado luego de haber sido entregado."
+                        ]
+                    );
                 }
-            }
+            } 
 
             DB::commit();
         } catch (\Throwable $th) {

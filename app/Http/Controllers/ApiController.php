@@ -126,33 +126,61 @@ class ApiController extends Controller
                 if($UbicPatio_[0]->ubic_patio_ocupada){
                     $usersf = Array("Err" => 1, "Msg" => "Esta posición esta ocupada");
                 }else{
-                    $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->get();
-                    if(count($UbicPatio)>0){
-                        $UbicPatios = UbicPatio::findOrFail($UbicPatio[0]->ubic_patio_id);
-                        $UbicPatios->ubic_patio_ocupada = false;
-                        $UbicPatios->vin_id = null;
+                    try {
+                        DB::beginTransaction();
+                        $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->get();
+                        if(count($UbicPatio)>0){
+                            $UbicPatios = UbicPatio::findOrFail($UbicPatio[0]->ubic_patio_id);
+                            $UbicPatios->ubic_patio_ocupada = false;
+                            $UbicPatios->vin_id = null;
+                            $UbicPatios->update();
+                        }
+
+                        $UbicPatios = UbicPatio::findOrFail($UbicPatio_[0]->ubic_patio_id);
+                        $UbicPatios->ubic_patio_ocupada = true;
+                        $UbicPatios->vin_id = $Vin->vin_id;
                         $UbicPatios->update();
-                    }
 
-                    $UbicPatios = UbicPatio::findOrFail($UbicPatio_[0]->ubic_patio_id);
-                    $UbicPatios->ubic_patio_ocupada = true;
-                    $UbicPatios->vin_id = $Vin->vin_id;
-                    $UbicPatios->update();
+                        $itemlist =self::ListVIN($request);
 
-                    $itemlist =self::ListVIN($request);
+                        $itemlistData = json_decode($itemlist->content(),true);
 
-                    $itemlistData = json_decode($itemlist->content(),true);
+                        // Guardar histórico de la asignación de la campaña
+                        $fecha = date('Y-m-d');
+                        $user = User::find($request->user_id);
+                        if(count($UbicPatio)>0){
+                            $bloque_origen = $UbicPatio[0]->bloque_id;
+                        } else {
+                            $bloque_origen = null;
+                        }
 
+                        DB::insert('INSERT INTO historico_vins 
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                            [
+                                $Vin->vin_id, 
+                                $Vin->vin_estado_inventario_id, 
+                                $fecha, 
+                                $user->user_id, 
+                                $bloque_origen, 
+                                $bloque, 
+                                $user->belongsToEmpresa->empresa_id, 
+                                "Cambio de ubicación en patio"
+                            ]
+                        );
 
-
-                    $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
-
+                        $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
+                        
+                        DB::commit();
+                    } catch (\Throwable $th) {
+                        DB::rollBack();
+                        $usersf = Array("Err" => 1, "Msg" => "Error actualizando datos.");
+                    }       
                 }
             }else{
                 $usersf = Array("Err" => 1, "Msg" => "La ubicacion en el bloque no esta creado");
             }
-
-
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
         }
@@ -386,19 +414,60 @@ class ApiController extends Controller
         $Tarea=$Tarea->first();
 
         if($Tarea){
-            $Tareas= Tarea::findOrFail($Tarea->tarea_id);
-            $Tareas->tarea_finalizada = true;
-            $Tareas->update();
+            try {
+                DB::beginTransaction();
+                $Tareas= Tarea::findOrFail($Tarea->tarea_id);
+                $Tareas->tarea_finalizada = true;
+                $Tareas->update();
 
-            $Vin =DB::table('vins')->select('*')->where('vin_id','=',$Tareas->vin_id)->get();
+                $Vin =DB::table('vins')->select('*')->where('vin_id','=',$Tareas->vin_id)->get();
 
-            $vins=$Vin[0]->vin_codigo;
+                $vins=$Vin[0]->vin_codigo;
 
-            $request->user_id = $Tarea->user_id;
+                $request->user_id = $Tarea->user_id;
 
-            $itemlist =self::Lists($request);
+                $itemlist =self::Lists($request);
 
-            $itemlistData = json_decode($itemlist->content(),true);
+                $itemlistData = json_decode($itemlist->content(),true);
+                
+                // Guardar histórico de la asignación de la campaña
+                $fecha = date('Y-m-d');
+                $user = User::find($request->user_id);
+                
+                $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
+                if(isset($ubic_patio)){
+                    $bloque_id = $ubic_patio->bloque_id;
+                } else {
+                    $bloque_id = null;
+                }
+    
+                $tipo_tarea = DB::table("tipo_tareas")
+                    ->where('tipo_tarea_id', $Tarea->tipo_tarea_id)
+                    ->first();
+    
+                $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
+    
+                DB::insert('INSERT INTO historico_vins 
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                    [
+                        $Vin[0]->vin_id, 
+                        $Vin[0]->vin_estado_inventario_id, 
+                        $fecha, 
+                        $user->user_id, 
+                        $bloque_id, 
+                        $bloque_id, 
+                        $user->belongsToEmpresa->empresa_id, 
+                        "Tarea finalizada: " . $desc_tarea
+                    ]
+                );
+                
+                DB::commit();
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                $usersf = Array("Err" => 1, "Msg" => "Error finalizando tarea. Fallo en actualización de datos.");
+            }
 
             $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['listData'], "vins"=>$vins);
 
@@ -426,17 +495,45 @@ class ApiController extends Controller
         $Vin=$Vin->first();
 
         if($Vin){
-            $Vin_= Vin::findOrFail($Vin->vin_id);
-            $Vin_->vin_estado_inventario_id = 2;
-            $Vin_->update();
+            try {
+                DB::beginTransaction();
+                
+                $Vin_= Vin::findOrFail($Vin->vin_id);
+                $Vin_->vin_estado_inventario_id = 2;
+                $Vin_->update();
 
 
+                // Guardar historial del cambio
+                $fecha = date('Y-m-d');
+                $user = User::find($request->user_id);
 
-            $itemlist =self::ListVIN($request);
+                DB::insert('INSERT INTO historico_vins 
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                    [
+                        $Vin->vin_id, 
+                        2, 
+                        $fecha, 
+                        $user->user_id, 
+                        null, 
+                        null, 
+                        $user->belongsToEmpresa->empresa_id, 
+                        "VIN Arribado."
+                    ]
+                );
 
-            $itemlistData = json_decode($itemlist->content(),true);
+                $itemlist =self::ListVIN($request);
 
-            $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
+                $itemlistData = json_decode($itemlist->content(),true);
+
+                $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
+                
+                DB::commit();
+            }catch (\Exception $e) {
+                DB::rollBack();
+                $usersf = Array("Err" => 1, "Msg" => "Error actualizando datos para dar arribo al VIN");
+            }
 
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
@@ -550,35 +647,75 @@ class ApiController extends Controller
             ->where('vin_codigo','=', $vins_id)
             ->first();
 
+        $estado_previo = $Vin->vin_estado_inventario_id;
+        $estado_nuevo = 4; // Estado En Patio
+
         if($Vin){
+            try {
+                DB::beginTransaction();
+                
+                $cliente_id = $request->input('user_id');
 
-            $cliente_id = $request->input('user_id');
+                $inspeccion = new Inspeccion();
+                $inspeccion->inspeccion_fecha = date('Y-m-d');
+                $inspeccion->responsable_id = $request->input('user_id');
+                $inspeccion->vin_id = $Vin->vin_id;
+                $inspeccion->cliente_id = $cliente_id;
+                $inspeccion->inspeccion_dano = false;
+                $inspeccion->vin_estado_inventario_id = $Vin->vin_estado_inventario_id;
+                //$inspeccion->vin_sub_estado_inventario_id = $datosInspeccion['vin_sub_estado_inventario_id'];
 
-            $inspeccion = new Inspeccion();
-            $inspeccion->inspeccion_fecha = date('Y-m-d');
-            $inspeccion->responsable_id = $request->input('user_id');
-            $inspeccion->vin_id = $Vin->vin_id;
-            $inspeccion->cliente_id = $cliente_id;
-            $inspeccion->inspeccion_dano = false;
-            $inspeccion->vin_estado_inventario_id = $Vin->vin_estado_inventario_id;
-            //$inspeccion->vin_sub_estado_inventario_id = $datosInspeccion['vin_sub_estado_inventario_id'];
+                if($inspeccion->save()){
 
-            if($inspeccion->save()){
+                    $Vin_= Vin::findOrFail($Vin->vin_id);
+                    $Vin_->vin_estado_inventario_id = $estado_nuevo;
+                    $Vin_->update();
 
-                $Vin_= Vin::findOrFail($Vin->vin_id);
-                $Vin_->vin_estado_inventario_id = 4;
-                $Vin_->update();
+                    $itemlist =self::ListVIN($request);
 
-                $itemlist =self::ListVIN($request);
+                    $itemlistData = json_decode($itemlist->content(),true);
 
-                $itemlistData = json_decode($itemlist->content(),true);
+                    // Guardar historial del cambio
+                    if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
+                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
+                        if($ubic_patio != null){
+                            $bloque_id = $ubic_patio->bloque_id;
+                        } else {
+                            $bloque_id = null;
+                        }
+                    } else {
+                        $bloque_id = null;
+                    }
+                    
+                    $user = User::find($request->user_id);
 
-                $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items']);
-            }else{
-                $usersf = Array("Err" => 0, "Msg" => "Error al registrar");
+                    DB::insert('INSERT INTO historico_vins 
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                        [
+                            $Vin->vin_id, 
+                            $estado_nuevo, 
+                            $inspeccion->inspeccion_fecha, 
+                            $user->user_id, 
+                            $bloque_id, 
+                            $bloque_id, 
+                            $user->belongsToEmpresa->empresa_id, 
+                            "VIN Inspeccionado Sin Daño."
+                        ]
+                    );
+
+                    DB::commit();
+
+                    $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items']);
+                }else{
+                    DB::rollBack();
+                    $usersf = Array("Err" => 0, "Msg" => "Error al registrar");
+                }
+            } catch (\Throwable $th) {     
+                 DB::rollBack();
+                 return back()->with('error-msg', 'Error inesperado al registrar datos.');
             }
-
-
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
         }
@@ -598,101 +735,138 @@ class ApiController extends Controller
         $pieza_sub_area_id = $request->input('pieza_sub_area_id');
         $dano_pieza_observaciones = $request->input('dano_pieza_observaciones');
 
-
-
-
-
         $Vin =DB::table('vins')
             ->select('vins.*')
             ->where('vin_codigo','=', $vins)
             ->first();
 
+        $estado_previo = $Vin->vin_estado_inventario_id;
+        $estado_nuevo = 6; // Estado No Disponible Para la Venta
+
         if($Vin){
+            try {
+                DB::beginTransaction();
+                
+                $cliente_id = $request->input('user_id');
 
-            $cliente_id = $request->input('user_id');
+                $inspeccion = new Inspeccion();
+                $inspeccion->inspeccion_fecha = date('Y-m-d');
+                $inspeccion->responsable_id = (int)$request->input('user_id');
+                $inspeccion->vin_id = $Vin->vin_id;
+                $inspeccion->cliente_id = $cliente_id;
+                $inspeccion->inspeccion_dano = true;
+                $inspeccion->vin_estado_inventario_id = $Vin->vin_estado_inventario_id;
+                //$inspeccion->vin_sub_estado_inventario_id = $datosInspeccion['vin_sub_estado_inventario_id'];
 
-            $inspeccion = new Inspeccion();
-            $inspeccion->inspeccion_fecha = date('Y-m-d');
-            $inspeccion->responsable_id = (int)$request->input('user_id');
-            $inspeccion->vin_id = $Vin->vin_id;
-            $inspeccion->cliente_id = $cliente_id;
-            $inspeccion->inspeccion_dano = true;
-            $inspeccion->vin_estado_inventario_id = $Vin->vin_estado_inventario_id;
-            //$inspeccion->vin_sub_estado_inventario_id = $datosInspeccion['vin_sub_estado_inventario_id'];
+                if($inspeccion->save()){
 
-            if($inspeccion->save()){
+                    $Vin_= Vin::findOrFail($Vin->vin_id);
+                    $Vin_->vin_estado_inventario_id = 6;
+                    $Vin_->update();
 
-                $Vin_= Vin::findOrFail($Vin->vin_id);
-                $Vin_->vin_estado_inventario_id = 6;
-                $Vin_->update();
+                    $datosDanoPieza = $request->input('dano_pieza');
+                    $danoPieza = new DanoPieza();
+                    $danoPieza->pieza_id = $pieza_id;
+                    $danoPieza->tipo_dano_id = $tipo_dano_id;
+                    $danoPieza->gravedad_id = $gravedad_id;
+                    $danoPieza->pieza_sub_area_id = $pieza_sub_area_id;
+                    $danoPieza->dano_pieza_observaciones = $dano_pieza_observaciones;
+                    $danoPieza->inspeccion_id = $inspeccion->inspeccion_id;
 
-                $datosDanoPieza = $request->input('dano_pieza');
-                $danoPieza = new DanoPieza();
-                $danoPieza->pieza_id = $pieza_id;
-                $danoPieza->tipo_dano_id = $tipo_dano_id;
-                $danoPieza->gravedad_id = $gravedad_id;
-                $danoPieza->pieza_sub_area_id = $pieza_sub_area_id;
-                $danoPieza->dano_pieza_observaciones = $dano_pieza_observaciones;
-                $danoPieza->inspeccion_id = $inspeccion->inspeccion_id;
+                    $danoPieza->save();
 
-                $danoPieza->save();
-
-                $foto = new Foto();
-                $foto->foto_fecha = date('Y-m-d');
-                $foto->foto_descripcion = "Inspección con daño";
-                $foto->foto_ubic_archivo = "fotos/";
-                $foto->foto_coord_lat = 0;
-                $foto->foto_coord_lon = 0;
-                $foto->dano_pieza_id = $danoPieza->dano_pieza_id;
-                $foto->save();
-
-
-
-                $fotoArchivo = $request->file('file');
-                $extensionFoto = $fotoArchivo->extension();
-                $path = $fotoArchivo->storeAs(
-                    'fotos',
-                    "foto_de_inspeccion".'-'.Auth::id().'-'.date('Y-m-d').'-'.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-                );
-
-                //Creamos una instancia de la libreria instalada
-                $image = \Image::make($fotoArchivo);
-
-                //Ruta donde queremos guardar las imagenes
-                $path2 = storage_path().'/app/thumbnails/';
-
-                // Cambiar de tamaño
-                $image->resize(240,200);
-
-                // Guardar
-                $image->save($path2.'thumb_'.$fotoArchivo->getClientOriginalName());
-
-                //Guardamos nombre y nombreOriginal en la BD
-                $thumbnail = new Thumbnail();
-                $thumbnail->thumbnail_nombre = "Foto de Inspección";
-                $thumbnail->thumbnail_imagen = $fotoArchivo->getClientOriginalName();
-                $thumbnail->foto_id = $foto->foto_id;
-
-                $thumbnail->save();
-
-                $foto1 = Foto::find($foto->foto_id);
-
-                $foto1->foto_ubic_archivo = $path;
-
-                $foto1->save();
+                    $foto = new Foto();
+                    $foto->foto_fecha = date('Y-m-d');
+                    $foto->foto_descripcion = "Inspección con daño";
+                    $foto->foto_ubic_archivo = "fotos/";
+                    $foto->foto_coord_lat = 0;
+                    $foto->foto_coord_lon = 0;
+                    $foto->dano_pieza_id = $danoPieza->dano_pieza_id;
+                    $foto->save();
 
 
-                $itemlist =self::ListVIN($request);
 
-                $itemlistData = json_decode($itemlist->content(),true);
+                    $fotoArchivo = $request->file('file');
+                    $extensionFoto = $fotoArchivo->extension();
+                    $path = $fotoArchivo->storeAs(
+                        'fotos',
+                        "foto_de_inspeccion".'-'.Auth::id().'-'.date('Y-m-d').'-'.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+                    );
 
-                $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items'], 'foto'=>$fotoArchivo->getClientOriginalName());
+                    //Creamos una instancia de la libreria instalada
+                    $image = \Image::make($fotoArchivo);
+
+                    //Ruta donde queremos guardar las imagenes
+                    $path2 = storage_path().'/app/thumbnails/';
+
+                    // Cambiar de tamaño
+                    $image->resize(240,200);
+
+                    // Guardar
+                    $image->save($path2.'thumb_'.$fotoArchivo->getClientOriginalName());
+
+                    //Guardamos nombre y nombreOriginal en la BD
+                    $thumbnail = new Thumbnail();
+                    $thumbnail->thumbnail_nombre = "Foto de Inspección";
+                    $thumbnail->thumbnail_imagen = $fotoArchivo->getClientOriginalName();
+                    $thumbnail->foto_id = $foto->foto_id;
+
+                    $thumbnail->save();
+
+                    $foto1 = Foto::find($foto->foto_id);
+
+                    $foto1->foto_ubic_archivo = $path;
+
+                    $foto1->save();
 
 
-            }else{
-                $usersf = Array("Err" => 0, "Msg" => "Error al registrar");
-            }
+                    $itemlist =self::ListVIN($request);
 
+                    $itemlistData = json_decode($itemlist->content(),true);
+
+                    // Guardar historial del cambio
+                    if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
+                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
+                        if($ubic_patio != null){
+                            $bloque_id = $ubic_patio->bloque_id;
+                        } else {
+                            $bloque_id = null;
+                        }
+                    } else {
+                        $bloque_id = null;
+                    }
+                    
+                    $user = User::find($request->user_id);
+
+                    DB::insert('INSERT INTO historico_vins 
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                        [
+                            $Vin->vin_id, 
+                            $estado_nuevo, 
+                            $inspeccion->inspeccion_fecha, 
+                            $user->user_id, 
+                            $bloque_id, 
+                            $bloque_id, 
+                            $user->belongsToEmpresa->empresa_id, 
+                            "VIN Inspeccionado Con Daño."
+                        ]
+                    );
+
+                    DB::commit();
+
+                    $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items'], 'foto'=>$fotoArchivo->getClientOriginalName());
+
+
+                }else{
+                    DB::rollBack();
+                    $usersf = Array("Err" => 1, "Msg" => "Error al registrar");
+                }
+            } catch (\Throwable $th) {     
+                DB::rollBack();
+                $usersf = Array("Err" => 1, "Msg" => "Error inesperado al registrar datos");
+           }
 
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
