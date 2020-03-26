@@ -147,7 +147,7 @@ class ApiController extends Controller
 
                         // Guardar histórico de la asignación de la campaña
                         $fecha = date('Y-m-d');
-                        $user = User::find(Auth::id());
+                        $user = User::find($request->user_id);
 
                         DB::insert('INSERT INTO historico_vins 
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
@@ -427,7 +427,7 @@ class ApiController extends Controller
                 
                 // Guardar histórico de la asignación de la campaña
                 $fecha = date('Y-m-d');
-                $user = User::find(Auth::id());
+                $user = User::find($request->user_id);
                 
                 $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
                 if(isset($ubic_patio)){
@@ -678,7 +678,7 @@ class ApiController extends Controller
                         $bloque_id = null;
                     }
                     
-                    $user = User::find(Auth::id());
+                    $user = User::find($request->user_id);
 
                     DB::insert('INSERT INTO historico_vins 
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
@@ -823,7 +823,7 @@ class ApiController extends Controller
                         $bloque_id = null;
                     }
                     
-                    $user = User::find(Auth::id());
+                    $user = User::find($request->user_id);
 
                     DB::insert('INSERT INTO historico_vins 
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
