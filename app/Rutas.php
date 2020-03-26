@@ -7,5 +7,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Rutas extends Model
 {
-    //
+    use SoftDeletes;
+
+    protected $primaryKey = 'ruta_id';
+
+    protected $fillable = [
+
+    ];
+
+
+
+
+
+
+
 }
