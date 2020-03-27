@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title','Destino index')
 @section('content')
+@include('flash::message')
 
 <div class="col-lg-12">
         <div class="ibox float-e-margins">

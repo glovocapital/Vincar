@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title','Empresa index')
 @section('content')
+@include('flash::message')
 
     <div class="row">
 <div class="col-lg-12">
@@ -69,7 +70,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                               
+
 
 
                                 <div class="table-responsive">

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title','Tour index')
 @section('content')
+@include('flash::message')
 
     <div class="row">
 <div class="col-lg-12">

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title','Inspección index')
 @section('content')
+@include('flash::message')
 
 
 <div class="col-lg-12">
@@ -19,7 +20,7 @@
                 </div>
 
                 <br />
-                
+
                 <div class="table-responsive">
                     <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
                         <thead>

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title','Campaña index')
 @section('content')
+@include('flash::message')
 
 <div class="col-lg-12">
     <div class="ibox float-e-margins">
@@ -12,7 +13,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            
+
             <div class="card-body">
                 <div class="row">
                     <a href="{{ route('solicitud_campania.index') }}" class = 'btn btn-success'>Regresar a Solicitud Campañas</a>
@@ -39,7 +40,7 @@
                             <td><small>
                             @foreach($arrayTCampanias as $tipoCamp)
                                 @foreach($tipoCamp as $tCamp)
-                                    @if($campania->campania_id === $tCamp->campania_id)   
+                                    @if($campania->campania_id === $tCamp->campania_id)
                                         <button class="btn btn-xs btn-info">{{ $tCamp->tipo_campania_descripcion }}</button>
                                     @endif
                                 @endforeach

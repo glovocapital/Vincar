@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title','Ubicación en Patio index')
 @section('content')
+@include('flash::message')
 
 <div class="col-lg-12">
     <div class="ibox float-e-margins">
@@ -12,7 +13,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            
+
             <div class="card-body">
                 <!-- <div class="row">
                     <a href="{{ route('patio.create') }}" class = 'btn btn-primary'>Nuevo Patio</a>
@@ -46,10 +47,10 @@
                                 @else
                                 <td><small> -- </small></td>
                                 @endif
-                                
+
                                 <td><small>{{ $ubic_patio->ubic_patio_fila }}</small></td>
                                 <td><small>{{ $ubic_patio->ubic_patio_columna }}</small></td>
-                                
+
                                 @if($ubic_patio->ubic_patio_ocupada)
                                 <td><small>Sí</small></td>
                                 @else

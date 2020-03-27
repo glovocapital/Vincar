@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title','Patio index')
 @section('content')
+@include('flash::message')
 
 <!-- Registrar datos básicos de un patio -->
 <div class="col-lg-12">
