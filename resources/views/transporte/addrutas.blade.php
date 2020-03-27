@@ -14,6 +14,25 @@
             </div>
             <div class="card-body">
 
+                <div class="row">
+                    <div class="col-md-4" id="wrapper_2">
+                        <div class="form-group">
+                                <label for="vin_numero" >Vin <strong>*</strong></label>
+                                {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
+                        </div>
+                    </div>
+                    <div class="col-md-4" id="wrapper_2">
+                        <div class="form-group">
+                            <label for="marca_nombre" >De:</label>
+                            {!! Form::text('marca_nombre', null, ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'required']) !!}
+                        </div>
+                        <div class="form-group">
+                            <label for="marca_nombre" >A:</label>
+                            {!! Form::text('marca_nombre', null, ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'required']) !!}
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
         </div>

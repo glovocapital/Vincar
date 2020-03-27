@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="conductor_id" ><strong> Conductor *</strong></label>
-                                    {!! Form::select('conductor_id', $users, null,['id' => 'camion', 'placeholder'=>'Conductor', 'class'=>'form-control col-sm-9 select-cliente', 'required']) !!}
+                                    {!! Form::select('conductor_id', $conductor, null,['id' => 'camion', 'placeholder'=>'Conductor', 'class'=>'form-control col-sm-9 select-cliente', 'required']) !!}
                                 </div>
                             </div>
 
