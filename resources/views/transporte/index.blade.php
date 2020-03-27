@@ -19,11 +19,11 @@
                             <div class="col-md-4" >
                                 <div class="form-group">
                                     <label for="estado_nombre" >Cliente <strong> *</strong></label>
-                                    {!! Form::select('cliente_id', $empresas, null,['id' => 'cliente_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                    {!! Form::select('cliente_id', $empresas, null,['id' => 'cliente_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
                                 </div>
                                 <div class="form-group">
                                     <label for="remolque_id" >Remolque<strong> *</strong></label>
-                                    {!! Form::select('remolque_id', $remolque, null,['id' => 'patio', 'placeholder'=>'Remolque', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                    {!! Form::select('remolque_id', $remolque, null,['id' => 'patio', 'placeholder'=>'Remolque', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
                                 </div>
                             </div>
 
@@ -31,18 +31,18 @@
                             <div class="col-md-4" id="wrapper_2">
                                 <div class="form-group">
                                     <label for="transporte_id" >Proveedor de Transporte <strong> *</strong></label>
-                                    {!! Form::select('transporte_id', $transporte, null,['id' => 'proveedor_id', 'placeholder'=>'Proveedor de Transporte', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                    {!! Form::select('transporte_id', $transporte, null,['id' => 'proveedor_id', 'placeholder'=>'Proveedor de Transporte', 'class'=>'form-control col-sm-9 select-cliente', 'required']) !!}
                                 </div>
                                 <div class="form-group">
                                     <label for="conductor_id" ><strong> Conductor *</strong></label>
-                                    {!! Form::select('conductor_id', $users, null,['id' => 'camion', 'placeholder'=>'Conductor', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                    {!! Form::select('conductor_id', $users, null,['id' => 'camion', 'placeholder'=>'Conductor', 'class'=>'form-control col-sm-9 select-cliente', 'required']) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-4" id="wrapper_2">
                                 <div class="form-group">
                                     <label for="camion_id" >Camión<strong> *</strong></label>
-                                    {!! Form::select('camion_id', $camion, null,['id' => 'camion', 'placeholder'=>'Camión', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                    {!! Form::select('camion_id', $camion, null,['id' => 'camion', 'placeholder'=>'Camión', 'class'=>'form-control col-sm-9 select-cliente', 'required']) !!}
                                 </div>
                                 <div class="form-group">
                                     <label for="tour_fecha_inicio" >Fecha de Inicio <strong>*</strong></label>
@@ -55,7 +55,7 @@
                     </div>
                     <div class="text-right pb-5">
 
-                        {!! Form::submit('Agregar Tour ', ['class' => 'btn btn-success block full-width m-b']) !!}
+                        {!! Form::submit('Siguiente ', ['class' => 'btn btn-success block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>
                     <div class="text-center texto-leyenda">
@@ -82,10 +82,6 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                                 <hr class="mb-4">
-                            <!--    <div class="col-lg-12 pb-3 pt-2">
-                                    <a href="{{  route('pais.create') }}" class = 'btn btn-primary'>Crear Pais</a>
-                                </div>
-                            -->
 
                                 <div class="table-responsive">
                                     <table class="table table-hover" id="dataTablePais" width="100%" cellspacing="0">
@@ -111,25 +107,20 @@
                                                 <td><small>{{ $t->belongsToRemolque->remolque_patente }}</small></td>
                                                 <td><small>{{ $t->OneConductor->user_nombre }} {{ $t->OneConductor->user_apellido }}</small></td>
                                                 <td><small>{{ $t->tour_fec_inicio}}</td><small>
-                                              {{--  <td>
+                                                <td>
                                                    <small>
-                                                   <a href="{{ route('pais.edit', Crypt::encrypt($t->tour_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
+                                                   <a href="{{ route('tour.edit', Crypt::encrypt($t->tour_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
                                                     </small>
                                                     <small>
-                                                            <a href = "{{ route('pais.destroy', Crypt::encrypt($p->pais_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
+                                                            <a href = "{{ route('tour.destroy', Crypt::encrypt($t->tour_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
                                                             </a>
                                                     </small>
                                                 </td>
---}}
                                             </tr>
-
                                         @endforeach
                                         </tbody>
-
                                     </table>
-
                                 </div>
-
                         </div>
                 </div>
         </div>

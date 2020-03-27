@@ -95,7 +95,7 @@ class TourController extends Controller
             $tour->save();
 
             flash('El Tour se creo correctamente.')->success();
-            return redirect('tour');
+            return view('transporte.addrutas');
 
         }catch (\Exception $e) {
 
