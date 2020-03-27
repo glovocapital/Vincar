@@ -141,7 +141,7 @@ class ConductorController extends Controller
 
         $usuario = DB::table('users')
         ->select(DB::raw("CONCAT(user_nombre,' ',user_apellido) AS nombre"),'user_id')
-        ->where('rol_id', 4)
+        ->where('rol_id', 5)
         ->pluck('nombre', 'user_id');
 
 

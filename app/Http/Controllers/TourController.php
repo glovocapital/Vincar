@@ -105,12 +105,31 @@ class TourController extends Controller
         $revision_camion = date_create($camion_id->camion_fecha_revision);
 
 
-        $diferencia_licencia = $licencia_valida->diff($fecha_viaje)->format('%d');
-        $diferencia_revision_camion = $revision_camion->diff($fecha_viaje)->format('%d');
-        $diferencia_permiso_camion = $permiso_camion->diff($fecha_viaje)->format('%d');
-        $diferencia_revision_remolque = $revision_remolque->diff($fecha_viaje)->format('%d');
-        $diferencia_permiso_remolque = $permiso_remolque->diff($fecha_viaje)->format('%d');
+        $diferencia_licencia = $licencia_valida->diff($fecha_viaje)->days;
+        $diferencia_revision_camion = $revision_camion->diff($fecha_viaje)->days;
+        $diferencia_permiso_camion = $permiso_camion->diff($fecha_viaje)->days;
+        $diferencia_revision_remolque = $revision_remolque->diff($fecha_viaje)->days;
+        $diferencia_permiso_remolque = $permiso_remolque->diff($fecha_viaje)->days;
 
+
+
+        if($diferencia_licencia <= 15 || $fecha_viaje > $licencia_valida )
+        {
+            flash('No se puede crear el tour con este conductor, licencia de conducir vencida o a punto de vencer')->error();
+            return redirect('tour');
+        }
+
+        if($diferencia_revision_camion <= 15 || $diferencia_permiso_camion <= 15 || $fecha_viaje > $permiso_camion || $fecha_viaje > $revision_camion)
+        {
+            flash('No se puede crear el tour con este camión, debe revisar el permisos de circulación o fecha de revisión del mismo')->error();
+            return redirect('tour');
+        }
+
+        if($diferencia_revision_remolque <= 15 || $diferencia_permiso_remolque <= 15 || $fecha_viaje > $revision_remolque || $fecha_viaje > $revision_remolque)
+        {
+            flash('No se puede crear el tour con este remolque, debe revisar el permisos de circulación o fecha de revisión del mismo')->error();
+            return redirect('tour');
+        }
 
 
         try {
