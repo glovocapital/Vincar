@@ -434,7 +434,7 @@ class ApiController extends Controller
                 $fecha = date('Y-m-d');
                 $user = User::find($request->user_id);
                 
-                $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
+                $ubic_patio = UbicPatio::where('vin_id', $Vin[0]->vin_id)->first();
                 if(isset($ubic_patio)){
                     $bloque_id = $ubic_patio->bloque_id;
                 } else {
@@ -464,13 +464,12 @@ class ApiController extends Controller
                 );
                 
                 DB::commit();
+
+                $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['listData'], "vins"=>$vins);
             } catch (\Throwable $th) {
                 DB::rollBack();
                 $usersf = Array("Err" => 1, "Msg" => "Error finalizando tarea. Fallo en actualización de datos.");
             }
-
-            $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['listData'], "vins"=>$vins);
-
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Tarea obligatorio");
         }
