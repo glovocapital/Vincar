@@ -245,10 +245,12 @@ class InspeccionController extends Controller
                         $danoPieza->save();
 
                         DB::commit();
-                        return redirect()->route('inspeccion.index')->with('success', 'Inspección y Daño Registrados Exitosamente.');
+                        flash('Inspección y Daño Registrados Exitosamente.')->success();
+                        return redirect()->route('inspeccion.index');
                     } catch (\Throwable $th) {
                         DB::rollBack();
-                        return redirect()->route('inspeccion.create')->with('error-msg', 'Error anexando daño de pieza. Inspección no almacenada');
+                        flash('Error anexando daño de pieza. Inspección no almacenada')->error();
+                        return redirect()->route('inspeccion.create');
                     }
                 } elseif ($request->input('submit_3') !== null){
                     try {
@@ -307,19 +309,23 @@ class InspeccionController extends Controller
                         $foto1->save();
 
                         DB::commit();
+                        flash('Inspección, Daño y fotografía Registrados Exitosamente.')->success();
                         return redirect()->route('inspeccion.index')->with('success', 'Inspección, Daño y fotografía Registrados Exitosamente.');
                     } catch (\Throwable $th) {
                         DB::rollBack();
-                        return redirect()->route('inspeccion.create')->with('error-msg', 'Error anexando fotografía. Inspección no almacenada');
+                        flash('Error anexando fotografía. Inspección no almacenada')->error();
+                        return redirect()->route('inspeccion.create');
                     }
                 }
             } else {
                 DB::rollBack();
-                return redirect()->route('inspeccion.create')->with('error-msg', 'Error. Inspección no almacenada');
+                flash('Error. Inspección no almacenada')->error();
+                return redirect()->route('inspeccion.create');
             }
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('inspeccion.create')->with('error-msg', 'Error. Inspección no almacenada');
+            flash('Error. Inspección no almacenada')->error();
+            return redirect()->route('inspeccion.create');
         }
     }
 
@@ -398,10 +404,12 @@ class InspeccionController extends Controller
                     $danoPieza->save();
 
                     DB::commit();
-                    return redirect()->route('inspeccion.index')->with('success', 'Inspección y Daño Registrados Exitosamente.');
+                    flash('Inspección y Daño Registrados Exitosamente.')->success();
+                    return redirect()->route('inspeccion.index');
                 } catch (\Throwable $th) {
                     DB::rollBack();
-                    return redirect()->route('inspeccion.create')->with('error-msg', 'Error anexando daño de pieza. Inspección no almacenada');
+                    flash('Error anexando daño de pieza. Inspección no almacenada')->error();
+                    return redirect()->route('inspeccion.create');
                 }
             } elseif ($request->input('submit_3') !== null){
 
@@ -442,15 +450,18 @@ class InspeccionController extends Controller
                     $foto1->save();
                     
                     DB::commit();
-                    return redirect()->route('inspeccion.index')->with('success', 'Inspección, Daño y fotografía Registrados Exitosamente.');
+                    flash('Inspección, Daño y fotografía Registrados Exitosamente.')->success();
+                    return redirect()->route('inspeccion.index');
                 } catch (\Throwable $th) {
                     DB::rollBack();
-                    return redirect()->route('inspeccion.create')->with('error-msg', 'Error anexando fotografía. Inspección no almacenada');
+                    flash('Error anexando fotografía. Inspección no almacenada')->error();
+                    return redirect()->route('inspeccion.create');
                 }
             }
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('inspeccion.create')->with('error-msg', 'Error. Inspección no almacenada');
+            flash('Error. Inspección no almacenada')->error();
+            return redirect()->route('inspeccion.create');
         }     
     }
     

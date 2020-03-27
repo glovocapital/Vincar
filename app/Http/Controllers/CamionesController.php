@@ -205,7 +205,7 @@ class CamionesController extends Controller
             }catch (\Exception $e) {
 
                 flash('Error al editar el camión.')->error();
-            flash($e->getMessage())->error();
+                flash($e->getMessage())->error();
                 return redirect('camiones');
             }
 

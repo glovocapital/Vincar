@@ -713,7 +713,8 @@ class ApiController extends Controller
                 }
             } catch (\Throwable $th) {     
                  DB::rollBack();
-                 return back()->with('error-msg', 'Error inesperado al registrar datos.');
+                 $usersf = Array("Err" => 1, "Msg" => "Error inesperado al registrar datos.");
+                //  return back()->with('error', 'Error inesperado al registrar datos.');
             }
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");

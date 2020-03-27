@@ -1594,10 +1594,11 @@ public function index2(Request $request)
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('vin.index')->with('error-msg', 'Error asignando guias.');
+            flash('Error asignando guias.')->error();
+            return redirect()->route('vin.index');
         }
-
-        return redirect()->route('vin.index')->with('success', 'Guias cargadas con éxito.');
+        flash('Guias cargadas con éxito.')->success();
+        return redirect()->route('vin.index');
     }
 
     public function storeModalCambiaEstado(Request $request)
@@ -1716,10 +1717,11 @@ public function index2(Request $request)
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('vin.index')->with('error-msg', 'Error al cambiar estados.');
+            flash('Error al cambiar estados.')->error();
+            return redirect()->route('vin.index');
         }
-
-        return redirect()->route('vin.index')->with('success', 'Estados cambiados con éxito.');;
+        flash('Estados cambiados con éxito.')->success();
+        return redirect()->route('vin.index');
     }
 
     public function exportResultadoBusquedaVins(Request $request)
