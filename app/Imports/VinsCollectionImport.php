@@ -65,13 +65,16 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                             ]
                         );
                 }
+                
                 DB::commit();
             } catch (\Throwable $th) {
                // dd($th);
                 DB::rollBack();
-                return back()->with('error-msg', 'Error inesperado al insertar datos masivos.');
+                flash('Error inesperado al insertar datos masivos.')->error();
+                return back();
             }
         }
+        flash('VINs cargados exitosamente.')->success();
     }
 }
 

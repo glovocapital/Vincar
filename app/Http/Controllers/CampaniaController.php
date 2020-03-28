@@ -1208,10 +1208,12 @@ class CampaniaController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('campania.index')->with('error-msg', 'Error asignando campaña.');
+            flash('Error asignando campaña.')->error();
+            return redirect()->route('campania.index');
         }
 
-        return redirect()->route('campania.index')->with('success', 'Campaña asignada con éxito.');
+        flash('Campaña asignada con éxito.')->success();
+        return redirect()->route('campania.index');
     }
 
     /**
@@ -1275,10 +1277,11 @@ class CampaniaController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('planificacion.index')->with('error-msg', 'Error asignando tarea.');
+            flash('Error asignando tarea.')->error();
+            return redirect()->route('planificacion.index');
         }
-
-        return redirect()->route('planificacion.index')->with('success', 'Tarea asignada con éxito.');;
+        flash('Tarea asignada con éxito.')->success();
+        return redirect()->route('planificacion.index');
     }
 
     /**
@@ -1342,12 +1345,12 @@ class CampaniaController extends Controller
 
             DB::commit();
         } catch (\Throwable $th) {
-           // dd($th);
             DB::rollBack();
-            return redirect()->route('planificacion.index')->with('error-msg', 'Error asignando tarea.');
+            flash('Error asignando tarea.')->error();
+            return redirect()->route('planificacion.index');
         }
 
-
+        flash('Tarea asignada con éxito.')->success();
         return redirect()->route('planificacion.index')->with('success', 'Tarea asignada con éxito.');;
     }
 
@@ -1414,13 +1417,12 @@ class CampaniaController extends Controller
 
             DB::commit();
         } catch (\Throwable $th) {
-           // dd($th);
             DB::rollBack();
-            return redirect()->route('campania.index')->with('error-msg', 'Error solicitando campañas.');
+            flash('Error asignando campaña.')->error();
+            return redirect()->route('campania.index');
         }
-
-
-        return redirect()->route('campania.index')->with('success', 'Campañas solicitadas con éxito.');;
+        flash('Campaña asignada con éxito.')->success();
+        return redirect()->route('campania.index');
     }
 
     /**
@@ -1588,10 +1590,11 @@ class CampaniaController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('campania.index')->with('error-msg', 'Error actualizando campaña.');
+            flash('Error actualizando campaña.')->error();
+            return redirect()->route('campania.index');
         }
-
-        return redirect()->route('campania.index')->with('success', 'Campaña actualizada con éxito.');
+        flash('Campaña actualizada con éxito.')->success();
+        return redirect()->route('campania.index');
     }
 
     /**
@@ -1712,10 +1715,11 @@ class CampaniaController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('planificacion.index')->with('error-msg', 'Error actualizando tarea.');
+            flash('Error actualizando tarea.')->error();
+            return redirect()->route('planificacion.index');
         }
-
-        return redirect()->route('planificacion.index')->with('success', 'Tarea actualizada con éxito.');
+        flash('Tarea actualizada con éxito.')->success();
+        return redirect()->route('planificacion.index');
     }
 
     /**
@@ -1736,7 +1740,6 @@ class CampaniaController extends Controller
         }catch (\Exception $e) {
 
             flash('Error al intentar eliminar los datos de la campaña.')->error();
-            //flash($e->getMessage())->error();
             return redirect('campania');
         }
     }
@@ -1759,7 +1762,6 @@ class CampaniaController extends Controller
         }catch (\Exception $e) {
 
             flash('Error al intentar eliminar los datos de la tarea.')->error();
-            //flash($e->getMessage())->error();
             return redirect('planificacion');
         }
     }
