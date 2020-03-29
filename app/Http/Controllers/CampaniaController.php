@@ -1351,7 +1351,7 @@ class CampaniaController extends Controller
         }
 
         flash('Tarea asignada con éxito.')->success();
-        return redirect()->route('planificacion.index')->with('success', 'Tarea asignada con éxito.');;
+        return redirect()->route('planificacion.index');
     }
 
     /**

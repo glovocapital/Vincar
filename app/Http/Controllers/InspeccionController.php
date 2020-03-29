@@ -310,7 +310,7 @@ class InspeccionController extends Controller
 
                         DB::commit();
                         flash('Inspección, Daño y fotografía Registrados Exitosamente.')->success();
-                        return redirect()->route('inspeccion.index')->with('success', 'Inspección, Daño y fotografía Registrados Exitosamente.');
+                        return redirect()->route('inspeccion.index');
                     } catch (\Throwable $th) {
                         DB::rollBack();
                         flash('Error anexando fotografía. Inspección no almacenada')->error();
