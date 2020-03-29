@@ -32,30 +32,37 @@ class ServicioController extends Controller
 
         $marca = DB::table('marcas')
         ->select('marca_id', 'marca_nombre')
+        ->where('deleted_at', null)
         ->pluck('marca_nombre', 'marca_id');
 
         $divisa = DB::table('divisas')
         ->select('divisa_id', 'divisa_tipo')
+        ->where('deleted_at', null)
         ->pluck('divisa_tipo', 'divisa_id');
 
         $cliente = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
+        ->where('deleted_at', null)
         ->pluck('empresa_razon_social', 'empresa_id');
 
         $valor_asociado = DB::table('valores_asociados')
         ->select('valor_asociado_id', 'valor_asociado_tipo')
+        ->where('deleted_at', null)
         ->pluck('valor_asociado_tipo', 'valor_asociado_id');
 
         $producto = DB::table('productos')
         ->select('producto_id', 'producto_codigo')
+        ->where('deleted_at', null)
         ->pluck('producto_codigo', 'producto_id');
 
         $caracteristicasvin = DB::table('caracteristica_vins')
         ->select('caracteristica_vin_id', 'caracteristica_vin_nombre')
+        ->where('deleted_at', null)
         ->pluck('caracteristica_vin_nombre', 'caracteristica_vin_id');
 
         $marca = DB::table('marcas')
         ->select('marca_id', 'marca_nombre')
+        ->where('deleted_at', null)
         ->pluck('marca_nombre', 'marca_id');
 
 
@@ -73,22 +80,27 @@ class ServicioController extends Controller
 
         $marca = DB::table('marcas')
         ->select('marca_id', 'marca_nombre')
+        ->where('deleted_at', null)
         ->pluck('marca_nombre', 'marca_id');
 
         $divisa = DB::table('divisas')
         ->select('divisa_id', 'divisa_tipo')
+        ->where('deleted_at', null)
         ->pluck('divisa_tipo', 'divisa_id');
 
         $cliente = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
+        ->where('deleted_at', null)
         ->pluck('empresa_razon_social', 'empresa_id');
 
         $valor_asociado = DB::table('valores_asociados')
         ->select('valor_asociado_id', 'valor_asociado_tipo')
+        ->where('deleted_at', null)
         ->pluck('valor_asociado_tipo', 'valor_asociado_id');
 
         $producto = DB::table('productos')
         ->select('producto_id', 'producto_codigo')
+        ->where('deleted_at', null)
         ->pluck('producto_codigo', 'producto_id');
 
 
@@ -158,26 +170,32 @@ class ServicioController extends Controller
 
         $marca = DB::table('marcas')
         ->select('marca_id', 'marca_nombre')
+        ->where('deleted_at', null)
         ->pluck('marca_nombre', 'marca_id');
 
         $divisa = DB::table('divisas')
         ->select('divisa_id', 'divisa_tipo')
+        ->where('deleted_at', null)
         ->pluck('divisa_tipo', 'divisa_id');
 
         $cliente = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
+        ->where('deleted_at', null)
         ->pluck('empresa_razon_social', 'empresa_id');
 
         $valor_asociado = DB::table('valores_asociados')
         ->select('valor_asociado_id', 'valor_asociado_tipo')
+        ->where('deleted_at', null)
         ->pluck('valor_asociado_tipo', 'valor_asociado_id');
 
         $producto = DB::table('productos')
         ->select('producto_id', 'producto_codigo')
+        ->where('deleted_at', null)
         ->pluck('producto_codigo', 'producto_id');
 
         $caracteristicasvin = DB::table('caracteristica_vins')
         ->select('caracteristica_vin_id', 'caracteristica_vin_nombre')
+        ->where('deleted_at', null)
         ->pluck('caracteristica_vin_nombre', 'caracteristica_vin_id');
 
         return view('servicios.edit', compact('caracteristicasvin','servicio','marca','divisa','cliente','valor_asociado','producto'));

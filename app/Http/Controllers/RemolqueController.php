@@ -30,6 +30,7 @@ class RemolqueController extends Controller
     {
         $empresa = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
+        ->where('deleted_at', null)
         ->pluck('empresa_razon_social', 'empresa_id');
 
         $remolque = Remolque::all();
@@ -47,6 +48,7 @@ class RemolqueController extends Controller
 
         $empresa = DB::table('empresas')
             ->select('empresa_id', 'empresa_razon_social')
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id');
 
 
@@ -139,6 +141,7 @@ class RemolqueController extends Controller
 
         $empresa = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
+        ->where('deleted_at', null)
         ->pluck('empresa_razon_social', 'empresa_id');
 
         return view('remolque.edit', compact('remolque', 'empresa'));

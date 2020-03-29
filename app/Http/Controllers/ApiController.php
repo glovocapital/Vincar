@@ -597,11 +597,13 @@ class ApiController extends Controller
 
             $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
                 ->orderBy('user_id')
+                ->where('deleted_at', null)
                 ->pluck('user_nombres', 'user_id')
                 ->all();
 
             $empresa = Empresa::select(DB::raw("CONCAT(empresa_razon_social,' ') AS empresa"), 'empresa_id')
                 ->orderBy('empresa_id')
+                ->where('deleted_at', null)
                 ->pluck('empresa', 'empresa_id')
                 ->all();
 

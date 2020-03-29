@@ -34,6 +34,7 @@ class CamionesController extends Controller
 
         $empresa = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
+        ->where('deleted_at', null)
         ->pluck('empresa_razon_social', 'empresa_id');
 
         $camion = Camion::all();
@@ -51,6 +52,7 @@ class CamionesController extends Controller
         $camion = Camion::all();
         $empresa = DB::table('empresas')
             ->select('empresa_id', 'empresa_razon_social')
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id');
 
 
@@ -140,6 +142,7 @@ class CamionesController extends Controller
 
         $empresa = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
+        ->where('deleted_at', null)
         ->pluck('empresa_razon_social', 'empresa_id');
 
         return view('camion.edit', compact('camiones', 'empresa'));

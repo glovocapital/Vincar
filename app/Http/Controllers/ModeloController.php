@@ -21,6 +21,7 @@ class ModeloController extends Controller
 
         $marca = DB::table('marcas')
         ->select('marca_id','marca_nombre')
+        ->where('deleted_at', null)
         ->pluck('marca_nombre','marca_id');
 
         return view('modelo.index', compact('marca','modelo'));
@@ -37,6 +38,7 @@ class ModeloController extends Controller
 
         $marca = DB::table('marcas')
         ->select('marca_id','marca_nombre')
+        ->where('deleted_at', null)
         ->pluck('marca_nombre','marca_id');
 
         return view('modelo.index', compact('marca','modelo'));
@@ -98,6 +100,7 @@ class ModeloController extends Controller
 
         $marca = DB::table('marcas')
         ->select('marca_id','marca_nombre')
+        ->where('deleted_at', null)
         ->pluck('marca_nombre','marca_id');
 
         return view('modelo.edit', compact('modelo','marca'));
