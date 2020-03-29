@@ -141,6 +141,7 @@ class TourController extends Controller
             $tour->proveedor_id = $request->transporte_id;
             $tour->conductor_id = $request->conductor_id;
             $tour->tour_fec_inicio = $request->tour_fecha_inicio;
+            $tour->tour_finalizado = false;
             $tour->save();
 
             flash('El Tour se creo correctamente.')->success();
