@@ -89,8 +89,8 @@
                         </div>
 
                         <div class="form-group" name="bloque" id="bloque_archivo" style="display: none">
-                            <label for="tipo_proveedor_id" >Tipo de proveedor <strong>*</strong></label>
-                            {!! Form::select('tipo_proveedor_id', $tipo_proveedor, null,['placeholder'=>'Seleccione Tipo de Proveedor', 'class'=>'form-control col-sm-9']) !!}
+                            <label for="tipo_proveedor" >Tipo de proveedor <strong>*</strong></label>
+                            {!! Form::select('tipo_proveedor', $tipo_proveedor, null,['placeholder'=>'Seleccione Tipo de Proveedor', 'class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
                 </div>
