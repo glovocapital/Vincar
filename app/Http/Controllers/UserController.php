@@ -39,6 +39,7 @@ class UserController extends Controller
 
         $empresa = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
+        ->where('deleted_at', null)
         ->pluck('empresa_razon_social', 'empresa_id');
 
 
