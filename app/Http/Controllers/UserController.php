@@ -39,13 +39,13 @@ class UserController extends Controller
 
         $empresa = DB::table('empresas')
         ->select('empresa_id', 'empresa_razon_social')
-        ->where('deleted_at', null)
+       // ->where('deleted_at', null)
         ->pluck('empresa_razon_social', 'empresa_id');
 
 
         $roles = DB::table('roles')
             ->select('rol_id', 'rol_desc')
-            ->where('deleted_at', null)
+         //   ->where('deleted_at', null)
             ->pluck('rol_desc', 'rol_id');
 
         return view('usuarios.index', compact('roles','usuarios', 'empresa'));

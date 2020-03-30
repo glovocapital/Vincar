@@ -502,7 +502,7 @@
              value.vin_estado_inventario_desc,
              '<a href="'+value.vin_downloadGuia+'">Guia</a>',
                  (typeof value.patio_nombre !== 'undefined')?value.patio_nombre:"",
-                 (typeof value.bloque_nombre !== 'undefined')?value.patio_nombre:"",
+                 (typeof value.bloque_nombre !== 'undefined')?value.bloque_nombre:"",
                  (typeof value.ubic_patio_id !== 'undefined')?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):"",
 
 
