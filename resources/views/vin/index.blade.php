@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title','Vin index')
 @section('content')
+@include('flash::message')
 
     <!--SUPER ADMINISTRADOR -->
     @if(Auth::user()->rol_id == 1)
