@@ -23,6 +23,7 @@ class ConductorController extends Controller
         $usuario = DB::table('users')
         ->select(DB::raw("CONCAT(user_nombre,' ',user_apellido) AS nombre"),'user_id')
         ->where('rol_id', 5)
+        ->where('deleted_at', null)
         ->pluck('nombre', 'user_id');
 
 
@@ -46,6 +47,7 @@ class ConductorController extends Controller
         $usuario = DB::table('users')
         ->select(DB::raw("CONCAT(user_nombre,' ',user_apellido) AS nombre"),'user_id')
         ->where('rol_id', 5)
+        ->where('deleted_at', null)
         ->pluck('nombre', 'user_id');
 
 
@@ -142,6 +144,7 @@ class ConductorController extends Controller
         $usuario = DB::table('users')
         ->select(DB::raw("CONCAT(user_nombre,' ',user_apellido) AS nombre"),'user_id')
         ->where('rol_id', 5)
+        ->where('deleted_at', null)
         ->pluck('nombre', 'user_id');
 
 

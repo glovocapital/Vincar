@@ -47,11 +47,13 @@ class InspeccionController extends Controller
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
+            ->where('deleted_at', null)
             ->pluck('user_nombres', 'user_id')
             ->all();
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
@@ -94,11 +96,13 @@ class InspeccionController extends Controller
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
+            ->where('deleted_at', null)
             ->pluck('user_nombres', 'user_id')
             ->all();
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
@@ -132,6 +136,7 @@ class InspeccionController extends Controller
 
         $piezas = DB::table('piezas')
             ->select('pieza_id', 'pieza_descripcion')
+            ->where('deleted_at', null)
             ->pluck('pieza_descripcion', 'pieza_id');
 
         return view('inspeccion.create', compact('responsable', 'responsable_nombres', 'users', 'vins','empresas', 'estadosInventario', 'subEstadosInventario', 'tipoDanos', 'gravedades', 'subAreas', 'piezaCategorias', 'piezaSubCategorias', 'piezas'));
@@ -310,7 +315,7 @@ class InspeccionController extends Controller
 
                         DB::commit();
                         flash('Inspección, Daño y fotografía Registrados Exitosamente.')->success();
-                        return redirect()->route('inspeccion.index')->with('success', 'Inspección, Daño y fotografía Registrados Exitosamente.');
+                        return redirect()->route('inspeccion.index');
                     } catch (\Throwable $th) {
                         DB::rollBack();
                         flash('Error anexando fotografía. Inspección no almacenada')->error();

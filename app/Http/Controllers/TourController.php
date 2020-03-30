@@ -34,17 +34,20 @@ class TourController extends Controller
 
         $conductor = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS conductor_nombres"), 'users.user_id')
             ->join('conductors', 'users.user_id', '=', 'conductors.user_id' )
+            ->where('deleted_at', null)
             ->pluck('conductor_nombres', 'users.user_id')
             ->all();
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
 
         $camion = Camion::select('camion_id', 'camion_patente')
             ->orderBy('camion_id')
+            ->where('deleted_at', null)
             ->pluck('camion_patente', 'camion_id')
             ->all();
 
@@ -57,6 +60,7 @@ class TourController extends Controller
             ->orderBy('empresa_id')
             ->where('empresa_es_proveedor', true)
             ->where('tipo_proveedor_id', 8)
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 

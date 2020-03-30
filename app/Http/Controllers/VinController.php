@@ -52,6 +52,7 @@ class VinController extends Controller
         $vins = Vin::all();
 
         $tipo_campanias_array = TipoCampania::select('tipo_campania_id', 'tipo_campania_descripcion')
+            ->where('deleted_at', null)
             ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
 
         $patios = DB::table('patios')
@@ -60,11 +61,13 @@ class VinController extends Controller
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
+            ->where('deleted_at', null)
             ->pluck('user_nombres', 'user_id')
             ->all();
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
@@ -78,6 +81,7 @@ class VinController extends Controller
 
         $marcas = DB::table('marcas')
             ->select('marca_id', 'marca_nombre')
+            ->where('deleted_at', null)
             ->pluck('marca_nombre', 'marca_id');
 
         $tabla_vins = [];
@@ -96,6 +100,7 @@ class VinController extends Controller
             $vins = Vin::all();
 
             $tipo_campanias_array = TipoCampania::select('tipo_campania_id', 'tipo_campania_descripcion')
+                ->where('deleted_at', null)
                 ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
 
             $patios = DB::table('patios')
@@ -104,11 +109,13 @@ class VinController extends Controller
 
             $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
                 ->orderBy('user_id')
+                ->where('deleted_at', null)
                 ->pluck('user_nombres', 'user_id')
                 ->all();
 
             $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
                 ->orderBy('empresa_id')
+                ->where('deleted_at', null)
                 ->pluck('empresa_razon_social', 'empresa_id')
                 ->all();
 
@@ -122,6 +129,7 @@ class VinController extends Controller
 
             $marcas = DB::table('marcas')
                 ->select('marca_id', 'marca_nombre')
+                ->where('deleted_at', null)
                 ->pluck('marca_nombre', 'marca_id');
 
             $tabla_vins = [];
@@ -394,6 +402,7 @@ class VinController extends Controller
         $vins = Vin::all();
 
         $tipo_campanias_array = TipoCampania::select('tipo_campania_id', 'tipo_campania_descripcion')
+            ->where('deleted_at', null)
             ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
 
         $patios = DB::table('patios')
@@ -402,11 +411,13 @@ class VinController extends Controller
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
+            ->where('deleted_at', null)
             ->pluck('user_nombres', 'user_id')
             ->all();
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
@@ -420,6 +431,7 @@ class VinController extends Controller
 
         $marcas = DB::table('marcas')
             ->select('marca_id', 'marca_nombre')
+            ->where('deleted_at', null)
             ->pluck('marca_nombre', 'marca_id');
 
         $tabla_vins = [];
@@ -672,9 +684,11 @@ class VinController extends Controller
 
         $marcas = DB::table('marcas')
             ->select('marca_id', 'marca_nombre')
+            ->where('deleted_at', null)
             ->pluck('marca_nombre', 'marca_id');
 
         $tipo_campanias_array = TipoCampania::select('tipo_campania_id', 'tipo_campania_descripcion')
+            ->where('deleted_at', null)
             ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
 
         $patios = DB::table('patios')
@@ -906,11 +920,13 @@ class VinController extends Controller
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
+            ->where('deleted_at', null)
             ->pluck('user_nombres', 'user_id')
             ->all();
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
@@ -924,6 +940,7 @@ class VinController extends Controller
 
         $marcas = DB::table('marcas')
             ->select('marca_id', 'marca_nombre')
+            ->where('deleted_at', null)
             ->pluck('marca_nombre', 'marca_id');
 
         $patios = DB::table('patios')
@@ -948,6 +965,7 @@ class VinController extends Controller
                 ->where('users.empresa_id', '=', $empresa_id)
                 ->select(DB::raw("CONCAT(users.user_nombre,' ',users.user_apellido) AS user_nombres"), 'users.user_id')
                 ->orderBy('users.user_id')
+                ->where('deleted_at', null)
                 ->pluck('user_nombres', 'users.user_id');
 
             $ids = DB::table('users')
@@ -956,6 +974,7 @@ class VinController extends Controller
                 ->where('users.empresa_id', '=', $empresa_id)
                 ->select(DB::raw("CONCAT(users.user_nombre,' ',users.user_apellido) AS user_nombres"), 'users.user_id')
                 ->orderBy('users.user_id')
+                ->where('deleted_at', null)
                 ->pluck('users.user_id', 'user_nombres');
 
             return response()->json([
@@ -1101,11 +1120,13 @@ class VinController extends Controller
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
+            ->where('deleted_at', null)
             ->pluck('user_nombres', 'user_id')
             ->all();
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
@@ -1274,11 +1295,13 @@ class VinController extends Controller
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
+            ->where('deleted_at', null)
             ->pluck('user_nombres', 'user_id')
             ->all();
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
@@ -1354,11 +1377,13 @@ class VinController extends Controller
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
+            ->where('deleted_at', null)
             ->pluck('user_nombres', 'user_id')
             ->all();
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
+            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 

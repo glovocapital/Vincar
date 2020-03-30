@@ -33,10 +33,12 @@ class EmpresaController extends Controller
     {
         $pais = DB::table('paises')
             ->select('pais_id', 'pais_nombre')
+            ->where('deleted_at', null)
             ->pluck('pais_nombre', 'pais_id');
 
         $tipo_proveedor = DB::table('tipo_proveedores')
             ->select('tipo_proveedor_id','tipo_proveedor_desc')
+            ->where('deleted_at', null)
             ->pluck('tipo_proveedor_desc','tipo_proveedor_id');
 
 
@@ -56,10 +58,12 @@ class EmpresaController extends Controller
     {
         $pais = DB::table('paises')
             ->select('pais_id', 'pais_nombre')
+            ->where('deleted_at', null)
             ->pluck('pais_nombre', 'pais_id');
 
         $tipo_proveedor = DB::table('tipo_proveedores')
             ->select('tipo_proveedor_id','tipo_proveedor_desc')
+            ->where('deleted_at', null)
             ->pluck('tipo_proveedor_desc','tipo_proveedor_id');
 
         return view('empresa.index', compact('pais','tipo_proveedor'));
@@ -146,10 +150,12 @@ class EmpresaController extends Controller
 
         $tipo_proveedor = DB::table('tipo_proveedores')
         ->select('tipo_proveedor_id', 'tipo_proveedor_desc')
+        ->where('deleted_at', null)
         ->pluck('tipo_proveedor_desc', 'tipo_proveedor_id');
 
         $pais = DB::table('paises')
         ->select('pais_id', 'pais_nombre')
+        ->where('deleted_at', null)
         ->pluck('pais_nombre', 'pais_id');
 
 
