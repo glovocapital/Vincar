@@ -387,16 +387,6 @@ class VinController extends Controller
     public function index3(Request $request)
     {
 
-        if($request->ajax())
-        {
-
-            $response = array(
-                'status' => 'success',
-                'msg' => 'Setting created successfully',
-            );
-            return Response::json($response);  // <<<<<<<<< see this line
-
-        }
 
         /** Búsqueda de vins para la cabecera de la vista de planificación */
         $vins = Vin::all();
@@ -764,7 +754,8 @@ class VinController extends Controller
                         ->orWhere('vin_patente', $v)
                         ->exists();
 
-                    if($validate == true){
+                    if($validate == true)
+                    {
                         $query = DB::table('vins')
                             ->join('users','users.user_id','=','vins.user_id')
                             ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
@@ -776,7 +767,7 @@ class VinController extends Controller
                             ->where('empresas.empresa_id', $user_empresa_id);
 
                         if($marca_nombre != 'Sin marca'){
-                            // $query->where('vin_marca', $marca_nombre);
+
                             $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
 
@@ -820,8 +811,15 @@ class VinController extends Controller
                         }
 
                         array_push($tabla_vins, $query->first());
-                    } else {
 
+                        /***************************************************************************
+                         * } else {
+                         * if(count($arreglo_vins) >= 1){
+                         * $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista";
+                         * }
+                         **************************************************************************/
+
+                    } else {
 
 
                         $query = DB::table('vins')

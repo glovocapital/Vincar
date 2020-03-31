@@ -11,6 +11,9 @@ use App\User;
 use App\Empresa;
 use App\Remolque;
 use App\Tour;
+use App\Rutas;
+use App\RutasVin;
+use Illuminate\Support\Facades\Auth;
 use DB;
 
 class TourController extends Controller
@@ -34,7 +37,7 @@ class TourController extends Controller
 
         $conductor = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS conductor_nombres"), 'users.user_id')
             ->join('conductors', 'users.user_id', '=', 'conductors.user_id' )
-            ->where('deleted_at', null)
+            ->where('users.deleted_at', null)
             ->pluck('conductor_nombres', 'users.user_id')
             ->all();
 
@@ -148,18 +151,97 @@ class TourController extends Controller
             $tour->tour_finalizado = false;
             $tour->save();
 
+
+            $id_tour = $tour->tour_id;
+
+
             flash('El Tour se creo correctamente.')->success();
-            return view('transporte.addrutas');
+            return view('transporte.addrutas', compact('id_tour'));
 
         }catch (\Exception $e) {
-
-//dd($e);
 
             flash('Error al crear el Tour.')->error();
            //flash($e->getMessage())->error();
             return redirect('tour');
         }
 
+
+    }
+
+
+    public function addrutas()
+    {
+
+
+        return view('transporte.addrutas');
+    }
+
+
+    public function crearutas(Request $request)
+    {
+
+
+        $fotoGuiaTour = $request->file('guia_ruta');
+        $extensionFoto = $fotoGuiaTour->extension();
+        $path = $fotoGuiaTour->storeAs(
+            'guiasTour',
+            "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+        );
+        $id_tour = $request->id_tour;
+        try
+        {
+            $ruta = new Rutas();
+            $ruta->ruta_origen = $request->origen_id;
+            $ruta->ruta_destino = $request->destino_id;
+            $ruta->tour_id = $request->id_tour;
+            $ruta->ruta_guia = $path;
+            $ruta->save();
+
+            if(!empty($request->vin_numero)){
+                $tabla_vins = [];
+
+                foreach(explode(PHP_EOL,$request->vin_numero) as $row){
+                    $arreglo_vins[] = trim($row);
+                }
+
+                $message = [];
+
+                foreach($arreglo_vins as $v){
+
+                    $validate = DB::table('vins')
+                        ->where('vin_codigo', $v)
+                        ->orWhere('vin_patente', $v)
+                        ->exists();
+
+                    if($validate == true)
+                    {
+                        $vin_id = DB::table('vins')
+                        ->where('vin_codigo', $v)
+                        ->orWhere('vin_patente', $v)
+                        ->first();
+
+                        $rutavin = new RutasVin();
+                        $rutavin->vin_id = $vin_id->vin_id;
+                        $rutavin->ruta_id = $ruta->ruta_id;
+                        $rutavin->save();
+
+
+
+                    } else {
+                        dd('VIN NO SE ENCUENTRA');
+                    }
+                }
+            }
+
+            flash('La ruta se agrego correctamente.')->success();
+            return view('transporte.addrutas', compact('id_tour'));
+
+        }  catch (\Exception $e) {
+
+            flash('Error al crear el Tour.')->error();
+            flash($e->getMessage())->error();
+            return redirect('tour');
+        }
 
     }
 
@@ -208,8 +290,5 @@ class TourController extends Controller
         //
     }
 
-    public function storeModalAddRutas()
-    {
-        return 0;
-    }
+
 }

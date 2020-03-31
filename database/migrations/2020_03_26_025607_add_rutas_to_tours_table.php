@@ -14,6 +14,7 @@ class AddRutasToToursTable extends Migration
     public function up()
     {
         Schema::table('tours', function (Blueprint $table) {
+
             $table->string('tour_guia')->nullable()->change();
             $table->date('tour_fec_inicio')->nullable()->change();
             $table->date('tour_fec_fin')->nullable()->change();
@@ -35,7 +36,6 @@ class AddRutasToToursTable extends Migration
     public function down()
     {
         Schema::table('tours', function (Blueprint $table) {
-            $table->dropColumn('ruta_id');
             $table->dropColumn('conductor_id');
         });
     }

@@ -309,6 +309,10 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
 
     Route::get('tour', 'TourController@index')->name('tour.index');
+    Route::get('tour/addrutas', 'TourController@addrutas')->name('tour.addrutas');
+
+    Route::post('tour/crearutas', 'TourController@crearutas')->name('tour.crearutas');
+
     Route::post('tour','TourController@store')->name('tour.store');
     Route::get('tour/{id}/edit','TourController@editTarea')->name('tour.edit');
     Route::patch('tour/{id}/update','TourController@update')->name('tour.update');
