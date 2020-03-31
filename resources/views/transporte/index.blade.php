@@ -101,6 +101,7 @@
                                         <tbody>
                                         @foreach($tour as $t)
 
+
                                             <tr>
                                                 <td><small>{{ $t->oneCliente->empresa_razon_social }} </small></td>
                                                 <td><small>{{ $t->oneProveedor->empresa_razon_social }}</small></td>
@@ -110,10 +111,13 @@
                                                 <td><small>{{ $t->tour_fec_inicio}}</td><small>
                                                 <td>
                                                    <small>
-                                                   <a href="{{ route('tour.edit', Crypt::encrypt($t->tour_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
+                                                        <a href="{{ route('tour.edit', Crypt::encrypt($t->tour_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
                                                     </small>
                                                     <small>
                                                             <a href = "{{ route('tour.destroy', Crypt::encrypt($t->tour_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i></a>
+                                                    </small>
+                                                    <small>
+                                                        <a href="{{ route('tour.editrutas', Crypt::encrypt($t->tour_id)) }}" class=" btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>
                                                     </small>
                                                 </td>
                                             </tr>

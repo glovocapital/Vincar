@@ -15,6 +15,7 @@ use App\Rutas;
 use App\RutasVin;
 use Illuminate\Support\Facades\Auth;
 use DB;
+use Illuminate\Support\Facades\Crypt;
 
 class TourController extends Controller
 {
@@ -168,10 +169,8 @@ class TourController extends Controller
 
     }
 
-
     public function addrutas()
     {
-
 
         return view('transporte.addrutas');
     }
@@ -244,6 +243,31 @@ class TourController extends Controller
         }
 
     }
+
+
+    public function editrutas($id)
+    {
+        $tour_id =  Crypt::decrypt($id);
+        $tour = Tour::findOrfail($tour_id);
+
+        $rutas = DB::table('tours')
+            ->join('rutas','rutas.tour_id','=','tours.tour_id')
+            ->select()
+            ->get();
+
+        $vin_ruta = DB::table('tours')
+            ->join('rutas','rutas.tour_id','=','tours.tour_id')
+            ->join('rutas_vins','rutas_vins.ruta_id','=', 'rutas.ruta_id')
+            ->join('vins','vins.vin_id','=','rutas_vins.vin_id')
+            ->select()
+            ->get();
+
+
+
+
+        return view('transporte.editrutas', compact('rutas','vin_ruta'));
+    }
+
 
     /**
      * Display the specified resource.
