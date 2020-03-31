@@ -37,10 +37,13 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="">Cargar Guia</label>
-                        {!! Form::file('guia_ruta'); !!}
+                    <div class="col-md-4" id="wrapper_2">
+                        <div class="form-group">
+                            <label for="">Cargar Guia</label>
+                            {!! Form::file('guia_ruta'); !!}
+                        </div>
                     </div>
+
                 </div>
 
                 <div class="text-right pb-5">
@@ -48,6 +51,8 @@
                     {!! Form::submit('Agregar Rutas ', ['class' => 'btn btn-success block full-width m-b']) !!}
                     {!! Form::close() !!}
                 </div>
+
+
 
 
             </div>
