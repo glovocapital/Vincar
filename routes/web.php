@@ -294,6 +294,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
     //Ruta para la funcionalidad por POST
     Route::post('planificacion/index2', 'CampaniaController@index5')->name('planificacion.index2');
+    Route::post('planificacion/index5_json', 'CampaniaController@index5_json')->name('planificacion.index5_json');
 
 
 
@@ -307,6 +308,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('campania/{id}/delete','CampaniaController@destroy')->name('campania.destroy');
     Route::get('planificacion/{id}/delete','CampaniaController@destroyTarea')->name('planificacion.destroy');
 
+
+    // Rutas para los tours
 
     Route::get('tour', 'TourController@index')->name('tour.index');
     Route::get('tour/addrutas', 'TourController@addrutas')->name('tour.addrutas');

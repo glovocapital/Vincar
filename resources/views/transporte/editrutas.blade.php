@@ -25,6 +25,7 @@
                                 {!! Form::textarea('vin_numero', $vr->vin_codigo, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
                             </div>
                         </div>
+
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                 <label for="marca_nombre" >De:</label>
@@ -46,9 +47,8 @@
                 </div>
 
                 <div class="text-right pb-5">
+                <a type="button" href="{{route('tour.index')}}" class="btn btn-primary block full-width m-b">Regresar</a>
 
-                    {!! Form::submit('Agregar Rutas ', ['class' => 'btn btn-success block full-width m-b']) !!}
-                    {!! Form::close() !!}
                 </div>
 
 

@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('title','Vin index')
 @section('content')
-@include('flash::message')
 
     <!--SUPER ADMINISTRADOR -->
     @if(Auth::user()->rol_id == 1)
@@ -122,12 +121,10 @@
                                 <div class="col-lg-12">
                                     {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST']) !!}
                                     <div class="text pb-3">
-                                        @if(count($tabla_vins) > 0)
-                                            {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b'] )  }}
-                                            <input type="hidden" name="resultado_busqueda" value="{{json_encode($tabla_vins)}}" id="resultado_busqueda_vins" />
-                                        @else
-                                            {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
-                                        @endif
+                                        <input type="hidden" name="resultado_busqueda" value="{{json_encode($tabla_vins)}}" id="resultado_busqueda_vins" />
+
+                                        {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor', 'disabled'] )  }}
+
                                     </div>
                                     {!! Form::close() !!}
                                     <div class="text  pb-3">
@@ -180,12 +177,11 @@
                                 <div class="col-lg-12">
                                     {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST']) !!}
                                     <div class="text pb-3">
-                                        @if(count($tabla_vins) > 0)
-                                            {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b'] )  }}
-                                            <input type="hidden" name="resultado_busqueda" value="{{json_encode($tabla_vins)}}" id="resultado_busqueda_vins" />
-                                        @else
-                                            {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
-                                        @endif
+
+                                        <input type="hidden" name="resultado_busqueda" value="{{json_encode($tabla_vins)}}" id="resultado_busqueda_vins" />
+
+                                        {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VIN ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor', 'disabled'] )  }}
+
                                     </div>
                                     {!! Form::close() !!}
                                     <div class="text  pb-3">
@@ -274,7 +270,7 @@
                             <h3 class="card-title">Buscar Vin</h3>
                         </div>
                         <div class="card-body">
-                            {!! Form::open(['route'=> 'vin.index2', 'method'=>'post']) !!}
+                            {!! Form::open(['route'=> 'vin.index2', 'method'=>'post', 'id'=>'VinForm']) !!}
                             <div class="row">
                                 <div class="col-md-4" id="wrapper_2">
                                     <div class="form-group">
@@ -304,15 +300,10 @@
                             </div>
 
                             <div class="text-right pb-5">
-                                @if(count($tabla_vins) > 0)
-                                    <button type="button" class="btn btn-success btn-lote-vins">Carga de guías por lotes</i></button>
-                                    @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 3)
-                                        <button type="button" class="btn btn-warning btn-edo-vins">Cambia Estado por lotes</i></button>
-                                    @endif
-                                @endif
+
+                                    <button type="button" style="display:none" class="btn btn-success btn-lote-vins btn-rol">Carga de guías por lotes</i></button>
 
                                     <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
-
 
                                 {!! Form::close() !!}
                             </div>
@@ -468,11 +459,13 @@
              $('#btn-src').on('click',function(e){
              e.preventDefault();
 
-             console.log(datatablesButtons);
+
 
              datatablesButtons.rows().remove();
 
                  var_roles=0;
+
+                 console.log($("#VinForm").serialize());
 
              $.post("{{route('vin.index_json')}}", $("#VinForm").serialize(), function (res) {
 
