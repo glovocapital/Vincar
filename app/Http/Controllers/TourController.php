@@ -13,6 +13,7 @@ use App\Remolque;
 use App\Tour;
 use App\Rutas;
 use App\RutasVin;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use Illuminate\Support\Facades\Crypt;
@@ -102,22 +103,30 @@ class TourController extends Controller
             ->first();
 
 
-        $fecha_viaje = date_create($request->tour_fecha_inicio);
+        $fecha_viaje = new Carbon($request->tour_fecha_inicio);
 
-        $licencia_valida = date_create($conductor_id->conductor_fecha_vencimiento);
+        $licencia_valida = new Carbon($conductor_id->conductor_fecha_vencimiento);
 
-        $revision_remolque = date_create($remolque_id->remolque_fecha_revison);
-        $permiso_remolque = date_create($remolque_id->remolque_fecha_circulacion);
+        $revision_remolque = new Carbon($remolque_id->remolque_fecha_revision);
+        $permiso_remolque = new Carbon($remolque_id->remolque_fecha_circulacion);
 
-        $permiso_camion = date_create($camion_id->camion_fecha_circulacion);
-        $revision_camion = date_create($camion_id->camion_fecha_revision);
+        $permiso_camion = new Carbon($camion_id->camion_fecha_circulacion);
+        $revision_camion = new Carbon($camion_id->camion_fecha_revision);
 
-
+/*
         $diferencia_licencia = $licencia_valida->diff($fecha_viaje)->days;
         $diferencia_revision_camion = $revision_camion->diff($fecha_viaje)->days;
         $diferencia_permiso_camion = $permiso_camion->diff($fecha_viaje)->days;
         $diferencia_revision_remolque = $revision_remolque->diff($fecha_viaje)->days;
         $diferencia_permiso_remolque = $permiso_remolque->diff($fecha_viaje)->days;
+
+*/
+
+        $diferencia_licencia = $fecha_viaje->diffInDays($licencia_valida);
+        $diferencia_revision_camion = $fecha_viaje->diffInDays($revision_camion);
+        $diferencia_permiso_camion = $fecha_viaje->diffInDays($permiso_camion);
+        $diferencia_revision_remolque = $fecha_viaje->diffInDays($revision_remolque);
+        $diferencia_permiso_remolque = $fecha_viaje->diffInDays($permiso_remolque);
 
 
 
