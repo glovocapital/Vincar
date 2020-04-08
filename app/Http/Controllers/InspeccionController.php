@@ -136,7 +136,6 @@ class InspeccionController extends Controller
 
         $piezas = DB::table('piezas')
             ->select('pieza_id', 'pieza_descripcion')
-            ->where('deleted_at', null)
             ->pluck('pieza_descripcion', 'pieza_id');
 
         return view('inspeccion.create', compact('responsable', 'responsable_nombres', 'users', 'vins','empresas', 'estadosInventario', 'subEstadosInventario', 'tipoDanos', 'gravedades', 'subAreas', 'piezaCategorias', 'piezaSubCategorias', 'piezas'));
