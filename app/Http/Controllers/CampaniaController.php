@@ -1348,6 +1348,7 @@ class CampaniaController extends Controller
     }
 
     public function vinCodigos(Request $request){
+
         if ($request->ajax()){
             $vin_codigos = [];
             foreach($request->vin_ids as $vin_id){
@@ -1573,14 +1574,24 @@ class CampaniaController extends Controller
             }
 
             DB::commit();
+
+            return response()->json(
+                Array("Error"=>0,"Mrnsaje"=>"Guardado con Èxito")
+            );
+
+
         } catch (\Throwable $th) {
             DB::rollBack();
-            flash('Error asignando tarea.')->error();
-            return redirect()->route('planificacion.index');
+            //flash('Error asignando tarea.')->error();
+            //return redirect()->route('planificacion.index');
+
+            return response()->json(
+                Array("Error"=>1,"Mensaje"=>"Error asignando tarea")
+            );
         }
 
-        flash('Tarea asignada con éxito.')->success();
-        return redirect()->route('planificacion.index');
+        ///flash('Tarea asignada con éxito.')->success();
+        //return redirect()->route('planificacion.index');
     }
 
     /**

@@ -294,6 +294,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="tab-pane fade" id="tareas-finalizadas" role="tabpanel" aria-labelledby="tareas-finalizadas-tab">
                     <div class="ibox float-e-margins">
                         <div class="card card-default">
@@ -453,6 +454,26 @@
 
             });
 
+            $('#btn-guardar-campania-lotes').on('click',function(e){
+                e.preventDefault();
+
+                $("#error0").hide();
+                $("#error1").hide();
+
+                $.post("{{route('campania.storeModalTareaLotes')}}", $("#TareasVins").serialize(), function (res) {
+
+                    $dat = res;
+
+                    console.log($dat, $dat.error);
+
+                    if($dat.error==0) $("#error0").show();
+                    else $("#error1").show();
+
+                }).fail(function () {
+                    alert('Error: ');
+                });
+
+            });
 
             var checked = false;
             $('.check-all').on('click',function(){
@@ -472,7 +493,7 @@
                 if (vin_ids.length == 0){
                     alert("Debe seleccionar al menos un vin")
                 } else {
-                    var url = "/planificacion/obtener_codigos_vins";
+                    var url = "planificacion/obtener_codigos_vins";
                     var request = {
                         _token: $("input[name='_token']").attr("value"),
                         vin_ids: vin_ids,
