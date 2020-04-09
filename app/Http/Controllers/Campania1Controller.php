@@ -1348,7 +1348,6 @@ class CampaniaController extends Controller
     }
 
     public function vinCodigos(Request $request){
-
         if ($request->ajax()){
             $vin_codigos = [];
             foreach($request->vin_ids as $vin_id){
@@ -1456,6 +1455,7 @@ class CampaniaController extends Controller
     {
         try {
 
+
             DB::beginTransaction();
 
             $tarea = new Tarea();
@@ -1537,68 +1537,50 @@ class CampaniaController extends Controller
                 $tarea->save();
 
                 // Guardar histórico de la asignación de la campaña
-                /*  $fecha = date('Y-m-d');
-                  $user = User::find(Auth::id());
-                  $vin = Vin::findOrfail($tarea->vin_id);
-                  $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                  if(isset($ubic_patio)){
-                      $bloque_id = $ubic_patio->bloque_id;
-                  } else {
-                      $bloque_id = null;
-                  }
+                $fecha = date('Y-m-d');
+                $user = User::find(Auth::id());
+                $vin = Vin::findOrfail($tarea->vin_id);
+                $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                if(isset($ubic_patio)){
+                    $bloque_id = $ubic_patio->bloque_id;
+                } else {
+                    $bloque_id = null;
+                }
 
-                  $tipo_tarea = DB::table("tipo_tareas")
-                      ->where('tipo_tarea_id', $tarea->tipo_tarea_id)
-                      ->first();
+                $tipo_tarea = DB::table("tipo_tareas")
+                    ->where('tipo_tarea_id', $tarea->tipo_tarea_id)
+                    ->first();
 
-                  $desc_tarea = "";
+                $desc_tarea = "";
 
-                  $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
+                $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
 
-                  DB::insert('INSERT INTO historico_vins
-                      (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                      origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                      [
-                          $vin->vin_id,
-                          $vin->vin_estado_inventario_id,
-                          $fecha,
-                          $user->user_id,
-                          $bloque_id,
-                          $bloque_id,
-                          $user->belongsToEmpresa->empresa_id,
-                          "Tarea asignada: " . $desc_tarea
-                      ]
-                  );*/
+                DB::insert('INSERT INTO historico_vins 
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    [
+                        $vin->vin_id,
+                        $vin->vin_estado_inventario_id,
+                        $fecha,
+                        $user->user_id,
+                        $bloque_id,
+                        $bloque_id,
+                        $user->belongsToEmpresa->empresa_id,
+                        "Tarea asignada: " . $desc_tarea
+                    ]
+                );
             }
 
             DB::commit();
-
-
-
-
         } catch (\Throwable $th) {
             DB::rollBack();
-            if($request->ajax())
-                return response()->json(
-                    Array("error"=>1,"mensaje"=>"Error asignando tarea")
-                );
-            else {
-                flash('Error asignando tarea.')->error();
-                return redirect()->route('planificacion.index');
-            }
-
-
-        }
-
-        if($request->ajax())
-            return response()->json(
-                Array("error"=>0,"mensaje"=>"Guardado con Èxito")
-            );
-        else {
-            flash('Tarea asignada con éxito.')->success();
+            flash('Error asignando tarea.')->error();
             return redirect()->route('planificacion.index');
         }
+
+        flash('Tarea asignada con éxito.')->success();
+        return redirect()->route('planificacion.index');
     }
 
     /**
