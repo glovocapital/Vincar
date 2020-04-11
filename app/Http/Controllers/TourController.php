@@ -13,6 +13,7 @@ use App\Remolque;
 use App\Tour;
 use App\Rutas;
 use App\RutasVin;
+use App\Vin;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use DB;
@@ -253,6 +254,72 @@ class TourController extends Controller
 
     }
 
+    public function crearutas2(Request $request)
+    {
+        $fotoGuiaTour = $request->file('guia_ruta');
+        $extensionFoto = $fotoGuiaTour->extension();
+        $path = $fotoGuiaTour->storeAs(
+            'guiasTour',
+            "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+        );
+        $id_tour = $request->id_tour;
+        try
+        {
+            $ruta = new Rutas();
+            $ruta->ruta_origen = $request->origen_id;
+            $ruta->ruta_destino = $request->destino_id;
+            $ruta->tour_id = $request->id_tour;
+            $ruta->ruta_guia = $path;
+            $ruta->save();
+
+            if(!empty($request->vin_numero)){
+                $tabla_vins = [];
+
+                foreach(explode(PHP_EOL,$request->vin_numero) as $row){
+                    $arreglo_vins[] = trim($row);
+                }
+
+                $message = [];
+
+                foreach($arreglo_vins as $v){
+
+                    $validate = DB::table('vins')
+                        ->where('vin_codigo', $v)
+                        ->orWhere('vin_patente', $v)
+                        ->exists();
+
+                    if($validate == true)
+                    {
+                        $vin_id = DB::table('vins')
+                        ->where('vin_codigo', $v)
+                        ->orWhere('vin_patente', $v)
+                        ->first();
+
+                        $rutavin = new RutasVin();
+                        $rutavin->vin_id = $vin_id->vin_id;
+                        $rutavin->ruta_id = $ruta->ruta_id;
+                        $rutavin->save();
+
+
+
+                    } else {
+                        dd('VIN NO SE ENCUENTRA');
+                    }
+                }
+            }
+
+            flash('La ruta se agrego correctamente.')->success();
+            return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
+
+        }  catch (\Exception $e) {
+
+            flash('Error al crear el Tour.')->error();
+            flash($e->getMessage())->error();
+            return redirect('tour');
+        }
+
+    }
+
 
     public function editrutas($id)
     {
@@ -264,19 +331,163 @@ class TourController extends Controller
             ->select()
             ->get();
 
-        $vin_ruta = DB::table('tours')
+        $vin_rutas = DB::table('tours')
             ->join('rutas','rutas.tour_id','=','tours.tour_id')
             ->join('rutas_vins','rutas_vins.ruta_id','=', 'rutas.ruta_id')
             ->join('vins','vins.vin_id','=','rutas_vins.vin_id')
             ->select()
             ->get();
 
+        $rutas_array = [];
+        $i = 0;
+        $enc = false;
+        
+        foreach($rutas as $ruta){
+            if ($i == 0){
+                $rutas_array = [[$ruta->ruta_origen, $ruta->ruta_destino]];
+            } else {
+                for($j = 0; $j < count($rutas_array); $j++){
+                    if(($ruta->ruta_origen == $rutas_array[$j][0]) && ($ruta->ruta_destino == $rutas_array[$j][1])){
+                        $enc = true;
+                    } else {
+                        continue;
+                    }
+                }
+                if(!$enc){
+                    array_push($rutas_array, [$ruta->ruta_origen, $ruta->ruta_destino]);
+                } 
+                $enc = false;
+            }
+            $i++;
+        }
 
+        $vins_ruta_array = [];
+        foreach ($rutas_array as $ruta){
+            // dd($ruta);
+            $cadena_vins = "";
+            foreach($vin_rutas as $vin_ruta){
+                if(($ruta[0] == $vin_ruta->ruta_origen) && ($ruta[1] == $vin_ruta->ruta_destino)){
+                    $cadena_vins .= $vin_ruta->vin_codigo . "\n";
+                }
+            }
+            // dd($cadena_vins);
+            array_push($vins_ruta_array, [$ruta, $cadena_vins]);
+        }
 
+        // foreach($vins_ruta_array as $vr){
+        //     dd($vr);
+        // }
 
-        return view('transporte.editrutas', compact('rutas','vin_ruta'));
+        return view('transporte.editrutas', compact('tour_id', 'rutas','vin_ruta', 'vins_ruta_array'));
     }
+    
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateRutas(Request $request, $id)
+    {
+        $id_tour = Crypt::decrypt($id);
+
+        $size = count($request->vin_numero);
+        
+        for($i = 0 ; $i < $size; $i++){
+            foreach(explode(PHP_EOL,$request->vin_numero[$i]) as $row){
+                $arreglo_vins[] = trim($row);
+            }
+
+            foreach($arreglo_vins as $codigo){
+                if($request->file('guia_ruta') !== null){
+                    $fotoGuiaTour = $request->file('guia_ruta');
+                    $extensionFoto = $fotoGuiaTour->extension();
+                    $path = $fotoGuiaTour->storeAs(
+                        'guiasTour',
+                        "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+                    );
+                }
+
+                try
+                {
+                    DB::beginTransaction();
+                    $ruta = new Rutas();
+                    $ruta->ruta_origen = $request->origen_id[$i];
+                    $ruta->ruta_destino = $request->destino_id[$i];
+                    $ruta->tour_id = $id_tour;
+                    if(isset($path)){
+                        $ruta->ruta_guia = $path;
+                    }
+                    
+                    $ruta->save();
+                    
+                    if(!empty($codigo)){
+                        $tabla_vins = [];
+
+                        $message = [];                        
+
+                        $validate = DB::table('vins')
+                            ->where('vin_codigo', $codigo)
+                            ->orWhere('vin_patente', $codigo)
+                            ->exists();
+
+                        if($validate)
+                        {
+                            $vin = Vin::where('vin_codigo', $codigo)
+                                ->orWhere('vin_patente', $codigo)
+                                ->first();
+                            
+                            $val2 = RutasVin::where('vin_id', $vin->vin_id)
+                                ->exists();
+
+                            if(!$val2){
+                                $rutavin = new RutasVin();
+                                $rutavin->vin_id = $vin->vin_id;
+                                $rutavin->ruta_id = $ruta->ruta_id;
+                                $rutavin->save();
+                            } else {
+                                $ruta_vin = RutasVin::where('vin_id', $vin->vin_id)
+                                    ->first();
+                                if($ruta->ruta_id !== $ruta_vin->ruta_id){
+                                    RutasVin::where('vin_id', $vin->vin_id)
+                                        ->delete();
+
+                                    $rutavin = new RutasVin();
+                                    $rutavin->vin_id = $vin->vin_id;
+                                    $rutavin->ruta_id = $ruta->ruta_id;
+                                    $rutavin->save();      
+                                }
+                            }
+                            DB::commit();
+                        } else {
+                            DB::rollBack();
+                            dd('VIN NO SE ENCUENTRA');
+                        }
+                        
+                    } else {
+                        // Este es el caso de cuando viene vacía la casilla de código.
+                        RutasVin::where('ruta_id', $ruta->ruta_id)
+                            ->delete();
+
+                        DB::commit();
+                    }
+                    
+                    flash('Ruta actualizada correctamente.')->success();
+
+                }  catch (\Exception $e) {
+                    DB::rollBack();
+                    flash('Error al actualizar rutas del Tour.')->error();
+                    flash($e->getMessage())->error();
+                    return redirect('tour');
+                }                
+            }
+        }
+        
+        flash('Rutas del tour actualizadas correctamente.')->success();
+        return redirect('tour');
+    }
 
     /**
      * Display the specified resource.
