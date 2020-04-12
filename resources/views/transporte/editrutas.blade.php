@@ -77,11 +77,11 @@
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                 <label for="marca_nombre" >De:</label>
-                                {!! Form::text('origen_id['. $i .']', $vr[0][0], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                {!! Form::text('origen_id['. $i .']', $vr[0][0], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
                             </div>
                             <div class="form-group">
                                 <label for="marca_nombre" >A:</label>
-                                {!! Form::text('destino_id['. $i .']', $vr[0][1], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                {!! Form::text('destino_id['. $i .']', $vr[0][1], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
                             </div>
                         </div>
 
