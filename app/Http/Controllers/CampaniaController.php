@@ -1591,9 +1591,28 @@ class CampaniaController extends Controller
 
         }
 
+        $tareas = Tarea::where('tarea_finalizada', false)
+            ->where('deleted_at', '=', null)
+            ->orderBy('tarea_id')
+            ->get();
+
+
+
+
+        foreach($tareas as $tarea){
+
+            $tarea->vin_codigo = $tarea->codigoVin();
+            $tarea->TipoTarea = $tarea->oneTipoTarea();
+            $tarea->TipoDestino = $tarea->oneTipoDestino();
+            $tarea->nombreResponsable = $tarea->nombreResponsable();
+            $tarea->planificacion_destroy =  route('planificacion.destroy', Crypt::encrypt($tarea->tarea_id));
+            $tarea->planificacion_edit =  route('planificacion.edit', Crypt::encrypt($tarea->tarea_id));
+
+        }
+
         if($request->ajax())
             return response()->json(
-                Array("error"=>0,"mensaje"=>"Guardado con Èxito")
+                Array("error"=>0,"mensaje"=>"Guardado con Èxito","tareas"=>$tareas)
             );
         else {
             flash('Tarea asignada con éxito.')->success();

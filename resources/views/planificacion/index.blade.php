@@ -238,7 +238,7 @@
 
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
+                                    <table class="table table-hover" id="TareaCampanias" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
                                             <th>Código VIN</th>
@@ -390,6 +390,19 @@
             });
 
 
+            datatablesTareas = $('[id="TareaCampanias"]').DataTable({
+                responsive: true,
+                lengthChange: !1,
+                pageLength: 100,
+                @if(Session::get('lang')=="es")
+                language: {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                },
+                @endif
+                buttons: ["copy", "print"],
+            });
+
+
             $('#btn-src').on('click',function(e){
                 e.preventDefault();
 
@@ -454,19 +467,74 @@
 
             });
 
+            enviado = "";
             $('#btn-guardar-campania-lotes').on('click',function(e){
                 e.preventDefault();
-
                 $("#error0").hide();
                 $("#error1").hide();
 
-                $.post("{{route('campania.storeModalTareaLotes')}}", $("#TareasVins").serialize(), function (res) {
+                 datos = $("#TareasVins").serialize();
+                $("#error1").text("Error al Guardar");
+                if(enviado == datos){
+                    $("#error1").text("Sin cambios");
+                    $("#error1").show();
+                    return 0;
+                }
+
+               
+
+                $.post("{{route('campania.storeModalTareaLotes')}}", datos, function (res) {
 
                     $dat = res;
 
                     console.log($dat, $dat.error);
 
-                    if($dat.error==0) $("#error0").show();
+                    if($dat.error==0){
+                        $("#error0").show();
+
+                        enviado = datos;
+
+                        datatablesTareas.rows().remove();
+
+                        $($dat.tareas).each(function( index , value ) {
+
+
+
+                            datatablesTareas.row.add( [
+                                value.vin_codigo,
+                                ((value.tarea_prioridad==0)?'<small>Baja</small>':
+                                    (value.tarea_prioridad==1)?'<small>Media</small>':
+                                        (value.tarea_prioridad==2)?'<small>Alta</small>':
+                                            (value.tarea_prioridad==3)?'<small>Urgente</small>':
+                                                '<small>Sin prioridad</small>'),
+                                value.tarea_fecha_finalizacion,
+                                value.tarea_hora_termino,
+                                value.nombreResponsable,
+                                (value.tarea_finalizada)?'Sí':'No',
+                                value.TipoTarea,
+                                value.TipoDestino,
+
+                                '<small>'+
+                                '<a target="_blank" href="'+value.planificacion_edit+'" type="button" class="btn-bloque"  title="Editar Tarea"><i class="far fa-edit"></i></a>'+
+                                '</small>'+
+                                '<small>'+
+                                '<a target="_blank" href="'+value.planificacion_destroy+'" type="button" onclick="return confirm(\'¿Esta seguro que desea eliminar este elemento?\')" class="btn-bloque"  title="Eliminar tarea"><i class="far fa-trash-alt"></i></a>'+
+                                '</small>'
+
+
+
+
+
+
+
+                            ] ).draw( false );
+
+                        });
+
+                        datatablesTareas.columns.adjust().draw();
+
+
+                    }
                     else $("#error1").show();
 
                 }).fail(function () {
