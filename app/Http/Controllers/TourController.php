@@ -328,6 +328,8 @@ class TourController extends Controller
 
         $rutas = DB::table('tours')
             ->join('rutas','rutas.tour_id','=','tours.tour_id')
+            ->where('tours.tour_id', $tour_id)
+            ->where('rutas.deleted_at', null)
             ->select()
             ->get();
 
@@ -335,8 +337,10 @@ class TourController extends Controller
             ->join('rutas','rutas.tour_id','=','tours.tour_id')
             ->join('rutas_vins','rutas_vins.ruta_id','=', 'rutas.ruta_id')
             ->join('vins','vins.vin_id','=','rutas_vins.vin_id')
+            ->where('tours.tour_id', $tour_id)
             ->select()
             ->get();
+        
 
         $rutas_array = [];
         $i = 0;
@@ -465,7 +469,6 @@ class TourController extends Controller
                             DB::rollBack();
                             dd('VIN NO SE ENCUENTRA');
                         }
-                        
                     } else {
                         // Este es el caso de cuando viene vacía la casilla de código.
                         RutasVin::where('ruta_id', $ruta->ruta_id)

@@ -78,10 +78,12 @@
                             <div class="form-group">
                                 <label for="marca_nombre" >De:</label>
                                 {!! Form::text('origen_id['. $i .']', $vr[0][0], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
+                                {!! Form::hidden('origen_id['. $i .']', $vr[0][0]) !!}
                             </div>
                             <div class="form-group">
                                 <label for="marca_nombre" >A:</label>
                                 {!! Form::text('destino_id['. $i .']', $vr[0][1], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
+                                {!! Form::hidden('destino_id['. $i .']', $vr[0][1]) !!}
                             </div>
                         </div>
 
