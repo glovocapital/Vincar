@@ -188,35 +188,55 @@ class TourController extends Controller
 
     public function crearutas(Request $request)
     {
-
-
-        $fotoGuiaTour = $request->file('guia_ruta');
-        $extensionFoto = $fotoGuiaTour->extension();
-        $path = $fotoGuiaTour->storeAs(
-            'guiasTour',
-            "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-        );
         $id_tour = $request->id_tour;
+
         try
         {
-            $ruta = new Rutas();
-            $ruta->ruta_origen = $request->origen_id;
-            $ruta->ruta_destino = $request->destino_id;
-            $ruta->tour_id = $request->id_tour;
-            $ruta->ruta_guia = $path;
-            $ruta->save();
+            DB::beginTransaction();
+            $ruta_existe = Rutas::where('tour_id', $id_tour)
+                ->where('ruta_origen', $request->origen_id)
+                ->where('ruta_destino', $request->destino_id)
+                ->exists();
 
+            $cuenta = 0;
+
+            if($request->file('guia_ruta') !== null){
+                $fotoGuiaTour = $request->file('guia_ruta');
+                $extensionFoto = $fotoGuiaTour->extension();
+                $path = $fotoGuiaTour->storeAs(
+                    'guiasTour',
+                    "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+                );
+            }
+                    
+            // Si no existe la ruta se crea la ruta en la base de datos asociada al tour
+            if(!$ruta_existe){
+                $ruta = new Rutas();
+                $ruta->ruta_origen = $request->origen_id;
+                $ruta->ruta_destino = $request->destino_id;
+                $ruta->tour_id = $id_tour;
+                if(isset($path)){
+                    $ruta->ruta_guia = $path;
+                }
+            
+                $ruta->save();
+            } else{
+                // Existe la ruta, entonces se consulta el registro para usar más adelante.
+                $ruta = Rutas::where('tour_id', $id_tour)->first();
+            }
+            
             if(!empty($request->vin_numero)){
-                $tabla_vins = [];
-
+                // Si el campo de VINs del formulario viene con VINS
+                // Se procede a extraer uno por uno los VINS separados por salto de línea
                 foreach(explode(PHP_EOL,$request->vin_numero) as $row){
-                    $arreglo_vins[] = trim($row);
+                    if($row !== ""){
+                        $arreglo_vins[] = trim($row);
+                    }
                 }
 
-                $message = [];
-
+                // Por cada uno de los VINs pasados desde el formulario realizar las acciones correspondientes
                 foreach($arreglo_vins as $v){
-
+                    // Validar si el VIN existe en la base de datos.
                     $validate = DB::table('vins')
                         ->where('vin_codigo', $v)
                         ->orWhere('vin_patente', $v)
@@ -224,65 +244,120 @@ class TourController extends Controller
 
                     if($validate == true)
                     {
-                        $vin_id = DB::table('vins')
-                        ->where('vin_codigo', $v)
-                        ->orWhere('vin_patente', $v)
-                        ->first();
+                        // Existe el VIN, luego se procede a consultar el registro para usarlo.
+                        $vin = DB::table('vins')
+                            ->where('vin_codigo', $v)
+                            ->orWhere('vin_patente', $v)
+                            ->first();
 
-                        $rutavin = new RutasVin();
-                        $rutavin->vin_id = $vin_id->vin_id;
-                        $rutavin->ruta_id = $ruta->ruta_id;
-                        $rutavin->save();
+                        // Validar si ya existe previamente un registro donde el VIN esté asociado a una ruta 
+                        $val2 = RutasVin::where('vin_id', $vin->vin_id)->exists();
 
+                        if(!$val2){
+                            // Si no existe la asociación, entonces se asocia el VIN a la ruta $ruta
+                            $rutavin = new RutasVin();
+                            $rutavin->vin_id = $vin->vin_id;
+                            $rutavin->ruta_id = $ruta->ruta_id;
+                            $rutavin->save();
+                            $cuenta++;
+                        } else {
+                            // Si existe la asociación, entonces se consulta el registro correspondiente.
+                            $ruta_vin = RutasVin::where('vin_id', $vin->vin_id)->first();
 
+                            // SOLO DEBE EXISTIR UN REGISTRO DEL VIN ASOCIADO CON UNA RUTA
+                            if($ruta->ruta_id !== $ruta_vin->ruta_id){
+                                // Si la ruta actual no es la misma ruta donde estaba registrado el vin
+                                // se elimina la asociación anterior y se crea una nueva.
+                                RutasVin::where('vin_id', $vin->vin_id)->delete();
 
+                                $rutavin = new RutasVin();
+                                $rutavin->vin_id = $vin->vin_id;
+                                $rutavin->ruta_id = $ruta->ruta_id;
+                                $rutavin->save();   
+                                $cuenta++;   
+                            }
+                        }
                     } else {
-                        dd('VIN NO SE ENCUENTRA');
+                        flash('¡Error! VIN: ' . $v . 'no existe en la base de datos.')->error();
                     }
                 }
+
+                if($cuenta > 0){
+                    // Se añadieron vins a la ruta. Se aceptan los cambios a la base de datos.
+                    DB::commit();
+                    flash('La ruta se agrego correctamente.')->success();
+                    return view('transporte.addrutas', compact('id_tour'));
+                } else {
+                    // No se añadieron vins a la ruta, se echa para atrás el cambio a la base de datos
+                    DB::rollBack();
+                    flash('Error: No se creó la ruta. VINs no válidos')->error();
+                    return view('transporte.addrutas', compact('id_tour'));
+                }
+            } else{
+                DB::rollBack();
+                flash('Error: Debe proporcionar al menos un VIN válido.')->error();
+                return view('transporte.addrutas', compact('id_tour'));
             }
-
-            flash('La ruta se agrego correctamente.')->success();
-            return view('transporte.addrutas', compact('id_tour'));
-
         }  catch (\Exception $e) {
 
-            flash('Error al crear el Tour.')->error();
+            DB::rollBack();
+            flash('Error al añadir las rutas al Tour.')->error();
             flash($e->getMessage())->error();
             return redirect('tour');
         }
-
     }
 
     public function crearutas2(Request $request)
     {
-        $fotoGuiaTour = $request->file('guia_ruta');
-        $extensionFoto = $fotoGuiaTour->extension();
-        $path = $fotoGuiaTour->storeAs(
-            'guiasTour',
-            "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-        );
         $id_tour = $request->id_tour;
+
         try
         {
-            $ruta = new Rutas();
-            $ruta->ruta_origen = $request->origen_id;
-            $ruta->ruta_destino = $request->destino_id;
-            $ruta->tour_id = $request->id_tour;
-            $ruta->ruta_guia = $path;
-            $ruta->save();
+            DB::beginTransaction();
+            $ruta_existe = Rutas::where('tour_id', $id_tour)
+                ->where('ruta_origen', $request->origen_id)
+                ->where('ruta_destino', $request->destino_id)
+                ->exists();
+
+            $cuenta = 0;
+
+            if($request->file('guia_ruta') !== null){
+                $fotoGuiaTour = $request->file('guia_ruta');
+                $extensionFoto = $fotoGuiaTour->extension();
+                $path = $fotoGuiaTour->storeAs(
+                    'guiasTour',
+                    "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+                );
+            }
+                    
+            // Si no existe la ruta se crea la ruta en la base de datos asociada al tour
+            if(!$ruta_existe){
+                $ruta = new Rutas();
+                $ruta->ruta_origen = $request->origen_id;
+                $ruta->ruta_destino = $request->destino_id;
+                $ruta->tour_id = $id_tour;
+                if(isset($path)){
+                    $ruta->ruta_guia = $path;
+                }
+            
+                $ruta->save();
+            } else{
+                // Existe la ruta, entonces se consulta el registro para usar más adelante.
+                $ruta = Rutas::where('tour_id', $id_tour)->first();
+            }
 
             if(!empty($request->vin_numero)){
-                $tabla_vins = [];
-
+                // Si el campo de VINs del formulario viene con VINS
+                // Se procede a extraer uno por uno los VINS separados por salto de línea
                 foreach(explode(PHP_EOL,$request->vin_numero) as $row){
-                    $arreglo_vins[] = trim($row);
+                    if($row !== ""){
+                        $arreglo_vins[] = trim($row);
+                    }
                 }
 
-                $message = [];
-
+                // Por cada uno de los VINs pasados desde el formulario realizar las acciones correspondientes
                 foreach($arreglo_vins as $v){
-
+                    // Validar si el VIN existe en la base de datos.
                     $validate = DB::table('vins')
                         ->where('vin_codigo', $v)
                         ->orWhere('vin_patente', $v)
@@ -290,34 +365,67 @@ class TourController extends Controller
 
                     if($validate == true)
                     {
-                        $vin_id = DB::table('vins')
-                        ->where('vin_codigo', $v)
-                        ->orWhere('vin_patente', $v)
-                        ->first();
+                        // Existe el VIN, luego se procede a consultar el registro para usarlo.
+                        $vin = DB::table('vins')
+                            ->where('vin_codigo', $v)
+                            ->orWhere('vin_patente', $v)
+                            ->first();
 
-                        $rutavin = new RutasVin();
-                        $rutavin->vin_id = $vin_id->vin_id;
-                        $rutavin->ruta_id = $ruta->ruta_id;
-                        $rutavin->save();
+                        // Validar si ya existe previamente un registro donde el VIN esté asociado a una ruta 
+                        $val2 = RutasVin::where('vin_id', $vin->vin_id)->exists();
 
+                        if(!$val2){
+                            // Si no existe la asociación, entonces se asocia el VIN a la ruta $ruta
+                            $rutavin = new RutasVin();
+                            $rutavin->vin_id = $vin->vin_id;
+                            $rutavin->ruta_id = $ruta->ruta_id;
+                            $rutavin->save();
+                            $cuenta++;
+                        } else {
+                            // Si existe la asociación, entonces se consulta el registro correspondiente.
+                            $ruta_vin = RutasVin::where('vin_id', $vin->vin_id)->first();
 
+                            // SOLO DEBE EXISTIR UN REGISTRO DEL VIN ASOCIADO CON UNA RUTA
+                            if($ruta->ruta_id !== $ruta_vin->ruta_id){
+                                // Si la ruta actual no es la misma ruta donde estaba registrado el vin
+                                // se elimina la asociación anterior y se crea una nueva.
+                                RutasVin::where('vin_id', $vin->vin_id)->delete();
 
+                                $rutavin = new RutasVin();
+                                $rutavin->vin_id = $vin->vin_id;
+                                $rutavin->ruta_id = $ruta->ruta_id;
+                                $rutavin->save();   
+                                $cuenta++;   
+                            }
+                        }
                     } else {
-                        dd('VIN NO SE ENCUENTRA');
+                        flash('Error. VIN: ' . $v . 'no existe en la base de datos.')->error();
                     }
                 }
+
+                if($cuenta > 0){
+                    // Se añadieron vins a la ruta. Se aceptan los cambios a la base de datos.
+                    DB::commit();
+                    flash('La ruta se agrego correctamente.')->success();
+                    return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
+                } else {
+                    // No se añadieron vins a la ruta, se echa para atrás el cambio a la base de datos
+                    flash('Error: No se creó la ruta. VINs no válidos')->error();
+                    DB::rollBack();
+                    return view('tour.editrutas', compact('id_tour'));
+                }
+            } else{
+                DB::rollBack();
+                flash('Error: Debe proporcionar al menos un VIN válido.')->error();
+                return view('tour.editrutas', compact('id_tour'));
             }
-
-            flash('La ruta se agrego correctamente.')->success();
-            return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
-
         }  catch (\Exception $e) {
 
-            flash('Error al crear el Tour.')->error();
+            DB::rollBack();
+            flash('Error al editar el Tour. Modifiaciones canceladas')->error();
             flash($e->getMessage())->error();
             return redirect('tour');
         }
-
     }
 
 
@@ -367,20 +475,15 @@ class TourController extends Controller
 
         $vins_ruta_array = [];
         foreach ($rutas_array as $ruta){
-            // dd($ruta);
             $cadena_vins = "";
             foreach($vin_rutas as $vin_ruta){
                 if(($ruta[0] == $vin_ruta->ruta_origen) && ($ruta[1] == $vin_ruta->ruta_destino)){
                     $cadena_vins .= $vin_ruta->vin_codigo . "\n";
                 }
             }
-            // dd($cadena_vins);
+            
             array_push($vins_ruta_array, [$ruta, $cadena_vins]);
         }
-
-        // foreach($vins_ruta_array as $vr){
-        //     dd($vr);
-        // }
 
         return view('transporte.editrutas', compact('tour_id', 'rutas','vin_ruta', 'vins_ruta_array'));
     }
@@ -398,93 +501,159 @@ class TourController extends Controller
         $id_tour = Crypt::decrypt($id);
 
         $size = count($request->vin_numero);
-        
+
         for($i = 0 ; $i < $size; $i++){
+            $arreglo_vins = [];
+
             foreach(explode(PHP_EOL,$request->vin_numero[$i]) as $row){
-                $arreglo_vins[] = trim($row);
+                if($row !== ""){
+                    $arreglo_vins[] = trim($row);
+                }
             }
 
-            foreach($arreglo_vins as $codigo){
-                if($request->file('guia_ruta') !== null){
-                    $fotoGuiaTour = $request->file('guia_ruta');
-                    $extensionFoto = $fotoGuiaTour->extension();
-                    $path = $fotoGuiaTour->storeAs(
-                        'guiasTour',
-                        "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-                    );
-                }
+            try
+            {
+                DB::beginTransaction();
 
-                try
-                {
-                    DB::beginTransaction();
-                    $ruta = new Rutas();
-                    $ruta->ruta_origen = $request->origen_id[$i];
-                    $ruta->ruta_destino = $request->destino_id[$i];
-                    $ruta->tour_id = $id_tour;
-                    if(isset($path)){
-                        $ruta->ruta_guia = $path;
-                    }
-                    
-                    $ruta->save();
-                    
-                    if(!empty($codigo)){
-                        $tabla_vins = [];
+                if($arreglo_vins !== []){
+                    $cuenta = 0;
 
-                        $message = [];                        
+                    foreach($arreglo_vins as $codigo){
+                        if($request->file('guia_ruta') !== null){
+                            $fotoGuiaTour = $request->file('guia_ruta');
+                            $extensionFoto = $fotoGuiaTour->extension();
+                            $path = $fotoGuiaTour->storeAs(
+                                'guiasTour',
+                                "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+                            );
+                        }
 
+
+                        // Buscar si la ruta ya existe para este tour
+                        $ruta_existe = Rutas::where('tour_id', $id_tour)
+                            ->where('ruta_origen', $request->origen_id[$i])
+                            ->where('ruta_destino', $request->destino_id[$i])
+                            ->exists();
+                        
+                        // Si no existe la ruta se crea la ruta en la base de datos asociada al tour
+                        if(!$ruta_existe){
+                            $ruta = new Rutas();
+                            $ruta->ruta_origen = $request->origen_id[$i];
+                            $ruta->ruta_destino = $request->destino_id[$i];
+                            $ruta->tour_id = $id_tour;
+                            if(isset($path)){
+                                $ruta->ruta_guia = $path;
+                            }
+                        
+                            $ruta->save();
+                        } else{
+                            // Si la ruta sí existe, entonces se consulta.
+                            $ruta = Rutas::where('tour_id', $id_tour)
+                                ->where('ruta_origen', $request->origen_id[$i])
+                                ->where('ruta_destino', $request->destino_id[$i])
+                                ->first();
+                        }
+                                            
+                        // Validar si el vin a agregar existe en la base de datos
                         $validate = DB::table('vins')
                             ->where('vin_codigo', $codigo)
                             ->orWhere('vin_patente', $codigo)
                             ->exists();
-
+                        
+                        // Si existe en la base de datos entonces se procede con nuevas acciones
                         if($validate)
                         {
+                            // Consultar el VIN comprobado
                             $vin = Vin::where('vin_codigo', $codigo)
                                 ->orWhere('vin_patente', $codigo)
                                 ->first();
+                                
+                            // Validar si existe asociación de este VIN con rutas anteriores.
+                            $val2 = RutasVin::where('vin_id', $vin->vin_id)->exists();
                             
-                            $val2 = RutasVin::where('vin_id', $vin->vin_id)
-                                ->exists();
-
+                            // Si no existe ninguna asociación del VIN con otra ruta, se crea la asociación
+                            // correspondiente con esta ruta
                             if(!$val2){
                                 $rutavin = new RutasVin();
                                 $rutavin->vin_id = $vin->vin_id;
                                 $rutavin->ruta_id = $ruta->ruta_id;
                                 $rutavin->save();
+
+                                $cuenta++;
                             } else {
-                                $ruta_vin = RutasVin::where('vin_id', $vin->vin_id)
-                                    ->first();
+                                $ruta_vin = RutasVin::where('vin_id', $vin->vin_id)->first();
+                                
+                                // Si ya existe otra asociación vin-ruta, entonces se elimina para crear
+                                // la nueva asociación. En caso contrario, no se hace nada nuevo.
                                 if($ruta->ruta_id !== $ruta_vin->ruta_id){
                                     RutasVin::where('vin_id', $vin->vin_id)
+                                        ->where('ruta_id', $ruta_vin->ruta_id)
                                         ->delete();
 
                                     $rutavin = new RutasVin();
                                     $rutavin->vin_id = $vin->vin_id;
                                     $rutavin->ruta_id = $ruta->ruta_id;
-                                    $rutavin->save();      
+                                    $rutavin->save();
+                                    
+                                    $cuenta++;
                                 }
                             }
-                            DB::commit();
                         } else {
-                            DB::rollBack();
-                            dd('VIN NO SE ENCUENTRA');
+                            flash('Error. VIN: ' . $codigo . 'no existe en la base de datos.')->error();
                         }
-                    } else {
-                        // Este es el caso de cuando viene vacía la casilla de código.
-                        RutasVin::where('ruta_id', $ruta->ruta_id)
-                            ->delete();
-
-                        DB::commit();
                     }
-                    
-                    flash('Ruta actualizada correctamente.')->success();
 
-                }  catch (\Exception $e) {
-                    DB::rollBack();
-                    flash('Error al actualizar rutas del Tour.')->error();
-                    flash($e->getMessage())->error();
-                    return redirect('tour');
-                }                
+
+                    // Si se eliminaron VINs de una ruta se buscan para eliminarlos de la BD
+                    // Es una verificación adicional para no dejar registros de más (erróneos).
+                    $ruta = Rutas::where('tour_id', $id_tour)
+                                ->where('ruta_origen', $request->origen_id[$i])
+                                ->where('ruta_destino', $request->destino_id[$i])
+                                ->first();
+
+                    $array_vin_cods = Vin::join('rutas_vins', 'rutas_vins.vin_id', '=', 'vins.vin_id')
+                        ->where('rutas_vins.ruta_id', $ruta->ruta_id)
+                        ->select('vins.vin_codigo')
+                        ->pluck('vins.vin_codigo');
+
+                    foreach($array_vin_cods as $vin_cod){
+                        if(array_search($vin_cod, $arreglo_vins) === false){
+                            $vin_eliminar_id = Vin::where('vin_codigo', $vin_cod)
+                                ->value('vin_id');
+                            
+                            RutasVin::where('vin_id', $vin_eliminar_id)
+                                ->where('ruta_id', $ruta_vin->ruta_id)
+                                ->delete();
+                            
+                            $cuenta++;
+                        }
+                    }
+
+
+                    if($cuenta > 0){
+                        // Se añadieron vins a la ruta. Se aceptan los cambios a la base de datos.
+                        DB::commit();
+                        flash('La ruta: '. $request->origen_id[$i] . ' - ' . $request->destino_id[$i] .' se modificó correctamente.')->success();                        
+                    } else {
+                        // No se añadieron ni eliminaron vins en la ruta. No hay modificación.
+                        flash('No se modificó la ruta: '. $request->origen_id[$i] . ' - ' . $request->destino_id[$i] .'.')->success();
+                    } 
+                } else{
+                    // Este es el caso de cuando viene vacía la casilla de código.
+                    // Se elimina la ruta
+                    Rutas::where('tour_id', $id_tour)
+                        ->where('ruta_origen', $request->origen_id[$i])
+                        ->where('ruta_destino', $request->destino_id[$i])
+                        ->delete();
+
+                    flash('Ruta: '. $request->origen_id[$i] . ' - ' . $request->destino_id[$i] .' eliminada correctamente.')->success();
+                    DB::commit();
+                }
+            }  catch (\Exception $e) {
+                DB::rollBack();
+                flash('Error al actualizar rutas del Tour.')->error();
+                flash($e->getMessage())->error();
+                return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
             }
         }
         
