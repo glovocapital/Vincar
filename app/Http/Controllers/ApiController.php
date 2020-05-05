@@ -154,29 +154,29 @@ class ApiController extends Controller
                             $bloque_origen = null;
                         }
 
-                        DB::insert('INSERT INTO historico_vins 
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                             [
-                                $Vin->vin_id, 
-                                $Vin->vin_estado_inventario_id, 
-                                $fecha, 
-                                $user->user_id, 
-                                $bloque_origen, 
-                                $bloque, 
-                                $user->belongsToEmpresa->empresa_id, 
+                                $Vin->vin_id,
+                                $Vin->vin_estado_inventario_id,
+                                $fecha,
+                                $user->user_id,
+                                $bloque_origen,
+                                $bloque,
+                                $user->belongsToEmpresa->empresa_id,
                                 "Cambio de ubicación en patio"
                             ]
                         );
 
                         $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
-                        
+
                         DB::commit();
                     } catch (\Throwable $th) {
                         DB::rollBack();
                         $usersf = Array("Err" => 1, "Msg" => "Error actualizando datos.");
-                    }       
+                    }
                 }
             }else{
                 $usersf = Array("Err" => 1, "Msg" => "La ubicacion en el bloque no esta creado");
@@ -429,40 +429,40 @@ class ApiController extends Controller
                 $itemlist =self::Lists($request);
 
                 $itemlistData = json_decode($itemlist->content(),true);
-                
+
                 // Guardar histórico de la asignación de la campaña
                 $fecha = date('Y-m-d');
                 $user = User::find($request->user_id);
-                
+
                 $ubic_patio = UbicPatio::where('vin_id', $Vin[0]->vin_id)->first();
                 if(isset($ubic_patio)){
                     $bloque_id = $ubic_patio->bloque_id;
                 } else {
                     $bloque_id = null;
                 }
-    
+
                 $tipo_tarea = DB::table("tipo_tareas")
                     ->where('tipo_tarea_id', $Tarea->tipo_tarea_id)
                     ->first();
-    
+
                 $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
-    
-                DB::insert('INSERT INTO historico_vins 
-                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+
+                DB::insert('INSERT INTO historico_vins
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                     [
-                        $Vin[0]->vin_id, 
-                        $Vin[0]->vin_estado_inventario_id, 
-                        $fecha, 
-                        $user->user_id, 
-                        $bloque_id, 
-                        $bloque_id, 
-                        $user->belongsToEmpresa->empresa_id, 
+                        $Vin[0]->vin_id,
+                        $Vin[0]->vin_estado_inventario_id,
+                        $fecha,
+                        $user->user_id,
+                        $bloque_id,
+                        $bloque_id,
+                        $user->belongsToEmpresa->empresa_id,
                         "Tarea finalizada: " . $desc_tarea
                     ]
                 );
-                
+
                 DB::commit();
 
                 $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['listData'], "vins"=>$vins);
@@ -496,9 +496,10 @@ class ApiController extends Controller
         if($Vin){
             try {
                 DB::beginTransaction();
-                
+
                 $Vin_= Vin::findOrFail($Vin->vin_id);
                 $Vin_->vin_estado_inventario_id = 2;
+                $Vin_->vin_fec_ingreso = date('Y-m-d');
                 $Vin_->update();
 
 
@@ -506,18 +507,18 @@ class ApiController extends Controller
                 $fecha = date('Y-m-d');
                 $user = User::find($request->user_id);
 
-                DB::insert('INSERT INTO historico_vins 
-                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                DB::insert('INSERT INTO historico_vins
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                     [
-                        $Vin->vin_id, 
-                        2, 
-                        $fecha, 
-                        $user->user_id, 
-                        null, 
-                        null, 
-                        $user->belongsToEmpresa->empresa_id, 
+                        $Vin->vin_id,
+                        2,
+                        $fecha,
+                        $user->user_id,
+                        null,
+                        null,
+                        $user->belongsToEmpresa->empresa_id,
                         "VIN Arribado."
                     ]
                 );
@@ -527,7 +528,7 @@ class ApiController extends Controller
                 $itemlistData = json_decode($itemlist->content(),true);
 
                 $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
-                
+
                 DB::commit();
             }catch (\Exception $e) {
                 DB::rollBack();
@@ -654,7 +655,7 @@ class ApiController extends Controller
         if($Vin){
             try {
                 DB::beginTransaction();
-                
+
                 $cliente_id = $request->input('user_id');
 
                 $inspeccion = new Inspeccion();
@@ -687,21 +688,21 @@ class ApiController extends Controller
                     } else {
                         $bloque_id = null;
                     }
-                    
+
                     $user = User::find($request->user_id);
 
-                    DB::insert('INSERT INTO historico_vins 
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                         [
-                            $Vin->vin_id, 
-                            $estado_nuevo, 
-                            $inspeccion->inspeccion_fecha, 
-                            $user->user_id, 
-                            $bloque_id, 
-                            $bloque_id, 
-                            $user->belongsToEmpresa->empresa_id, 
+                            $Vin->vin_id,
+                            $estado_nuevo,
+                            $inspeccion->inspeccion_fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->belongsToEmpresa->empresa_id,
                             "VIN Inspeccionado Sin Daño."
                         ]
                     );
@@ -713,7 +714,7 @@ class ApiController extends Controller
                     DB::rollBack();
                     $usersf = Array("Err" => 0, "Msg" => "Error al registrar");
                 }
-            } catch (\Throwable $th) {     
+            } catch (\Throwable $th) {
                  DB::rollBack();
                  $usersf = Array("Err" => 1, "Msg" => "Error inesperado al registrar datos.");
                 //  return back()->with('error', 'Error inesperado al registrar datos.');
@@ -748,7 +749,7 @@ class ApiController extends Controller
         if($Vin){
             try {
                 DB::beginTransaction();
-                
+
                 $cliente_id = $request->input('user_id');
 
                 $inspeccion = new Inspeccion();
@@ -837,21 +838,21 @@ class ApiController extends Controller
                     } else {
                         $bloque_id = null;
                     }
-                    
+
                     $user = User::find($request->user_id);
 
-                    DB::insert('INSERT INTO historico_vins 
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                         [
-                            $Vin->vin_id, 
-                            $estado_nuevo, 
-                            $inspeccion->inspeccion_fecha, 
-                            $user->user_id, 
-                            $bloque_id, 
-                            $bloque_id, 
-                            $user->belongsToEmpresa->empresa_id, 
+                            $Vin->vin_id,
+                            $estado_nuevo,
+                            $inspeccion->inspeccion_fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->belongsToEmpresa->empresa_id,
                             "VIN Inspeccionado Con Daño."
                         ]
                     );
@@ -865,7 +866,7 @@ class ApiController extends Controller
                     DB::rollBack();
                     $usersf = Array("Err" => 1, "Msg" => "Error al registrar");
                 }
-            } catch (\Throwable $th) {     
+            } catch (\Throwable $th) {
                 DB::rollBack();
                 $usersf = Array("Err" => 1, "Msg" => "Error inesperado al registrar datos");
            }

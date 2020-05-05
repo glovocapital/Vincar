@@ -548,7 +548,7 @@
                 var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
                 }).get();
-                var url = "/planificacion/obtener_codigos_vins";
+                var url = "planificacion/obtener_codigos_vins";
                 var request = {
                     _token: $("input[name='_token']").attr("value"),
                     vin_ids: vin_ids,
@@ -644,7 +644,7 @@
                 var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
                 }).get();
-                var url = "/planificacion/obtener_codigos_vins";
+                var url = "planificacion/obtener_codigos_vins";
                 var request = {
                     _token: $("input[name='_token']").attr("value"),
                     vin_ids: vin_ids,
@@ -672,6 +672,25 @@
                 }).fail(function () {
                     alert('Error: Debe seleccionar al menos un vin de la lista');
                 });
+            });
+
+            $('#btn-guardar-estados-lotes').on('click',function(e){
+                e.preventDefault();
+
+                $("#error0").hide();
+                $("#error1").hide();
+
+                $.post("{{route('vin.storeModalCambiaEstado')}}", $("#EstadosVins").serialize(), function (res) {
+
+                    $dat = res;
+
+                    if($dat.error==0) $("#error0").show();
+                    else {$("#error1").show();  $("#error1").html($dat.mensaje); }
+
+                }).fail(function () {
+                    alert('Error: ');
+                });
+
             });
             //Modal Solicitar Tarea
             $('.btn-tarea').click(function (e) {
