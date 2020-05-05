@@ -29,6 +29,7 @@ class AddTourIdToRutasTable extends Migration
     {
         Schema::table('rutas', function (Blueprint $table) {
             $table->dropColumn('tour_id');
+            $table->dropForeign('rutas_tour_id_foreign');
         });
     }
 }
