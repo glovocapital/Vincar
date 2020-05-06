@@ -36,6 +36,7 @@ class AddRutasToToursTable extends Migration
     public function down()
     {
         Schema::table('tours', function (Blueprint $table) {
+            $table->dropForeign('tours_conductor_id_foreign');
             $table->dropColumn('conductor_id');
         });
     }
