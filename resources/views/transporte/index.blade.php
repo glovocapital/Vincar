@@ -19,20 +19,20 @@
 
                             <div class="col-md-4" >
                                 <div class="form-group">
-                                    <label for="estado_nombre" >Cliente <strong> *</strong></label>
-                                    {!! Form::select('cliente_id', $empresas, null,['id' => 'cliente_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
+                                    <label for="transporte_id" >Proveedor de Transporte <strong> *</strong></label>
+                                    {!! Form::select('transporte_id', $transporte, null,['id' => 'proveedor_id', 'placeholder'=>'Proveedor de Transporte', 'class'=>'form-control col-sm-9 select-cliente', 'required']) !!}
                                 </div>
                                 <div class="form-group">
-                                    <label for="remolque_id" >Remolque<strong> *</strong></label>
-                                    {!! Form::select('remolque_id', $remolque, null,['id' => 'patio', 'placeholder'=>'Remolque', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
+                                    <label for="camion_id" >Camión<strong> *</strong></label>
+                                    {!! Form::select('camion_id', $camion, null,['id' => 'camion', 'placeholder'=>'Camión', 'class'=>'form-control col-sm-9 select-cliente', 'required']) !!}
                                 </div>
                             </div>
 
 
                             <div class="col-md-4" id="wrapper_2">
                                 <div class="form-group">
-                                    <label for="transporte_id" >Proveedor de Transporte <strong> *</strong></label>
-                                    {!! Form::select('transporte_id', $transporte, null,['id' => 'proveedor_id', 'placeholder'=>'Proveedor de Transporte', 'class'=>'form-control col-sm-9 select-cliente', 'required']) !!}
+                                    <label for="remolque_id" >Remolque<strong> *</strong></label>
+                                    {!! Form::select('remolque_id', $remolque, null,['id' => 'patio', 'placeholder'=>'Remolque', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
                                 </div>
                                 <div class="form-group">
                                     <label for="conductor_id" ><strong> Conductor *</strong></label>
@@ -41,10 +41,6 @@
                             </div>
 
                             <div class="col-md-4" id="wrapper_2">
-                                <div class="form-group">
-                                    <label for="camion_id" >Camión<strong> *</strong></label>
-                                    {!! Form::select('camion_id', $camion, null,['id' => 'camion', 'placeholder'=>'Camión', 'class'=>'form-control col-sm-9 select-cliente', 'required']) !!}
-                                </div>
                                 <div class="form-group">
                                     <label for="tour_fecha_inicio" >Fecha de Inicio <strong>*</strong></label>
                                      {!! Form::date('tour_fecha_inicio', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
@@ -88,7 +84,6 @@
                                     <table class="table table-hover" id="dataTablePais" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>Cliente</th>
                                                 <th>Proveedor de Transporte</th>
                                                 <th>Patente Camión</th>
                                                 <th>Patente Remolque</th>
@@ -103,7 +98,6 @@
 
 
                                             <tr>
-                                                <td><small>{{ $t->oneCliente->empresa_razon_social }} </small></td>
                                                 <td><small>{{ $t->oneProveedor->empresa_razon_social }}</small></td>
                                                 <td><small>{{ $t->belongsToCamion->camion_patente }}</small></td>
                                                 <td><small>{{ $t->belongsToRemolque->remolque_patente }}</small></td>
