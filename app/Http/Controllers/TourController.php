@@ -210,7 +210,7 @@ class TourController extends Controller
                 $ruta->ruta_destino = $request->destino;
                 $ruta->tour_id = $id_tour;
             
-                $ruta->save()
+                $ruta->save();
             } else{
                 // Existe la ruta, entonces se consulta el registro para usar más adelante.
                 $ruta = Rutas::where('tour_id', $id_tour)->first();
@@ -342,7 +342,7 @@ class TourController extends Controller
                 $ruta->ruta_destino = $request->destino;
                 $ruta->tour_id = $id_tour;
             
-                $ruta->save()
+                $ruta->save();
             } else{
                 // Existe la ruta, entonces se consulta el registro para usar más adelante.
                 $ruta = Rutas::where('tour_id', $id_tour)->first();
