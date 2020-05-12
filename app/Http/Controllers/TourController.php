@@ -190,6 +190,11 @@ class TourController extends Controller
     public function crearutas(Request $request)
     {
         $id_tour = $request->id_tour;
+        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
+            ->orderBy('empresa_id')
+            ->where('deleted_at', null)
+            ->pluck('empresa_razon_social', 'empresa_id')
+            ->all();
 
         try
         {
@@ -298,17 +303,17 @@ class TourController extends Controller
                     // Se añadieron los vins a la guía. Se aceptan los cambios a la base de datos.
                     DB::commit();
                     flash('La ruta se agregó correctamente.')->success();
-                    return view('transporte.addrutas', compact('id_tour'));
+                    return view('transporte.addrutas', compact('id_tour', 'empresas'));
                 } else {
                     // No se añadieron vins a la guía, se echa para atrás el cambio a la base de datos
                     DB::rollBack();
                     flash('Error: No se creó la ruta. VINs no válidos')->error();
-                    return view('transporte.addrutas', compact('id_tour'));
+                    return view('transporte.addrutas', compact('id_tour', 'empresas'));
                 }
             } else{
                 DB::rollBack();
                 flash('Error: Debe proporcionar al menos un VIN válido.')->error();
-                return view('transporte.addrutas', compact('id_tour'));
+                return view('transporte.addrutas', compact('id_tour', 'empresas'));
             }
         }  catch (\Exception $e) {
 
