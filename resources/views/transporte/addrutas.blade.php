@@ -22,7 +22,7 @@
 
                     <div class="col-md-4" id="wrapper_2">
                         <div class="form-group">
-                            <label for="guia_fecha" >De:</label>
+                            <label for="guia_fecha" >Fecha de la Guía:</label>
                             {!! Form::date('guia_fecha', null, ['class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
                         <div class="form-group">
@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-md-4" id="wrapper_2">
                         <div class="form-group">
-                            <label for="origen" >Fecha de la Guia:</label>
+                            <label for="origen" >De:</label>
                             {!! Form::text('origen', null, ['placeholder'=>'Dirección de origen', 'id' => 'search_term', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
                         <div class="form-group">
@@ -58,7 +58,7 @@
 
                     {!! Form::submit('Agregar Ruta', ['class' => 'btn btn-success block full-width m-b']) !!}
                     {!! Form::close() !!}
-                    <a type="button" href="{{route('tour.index')}}" class = 'btn btn-success'>Regresar a Tours</a>
+                    <a type="button" href="{{route('tour.index')}}" class = 'btn btn-info'>Regresar a Tours</a>
                 </div>
 
 
