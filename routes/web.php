@@ -292,6 +292,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
     Route::get('planificacion', 'CampaniaController@index3')->name('planificacion.index');
 
+    Route::post('planificacion/export', 'CampaniaController@exportResultadoBusquedaVins')->name('campania.exportResultadoBusquedaVins');
+
     //Ruta para la funcionalidad por POST
     Route::post('planificacion/index2', 'CampaniaController@index5')->name('planificacion.index2');
     Route::post('planificacion/index5_json', 'CampaniaController@index5_json')->name('planificacion.index5_json');

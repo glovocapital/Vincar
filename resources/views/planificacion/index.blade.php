@@ -222,6 +222,9 @@
                 <li class="nav-item">
                     <a class="nav-link" id="tareas-finalizadas-tab" data-toggle="tab" href="#tareas-finalizadas" role="tab" aria-controls="tareas-finalizadas" aria-selected="false">Tareas Finalizadas</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tareas-historicos-tab" data-toggle="tab" href="#tareas-historicos" role="tab" aria-controls="tareas-historicos" aria-selected="false">Histórico  Tareas</a>
+                </li>
             </ul>
 
             <div class="tab-content" id="myTabContent">
@@ -362,6 +365,83 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="tab-pane fade " id="tareas-historicos" role="tabpanel" aria-labelledby="tareas-historicos-tab">
+                    <div class="ibox float-e-margins">
+                        <div class="card card-default">
+                            <div class="card-header">
+                                <h3 class="card-title">Histórico Tareas</strong></h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="col-lg-12">
+                                    {!! Form::open(['route'=> 'campania.exportResultadoBusquedaVins', 'method'=>'POST']) !!}
+                                    <div class="text pb-3">
+
+
+                                            <input type="hidden" name="resultado_busqueda" value="{{json_encode($tareas_historicas)}}" id="resultado_busqueda_vins" />
+
+                                            {{ Form::button('<i class="fa fa-file-excel"></i> Exportar historial de tareas ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor'] )  }}
+
+                                    </div>
+                                    {!! Form::close() !!}
+
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="TareaCampanias" width="100%" cellspacing="0">
+                                        <thead>
+                                        <tr>
+                                            <th>Código VIN</th>
+                                            <th>Prioridad</th>
+                                            <th>Fecha Finalización</th>
+                                            <th>Hora Término</th>
+                                            <th>Responsable</th>
+                                            <th>¿Finalizada?</th>
+                                            <th>Tipo Tarea</th>
+                                            <th>Destino</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($tareas_historicas as $htarea)
+                                            <tr>
+                                                <td><small>{{ $htarea->codigoVin() }}</small></td>
+                                                @if($htarea->tarea_prioridad == 0)
+                                                    <td><small>Baja</small></td>
+                                                @elseif($htarea->tarea_prioridad == 1)
+                                                    <td><small>Media</small></td>
+                                                @elseif($htarea->tarea_prioridad == 2)
+                                                    <td><small>Alta</small></td>
+                                                @elseif($htarea->tarea_prioridad == 3)
+                                                    <td><small>Urgente</small></td>
+                                                @else
+                                                    <td><small>Sin prioridad</small></td>
+                                                @endif
+                                                <td><small>{{ $htarea->tarea_fecha_finalizacion }}</small></td>
+                                                <td><small>{{ $htarea->tarea_hora_termino }}</small></td>
+                                                <td><small>{{ $htarea->nombreResponsable() }}</small></td>
+                                                @if($htarea->tarea_finalizada)
+                                                    <td><small>Sí</small></td>
+                                                @else
+                                                    <td><small>No</small></td>
+                                                @endif
+                                                <td><small>{{ $htarea->oneTipoTarea() }}</small></td>
+                                                <td><small>{{ $htarea->oneTipoDestino() }}</small></td>
+
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -481,7 +561,7 @@
                     return 0;
                 }
 
-               
+
 
                 $.post("{{route('campania.storeModalTareaLotes')}}", datos, function (res) {
 

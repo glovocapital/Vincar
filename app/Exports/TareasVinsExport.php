@@ -2,17 +2,19 @@
 
 namespace App\Exports;
 
+use Maatwebsite\Excel\Concerns\FromCollection;
 use App\Vin;
-use GuzzleHttp\Psr7\Request;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class BusquedaVinsExport implements FromArray, WithHeadings
+
+class TareasVinsExport implements FromArray, WithHeadings
 {
     protected $results;
 
     public function __construct(array $resultados)
     {
+
         $this->results = $resultados;
     }
 
@@ -22,28 +24,22 @@ class BusquedaVinsExport implements FromArray, WithHeadings
 
     public function array(): array
     {
+
         return $this->results;
     }
 
     public function headings(): array
     {
         return [
-            'Vin ID',
-            'Código',
+            'Id Tarea',
+            'VIN',
             'Patente',
-            'Marca',
-            'Modelo',
-            'Color',
-            'Segmento',
-            'Motor',
-            'Propietario',
-            'Fecha de Ingreso',
-            'Estado de Inventario',
-            'Patio',
-            'Bloque',
-            'ID Ubcación',
-            'Fila',
-            'Columna'
+            'Tarea',
+            'Usuario Responsable',
+            'Destino',
+            'Fecha finalizacion solicitada',
+            'Hora de termino solicitado',
+            'Fecha y hora de finalizacion real'
         ];
     }
 }

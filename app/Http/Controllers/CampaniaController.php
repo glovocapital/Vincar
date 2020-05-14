@@ -17,13 +17,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use App\Exports\TareasVinsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CampaniaController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(PreventBackHistory::class);
+      //  $this->middleware(PreventBackHistory::class);
         $this->middleware(CheckSession::class);
     }
 
@@ -325,6 +327,10 @@ class CampaniaController extends Controller
             ->orderBy('tarea_id')
             ->get();
 
+        $tareas_historicas = Tarea::where('tarea_finalizada', true)
+            ->orderBy('tarea_id')
+            ->get();
+
         /** Búsqueda de vins para la cabecera de la vista de planificación */
         $vins = Vin::all();
 
@@ -594,7 +600,7 @@ class CampaniaController extends Controller
             array_push($arrayTCampanias, $tCampanias);
         }
 
-        return view('planificacion.index', compact('tareas', 'tareas_finalizadas', 'tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
+        return view('planificacion.index', compact('tareas', 'tareas_finalizadas', 'tareas_historicas' ,'tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
     }
 
 
@@ -862,6 +868,10 @@ class CampaniaController extends Controller
             ->orderBy('tarea_id')
             ->get();
 
+        $tareas_historicas = Tarea::where('tarea_finalizada', true)
+            ->orderBy('tarea_id')
+            ->get();
+
         /** Búsqueda de vins para la cabecera de la vista de planificación */
         $vins = Vin::all();
 
@@ -1131,7 +1141,7 @@ class CampaniaController extends Controller
             array_push($arrayTCampanias, $tCampanias);
         }
 
-        return view('planificacion.index', compact('tareas', 'tareas_finalizadas', 'tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
+        return view('planificacion.index', compact('tareas', 'tareas_finalizadas', 'tareas_historicas', 'tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
     }
 
     public function index5_json(Request $request)
@@ -1419,9 +1429,9 @@ class CampaniaController extends Controller
                 $bloque_id = null;
             }
 
-            DB::insert('INSERT INTO historico_vins 
-                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+            DB::insert('INSERT INTO historico_vins
+                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                origen_id, destino_id, empresa_id, historico_vin_descripcion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     $vin->vin_id,
@@ -1487,9 +1497,9 @@ class CampaniaController extends Controller
 
             $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
 
-            DB::insert('INSERT INTO historico_vins 
-                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+            DB::insert('INSERT INTO historico_vins
+                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                origen_id, destino_id, empresa_id, historico_vin_descripcion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     $vin->vin_id,
@@ -1664,9 +1674,9 @@ class CampaniaController extends Controller
                     $bloque_id = null;
                 }
 
-                DB::insert('INSERT INTO historico_vins 
-                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                DB::insert('INSERT INTO historico_vins
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                     [
                         $vin->vin_id,
@@ -1784,9 +1794,9 @@ class CampaniaController extends Controller
                     $tipo_camp_desc = TipoCampania::find($tipo_campania_id)->tipo_campania_descripcion;
 
 
-                    DB::insert('INSERT INTO historico_vins 
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
@@ -1836,9 +1846,9 @@ class CampaniaController extends Controller
                     $tipo_camp_desc = TipoCampania::find($tipo_campania_id)->tipo_campania_descripcion;
 
 
-                    DB::insert('INSERT INTO historico_vins 
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
@@ -1966,9 +1976,9 @@ class CampaniaController extends Controller
 
                 $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
 
-                DB::insert('INSERT INTO historico_vins 
-                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                DB::insert('INSERT INTO historico_vins
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                     [
                         $vin->vin_id,
@@ -2034,5 +2044,26 @@ class CampaniaController extends Controller
             flash('Error al intentar eliminar los datos de la tarea.')->error();
             return redirect('planificacion');
         }
+    }
+
+
+
+    public function exportResultadoBusquedaVins(Request $request)
+    {
+       // dd($request->resultado_busqueda);
+        $query = DB::table('tareas')
+            ->join('vins','vins.vin_id','=','tareas.tarea_id')
+            ->join('users','users.user_id','=','tareas.user_id')
+            ->join('tipo_tareas','tipo_tareas.tipo_tarea_id','=','tareas.tipo_tarea_id')
+            ->join('tipo_destinos','tipo_destinos.tipo_destino_id','=','tareas.tipo_destino_id')
+            ->select('tarea_id','vin_codigo','vin_patente','tipo_tarea_descripcion',DB::raw("CONCAT(user_nombre, ' ', user_apellido) as usuario_responsable"),
+            'tipo_destino_descripcion','tarea_fecha_finalizacion','tarea_hora_termino','tareas.updated_at')
+            ->get();
+
+            $j_query = json_encode($query);
+
+
+
+        return Excel::download(new TareasVinsExport(json_decode($j_query)), 'historico_tareas.xlsx');
     }
 }

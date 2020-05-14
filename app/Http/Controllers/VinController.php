@@ -1061,9 +1061,9 @@ class VinController extends Controller
             $vin->save();
 
             // Guardar historial del cambio
-            DB::insert('INSERT INTO historico_vins 
-                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+            DB::insert('INSERT INTO historico_vins
+                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                origen_id, destino_id, empresa_id, historico_vin_descripcion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     $vin->vin_id,
@@ -1178,9 +1178,9 @@ class VinController extends Controller
                     $vin->save();
 
                     // Guardar historial del cambio
-                    DB::insert('INSERT INTO historico_vins 
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
@@ -1213,9 +1213,9 @@ class VinController extends Controller
 
                     if($estado_nuevo == 8){ // Estado nuevo VIN Entregado
                         // Guardar historial del cambio
-                        DB::insert('INSERT INTO historico_vins 
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                             [
                                 $vin->vin_id,
@@ -1229,9 +1229,9 @@ class VinController extends Controller
                             ]
                         );
                     } else{ // Estado nuevo VIN Suprimido
-                        DB::insert('INSERT INTO historico_vins 
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                             [
                                 $vin->vin_id,
@@ -1421,9 +1421,9 @@ class VinController extends Controller
                 $vin->save();
 
                 // Guardar historial del cambio
-                DB::insert('INSERT INTO historico_vins 
-                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                DB::insert('INSERT INTO historico_vins
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                     [
                         $vin->vin_id,
@@ -1456,9 +1456,9 @@ class VinController extends Controller
 
                 if($estado_nuevo == 8){ // Estado nuevo VIN Entregado
                     // Guardar historial del cambio
-                    DB::insert('INSERT INTO historico_vins 
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
@@ -1472,9 +1472,9 @@ class VinController extends Controller
                         ]
                     );
                 } else{ // Estado nuevo VIN Suprimido
-                    DB::insert('INSERT INTO historico_vins 
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
@@ -1493,9 +1493,9 @@ class VinController extends Controller
                 $vin->save();
 
                 // Guardar historial del cambio
-                DB::insert('INSERT INTO historico_vins 
-                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                DB::insert('INSERT INTO historico_vins
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                     [
                         $vin->vin_id,
@@ -1665,9 +1665,9 @@ class VinController extends Controller
                     $guardados++;
 
                     // Guardar historial del cambio
-                    DB::insert('INSERT INTO historico_vins 
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
@@ -1701,9 +1701,9 @@ class VinController extends Controller
 
                     if($estado_nuevo == 8){ // Estado nuevo VIN Entregado
                         // Guardar historial del cambio
-                        DB::insert('INSERT INTO historico_vins 
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                             [
                                 $vin->vin_id,
@@ -1717,9 +1717,9 @@ class VinController extends Controller
                             ]
                         );
                     } else{ // Estado nuevo VIN Suprimido
-                        DB::insert('INSERT INTO historico_vins 
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                             [
                                 $vin->vin_id,
@@ -1739,9 +1739,9 @@ class VinController extends Controller
                     $guardados++;
 
                     // Guardar historial del cambio
-                    DB::insert('INSERT INTO historico_vins 
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id, 
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion) 
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
@@ -1791,6 +1791,7 @@ class VinController extends Controller
 
     public function exportResultadoBusquedaVins(Request $request)
     {
+
         return Excel::download(new BusquedaVinsExport(json_decode($request->resultado_busqueda)), 'busqueda_vins.xlsx');
     }
 
