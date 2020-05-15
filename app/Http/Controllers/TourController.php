@@ -327,6 +327,11 @@ class TourController extends Controller
     public function crearutas2(Request $request)
     {
         $id_tour = $request->id_tour;
+        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
+            ->orderBy('empresa_id')
+            ->where('deleted_at', null)
+            ->pluck('empresa_razon_social', 'empresa_id')
+            ->all();
 
         try
         {
@@ -441,12 +446,12 @@ class TourController extends Controller
                     // No se añadieron vins a la ruta, se echa para atrás el cambio a la base de datos
                     flash('Error: No se creó la ruta. VINs no válidos')->error();
                     DB::rollBack();
-                    return view('tour.editrutas', compact('id_tour'));
+                    return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
                 }
             } else{
                 DB::rollBack();
                 flash('Error: Debe proporcionar al menos un VIN válido.')->error();
-                return view('tour.editrutas', compact('id_tour'));
+                return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
             }
         }  catch (\Exception $e) {
 
@@ -480,14 +485,23 @@ class TourController extends Controller
             ->select()
             ->get();
 
+        $ruta_guias = DB::table('tours')
+            ->join('rutas','rutas.tour_id','=','tours.tour_id')
+            ->join('ruta_guias','ruta_guias.ruta_id','=','rutas.ruta_id')
+            ->where('tours.tour_id', $tour_id)
+            ->where('rutas.deleted_at', null)
+            ->select()
+            ->get();
+
         $guia_vins = DB::table('tours')
             ->join('rutas','rutas.tour_id','=','tours.tour_id')
             ->join('ruta_guias','ruta_guias.ruta_id','=', 'rutas.ruta_id')
-            ->join('guia_vins','guia_vins.guia_id','=', 'ruta_guias.guia_id')
+            ->join('guias','guias.guia_id','=','ruta_guias.guia_id')
+            ->join('guia_vins','guia_vins.guia_id','=', 'guias.guia_id')
             ->join('vins','vins.vin_id','=','guia_vins.vin_id')
             ->where('tours.tour_id', $tour_id)
             ->select()
-            ->get();       
+            ->get();   
 
         $rutas_array = [];
         $i = 0;
@@ -517,15 +531,28 @@ class TourController extends Controller
         foreach ($rutas_array as $ruta){
             $cadena_vins = "";
             foreach($guia_vins as $guia_vin){
-                if(($ruta[0] == $vin_ruta->ruta_origen) && ($ruta[1] == $vin_ruta->ruta_destino)){
-                    $cadena_vins .= $vin_ruta->vin_codigo . "\n";
+                if(($ruta[0] == $guia_vin->ruta_origen) && ($ruta[1] == $guia_vin->ruta_destino)){
+                    $cadena_vins .= $guia_vin->vin_codigo . "\n";
                 }
             }
             
-            array_push($vins_ruta_array, [$ruta, $cadena_vins]);
+            array_push($vins_guia_array, [$ruta, $cadena_vins]);
         }
 
-        return view('transporte.editrutas', compact('tour_id', 'rutas','vin_ruta', 'vins_ruta_array', 'empresas'));
+        $fecha_guias_array = [];
+        foreach ($rutas_array as $ruta){
+            $e = 0;
+            foreach($guia_vins as $guia_vin){
+                if(($ruta[0] == $guia_vin->ruta_origen) && ($ruta[1] == $guia_vin->ruta_destino) && ($e == 0)){
+                    $fecha = $guia_vin->guia_fecha;
+                    $e++;
+                }
+            }
+            
+            array_push($fecha_guias_array, [$ruta, $fecha]);
+        }
+
+        return view('transporte.editrutas', compact('tour_id', 'rutas','guia_vins', 'fecha_guias_array', 'vins_guia_array', 'empresas'));
     }
     
 

@@ -14,7 +14,6 @@
                 </div>
             </div>
             <div class="card-body">
-
                 {!! Form::open(['route'=>'tour.crearutas', 'method'=>'POST', 'files' => true]) !!}
 
                 <div class="row">
@@ -45,7 +44,7 @@
                         <div class="form-group">
                             <label for="empresa_id" >Cliente <strong> *</strong></label>
                                 {!! Form::select('empresa_id', $empresas, null,['id' => 'empresa_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
-                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="">Cargar Guia</label>
                             {!! Form::file('guia_ruta'); !!}
@@ -60,10 +59,6 @@
                     {!! Form::close() !!}
                     <a type="button" href="{{route('tour.index')}}" class = 'btn btn-info'>Regresar a Tours</a>
                 </div>
-
-
-
-
             </div>
         </div>
     </div>
