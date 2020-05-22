@@ -74,42 +74,44 @@
                 <div class="row">
                     @php($i = 0)
                     @foreach ($vins_guia_array as $vg)
+                        {!! Form::hidden('ruta_id[' . $i . ']', $rutas[$i]->ruta_id) !!}
                         <div class="col-md-4" id="wrapper_2">
                         @foreach ($fecha_guias_array as $fg)
-                            @if(($fg[0][0] == $vg[0][0]) && ($fg[0][1] == $vg[0][1]))
+                            @if(($fg[0][0] == $vg[1][0]) && ($fg[0][1] == $vg[1][1]))
                             <div class="form-group">
                                 <label for="guia_fecha" >Fecha de la Guía:</label>
-                                {!! Form::date('guia_fecha', $fg[1], ['class'=>'form-control col-sm-9', 'required']) !!}
+                                {!! Form::date('guia_fecha[' . $i . ']', $fg[1], ['class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
                             @endif
                         @endforeach
                             <div class="form-group">
                                 <label for="vin_numero" >Vin <strong>*</strong></label>
-                                {!! Form::textarea('vin_numero['. $i .']', $vg[1], ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
+                                {!! Form::textarea('vin_numero['. $i .']', $vg[2], ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                 <label for="marca_nombre" >De:</label>
-                                {!! Form::text('origen_id['. $i .']', $vg[0][0], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
-                                {!! Form::hidden('origen_id['. $i .']', $vg[0][0]) !!}
+                                {!! Form::text('origen_id['. $i .']', $vg[1][0], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
+                                {!! Form::hidden('origen_id['. $i .']', $vg[1][0]) !!}
                             </div>
                             <div class="form-group">
                                 <label for="marca_nombre" >A:</label>
-                                {!! Form::text('destino_id['. $i .']', $vg[0][1], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
-                                {!! Form::hidden('destino_id['. $i .']', $vg[0][1]) !!}
+                                {!! Form::text('destino_id['. $i .']', $vg[1][1], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
+                                {!! Form::hidden('destino_id['. $i .']', $vg[1][1]) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                 <label for="empresa_id" >Cliente <strong> *</strong></label>
-                                    {!! Form::select('empresa_id', $empresas, null,['id' => 'empresa_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
+                                    {!! Form::select('empresa_id', $empresas, $vg[0],['id' => 'empresa_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
                             </div>
                             <div class="form-group">
                                 <label for="">Cargar Guia</label>
                                 {!! Form::file('guia_ruta['. $i .']'); !!}
+                                {!! Form::hidden('guia_id['. $i .']', $vg[3]) !!}
                             </div>
                         </div>
                         @php($i++)
