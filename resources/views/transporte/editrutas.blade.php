@@ -106,7 +106,7 @@
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                 <label for="empresa_id" >Cliente <strong> *</strong></label>
-                                    {!! Form::select('empresa_id', $empresas, $vg[0],['id' => 'empresa_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
+                                    {!! Form::select('empresa_id[' . $i . ']', $empresas, $vg[0],['id' => 'empresa_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
                             </div>
                             <div class="form-group">
                                 <label for="">Cargar Guia</label>
