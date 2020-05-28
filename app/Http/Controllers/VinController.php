@@ -1801,6 +1801,12 @@ class VinController extends Controller
 
     public function predespacho(Request $request)
     {
+        if($request->ajax())
+
+            return response()->json(
+                Array("error"=>0,"mensaje"=>"HOLA")
+            );
+
 
     }
 
