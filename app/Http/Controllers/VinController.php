@@ -29,6 +29,7 @@ use Illuminate\Support\Collection as Collection;
 
 
 
+
 class VinController extends Controller
 {
 
@@ -1642,6 +1643,8 @@ class VinController extends Controller
 
     public function storeModalCambiaEstado(Request $request)
     {
+
+
         //$fecha = Carbon::now();
         $fecha = date('Y-m-d');
 
@@ -1793,6 +1796,12 @@ class VinController extends Controller
     {
 
         return Excel::download(new BusquedaVinsExport(json_decode($request->resultado_busqueda)), 'busqueda_vins.xlsx');
+    }
+
+
+    public function predespacho(Request $request)
+    {
+
     }
 
 }

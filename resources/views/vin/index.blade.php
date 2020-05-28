@@ -243,9 +243,11 @@
 
                             <div class="text-right pb-5">
 
-                                    <button type="button" class="btn btn-success btn-lote-vins btn-rol" style="display:none">Carga de guías por lotes</i></button>
+                                    <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol12" style="display:none">Asignar para entrega</i></button>
 
-                                    <button type="button" class="btn btn-warning btn-edo-vins btn-rol13" style="display:none">Cambia Estado por lotes</i></button>
+                                    <button type="button" class="btn btn-success btn-lote-vins btn-rol" style="display:none">Cargar de guías por lotes</i></button>
+
+                                    <button type="button" class="btn btn-warning btn-edo-vins btn-rol13" style="display:none">Cambiar estado por lotes</i></button>
 
                                     <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
                                 {!! Form::close() !!}
@@ -433,6 +435,7 @@
     @include('vin.partials.modal_asignar_tarea_lotes')
     @include('vin.partials.modal_cambia_estado')
     @include('vin.partials.modal_historico_vin')
+    @include('vin.partials.modal_predespacho')
 
 @stop
 @section('local-scripts')
@@ -478,6 +481,7 @@
                      $(".btn-rol").show();
                      if(value.rol_id == 1 ||  value.rol_id == 3){
                          $(".btn-rol13").show();
+                         $(".btn-rol12").show();
                      }
                      var_roles=1;
                  }
@@ -505,15 +509,15 @@
                  ((value.rol_id == 1 || value.rol_id == 2  || value.rol_id == 3)?(
 
                  '<small>'+
-                 '<a target="_blank" href="'+value.vin_edit+'" type="button" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>'+
+                 '<a href="'+value.vin_edit+'" type="button" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>'+
                  '</small>'+
                      '<small>'+
-                     '<a target="_blank" href="'+value.vin_editarestado+'" type="button" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>'+
+                     '<a  href="'+value.vin_editarestado+'" type="button" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>'+
                      '</small>'
 
                  ):"")+
                  '<small>'+
-                 '<a target="_blank" href="'+value.vin_guia+'" type="button" class="btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>'+
+                 '<a href="'+value.vin_guia+'" type="button" class="btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>'+
                  '</small>'
 
 
@@ -577,6 +581,7 @@
                     alert('Error: Debe seleccionar al menos un vin de la lista');
                 });
             });
+
             //Modal Solicitar Tarea
             $('.btn-edo_tarea').click(function (e) {
                 e.preventDefault();
@@ -585,6 +590,43 @@
                 $(".vin-id").val(vin_id);
                 $("#vin_codigo_edo").html("<h4>VIN: " + vin_codigo + "</h4>");
                 $("#cambiarEdoModalLote").modal('show');
+            });
+
+
+             //modal predespacho
+             $('.btn-predespacho-vins').click(function (e){
+                e.preventDefault();
+                var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
+                    return this.value;
+                }).get();
+                var url = "planificacion/obtener_codigos_vins";
+                var request = {
+                    _token: $("input[name='_token']").attr("value"),
+                    vin_ids: vin_ids,
+                };
+                $.post(url, request, function (res) {
+                    //Validar primero si algo salió mal
+                    if(!res.success){
+                        alert(
+                            "Error inesperado al solicitar la información.\n\n" +
+                            "MENSAJE DEL SISTEMA:\n" +
+                            res.message + "\n\n"
+                        );
+                        return;  // Finaliza el intento de obtener
+                    }
+                    var arr_codigos = $.map(res.codigos, function (e1) {
+                        return e1;
+                    });
+                    $("#vin_codigo_predespacho").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
+                    $("#vin_codigo_predespacho").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + vin_ids[0] + "]'  value='" + vin_ids[0] + "'/>");
+                    for (var i = 1; i < arr_codigos.length; i++){
+                        $("#vin_codigo_predespacho").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
+                        $("#vin_codigo_predespacho").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + vin_ids[i] + "]' value='" + vin_ids[i] + "'/>");
+                    }
+                    $("#predespachoModal").modal('show');
+                }).fail(function () {
+                    alert('Error: Debe seleccionar al menos un vin de la lista');
+                });
             });
 
             //Modal Histórico del VIN
@@ -692,6 +734,27 @@
                 });
 
             });
+
+            $('#btn-pre-despacho').on('click',function(e){
+                e.preventDefault();
+
+                $("#error0").hide();
+                $("#error1").hide();
+
+                $.post("{{route('vin.predespacho')}}", $("#PredespachoVins").serialize(), function (res) {
+
+                    $dat = res;
+
+                    if($dat.error==0) $("#error0").show();
+                    else {$("#error1").show();  $("#error1").html($dat.mensaje); }
+
+                }).fail(function () {
+                    alert('Error: ');
+                });
+
+            });
+
+
             //Modal Solicitar Tarea
             $('.btn-tarea').click(function (e) {
                 e.preventDefault();
