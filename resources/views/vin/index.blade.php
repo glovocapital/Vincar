@@ -497,7 +497,7 @@
              value.vin_fec_ingreso,
              value.empresa_razon_social,
              value.vin_estado_inventario_desc,
-             '<a href="'+value.vin_downloadGuia+'">Guia</a>',
+             '<font color="'+((value.vin_downloadGuiaN == "Sin Guia")?"Blue":"Green")+'">'+value.vin_downloadGuiaN+'</font>',
                  (typeof value.patio_nombre !== 'undefined')?value.patio_nombre:"",
                  (typeof value.bloque_nombre !== 'undefined')?value.bloque_nombre:"",
                  (typeof value.ubic_patio_id !== 'undefined')?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):"",
@@ -517,7 +517,8 @@
 
                  ):"")+
                  '<small>'+
-                 '<a href="'+value.vin_guia+'" type="button" class="btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>'+
+                 ((value.vin_downloadGuiaN == "Sin Guia")?'<a href="'+value.vin_guia+'" type="button" class="btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>':'<a href="'+value.vin_downloadGuia+'" type="button" class="btn-vin"  title="Descargar Guía"><i class="fas fa fa-barcode2"></i></a>')+
+
                  '</small>'
 
 

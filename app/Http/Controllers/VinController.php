@@ -367,8 +367,20 @@ class VinController extends Controller
 
         foreach($tabla_vins as $vins){
 
-            $vins->vin_encrypt =  Crypt::encrypt($vins->vin_id);
+            $guia = DB::table('guia_vins')
+                ->join('guias','guia_vins.guia_id','guias.guia_id')
+                ->select('guias.guia_ruta')
+                ->where('guia_vins.vin_id', $vins->vin_id)
+                ->first();
+
+            if($guia){
+                $vins->vin_downloadGuiaN =  "Guia N-".$guia[0]->guia_id;
+            }else{
+                $vins->vin_downloadGuiaN =  "Sin Guia";
+            }
+
             $vins->vin_downloadGuia =  route('vin.downloadGuia', Crypt::encrypt($vins->vin_id));
+            $vins->vin_encrypt =  Crypt::encrypt($vins->vin_id);
             $vins->vin_guia =  route('vin.guia', Crypt::encrypt($vins->vin_id));
             $vins->vin_editarestado =  route('vin.editarestado', Crypt::encrypt($vins->vin_id));
             $vins->vin_edit =  route('vin.edit', Crypt::encrypt($vins->vin_id));
@@ -1580,13 +1592,11 @@ class VinController extends Controller
         $vin = Vin::findOrfail($vin_id);
 
         $guia = DB::table('vins')
-            ->join('guias_vins','guias_vins.vin_id','vins.vin_id')
-            ->join('guias','guias_vins.guia_id','guias.guia_id')
+            ->join('guia_vins','guia_vins.vin_id','vins.vin_id')
+            ->join('guias','guia_vins.guia_id','guias.guia_id')
             ->select('guias.guia_ruta')
-            ->where('guias_vins.vin_id', $vin_id)
+            ->where('guia_vins.vin_id', $vin_id)
             ->get();
-
-        //dd(empty($guia[0]->guia_ruta));
 
         if(!empty($guia[0]->guia_ruta))
         {
