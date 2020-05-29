@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class GuiasVins extends Migration
+class GuiaVins extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class GuiasVins extends Migration
      */
     public function up()
     {
-        Schema::create('guias_vins', function (Blueprint $table) {
+        Schema::create('guia_vins', function (Blueprint $table) {
             $table->bigIncrements('guia_vin_id');
 
             $table->unsignedBigInteger('vin_id');
@@ -34,6 +34,6 @@ class GuiasVins extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('guias_vins');
+        Schema::dropIfExists('guia_vins');
     }
 }
