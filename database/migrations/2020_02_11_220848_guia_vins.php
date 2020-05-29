@@ -14,7 +14,7 @@ class GuiaVins extends Migration
     public function up()
     {
         Schema::create('guia_vins', function (Blueprint $table) {
-            $table->bigIncrements('guia_vin_id');
+            $table->bigIncrements('guia_vins_id');
 
             $table->unsignedBigInteger('vin_id');
             $table->foreign('vin_id')->references('vin_id')->on('vins')->onUpdate('cascade')->onDelete('cascade');
