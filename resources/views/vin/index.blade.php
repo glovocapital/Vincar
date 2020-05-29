@@ -744,10 +744,11 @@
 
                 $.post("{{route('vin.predespacho')}}", $("#PredespachoVins").serialize(), function (res) {
 
-                    $dat1 = res1;
+                    $dat = res;
+                   console.log($dat);
 
-                    if($dat1.error==0) $("#error0").show();
-                    else {$("#error1").show();  $("#error1").html($dat1.mensaje); }
+                    if($dat.error==0) $("#error0_predespacho").show();
+                    else {$("#error1_predespacho").show();  $("#error1").html($dat.mensaje); }
 
                 }).fail(function () {
                     alert('Error: ');
