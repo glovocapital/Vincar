@@ -22,7 +22,8 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="vin_estado_inventario_id" >Agendar Entrega </label>
-                            {!! Form::select('vin_estado_inventario_id', $estadosInventario, null,['class'=>'form-control col-sm-9']) !!}
+                            {!! Form::select('size', ['S' => 'Agendar'], null,['class'=>'form-control col-sm-9']) !!}
+
                         </div>
                     </div>
 
