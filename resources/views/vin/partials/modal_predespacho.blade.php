@@ -22,7 +22,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="vin_estado_inventario_id" >Agendar Entrega </label>
-                            {!! Form::select('size', ['S' => 'Agendar'], null,['class'=>'form-control col-sm-9']) !!}
+                            {!! Form::select('predespacho', ['S' => 'Preparar para entrega'], null,['placeholder'=>'Seleccione la Opción','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
 
                         </div>
                     </div>
@@ -30,8 +30,8 @@
 
                 </div>
 
-                <div id="error0" style="display:none; padding:5px" class="alert alert-success" role="alert">Datos Guardados</div>
-                <div id="error1" style="display:none; padding:5px" class="alert alert-danger" role="alert">Error al Guardar</div>
+                <div id="error_0" style="display:none; padding:5px" class="alert alert-success" role="alert">Datos Guardados</div>
+                <div id="error_1" style="display:none; padding:5px" class="alert alert-danger" role="alert">Error al Guardar</div>
 
             </div>
             <div class="modal-footer">

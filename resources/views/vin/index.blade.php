@@ -738,8 +738,8 @@
             $('#btn-pre-despacho').on('click',function(e){
                 e.preventDefault();
 
-                $("#error0").hide();
-                $("#error1").hide();
+                $("#error_0").hide();
+                $("#error_1").hide();
 
                 $.post("{{route('vin.predespacho')}}", $("#PredespachoVins").serialize(), function (res) {
 
