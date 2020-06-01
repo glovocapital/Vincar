@@ -21,8 +21,9 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
+
                             <label for="vin_estado_inventario_id" >Agendar Entrega </label>
-                            {!! Form::select('predespacho', ['S' => 'Preparar para entrega'], null,['placeholder'=>'Seleccione la Opción','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            {!! Form::select('predespacho', ['1' => 'Preparar para entrega'], null,['placeholder'=>'Seleccione la Opción','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
 
                         </div>
                     </div>

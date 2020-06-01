@@ -745,7 +745,7 @@
                 $.post("{{route('vin.predespacho')}}", $("#PredespachoVins").serialize(), function (res) {
 
                     $dat = res;
-                   console.log($dat);
+                 //  console.log($dat);
 
                     if($dat.error==0) $("#error0_predespacho").show();
                     else {$("#error1_predespacho").show();  $("#error1").html($dat.mensaje); }
