@@ -168,32 +168,56 @@ class BloqueController extends Controller
         }
 
         $bloque = Bloque::findOrFail($bloque_id);
-
+        
         try {
+                DB::beginTransaction();
+                
+                // $filas = 0;
+                // $columnas = 0;  
+                $bloque->bloque_nombre = $request->bloque_nombre;
+
+                if($bloque->bloque_filas != $request->bloque_filas || $bloque->bloque_columnas != $request->bloque_columnas){
+                    $ocupadas = UbicPatio::where('ubic_patio_ocupada', true)->get();
+                    
+                    if(count($ocupadas) == 0){
+                        UbicPatio::where('bloque_id', $bloque_id)->delete();
+                        
+                        // $totalUbicacionesBloque = (int)$request->bloque_filas * (int)$request->bloque_columnas;
+
+                        for ($i=1; $i <= $request->bloque_filas; $i++) {
+                            for ($j=1; $j <= $request->bloque_columnas; $j++) { 
+                                $ubic_patio = new UbicPatio();
             
-            $filas = 0;
-            $columnas = 0;
-            
-            $bloque->bloque_nombre = $request->bloque_nombre;
-            
-            if($bloque->filas != $request->bloque_filas){
-                $bloque->bloque_filas = $request->bloque_filas;
-                $filas = $request->bloque_filas;
-            }
+                                $ubic_patio->ubic_patio_fila = $i;
+                                $ubic_patio->ubic_patio_columna = $j;
+                                $ubic_patio->bloque_id = $bloque->bloque_id;
+                                
+                                $ubic_patio->save();
+                            }
+                        }
 
-            if($bloque->columnas != $request->bloque_columnas){
-                $bloque->bloque_columnas = $request->bloque_columnas;
-                $columnas = $request->bloque_columnas;
-            }
+                        if($bloque->bloque_filas != $request->bloque_filas){
+                            $bloque->bloque_filas = $request->bloque_filas;
+                            // $filas = $request->bloque_filas;
+                        }
+        
+                        if($bloque->bloque_columnas != $request->bloque_columnas){
+                            $bloque->bloque_columnas = $request->bloque_columnas;
+                            // $columnas = $request->bloque_columnas;
+                        }
+                    } else{
+                        flash('El Bloque tiene ubicaciones ocupadas aún.')->error();
+                        return redirect()->route('bloque.index', ['id_patio' => Crypt::encrypt($request->patio_id)]);   
+                    }
+                    
+                } 
+                
+                $bloque->save();
 
-            $bloque->patio_id = $request->patio_id;
+                DB::commit();
 
-            $bloque->save();
-
-
-
-            flash('Bloque modificado correctamente.')->success();
-            return redirect()->route('bloque.index', ['id_patio' => Crypt::encrypt($request->patio_id)]);
+                flash('Bloque modificado correctamente.')->success();
+                return redirect()->route('bloque.index', ['id_patio' => Crypt::encrypt($request->patio_id)]);
 
         }catch (\Exception $e) {
 
