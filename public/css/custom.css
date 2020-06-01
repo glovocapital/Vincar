@@ -1,11 +1,10 @@
 body.login {
     background-image: url(../img/background_home.jpg);
+    background-size: cover;
 }
 
 .bg-gradient-primary {
     background: #2F4050 !important;
-    background-image: -webkit-gradient(none);
-    background-image: linear-gradient(none);
     background-size: cover;
 }
 

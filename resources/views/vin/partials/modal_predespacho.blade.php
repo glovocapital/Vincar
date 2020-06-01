@@ -30,8 +30,8 @@
 
                 </div>
 
-                <div id="error_0" style="display:none; padding:5px" class="alert alert-success" role="alert">Datos Guardados</div>
-                <div id="error_1" style="display:none; padding:5px" class="alert alert-danger" role="alert">Error al Guardar</div>
+                <div id="error0_predespacho" style="display:none; padding:5px" class="alert alert-success" role="alert">Datos Guardados</div>
+                <div id="error1_predespacho" style="display:none; padding:5px" class="alert alert-danger" role="alert">Error al Guardar</div>
 
             </div>
             <div class="modal-footer">
