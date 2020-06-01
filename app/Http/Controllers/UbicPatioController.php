@@ -98,7 +98,7 @@ class UbicPatioController extends Controller
                 $vin = Vin::where('vin_codigo', $request->vin_codigo)->first();
             }
 
-             $ubic_patio = new UbicPatio();
+            $ubic_patio = new UbicPatio();
 
             $ubic_patio->ubic_patio_fila = $request->ubic_patio_fila;
             $ubic_patio->ubic_patio_columna = $request->ubic_patio_columna;
