@@ -15,8 +15,8 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
-                        {!! Form::open(['route'=> ['marcas.update', Crypt::encrypt($marca->marca_id)], 'method'=>'PATCH']) !!}
+                    <div class="col-md-4">
+                        {!! Form::open(['route'=> ['marcas.update', Crypt::encrypt($marca->marca_id)], 'method'=>'PATCH', 'files' => true]) !!}
 
                         <div class="form-group">
 
@@ -25,16 +25,25 @@
 
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
 
                         <div class="form-group">
                             <label for="marca_nombre" >Código de la Marca</label>
                             {!! Form::text('marca_codigo', $marca->marca_codigo, ['placeholder'=>'Código', 'class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="">Logo de la marca </label>
+                            {!! Form::file('logo_marca'); !!}
+                        </div>
+
+                    </div>
+
                 </div>
                 <div class="text-right pb-5">
-                        {!! Form::submit('Agregar Marca ', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                        {!! Form::submit('Editar Marca ', ['class' => 'btn btn-primary block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>
                     <div class="text-center texto-leyenda">

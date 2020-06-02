@@ -16,30 +16,38 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
-                        {!! Form::open(['route'=> 'marcas.store', 'method'=>'POST']) !!}
+                    <div class="col-md-4">
+                        {!! Form::open(['route'=> 'marcas.store', 'method'=>'POST','files' => true]) !!}
                         <div class="form-group">
 
-                                <label for="marca_nombre" >Nombre de la Marca <strong>*</strong></label>
+                                <label for="marca_nombre" >Nombre de la marca <strong>*</strong></label>
                                 {!! Form::text('marca_nombre', null, ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'required']) !!}
 
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
 
                         <div class="form-group">
-                            <label for="marca_nombre" >Código de la Marca</label>
+                            <label for="marca_nombre" >Código de la marca</label>
                             {!! Form::text('marca_codigo', null, ['placeholder'=>'Código', 'class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="">Logo de la marca </label>
+                            {!! Form::file('logo_marca'); !!}
+                        </div>
+                    </div>
+
                 </div>
+
                 <div class="text-right pb-5">
                         {!! Form::submit('Agregar Marca ', ['class' => 'btn btn-primary block full-width m-b']) !!}
                         {!! Form::close() !!}
-                    </div>
-                    <div class="text-center texto-leyenda">
-                        <p><strong>*</strong> Campos obligatorios</p>
-                    </div>
+                </div>
+                <div class="text-center texto-leyenda">
+                    <p><strong>*</strong> Campos obligatorios</p>
+                </div>
 
             </div>
         </div>

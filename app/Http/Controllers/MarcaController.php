@@ -6,6 +6,7 @@ use App\Marca;
 use Illuminate\Http\Request;
 use DB;
 use Crypt;
+use Illuminate\Support\Facades\Auth;
 
 class MarcaController extends Controller
 {
@@ -53,11 +54,22 @@ class MarcaController extends Controller
         }else
 
 
+
+        $logoMarca = $request->file('logo_marca');
+        $extensionFoto = $logoMarca->extension();
+        $path = $logoMarca->storeAs(
+            'logosMarca',
+            'Foto del logo'.'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+        );
+
+
+
         try {
 
             $marca = new Marca();
             $marca->marca_nombre = $request->marca_nombre;
             $marca->marca_codigo =$request->marca_codigo;
+            $marca->marca_guia = $path;
             $marca->save();
 
             flash('La marca se creo correctamente.')->success();
@@ -105,24 +117,58 @@ class MarcaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {try {
-
+    {
         $marca_id =  Crypt::decrypt($id);
         $marca = Marca::findOrfail($marca_id);
 
-        $marca->marca_nombre = $request->marca_nombre;
-        $marca->marca_codigo =$request->marca_codigo;
-        $marca->save();
+        if(is_null($request->file('logo_marca')))
+        {
+            try {
 
-        flash('La marca se actualizo correctamente.')->success();
-        return redirect('marcas');
+                $marca->marca_nombre = $request->marca_nombre;
+                $marca->marca_codigo =$request->marca_codigo;
+                $marca->save();
 
-    }catch (\Exception $e) {
+                flash('La marca se actualizo correctamente.')->success();
+                return redirect('marcas');
 
-        flash('Error al actualizar la marca.')->error();
-       //flash($e->getMessage())->error();
-        return redirect('marcas');
-    }
+                }catch (\Exception $e) {
+
+                    flash('Error al actualizar la marca.')->error();
+                //flash($e->getMessage())->error();
+                    return redirect('marcas');
+                }
+
+        }else
+        {
+            $logoMarca = $request->file('logo_marca');
+            $extensionFoto = $logoMarca->extension();
+            $path = $logoMarca->storeAs(
+                'logosMarca',
+                'Foto del logo'.'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+            );
+
+            try {
+
+
+                $marca->marca_nombre = $request->marca_nombre;
+                $marca->marca_codigo =$request->marca_codigo;
+                $marca->marca_guia = $path;
+                $marca->save();
+
+                flash('La marca se creo correctamente.')->success();
+                return redirect('marcas');
+
+            }catch (\Exception $e) {
+
+                flash('Error al crear la marca.')->error();
+               //flash($e->getMessage())->error();
+                return redirect('marcas');
+            }
+
+        }
+
+
 
     }
 
