@@ -2,8 +2,8 @@
 @section('title','Vin index')
 @section('content')
 
-    <!--SUPER ADMINISTRADOR -->
-    @if(Auth::user()->rol_id == 1)
+     <!--SUPER ADMINISTRADOR y ADMINISTRADOR -->
+    @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 2)
         <div class="row">
             <div class="col-lg-4">
                 <div class="ibox float-e-margins">
@@ -241,7 +241,7 @@
                                 </div>
                             </div>
 
-                            <div class="text-right pb-5">
+                            <div class="text-right pb-5" id="botones">
 
                                     <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol12" style="display:none">Asignar para entrega</i></button>
 
@@ -250,6 +250,16 @@
                                     <button type="button" class="btn btn-warning btn-edo-vins btn-rol13" style="display:none">Cambiar estado por lotes</i></button>
 
                                     <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
+
+                            {!! Form::close() !!}
+
+                                    <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Solicitar Histórico por lotes</i></button>
+                                    
+                            </div>
+
+                            <div class="text-right pb-5">
+                                {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
+                                    
                                 {!! Form::close() !!}
                             </div>
 
@@ -766,15 +776,24 @@
                 $("#vin_codigo").html("<h4>VIN: " + vin_codigo + "</h4>");
                 $("#asignarTareaModal").modal('show');
             });
+
+            // Histórico de Vins por lotes
+            $('.btn-historico-vin-lote').click(function (e){
+                e.preventDefault();
+                
+                var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
+                    return this.value;
+                }).get();
+                
+                $("#historico_lote_form").append("<h4>Historico de Vins listo para descargar</h4>");
+                $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + vin_ids[0] + "]'  value='" + vin_ids[0] + "'/>");
+                for (var i = 1; i < vin_ids.length; i++){
+                    $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + vin_ids[i] + "]' value='" + vin_ids[i] + "'/>");
+                }
+                $("#historico_lote_form").append("<button type='submit' class='btn btn-info btn-rol13' style='{align:center, display:block}'>Descargar Histórico por lotes</i></button>");
+            });
         });
     </script>
-
-
-
-
-
-
-
 
 
 @endsection

@@ -256,6 +256,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::patch('historico_vin/{id}/update','HistoricoVinController@update')->name('historico_vin.update');
     Route::get('historico_vin/{id}/delete','HistoricoVinController@destroy')->name('historico_vin.destroy');
     Route::get('historico_vin/historicoVin/{id_vin}','HistoricoVinController@historicoVin')->name('historico_vin.historicoVin');
+    Route::post('historico_vin/exportHistoricoLote', 'HistoricoVinController@exportHistoricoVinLote')->name('historico_vin.exportHistoricoVinLote');
 
      //Jc
      Route::get('patio/vins_patio','PatioController@indexVinsPatio')->name('patio.vins_patio');
