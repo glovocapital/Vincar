@@ -105,44 +105,31 @@ class HistoricoVinController extends Controller
         $array_historicos= [];
 
         foreach($request->vin_ids as $vin_id){
-            $elemento = HistoricoVin::where('vin_id', $vin_id)->get();
-            $vin_codigo = Vin::find($vin_id)->select('vin_codigo')->value('vin_codigo');
+            $elemento = HistoricoVin::where('vin_id', $vin_id)->orderBy('historico_vin_id')->get();
+            $vin_codigo = Vin::where('vin_id',$vin_id)->select('vin_codigo')->value('vin_codigo');
             array_push($array_historicos, [$vin_codigo, $elemento]);
         }
-
+        
         $array_historico_vins = [];
         $i = 0;
+    
         foreach($array_historicos as $historico_vin){
             foreach($historico_vin[1] as $item){
-                $array_historico_vins[$i]['codigo'] = $historico_vin[0];
                 $array_historico_vins[$i]['historico_vin_id'] = $item->historico_vin_id;
-                $array_historico_vins[$i]['vin_id'] = $item->vin_id;
-                $array_historico_vins[$i]['estado'] = $item->oneVinEstadoInventario();
                 $array_historico_vins[$i]['historico_vin_fecha'] = $item->historico_vin_fecha;
+                $array_historico_vins[$i]['codigo'] = $historico_vin[0];
+                $array_historico_vins[$i]['vin_id'] = $item->vin_id;
+                $array_historico_vins[$i]['cliente'] = $item->oneEmpresa->empresa_razon_social;
+                $array_historico_vins[$i]['estado'] = $item->oneVinEstadoInventario();
                 $array_historico_vins[$i]['responsable'] = $item->oneResponsable->user_nombre . " " . $item->oneResponsable->user_apellido;
                 $array_historico_vins[$i]['origen'] = $item->oneOrigen;
                 $array_historico_vins[$i]['destino'] = $item->oneDestino;
-                $array_historico_vins[$i]['cliente'] = $item->oneEmpresa->empresa_razon_social;
-                $array_historico_vins[$i]['descripcion'] = $item->historico_vin_descripcion;
+                $array_historico_vins[$i]['descripcion'] = $item->historico_vin_descripcion;     
                 $i++;
             }
         }
         
         return Excel::download(new HistoricoVinLoteExport($array_historico_vins), 'busqueda_vins.xlsx');
-        
-        // if($resultado){
-        //     return response()->json([
-        //         'success' => true,
-        //         'message' => "Data histórica de los VINs disponible",
-        //         'historico_vin' => $resultado
-        //     ]);
-        // }
-
-        // return response()->json([
-        //     'success' => false,
-        //     'message' => "Data histórica de los VINs no disponible",
-        //     'historico_vin' => null
-        // ]);
     }
 
     /**

@@ -39,15 +39,15 @@ class HistoricoVinLoteExport implements FromArray, WithHeadings
     public function headings(): array
     {
         return [
-            'Código',
             'ID de registro',
-            'Id de VIN',
-            'Estado de inventario',
             'Fecha del Registro',
+            'Código',
+            'ID de VIN',
+            'Cliente',
+            'Estado de inventario',
             'Usuario',
             'Origen',
             'Destino',
-            'Cliente',
             'Descripción',
         ];
     }

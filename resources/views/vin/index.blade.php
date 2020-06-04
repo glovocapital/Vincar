@@ -5,7 +5,7 @@
      <!--SUPER ADMINISTRADOR y ADMINISTRADOR -->
     @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 2)
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <div class="ibox float-e-margins">
                     <div class="card card-default text-center">
                         <div class="card-header">
@@ -28,7 +28,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <div class="ibox float-e-margins">
                     <div class="card card-default text-center">
                         <div class="card-header">
@@ -52,7 +52,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <div class="ibox float-e-margins">
                     <div class="card card-default text-center">
                         <div class="card-header">
@@ -80,13 +80,37 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-3">
+                <div class="ibox float-e-margins">
+                    <div class="card card-default text-center">
+                        <div class="card-header">
+                            <h3 class="card-title">Histórico VINs</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="text-right pb-3">
+                                        {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
+                                        {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Histórico ', ['id' => 'btn-descargar-historico', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor', 'disabled'] )  }}
+                                        {!! Form::close() !!}
+                                    </div>
+                                    
+                                    <div class="text  pb-3">
+                                        Haz click para exportar histórico por lotes
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     @endif
 
     <!-- OPERADOR LOGISTICO  -->
     @if(Auth::user()->rol_id == 3)
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="ibox float-e-margins">
                     <div class="card card-default text-center">
                         <div class="card-header">
@@ -110,7 +134,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="ibox float-e-margins">
                     <div class="card card-default text-center">
                         <div class="card-header">
@@ -136,13 +160,37 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="card card-default text-center">
+                        <div class="card-header">
+                            <h3 class="card-title">Histórico VINs</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="text-right pb-3">
+                                        {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
+                                        {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Histórico ', ['id' => 'btn-descargar-historico', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor', 'disabled'] )  }}
+                                        {!! Form::close() !!}
+                                    </div>
+                                    
+                                    <div class="text  pb-3">
+                                        Haz click para exportar histórico por lotes
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     @endif
 
     <!-- CUSTOMERS -->
     @if(Auth::user()->rol_id == 4)
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="ibox float-e-margins">
                     <div class="card card-default text-center">
                         <div class="card-header">
@@ -166,7 +214,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="ibox float-e-margins">
                     <div class="card card-default text-center">
                         <div class="card-header">
@@ -186,6 +234,30 @@
                                     {!! Form::close() !!}
                                     <div class="text  pb-3">
                                         Haz click para exportar tu búsqueda
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="card card-default text-center">
+                        <div class="card-header">
+                            <h3 class="card-title">Histórico VINs</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="text-right pb-3">
+                                        {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
+                                        {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Histórico ', ['id' => 'btn-descargar-historico', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor', 'disabled'] )  }}
+                                        {!! Form::close() !!}
+                                    </div>
+                                    
+                                    <div class="text  pb-3">
+                                        Haz click para exportar histórico por lotes
                                     </div>
                                 </div>
                             </div>
@@ -251,19 +323,9 @@
 
                                     <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
 
-                            {!! Form::close() !!}
-
                                     <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Solicitar Histórico por lotes</i></button>
-                                    
+                            {!! Form::close() !!}
                             </div>
-
-                            <div class="text-right pb-5">
-                                {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
-                                    
-                                {!! Form::close() !!}
-                            </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -785,12 +847,11 @@
                     return this.value;
                 }).get();
                 
-                $("#historico_lote_form").append("<h4>Historico de Vins listo para descargar</h4>");
-                $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + vin_ids[0] + "]'  value='" + vin_ids[0] + "'/>");
+                $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
                 for (var i = 1; i < vin_ids.length; i++){
-                    $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + vin_ids[i] + "]' value='" + vin_ids[i] + "'/>");
+                    $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
                 }
-                $("#historico_lote_form").append("<button type='submit' class='btn btn-info btn-rol13' style='{align:center, display:block}'>Descargar Histórico por lotes</i></button>");
+                $("#btn-descargar-historico").removeAttr("disabled");
             });
         });
     </script>
