@@ -1804,8 +1804,13 @@ class VinController extends Controller
 
     public function exportResultadoBusquedaVins(Request $request)
     {
-
-        return Excel::download(new BusquedaVinsExport(json_decode($request->resultado_busqueda)), 'busqueda_vins.xlsx');
+        $array_vins = [];
+        foreach($request->vin_ids as $vin_id){
+            $vin = Vin::find($vin_id);
+            array_push($array_vins, $vin);
+        }
+        
+        return Excel::download(new BusquedaVinsExport($array_vins), 'busqueda_vins.xlsx');
     }
 
 
