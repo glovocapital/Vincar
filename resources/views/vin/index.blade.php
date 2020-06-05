@@ -846,12 +846,18 @@
                 var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
                 }).get();
-                
-                $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
-                for (var i = 1; i < vin_ids.length; i++){
-                    $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
+
+                if(vin_ids.length > 0){
+                    $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
+                    for (var i = 1; i < vin_ids.length; i++){
+                        $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
+                    }
+                    $("#btn-descargar-historico").removeAttr("disabled");
+                } else {
+                    alert("Debe seleccionar al menos un vin del listado.");
                 }
-                $("#btn-descargar-historico").removeAttr("disabled");
+                
+                
             });
         });
     </script>
