@@ -1862,6 +1862,7 @@ class VinController extends Controller
                 // Colocar el check para predespacho del VIN
                 if($request->predespacho == 1 ){
                     $vin->vin_predespacho = true;
+                    $vin->vin_fecha_agendado  = $request->vin_fecha_despacho;
                     $vin->save();
                     $guardados++;
 

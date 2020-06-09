@@ -504,6 +504,7 @@
 
 
 
+
     @include('vin.partials.modal_asignar_tarea_lotes')
     @include('vin.partials.modal_cambia_estado')
     @include('vin.partials.modal_historico_vin')
@@ -534,7 +535,7 @@
             // Búsqueda global de VINs
             $('.btn-busqueda-vin-lote').click(function (e){
                 e.preventDefault();
-                
+
                 var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
                 }).get();
@@ -549,8 +550,8 @@
                     alert("Debe seleccionar al menos un vin del listado.");
                     $("#btn-listado-vins").attr("disabled", "disabled");
                 }
-                
-                
+
+
             });
             $('#btn-src').on('click',function(e){
                 e.preventDefault();
@@ -856,7 +857,7 @@
             // Histórico de Vins por lotes
             $('.btn-historico-vin-lote').click(function (e){
                 e.preventDefault();
-                
+
                 var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
                 }).get();
@@ -871,8 +872,8 @@
                     alert("Debe seleccionar al menos un vin del listado.");
                     $("#btn-descargar-historico").attr("disabled", "disabled");
                 }
-                
-                
+
+
             });
         });
     </script>
