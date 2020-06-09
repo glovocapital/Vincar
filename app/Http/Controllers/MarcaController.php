@@ -19,6 +19,18 @@ class MarcaController extends Controller
     {
         $marca_vehiculo = Marca::all();
 
+        foreach($marca_vehiculo as $marca){
+
+            $marca['img']="";
+
+            $ruta="base/img/svg/".$marca['marca_nombre'].".svg";
+
+            if(file_exists(__DIR__."/../../../public/".$ruta))
+            $marca['img']=$ruta;
+
+
+        }
+
 
         return view('marca.index', compact('marca_vehiculo'));
     }
@@ -53,15 +65,18 @@ class MarcaController extends Controller
             return redirect('/marcas');
         }else
 
-
-
         $logoMarca = $request->file('logo_marca');
-        $extensionFoto = $logoMarca->extension();
-        $path = $logoMarca->storeAs(
-            'logosMarca',
-            'Foto del logo'.'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-        );
 
+        if(!empty($_FILES)) {
+            if(is_uploaded_file($_FILES['logo_marca']['tmp_name'])) {
+
+                $ruta="base/img/svg/".$request->marca_nombre.".svg";
+                $path = __DIR__."/../../../public/".$ruta;
+
+                $sourcePath = $_FILES['logo_marca']['tmp_name'];
+                move_uploaded_file($sourcePath, $path);
+            }
+        }
 
 
         try {
@@ -69,7 +84,7 @@ class MarcaController extends Controller
             $marca = new Marca();
             $marca->marca_nombre = $request->marca_nombre;
             $marca->marca_codigo =$request->marca_codigo;
-            $marca->marca_guia = $path;
+            //$marca->marca_guia = $path;
             $marca->save();
 
             flash('La marca se creo correctamente.')->success();

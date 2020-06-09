@@ -34,8 +34,8 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="">Logo de la marca </label>
-                            {!! Form::file('logo_marca'); !!}
+                            <label for="">Logo de la marca (Extensión SVG) </label>
+                            {!! Form::file('logo_marca') !!}
                         </div>
                     </div>
 
@@ -77,6 +77,7 @@
                                             <tr>
                                                 <th>Código</th>
                                                 <th>Nombre</th>
+                                                <th>Logo</th>
                                                 <th>Acción</th>
                                             </tr>
                                         </thead>
@@ -86,6 +87,7 @@
                                             <tr>
                                                 <td><small>{{ $p->marca_codigo }}</small></td>
                                                 <td><small>{{ $p->marca_nombre }}</small></td>
+                                                <td><small><img height='40px' src='{{ $p->img }}'/></small></td>
                                                 <td>
                                                     <small>
                                                         <a href="{{ route('marcas.edit', Crypt::encrypt($p->marca_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
