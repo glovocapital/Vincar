@@ -15,7 +15,7 @@ use App\Vin;
 use App\Campania;
 use App\Exports\BusquedaVinsExport;
 Use App\Guia;
-Use App\Guia_Vin;
+Use App\GuiaVins;
 use App\UbicPatio;
 use Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -365,6 +365,7 @@ class VinController extends Controller
         }
 
 
+
         foreach($tabla_vins as $vins){
 
             $guia = DB::table('guia_vins')
@@ -373,8 +374,10 @@ class VinController extends Controller
                 ->where('guia_vins.vin_id', $vins->vin_id)
                 ->first();
 
+
+
             if($guia){
-                $vins->vin_downloadGuiaN =  "Guia N-".$guia[0]->guia_id;
+                $vins->vin_downloadGuiaN =  "Guia Cargada";
             }else{
                 $vins->vin_downloadGuiaN =  "Sin Guia";
             }
@@ -1553,6 +1556,15 @@ class VinController extends Controller
         $vin_id =  Crypt::decrypt($id);
         $vin = Vin::findOrfail($vin_id);
 
+        $fecha = date('Y-m-d');
+
+        $empresa = DB::table('empresas')
+            ->join('users', 'users.empresa_id','=','empresas.empresa_id')
+            ->where('users.user_id',$vin->user_id)
+            ->select('empresas.empresa_id')
+            ->first();
+
+
         $guiaVin = $request->file('guia_vin');
         $extensionGuia = $guiaVin->extension();
         $path = $guiaVin->storeAs(
@@ -1562,11 +1574,15 @@ class VinController extends Controller
 
         try {
 
+
             $guia = new Guia();
             $guia->guia_ruta = $path;
+            $guia->guia_fecha = $fecha;
+            $guia->empresa_id = $empresa->empresa_id;
+
             $guia->save();
 
-            $guia_vin = new Guia_Vin();
+            $guia_vin = new GuiaVins();
             $guia_vin->vin_id = $vin_id;
             $guia_vin->guia_id = $guia->guia_id;
             $guia_vin->save();
@@ -1579,7 +1595,7 @@ class VinController extends Controller
 
 
             flash('Error registrando de la guia.')->error();
-            //dd($e->getMessage());
+            dd($e->getMessage());
             flash($e->getMessage())->error();
             return redirect('vin');
         }
@@ -1620,6 +1636,15 @@ class VinController extends Controller
             'GuiaVin',
             "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
         );
+
+        $empresa = DB::table('empresas')
+            ->join('users', 'users.empresa_id','=','empresas.empresa_id')
+            ->where('users.user_id',$vin->user_id)
+            ->select('empresas.empresa_id')
+            ->first();
+
+        $fecha = date('Y-m-d');
+
         try {
 
 
@@ -1628,12 +1653,14 @@ class VinController extends Controller
 
             $guia = new Guia();
             $guia->guia_ruta = $path;
+            $guia->guia_fecha = $fecha;
+            $guia->empresa_id = $empresa->empresa_id;
             $guia->save();
 
             foreach($request->vin_ids as $vin_id){
 
 
-                $guia_vin = new Guia_Vin();
+                $guia_vin = new GuiaVinS();
                 $guia_vin->vin_id = $vin_id;
                 $guia_vin->guia_id = $guia->guia_id;
                 $guia_vin->save();
@@ -1809,7 +1836,7 @@ class VinController extends Controller
             $vin = Vin::find($vin_id);
             array_push($array_vins, $vin);
         }
-        
+
         return Excel::download(new BusquedaVinsExport($array_vins), 'busqueda_vins.xlsx');
     }
 
