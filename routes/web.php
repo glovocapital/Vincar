@@ -247,6 +247,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post('vin/predespacho','VinController@predespacho')->name('vin.predespacho');
 
     Route::post ('vin/index_json', 'VinController@index_json')->name('vin.index_json');
+    Route::get('vin/{id}/desagendado','VinController@desagendado')->name('vin.desagendado');
 
     //Rutas mantenedor Histórico de Vins
     Route::get('historico_vin', 'HistoricoVinController@index')->name('historico_vin.index');

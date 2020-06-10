@@ -24,7 +24,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Collection as Collection;
-
+use Carbon\Carbon;
 
 
 
@@ -49,6 +49,33 @@ class VinController extends Controller
 
     public function index(Request $request)
     {
+
+
+        /** Tareas creadas para mostrarse */
+         $vin_agendados = Vin::where('vin_predespacho', true)
+         ->join('users','vins.user_id','=','users.user_id')
+         ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+         ->orderBy('vin_fecha_entrega')
+         ->get();
+
+
+        $vin_entregados_dia = Vin::where('vin_estado_inventario_id', 8)
+            ->join('users','vins.user_id','=','users.user_id')
+            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+            ->where('vins.updated_at',  '>', Carbon::now()->subDays(1)->toDateTimeString())
+            ->orderBy('vin_fecha_entrega')
+            ->get();
+
+        $vin_entregados = Vin::where('vin_estado_inventario_id', 8)
+            ->join('users','vins.user_id','=','users.user_id')
+            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+            ->orderBy('vin_fecha_entrega')
+            ->get();
+
+
+
+
+
         /** Búsqueda de vins para la cabecera de la vista de planificación */
         $vins = Vin::all();
 
@@ -88,7 +115,7 @@ class VinController extends Controller
         $tabla_vins = [];
 
 
-        return view('vin.index', compact( 'tabla_vins','users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas'));
+        return view('vin.index', compact( 'tabla_vins','users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'vin_entregados', 'vin_entregados_dia','vin_agendados'));
     }
 
 
@@ -402,6 +429,7 @@ class VinController extends Controller
 
     public function index3(Request $request)
     {
+
 
 
         /** Búsqueda de vins para la cabecera de la vista de planificación */
@@ -1838,6 +1866,29 @@ class VinController extends Controller
         }
 
         return Excel::download(new BusquedaVinsExport($array_vins), 'busqueda_vins.xlsx');
+    }
+
+    public function desagendado($id)
+    {
+
+        $vin_id =  Crypt::decrypt($id);
+        $vin = Vin::findOrfail($vin_id);
+
+        try{
+            $vin->vin_predespacho = false;
+            $vin->vin_fecha_agendado  = null;
+            $vin->save();
+
+           DB::commit();
+
+        }  catch (\Throwable $th) {
+            DB::rollBack();
+            flash('Error desagendado el VIN.')->error();
+            return redirect()->route('vin.index');
+        }
+        flash('VIN desagendado correctamente.')->success();
+        return redirect()->route('vin.index');
+
     }
 
 
