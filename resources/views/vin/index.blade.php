@@ -532,7 +532,7 @@
 
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-hover" id="TareaCampanias" width="100%" cellspacing="0">
+                                        <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
                                             <thead>
                                             <tr>
                                                 <th>Código VIN</th>
@@ -1008,9 +1008,12 @@
                     if($dat.error==0) $("#error0_predespacho").show();
                     else {$("#error1_predespacho").show();  $("#error1").html($dat.mensaje); }
 
+
+
                 }).fail(function () {
                     alert('Error: ');
                 });
+                $('#btn-pre-despacho').attr("disabled", true);
 
             });
 

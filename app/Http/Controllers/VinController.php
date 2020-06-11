@@ -1663,7 +1663,7 @@ class VinController extends Controller
             'GuiaVin',
             "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
         );
-//dd($request->vin_ids[1]);
+
         $empresa = DB::table('vins')
             ->join('users', 'vins.user_id','=','users.user_id')
             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
