@@ -1623,7 +1623,6 @@ class VinController extends Controller
 
 
             flash('Error registrando de la guia.')->error();
-            dd($e->getMessage());
             flash($e->getMessage())->error();
             return redirect('vin');
         }
@@ -1664,10 +1663,11 @@ class VinController extends Controller
             'GuiaVin',
             "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
         );
-
-        $empresa = DB::table('empresas')
-            ->join('users', 'users.empresa_id','=','empresas.empresa_id')
-            ->where('users.user_id',$vin->user_id)
+//dd($request->vin_ids[1]);
+        $empresa = DB::table('vins')
+            ->join('users', 'vins.user_id','=','users.user_id')
+            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+            ->where('users.user_id',$request->vin_ids[1])
             ->select('empresas.empresa_id')
             ->first();
 
@@ -1688,7 +1688,7 @@ class VinController extends Controller
             foreach($request->vin_ids as $vin_id){
 
 
-                $guia_vin = new GuiaVinS();
+                $guia_vin = new GuiaVins();
                 $guia_vin->vin_id = $vin_id;
                 $guia_vin->guia_id = $guia->guia_id;
                 $guia_vin->save();
