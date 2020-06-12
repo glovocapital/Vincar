@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\HistoricoVinLoteExport;
 use App\HistoricoVin;
 use App\Http\Middleware\CheckSession;
+use App\UbicPatio;
 use App\Vin;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
@@ -124,13 +125,21 @@ class HistoricoVinController extends Controller
                 $array_historico_vins[$i]['responsable'] = $item->oneResponsable->user_nombre . " " . $item->oneResponsable->user_apellido;
                 
                 if($item->origen_id != null){
-                    $array_historico_vins[$i]['origen'] = $item->oneOrigen;
+                    $bloqueOrigen = $item->oneOrigen;
+                    $patioOrigen = $bloqueOrigen->onePatio;
+                    $ubicPatioOrigen = UbicPatio::where('vin_id', $item->vin_id)->where('bloque_id', $bloqueOrigen->bloque_id);
+                    $array_historico_vins[$i]['origen'] = "Patio: " . $patioOrigen->patio_nombre . ", Bloque: " . $bloqueOrigen->bloque_nombre . 
+                                                        ", Fila: " . $ubicPatioOrigen->ubic_patio_fila . ", Columna: " . $ubicPatioOrigen->ubic_patio_columna;
                 } else {
                     $array_historico_vins[$i]['origen'] = $item->origen_texto;
                 }
 
                 if($item->destino_id != null){
-                    $array_historico_vins[$i]['destino'] = $item->oneDestino;
+                    $bloqueDestino = $item->oneDestino;
+                    $patioDestino = $bloqueDestino->onePatio;
+                    $ubicPatioDestino = UbicPatio::where('vin_id', $item->vin_id)->where('bloque_id', $bloqueDestino->bloque_id);
+                    $array_historico_vins[$i]['origen'] = "Patio: " . $patioDestino->patio_nombre . ", Bloque: " . $bloqueDestino->bloque_nombre . 
+                                                        ", Fila: " . $ubicPatioDestino->ubic_patio_fila . ", Columna: " . $ubicPatioDestino->ubic_patio_columna;
                 } else {
                     $array_historico_vins[$i]['destino'] = $item->destino_texto;
                 }
@@ -140,7 +149,7 @@ class HistoricoVinController extends Controller
             }
         }
         
-        return Excel::download(new HistoricoVinLoteExport($array_historico_vins), 'busqueda_vins.xlsx');
+        return Excel::download(new HistoricoVinLoteExport($array_historico_vins), 'hitorico_de_vins.xlsx');
     }
 
     /**
