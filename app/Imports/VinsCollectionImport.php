@@ -52,8 +52,8 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
 
                     DB::insert('INSERT INTO historico_vins
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                             [
                                 $vin_nuevo->vin_id, 
                                 1, 
@@ -61,7 +61,9 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 null, 
                                 null, 
                                 $user->belongsToEmpresa->empresa_id, 
-                                "Anuncio de llegada del VIN."
+                                "Anuncio de llegada del VIN.",
+                                "Origen: Puerto",
+                                "Patio: BLoque y Ubicación por asignar."
                             ]
                         );
                 }

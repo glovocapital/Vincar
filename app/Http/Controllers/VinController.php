@@ -1107,7 +1107,7 @@ class VinController extends Controller
             // Guardar historial del cambio
             DB::insert('INSERT INTO historico_vins
                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     $vin->vin_id,
@@ -1117,7 +1117,9 @@ class VinController extends Controller
                     null,
                     null,
                     $user->belongsToEmpresa->empresa_id,
-                    "VIN Creado."
+                    "VIN Creado.",
+                    "Origen Externo.",
+                    "Patio: BLoque y Ubicación por asignar."
                 ]
             );
 
@@ -1224,7 +1226,7 @@ class VinController extends Controller
                     // Guardar historial del cambio
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
@@ -1234,7 +1236,9 @@ class VinController extends Controller
                             null,
                             null,
                             $user->belongsToEmpresa->empresa_id,
-                            "VIN Arribado."
+                            "VIN Arribado.",
+                            "Origen Externo: Puerto.",
+                            "Patio: BLoque y Ubicación por asignar."
                         ]
                     );
                 } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
@@ -1257,37 +1261,79 @@ class VinController extends Controller
 
                     if($estado_nuevo == 8){ // Estado nuevo VIN Entregado
                         // Guardar historial del cambio
-                        DB::insert('INSERT INTO historico_vins
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                            [
-                                $vin->vin_id,
-                                $estado_nuevo,
-                                $fecha,
-                                $user->user_id,
-                                $bloque,
-                                null,
-                                $user->belongsToEmpresa->empresa_id,
-                                "VIN Entregado."
-                            ]
-                        );
+                        if($bloque != null){
+                            DB::insert('INSERT INTO historico_vins
+                                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, destino_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                [
+                                    $vin->vin_id,
+                                    $estado_nuevo,
+                                    $fecha,
+                                    $user->user_id,
+                                    $bloque,
+                                    null,
+                                    $user->belongsToEmpresa->empresa_id,
+                                    "VIN Entregado.",
+                                    "Destino externo. VIN entregado."
+                                ]
+                            );
+                        } else {
+                            DB::insert('INSERT INTO historico_vins
+                                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                [
+                                    $vin->vin_id,
+                                    $estado_nuevo,
+                                    $fecha,
+                                    $user->user_id,
+                                    null,
+                                    null,
+                                    $user->belongsToEmpresa->empresa_id,
+                                    "VIN Entregado.",
+                                    "Sin ubicación en bloque para la entrega.",
+                                    "Destino externo. VIN entregado."
+                                ]
+                            );
+                        }
                     } else{ // Estado nuevo VIN Suprimido
-                        DB::insert('INSERT INTO historico_vins
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                            [
-                                $vin->vin_id,
-                                $estado_nuevo,
-                                $fecha,
-                                $user->user_id,
-                                $bloque,
-                                null,
-                                $user->belongsToEmpresa->empresa_id,
-                                "VIN Suprimido."
-                            ]
-                        );
+                        if($bloque != null){
+                            DB::insert('INSERT INTO historico_vins
+                                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, destino_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                [
+                                    $vin->vin_id,
+                                    $estado_nuevo,
+                                    $fecha,
+                                    $user->user_id,
+                                    $bloque,
+                                    null,
+                                    $user->belongsToEmpresa->empresa_id,
+                                    "VIN Suprimido.",
+                                    "VIN Suprimido. Sin disponibilidad ni ubicación física."
+                                ]
+                            );
+                        } else {
+                            DB::insert('INSERT INTO historico_vins
+                                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                [
+                                    $vin->vin_id,
+                                    $estado_nuevo,
+                                    $fecha,
+                                    $user->user_id,
+                                    null,
+                                    null,
+                                    $user->belongsToEmpresa->empresa_id,
+                                    "VIN Suprimido.",
+                                    "Sin ubicación previa en bloque.",
+                                    "VIN Suprimido. Sin disponibilidad ni ubicación física."
+                                ]
+                            );
+                        }
                     }
                 }
 
@@ -1467,8 +1513,8 @@ class VinController extends Controller
                 // Guardar historial del cambio
                 DB::insert('INSERT INTO historico_vins
                     (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     [
                         $vin->vin_id,
                         $estado_nuevo,
@@ -1477,7 +1523,9 @@ class VinController extends Controller
                         null,
                         null,
                         $user->belongsToEmpresa->empresa_id,
-                        "VIN Arribado."
+                        "VIN Arribado.",
+                        "Origen Externo: Puerto.",
+                        "Patio: BLoque y Ubicación por asignar."
                     ]
                 );
             } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
@@ -1500,37 +1548,79 @@ class VinController extends Controller
 
                 if($estado_nuevo == 8){ // Estado nuevo VIN Entregado
                     // Guardar historial del cambio
-                    DB::insert('INSERT INTO historico_vins
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                        [
-                            $vin->vin_id,
-                            $estado_nuevo,
-                            $fecha,
-                            $user->user_id,
-                            $bloque,
-                            null,
-                            $user->belongsToEmpresa->empresa_id,
-                            "VIN Entregado."
-                        ]
-                    );
-                } else{ // Estado nuevo VIN Suprimido
-                    DB::insert('INSERT INTO historico_vins
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                        [
-                            $vin->vin_id,
-                            $estado_nuevo,
-                            $fecha,
-                            $user->user_id,
-                            $bloque,
-                            null,
-                            $user->belongsToEmpresa->empresa_id,
-                            "VIN Suprimido."
-                        ]
-                    );
+                    if($bloque != null){
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $vin->vin_id,
+                                $estado_nuevo,
+                                $fecha,
+                                $user->user_id,
+                                $bloque,
+                                null,
+                                $user->belongsToEmpresa->empresa_id,
+                                "VIN Entregado.",
+                                "Destino externo. VIN entregado."
+                            ]
+                        );
+                    } else {
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $vin->vin_id,
+                                $estado_nuevo,
+                                $fecha,
+                                $user->user_id,
+                                null,
+                                null,
+                                $user->belongsToEmpresa->empresa_id,
+                                "VIN Entregado.",
+                                "Sin ubicación en bloque para la entrega.",
+                                "Destino externo. VIN entregado."
+                            ]
+                        );
+                    }
+                } else { // Estado nuevo VIN Suprimido
+                    if($bloque != null){
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $vin->vin_id,
+                                $estado_nuevo,
+                                $fecha,
+                                $user->user_id,
+                                $bloque,
+                                null,
+                                $user->belongsToEmpresa->empresa_id,
+                                "VIN Suprimido.",
+                                "Destino externo. VIN entregado."
+                            ]
+                        );
+                    } else {
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $vin->vin_id,
+                                $estado_nuevo,
+                                $fecha,
+                                $user->user_id,
+                                $bloque,
+                                null,
+                                $user->belongsToEmpresa->empresa_id,
+                                "VIN Suprimido.",
+                                "Sin ubicación previa en bloque.",
+                                "Destino externo. VIN entregado."
+                            ]
+                        );
+                    }
                 }
             } else if($estado_previo == 8 && $estado_nuevo == 1){
                 $vin->vin_estado_inventario_id = $estado_nuevo;
@@ -1539,8 +1629,8 @@ class VinController extends Controller
                 // Guardar historial del cambio
                 DB::insert('INSERT INTO historico_vins
                     (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     [
                         $vin->vin_id,
                         $estado_nuevo,
@@ -1549,7 +1639,9 @@ class VinController extends Controller
                         null,
                         null,
                         $user->belongsToEmpresa->empresa_id,
-                        "VIN nuevamente Anunciado luego de haber sido entregado."
+                        "VIN nuevamente Anunciado luego de haber sido entregado.",
+                        "Sin ubicación previa en bloque. Reingreso de VIN.",
+                        "Patio: BLoque y Ubicación por asignar."
                     ]
                 );
             }
@@ -1735,8 +1827,8 @@ class VinController extends Controller
                     // Guardar historial del cambio
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
                             $estado_nuevo,
@@ -1745,7 +1837,9 @@ class VinController extends Controller
                             null,
                             null,
                             $user->belongsToEmpresa->empresa_id,
-                            "VIN Arribado."
+                            "VIN Arribado.",
+                            "Origen Externo: Puerto.",
+                            "Patio: BLoque y Ubicación por asignar."
                         ]
                     );
                 } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
@@ -1769,48 +1863,89 @@ class VinController extends Controller
 
                     if($estado_nuevo == 8){ // Estado nuevo VIN Entregado
                         // Guardar historial del cambio
-                        DB::insert('INSERT INTO historico_vins
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                            [
-                                $vin->vin_id,
-                                $estado_nuevo,
-                                $fecha,
-                                $user->user_id,
-                                $bloque,
-                                null,
-                                $user->belongsToEmpresa->empresa_id,
-                                "VIN Entregado."
-                            ]
-                        );
+                        if($bloque != null){
+                            DB::insert('INSERT INTO historico_vins
+                                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, destino_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                [
+                                    $vin->vin_id,
+                                    $estado_nuevo,
+                                    $fecha,
+                                    $user->user_id,
+                                    $bloque,
+                                    null,
+                                    $user->belongsToEmpresa->empresa_id,
+                                    "VIN Entregado.",
+                                    "Destino externo. VIN entregado."
+                                ]
+                            );
+                        } else {
+                            DB::insert('INSERT INTO historico_vins
+                                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                [
+                                    $vin->vin_id,
+                                    $estado_nuevo,
+                                    $fecha,
+                                    $user->user_id,
+                                    null,
+                                    null,
+                                    $user->belongsToEmpresa->empresa_id,
+                                    "VIN Entregado.",
+                                    "Sin ubicación en bloque para la entrega.",
+                                    "Destino externo. VIN entregado."
+                                ]
+                            );
+                        }
                     } else{ // Estado nuevo VIN Suprimido
-                        DB::insert('INSERT INTO historico_vins
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                            [
-                                $vin->vin_id,
-                                $estado_nuevo,
-                                $fecha,
-                                $user->user_id,
-                                $bloque,
-                                null,
-                                $user->belongsToEmpresa->empresa_id,
-                                "VIN Suprimido."
-                            ]
-                        );
+                        if($bloque != null){
+                            DB::insert('INSERT INTO historico_vins
+                                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, destino_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                [
+                                    $vin->vin_id,
+                                    $estado_nuevo,
+                                    $fecha,
+                                    $user->user_id,
+                                    $bloque,
+                                    null,
+                                    $user->belongsToEmpresa->empresa_id,
+                                    "VIN Suprimido.",
+                                    "Destino externo. VIN entregado."
+                                ]
+                            );
+                        } else {
+                            DB::insert('INSERT INTO historico_vins
+                                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                [
+                                    $vin->vin_id,
+                                    $estado_nuevo,
+                                    $fecha,
+                                    $user->user_id,
+                                    $bloque,
+                                    null,
+                                    $user->belongsToEmpresa->empresa_id,
+                                    "VIN Suprimido.",
+                                    "Sin ubicación previa en bloque.",
+                                    "Destino externo. VIN entregado."
+                                ]
+                            );
+                        }
                     }
                 } else if($estado_previo == 8 && $estado_nuevo == 1){
                     $vin->vin_estado_inventario_id = $estado_nuevo;
                     $vin->save();
                     $guardados++;
 
-                    // Guardar historial del cambio
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
                             $estado_nuevo,
@@ -1819,7 +1954,9 @@ class VinController extends Controller
                             null,
                             null,
                             $user->belongsToEmpresa->empresa_id,
-                            "VIN nuevamente Anunciado luego de haber sido entregado."
+                            "VIN nuevamente Anunciado luego de haber sido entregado.",
+                            "Sin ubicación previa en bloque. Reingreso de VIN.",
+                            "Patio: BLoque y Ubicación por asignar."
                         ]
                     );
                 }
@@ -1920,8 +2057,8 @@ class VinController extends Controller
                     // Guardar historial del cambio
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
                             $estado_estado_inventario,
@@ -1930,6 +2067,8 @@ class VinController extends Controller
                             null,
                             null,
                             $user->belongsToEmpresa->empresa_id,
+                            "VIN autorizado para despacho.",
+                            "VIN autorizado para despacho.",
                             "VIN autorizado para despacho."
                         ]
                     );

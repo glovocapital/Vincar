@@ -146,8 +146,19 @@
                                     <td><small>{{ $evento->oneVinEstadoInventario->vin_estado_inventario_desc }}</small></td>
                                     <td><small>{{ $evento->historico_vin_fecha }}</small></td>
                                     <td><small>{{ $evento->oneResponsable->user_nombre . " " . $evento->oneResponsable->user_apellido }}</small></td>
-                                    <td><small>{{ $evento->oneOrigen->bloque_nombre }}</small></td>
-                                    <td><small>{{ $evento->oneDestino->bloque_nombre }}</small></td>
+                                    
+                                    @if($evento->origen_id != null)
+                                        <td><small>{{ $evento->oneOrigen->bloque_nombre }}</small></td>
+                                    @else
+                                        <td><small>{{ $evento->origen_texto }}</small></td>
+                                    @endif
+                                        
+                                    @if($evento->destino_id != null)
+                                        <td><small>{{ $evento->oneDestino->bloque_nombre }}</small></td>
+                                    @else
+                                        <td><small>{{ $evento->destino_texto }}</small></td>
+                                    @endif
+                                    
                                     <td><small>{{ $evento->oneEmpresa->empresa_razon_social }}</small></td>
                                     <td><small>{{ $evento->historico_vin_descripcion }}</small></td>
                                 </tr>

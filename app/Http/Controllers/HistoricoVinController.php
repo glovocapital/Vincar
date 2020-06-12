@@ -122,8 +122,19 @@ class HistoricoVinController extends Controller
                 $array_historico_vins[$i]['cliente'] = $item->oneEmpresa->empresa_razon_social;
                 $array_historico_vins[$i]['estado'] = $item->oneVinEstadoInventario();
                 $array_historico_vins[$i]['responsable'] = $item->oneResponsable->user_nombre . " " . $item->oneResponsable->user_apellido;
-                $array_historico_vins[$i]['origen'] = $item->oneOrigen;
-                $array_historico_vins[$i]['destino'] = $item->oneDestino;
+                
+                if($item->origen_id != null){
+                    $array_historico_vins[$i]['origen'] = $item->oneOrigen;
+                } else {
+                    $array_historico_vins[$i]['origen'] = $item->origen_texto;
+                }
+
+                if($item->destino_id != null){
+                    $array_historico_vins[$i]['destino'] = $item->oneDestino;
+                } else {
+                    $array_historico_vins[$i]['destino'] = $item->destino_texto;
+                }
+                
                 $array_historico_vins[$i]['descripcion'] = $item->historico_vin_descripcion;     
                 $i++;
             }

@@ -1429,21 +1429,41 @@ class CampaniaController extends Controller
                 $bloque_id = null;
             }
 
-            DB::insert('INSERT INTO historico_vins
-                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                [
-                    $vin->vin_id,
-                    $vin->vin_estado_inventario_id,
-                    $fecha,
-                    $user->user_id,
-                    $bloque_id,
-                    $bloque_id,
-                    $user->belongsToEmpresa->empresa_id,
-                    "Campañas asignadas:" . $desc_campanias
-                ]
-            );
+            if($bloque_id != null){
+                DB::insert('INSERT INTO historico_vins
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    [
+                        $vin->vin_id,
+                        $vin->vin_estado_inventario_id,
+                        $fecha,
+                        $user->user_id,
+                        $bloque_id,
+                        $bloque_id,
+                        $user->belongsToEmpresa->empresa_id,
+                        "Campañas asignadas:" . $desc_campanias
+                    ]
+                );
+            } else {
+                DB::insert('INSERT INTO historico_vins
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    [
+                        $vin->vin_id,
+                        $vin->vin_estado_inventario_id,
+                        $fecha,
+                        $user->user_id,
+                        $bloque_id,
+                        $bloque_id,
+                        $user->belongsToEmpresa->empresa_id,
+                        "Campañas asignadas:" . $desc_campanias,
+                        "VIN sin ubicación (fuera de bloque) al asignar campañas.",
+                        "VIN preparado para ser asignado a nueva ubicación y estado."
+                    ]
+                );
+            }
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -1497,21 +1517,41 @@ class CampaniaController extends Controller
 
             $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
 
-            DB::insert('INSERT INTO historico_vins
-                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                [
-                    $vin->vin_id,
-                    $vin->vin_estado_inventario_id,
-                    $fecha,
-                    $user->user_id,
-                    $bloque_id,
-                    $bloque_id,
-                    $user->belongsToEmpresa->empresa_id,
-                    "Tarea asignada: " . $desc_tarea
-                ]
-            );
+            if($bloque_id != null){
+                DB::insert('INSERT INTO historico_vins
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    [
+                        $vin->vin_id,
+                        $vin->vin_estado_inventario_id,
+                        $fecha,
+                        $user->user_id,
+                        $bloque_id,
+                        $bloque_id,
+                        $user->belongsToEmpresa->empresa_id,
+                        "Tarea asignada: " . $desc_tarea
+                    ]
+                );
+            } else {
+                DB::insert('INSERT INTO historico_vins
+                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    [
+                        $vin->vin_id,
+                        $vin->vin_estado_inventario_id,
+                        $fecha,
+                        $user->user_id,
+                        $bloque_id,
+                        $bloque_id,
+                        $user->belongsToEmpresa->empresa_id,
+                        "Tarea Asignada:" . $desc_tarea,
+                        "VIN sin ubicación (fuera de bloque) al asignar tarea.",
+                        "VIN preparado para ser asignado a nueva ubicación y estado."
+                    ]
+                );
+            }
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -1546,40 +1586,59 @@ class CampaniaController extends Controller
 
                 $tarea->save();
 
-                // Guardar histórico de la asignación de la campaña
-                /*  $fecha = date('Y-m-d');
-                  $user = User::find(Auth::id());
-                  $vin = Vin::findOrfail($tarea->vin_id);
-                  $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                  if(isset($ubic_patio)){
-                      $bloque_id = $ubic_patio->bloque_id;
-                  } else {
-                      $bloque_id = null;
-                  }
+                // REVISAR ESTE BLOQUE DE CÓDIGO
+                // Guardar histórico de la asignación de la tarea
+                $fecha = date('Y-m-d');
+                $user = User::find(Auth::id());
+                $vin = Vin::findOrfail($tarea->vin_id);
+                $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                if(isset($ubic_patio)){
+                    $bloque_id = $ubic_patio->bloque_id;
+                } else {
+                    $bloque_id = null;
+                }
 
-                  $tipo_tarea = DB::table("tipo_tareas")
-                      ->where('tipo_tarea_id', $tarea->tipo_tarea_id)
-                      ->first();
+                $tipo_tarea = DB::table("tipo_tareas")
+                    ->where('tipo_tarea_id', $tarea->tipo_tarea_id)
+                    ->first();
 
-                  $desc_tarea = "";
+                $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
 
-                  $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
-
-                  DB::insert('INSERT INTO historico_vins
-                      (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                      origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                      [
-                          $vin->vin_id,
-                          $vin->vin_estado_inventario_id,
-                          $fecha,
-                          $user->user_id,
-                          $bloque_id,
-                          $bloque_id,
-                          $user->belongsToEmpresa->empresa_id,
-                          "Tarea asignada: " . $desc_tarea
-                      ]
-                  );*/
+                if($bloque_id != null){
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $vin->vin_id,
+                            $vin->vin_estado_inventario_id,
+                            $fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->belongsToEmpresa->empresa_id,
+                            "Tarea asignada: " . $desc_tarea
+                        ]
+                    );
+                } else {
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $vin->vin_id,
+                            $vin->vin_estado_inventario_id,
+                            $fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->belongsToEmpresa->empresa_id,
+                            "Tarea asignada: " . $desc_tarea,
+                            "VIN sin ubicación (fuera de bloque) al asignar tarea.",
+                            "VIN preparado para ser asignado a nueva ubicación y estado."
+                        ]
+                    );
+                }
             }
 
             DB::commit();
@@ -1674,21 +1733,41 @@ class CampaniaController extends Controller
                     $bloque_id = null;
                 }
 
-                DB::insert('INSERT INTO historico_vins
-                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                    [
-                        $vin->vin_id,
-                        $vin->vin_estado_inventario_id,
-                        $fecha,
-                        $user->user_id,
-                        $bloque_id,
-                        $bloque_id,
-                        $user->belongsToEmpresa->empresa_id,
-                        "Campañas asignadas:" . $desc_campanias
-                    ]
-                );
+                if($bloque_id != null){
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $vin->vin_id,
+                            $vin->vin_estado_inventario_id,
+                            $fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->belongsToEmpresa->empresa_id,
+                            "Campañas asignadas:" . $desc_campanias
+                        ]
+                    );
+                } else {
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $vin->vin_id,
+                            $vin->vin_estado_inventario_id,
+                            $fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->belongsToEmpresa->empresa_id,
+                            "Campañas asignadas:" . $desc_campanias,
+                            "VIN sin ubicación (fuera de bloque) al asignar campañas.",
+                            "VIN preparado para ser asignado a nueva ubicación y estado."
+                        ]
+                    );
+                }
             }
 
             DB::commit();
@@ -1793,22 +1872,41 @@ class CampaniaController extends Controller
 
                     $tipo_camp_desc = TipoCampania::find($tipo_campania_id)->tipo_campania_descripcion;
 
-
-                    DB::insert('INSERT INTO historico_vins
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                        [
-                            $vin->vin_id,
-                            $vin->vin_estado_inventario_id,
-                            $fecha,
-                            $user->user_id,
-                            $bloque_id,
-                            $bloque_id,
-                            $user->belongsToEmpresa->empresa_id,
-                            "Nuevo tipo de campaña asignado:" . $tipo_camp_desc
-                        ]
-                    );
+                    if($bloque_id != null){
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $vin->vin_id,
+                                $vin->vin_estado_inventario_id,
+                                $fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->belongsToEmpresa->empresa_id,
+                                "Nuevo tipo de campaña asignado:" . $tipo_camp_desc
+                            ]
+                        );
+                    } else {
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $vin->vin_id,
+                                $vin->vin_estado_inventario_id,
+                                $fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->belongsToEmpresa->empresa_id,
+                                "Nuevo tipo de campaña asignado:" . $tipo_camp_desc,
+                                "VIN sin ubicación (fuera de bloque) al asignar nueva campaña.",
+                                "VIN preparado para ser asignado a nueva ubicación y estado."
+                            ]
+                        );
+                    }
                 }
             }
 
@@ -1845,22 +1943,41 @@ class CampaniaController extends Controller
 
                     $tipo_camp_desc = TipoCampania::find($tipo_campania_id)->tipo_campania_descripcion;
 
-
-                    DB::insert('INSERT INTO historico_vins
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                        [
-                            $vin->vin_id,
-                            $vin->vin_estado_inventario_id,
-                            $fecha,
-                            $user->user_id,
-                            $bloque_id,
-                            $bloque_id,
-                            $user->belongsToEmpresa->empresa_id,
-                            "Tipo de campaña removido:" . $tipo_camp_desc
-                        ]
-                    );
+                    if($bloque_id != null){
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $vin->vin_id,
+                                $vin->vin_estado_inventario_id,
+                                $fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->belongsToEmpresa->empresa_id,
+                                "Tipo de campaña removido:" . $tipo_camp_desc
+                            ]
+                        );
+                    } else {
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $vin->vin_id,
+                                $vin->vin_estado_inventario_id,
+                                $fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->belongsToEmpresa->empresa_id,
+                                "Tipo de campaña removido:" . $tipo_camp_desc,
+                                "VIN sin ubicación (fuera de bloque) al remover campaña de la lista de campañas.",
+                                "VIN preparado para ser asignado a nueva ubicación y estado."
+                            ]
+                        );
+                    }
                 }
             }
 
@@ -1976,21 +2093,41 @@ class CampaniaController extends Controller
 
                 $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
 
-                DB::insert('INSERT INTO historico_vins
-                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                    [
-                        $vin->vin_id,
-                        $vin->vin_estado_inventario_id,
-                        $fecha,
-                        $user->user_id,
-                        $bloque_id,
-                        $bloque_id,
-                        $user->belongsToEmpresa->empresa_id,
-                        "Cambio de tarea previamente asignada a: " . $desc_tarea
-                    ]
-                );
+                if($bloque_id != null){
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $vin->vin_id,
+                            $vin->vin_estado_inventario_id,
+                            $fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->belongsToEmpresa->empresa_id,
+                            "Cambio de tarea previamente asignada a: " . $desc_tarea
+                        ]
+                    );
+                } else {
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $vin->vin_id,
+                            $vin->vin_estado_inventario_id,
+                            $fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->belongsToEmpresa->empresa_id,
+                            "Cambio de tarea previamente asignada a: " . $desc_tarea,
+                            "VIN sin ubicación (fuera de bloque) al modificar tarea.",
+                            "VIN preparado para ser asignado a nueva ubicación y estado."
+                        ]
+                    );
+                }
             }
             DB::commit();
         } catch (\Throwable $th) {

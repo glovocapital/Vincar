@@ -154,21 +154,40 @@ class ApiController extends Controller
                             $bloque_origen = null;
                         }
 
-                        DB::insert('INSERT INTO historico_vins
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                            [
-                                $Vin->vin_id,
-                                $Vin->vin_estado_inventario_id,
-                                $fecha,
-                                $user->user_id,
-                                $bloque_origen,
-                                $bloque,
-                                $user->belongsToEmpresa->empresa_id,
-                                "Cambio de ubicación en patio"
-                            ]
-                        );
+                        if($bloque_origen != null){
+                            DB::insert('INSERT INTO historico_vins
+                                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                [
+                                    $Vin->vin_id,
+                                    $Vin->vin_estado_inventario_id,
+                                    $fecha,
+                                    $user->user_id,
+                                    $bloque_origen,
+                                    $bloque,
+                                    $user->belongsToEmpresa->empresa_id,
+                                    "Cambio de ubicación en patio"
+                                ]
+                            );
+                        } else {
+                            DB::insert('INSERT INTO historico_vins
+                                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                [
+                                    $Vin->vin_id,
+                                    $Vin->vin_estado_inventario_id,
+                                    $fecha,
+                                    $user->user_id,
+                                    $bloque_origen,
+                                    $bloque,
+                                    $user->belongsToEmpresa->empresa_id,
+                                    "Primera asignación de ubicación del VIN en el patio.",
+                                    "VIN recién llegado a patio."
+                                ]
+                            );
+                        }
 
                         $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
 
@@ -447,21 +466,41 @@ class ApiController extends Controller
 
                 $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
 
-                DB::insert('INSERT INTO historico_vins
-                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                    [
-                        $Vin[0]->vin_id,
-                        $Vin[0]->vin_estado_inventario_id,
-                        $fecha,
-                        $user->user_id,
-                        $bloque_id,
-                        $bloque_id,
-                        $user->belongsToEmpresa->empresa_id,
-                        "Tarea finalizada: " . $desc_tarea
-                    ]
-                );
+                if($bloque_id != null){
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $Vin[0]->vin_id,
+                            $Vin[0]->vin_estado_inventario_id,
+                            $fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->belongsToEmpresa->empresa_id,
+                            "Tarea finalizada: " . $desc_tarea
+                        ]
+                    );
+                } else {
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $Vin[0]->vin_id,
+                            $Vin[0]->vin_estado_inventario_id,
+                            $fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->belongsToEmpresa->empresa_id,
+                            "Tarea finalizada: " . $desc_tarea,
+                            "Ubicación fuera de bloque para realización de la tarea.",
+                            "Preparado para ser asignado a nuevo estado."
+                        ]
+                    );
+                }
 
                 DB::commit();
 
@@ -509,8 +548,8 @@ class ApiController extends Controller
 
                 DB::insert('INSERT INTO historico_vins
                     (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     [
                         $Vin->vin_id,
                         2,
@@ -519,7 +558,9 @@ class ApiController extends Controller
                         null,
                         null,
                         $user->belongsToEmpresa->empresa_id,
-                        "VIN Arribado."
+                        "VIN Arribado.",
+                        "Origen Externo: Llegada a patio.",
+                        "Patio: BLoque y Ubicación por asignar."
                     ]
                 );
 
@@ -691,21 +732,42 @@ class ApiController extends Controller
 
                     $user = User::find($request->user_id);
 
-                    DB::insert('INSERT INTO historico_vins
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                        [
-                            $Vin->vin_id,
-                            $estado_nuevo,
-                            $inspeccion->inspeccion_fecha,
-                            $user->user_id,
-                            $bloque_id,
-                            $bloque_id,
-                            $user->belongsToEmpresa->empresa_id,
-                            "VIN Inspeccionado Sin Daño."
-                        ]
-                    );
+                    if($bloque_id != null){
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $Vin->vin_id,
+                                $estado_nuevo,
+                                $inspeccion->inspeccion_fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->belongsToEmpresa->empresa_id,
+                                "VIN Inspeccionado Sin Daño."
+                            ]
+                        );
+                    } else {
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $Vin->vin_id,
+                                $estado_nuevo,
+                                $inspeccion->inspeccion_fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->belongsToEmpresa->empresa_id,
+                                "VIN Inspeccionado Sin Daño.",
+                                "Vin sin ubicación (fuera de bloque) para realizar inspección.",
+                                "Inspeccionado y preparado para ser asignado a nueva ubicación y estado."
+
+                            ]
+                        );
+                    }
 
                     DB::commit();
 
@@ -841,21 +903,42 @@ class ApiController extends Controller
 
                     $user = User::find($request->user_id);
 
-                    DB::insert('INSERT INTO historico_vins
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                        [
-                            $Vin->vin_id,
-                            $estado_nuevo,
-                            $inspeccion->inspeccion_fecha,
-                            $user->user_id,
-                            $bloque_id,
-                            $bloque_id,
-                            $user->belongsToEmpresa->empresa_id,
-                            "VIN Inspeccionado Con Daño."
-                        ]
-                    );
+                    if($bloque_id != null){
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $Vin->vin_id,
+                                $estado_nuevo,
+                                $inspeccion->inspeccion_fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->belongsToEmpresa->empresa_id,
+                                "VIN Inspeccionado Con Daño."
+                            ]
+                        );
+                    } else {
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $Vin->vin_id,
+                                $estado_nuevo,
+                                $inspeccion->inspeccion_fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->belongsToEmpresa->empresa_id,
+                                "VIN Inspeccionado Con Daño.",
+                                "Vin sin ubicación (fuera de bloque) para realizar inspección.",
+                                "Inspeccionado y preparado para ser asignado a nueva ubicación y estado."
+
+                            ]
+                        );
+                    }
 
                     DB::commit();
 
