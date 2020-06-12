@@ -1108,7 +1108,7 @@ class VinController extends Controller
             DB::insert('INSERT INTO historico_vins
                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                 origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     $vin->vin_id,
                     $vin->vin_estado_inventario_id,
@@ -1227,7 +1227,7 @@ class VinController extends Controller
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                         origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
                             $estado_nuevo,
@@ -1265,7 +1265,7 @@ class VinController extends Controller
                             DB::insert('INSERT INTO historico_vins
                                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                                 origen_id, destino_id, empresa_id, historico_vin_descripcion, destino_texto)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 [
                                     $vin->vin_id,
                                     $estado_nuevo,
@@ -1282,7 +1282,7 @@ class VinController extends Controller
                             DB::insert('INSERT INTO historico_vins
                                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                                 origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 [
                                     $vin->vin_id,
                                     $estado_nuevo,
@@ -1302,7 +1302,7 @@ class VinController extends Controller
                             DB::insert('INSERT INTO historico_vins
                                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                                 origen_id, destino_id, empresa_id, historico_vin_descripcion, destino_texto)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 [
                                     $vin->vin_id,
                                     $estado_nuevo,
@@ -1319,7 +1319,7 @@ class VinController extends Controller
                             DB::insert('INSERT INTO historico_vins
                                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                                 origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 [
                                     $vin->vin_id,
                                     $estado_nuevo,
