@@ -13,6 +13,8 @@ use App\DanoPieza;
 use App\Tarea;
 use App\Foto;
 use App\Empresa;
+use App\Transportista;
+use App\Entrega;
 use App\Thumbnail;
 
 
@@ -968,7 +970,7 @@ class ApiController extends Controller
 
         $vins = $request->input('vin');
         $user_id = $request->input('user_id');
-        $tipo_id = $request->input('tipo_id'); //0->tierra 1->camión
+        $tipo_id = $request->input('tipo_id'); //1->tierra 2->camión
         $rut = $request->input('rut');
         $nombres = $request->input('nombres');
         $apellidos = $request->input('apellidos');
@@ -987,14 +989,28 @@ class ApiController extends Controller
             try {
                 DB::beginTransaction();
 
+                $Trans =DB::table('transportista')
+                    ->select('transportista.*')
+                    ->where('transportista_id','=', $rut)
+                    ->first();
+
+                if($Trans){
+                    $transportista= Transportista::findOrFail($Trans->transportista_id);
+                }else{
+                    $transportista = new Transportista();
+                    $transportista->transportista_nombres = $nombres;
+                    $transportista->transportista_apellidos = $apellidos;
+                    $transportista->save();
+                }
+
+
+
                 $entregar = new Entregar();
                 $entregar->entrega_fecha = date('Y-m-d');
                 $entregar->responsable_id = (int)$user_id;
                 $entregar->vin_id = $Vin->vin_id;
                 $entregar->tipo_id = $tipo_id;
-                $entregar->recibe_rut = $rut;
-                $entregar->recibe_nombre = $nombres;
-                $entregar->recibe_apellido = $apellidos;
+                $entregar->recibe_rut = $transportista->transportista_id;
                 $entregar->foto_rut="";
                 $entregar->foto_patente="";
 
