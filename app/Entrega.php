@@ -16,9 +16,9 @@ class Entrega extends Model
      * @var array
      */
     protected $fillable = [
-        'entrega_fecha', 'inspeccion_dano', 'tipo_id','recibe_rut','recibe_nombre','recibe_apellido','foto_rut','foto_patente'
+        'entrega_fecha', 'tipo_id','recibe_rut','recibe_nombre','recibe_apellido','foto_rut','foto_patente'
     ];
-    
+
     public function oneResponsable(){
         return $this->hasOne(User::class, 'user_id', 'responsable_id');
     }
