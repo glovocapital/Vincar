@@ -989,15 +989,14 @@ class ApiController extends Controller
 
                 $entregar = new Entregar();
                 $entregar->entrega_fecha = date('Y-m-d');
-                $entregar->responsable_id = (int)$request->input('user_id');
+                $entregar->responsable_id = (int)$user_id;
                 $entregar->vin_id = $Vin->vin_id;
+                $entregar->tipo_id = $tipo_id;
                 $entregar->recibe_rut = $rut;
                 $entregar->recibe_nombre = $nombres;
                 $entregar->recibe_apellido = $apellidos;
                 $entregar->foto_rut="";
                 $entregar->foto_patente="";
-
-
 
                 if($entregar->save()){
 
