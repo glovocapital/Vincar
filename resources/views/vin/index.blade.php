@@ -44,6 +44,7 @@
                                     </div>
                                     {!! Form::close() !!}
                                     <div class="text  pb-3">
+                                        <br><br>
                                     </div>
                                 </div>
                             </div>
@@ -62,11 +63,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</i></button>
-                                        <hr />
-                                        <br />
+                                        <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</button>
                                         {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_busqueda_vins_form']) !!}
-                                        {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Listado de VINs ', ['id' => 'btn-listado-vins', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-listado-vins', 'disabled'] )  }}
+                                        {{ Form::button('<i class="fa fa-file-excel"></i>Listado de VINs ', ['id' => 'btn-listado-vins', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-listado-vins', 'disabled'] )  }}
                                         {!! Form::close() !!}
                                     </div>
                                     <div class="text  pb-3">
@@ -88,9 +87,8 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lotes</i></button>
-                                        <hr />
-                                        <br />
+                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lotes</button>
+
                                         {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
                                         {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Histórico ', ['id' => 'btn-descargar-historico', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
                                         {!! Form::close() !!}
@@ -143,7 +141,7 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</i></button>
+                                        <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</button>
                                         <hr />
                                         <br />
                                         {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_busqueda_vins_form']) !!}
@@ -169,7 +167,7 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lotes</i></button>
+                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lotes</button>
                                         <hr />
                                         <br />
                                         {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
@@ -225,7 +223,7 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</i></button>
+                                        <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</button>
                                         <hr />
                                         <br />
                                         {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_busqueda_vins_form']) !!}
@@ -251,7 +249,7 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lotes</i></button>
+                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lotes</button>
                                         <hr />
                                         <br />
                                         {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
@@ -317,11 +315,11 @@
 
                             <div class="text-right pb-5" id="botones">
 
-                                    <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol12" style="display:none">Asignar para entrega</i></button>
+                                    <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol12" style="display:none">Asignar para entrega</button>
 
-                                    <button type="button" class="btn btn-success btn-lote-vins btn-rol" style="display:none">Cargar de guías por lotes</i></button>
+                                    <button type="button" class="btn btn-success btn-lote-vins btn-rol" style="display:none">Cargar de guías por lotes</button>
 
-                                    <button type="button" class="btn btn-warning btn-edo-vins btn-rol13" style="display:none">Cambiar estado por lotes</i></button>
+                                    <button type="button" class="btn btn-warning btn-edo-vins btn-rol13" style="display:none">Cambiar estado por lotes</button>
 
                                     <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
 
@@ -376,7 +374,7 @@
 
                             <div class="text-right pb-5">
 
-                                    <button type="button" style="display:none" class="btn btn-success btn-lote-vins btn-rol">Carga de guías por lotes</i></button>
+                                    <button type="button" style="display:none" class="btn btn-success btn-lote-vins btn-rol">Carga de guías por lotes</button>
 
                                     <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
 
@@ -452,7 +450,7 @@
                                             <td>
                                                 <small>
                                                     <a href="{{route('vin.downloadGuia', Crypt::encrypt($vin->vin_id)) }}">
-                                                        Guia
+                                                        Guia</a>
                                                 </small>
                                             </td>
                                             @if(isset($vin->patio_nombre))
@@ -523,7 +521,7 @@
                         <div class="ibox float-e-margins">
                             <div class="card card-default">
                                 <div class="card-header">
-                                    <h3 class="card-title">VIN agendados para entrega</strong></h3>
+                                    <h3 class="card-title">VIN agendados para entrega</h3>
                                     <div class="card-tools">
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -575,7 +573,7 @@
                         <div class="ibox float-e-margins">
                             <div class="card card-default">
                                 <div class="card-header">
-                                    <h3 class="card-title">VIN entregados</strong></h3>
+                                    <h3 class="card-title">VIN entregados</h3>
                                     <div class="card-tools">
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -622,7 +620,7 @@
                         <div class="ibox float-e-margins">
                             <div class="card card-default">
                                 <div class="card-header">
-                                    <h3 class="card-title">Histórico Tareas</strong></h3>
+                                    <h3 class="card-title">Histórico Tareas</h3>
                                     <div class="card-tools">
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>

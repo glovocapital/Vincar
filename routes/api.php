@@ -46,6 +46,8 @@ Route::post('sindano','ApiController@InpeccionarSinDano')->name('api.sin_dano');
 
 Route::post('condano','ApiController@InpeccionarConDano')->name('api.con_dano');
 
+Route::post('entrega','ApiController@Entregar')->name('api.entrega');
+
 
 
 

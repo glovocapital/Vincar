@@ -358,16 +358,16 @@ class ApiController extends Controller
                        ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
                        ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
                        ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
-                       ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc")
+                       ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc","vins.vin_predespacho as vin_predespacho")
                        ->where('patio_id','=',$_patio[0]->patio_id)
                        ->get();
-
 
                }
 
                 $vin[0]->HabilitadoInspeccion = true;
                 $vin[0]->HabilitadoCambio = true;
                 $vin[0]->HabilitadoArribo = true;
+                $vin[0]->HabilitadoEntregarVeh = false;
 
                 if($vin[0]->estado=="Anunciado") {
                     $vin[0]->HabilitadoInspeccion = false;
@@ -412,6 +412,7 @@ class ApiController extends Controller
                 }
 
 
+                $vin[0]->HabilitadoEntregarVeh = $vin[0]->vin_predespacho;
 
 
 
@@ -953,6 +954,164 @@ class ApiController extends Controller
                 DB::rollBack();
                 $usersf = Array("Err" => 1, "Msg" => "Error inesperado al registrar datos");
            }
+
+        }else{
+            $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
+        }
+
+        return response()->json($usersf);
+    }
+
+    public function Entregar(Request $request){
+
+        $this->cors();
+
+        $vins = $request->input('vin');
+        $user_id = $request->input('user_id');
+        $tipo_id = $request->input('tipo_id'); //0->tierra 1->camión
+        $rut = $request->input('rut');
+        $nombres = $request->input('nombres');
+        $apellidos = $request->input('apellidos');
+        $file_rut = $request->file('file_rut');
+        $file_patente = $request->file('file_patente');
+
+        $Vin =DB::table('vins')
+            ->select('vins.*')
+            ->where('vin_codigo','=', $vins)
+            ->first();
+
+        $estado_previo = $Vin->vin_estado_inventario_id;
+        $estado_nuevo = 8; // Entregado
+
+        if($Vin){
+            try {
+                DB::beginTransaction();
+
+                $entregar = new Entregar();
+                $entregar->entrega_fecha = date('Y-m-d');
+                $entregar->responsable_id = (int)$request->input('user_id');
+                $entregar->vin_id = $Vin->vin_id;
+                $entregar->recibe_rut = $rut;
+                $entregar->recibe_nombre = $nombres;
+                $entregar->recibe_apellido = $apellidos;
+                $entregar->foto_rut="";
+                $entregar->foto_patente="";
+
+
+
+                if($entregar->save()){
+
+                    $Vin_= Vin::findOrFail($Vin->vin_id);
+                    $Vin_->vin_estado_inventario_id = $estado_nuevo;
+                    $Vin_->update();
+
+                    if(!empty($file_rut)) {
+
+                        $fotoArchivo = $request->file('file_rut');
+                        $extensionFoto = $fotoArchivo->extension();
+                        $path = $fotoArchivo->storeAs(
+                            'fotos_entrega',
+                            "foto_de_rut" . '-' . $entregar->entrega_id() . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto
+                        );
+
+                        //Creamos una instancia de la libreria instalada
+                        $image = \Image::make($fotoArchivo);
+                        // Guardar
+                        $image->save($path);
+
+                        $entregar->foto_rut=$path;
+                        $entregar->update();
+
+                    }
+
+                    if(!empty($file_patente)) {
+
+                        $fotoArchivo = $request->file('file_rut');
+                        $extensionFoto = $fotoArchivo->extension();
+                        $path = $fotoArchivo->storeAs(
+                            'fotos_entrega',
+                            "foto_de_patente" . '-' . $entregar->entrega_id() . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto
+                        );
+
+                        //Creamos una instancia de la libreria instalada
+                        $image = \Image::make($fotoArchivo);
+                        // Guardar
+                        $image->save($path);
+
+                        $entregar->foto_patente=$path;
+                        $entregar->update();
+
+                    }
+
+
+                    $itemlist =self::ListVIN($request);
+
+                    $itemlistData = json_decode($itemlist->content(),true);
+
+                    // Guardar historial del cambio
+                    if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
+                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
+                        if($ubic_patio != null){
+                            $bloque_id = $ubic_patio->bloque_id;
+                        } else {
+                            $bloque_id = null;
+                        }
+                    } else {
+                        $bloque_id = null;
+                    }
+
+                    $user = User::find($request->user_id);
+
+                    if($bloque_id != null){
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $Vin->vin_id,
+                                $estado_nuevo,
+                                $entregar->entrega_fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->belongsToEmpresa->empresa_id,
+                                "VIN Inspeccionado Con Daño."
+                            ]
+                        );
+                    } else {
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $Vin->vin_id,
+                                $estado_nuevo,
+                                $entregar->entrega_fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->belongsToEmpresa->empresa_id,
+                                "VIN Inspeccionado Con Daño.",
+                                "Vin sin ubicación (fuera de bloque) para realizar inspección.",
+                                "Inspeccionado y preparado para ser asignado a nueva ubicación y estado."
+
+                            ]
+                        );
+                    }
+
+                    DB::commit();
+
+                    $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items']);
+
+
+                }else{
+                    DB::rollBack();
+                    $usersf = Array("Err" => 1, "Msg" => "Error al registrar");
+                }
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                $usersf = Array("Err" => 1, "Msg" => "Error inesperado al registrar datos");
+            }
 
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
