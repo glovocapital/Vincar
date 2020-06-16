@@ -982,6 +982,8 @@ class ApiController extends Controller
             ->where('vin_codigo','=', $vins)
             ->first();
 
+        $user = User::find($user_id);
+
         $estado_previo = $Vin->vin_estado_inventario_id;
         $estado_nuevo = 8; // Entregado
 
@@ -989,18 +991,26 @@ class ApiController extends Controller
             try {
                 DB::beginTransaction();
 
-                $Trans =DB::table('transportista')
-                    ->select('transportista.*')
-                    ->where('transportista_id','=', $rut)
+                $Trans =DB::table('users')
+                    ->select('users.*')
+                    ->where('user_rut','=', $rut)
                     ->first();
 
                 if($Trans){
-                    $transportista= Transportista::findOrFail($Trans->transportista_id);
+                    $transportista= Users::findOrFail($Trans->user_id);
                 }else{
-                    $transportista = new Transportista();
-                    $transportista->transportista_nombres = $nombres;
-                    $transportista->transportista_apellidos = $apellidos;
-                    $transportista->save();
+                    $user = new User();
+                    $user->user_nombre = $nombres;
+                    $user->user_apellido = $apellidos;
+                    $user->user_rut = $rut;
+                    $user->user_cargo = 0;
+                    $user->user_estado = 1;
+                    $user->email = "";
+                    $user->password = "";
+                    $user->rol_id = 7;
+                    $user->user_telefono = "";
+                    $user->empresa_id = $user->empresa_id;
+                    $user->save();
                 }
 
 
@@ -1010,7 +1020,7 @@ class ApiController extends Controller
                 $entregar->responsable_id = (int)$user_id;
                 $entregar->vin_id = $Vin->vin_id;
                 $entregar->tipo_id = $tipo_id;
-                $entregar->recibe_rut = $transportista->transportista_id;
+                $entregar->recibe_rut = $user->user_id;
                 $entregar->foto_rut="";
                 $entregar->foto_patente="";
 
@@ -1075,7 +1085,7 @@ class ApiController extends Controller
                         $bloque_id = null;
                     }
 
-                    $user = User::find($request->user_id);
+
 
                     if($bloque_id != null){
                         DB::insert('INSERT INTO historico_vins
@@ -1133,6 +1143,33 @@ class ApiController extends Controller
         }
 
         return response()->json($usersf);
+    }
+
+    public function BuscarTransportista(Request $request){
+        $this->cors();
+
+        $user_rut = $request->user_rut;
+
+        $user =DB::table('users')->where('user_rut','=', $user_rut)->select('users.*');
+
+        $user=$user->first();
+
+        if($user){
+
+            $usersf = Array(
+                "Err" => 0,
+                "Msg" => "Datos Exitoso",
+                "users"=>$user
+                )
+
+            );
+
+        }else{
+            $usersf = Array("Err" => 1, "Msg" => "Users obligatorio");
+        }
+
+        return response()->json($usersf);
+
     }
 
     public function Badge(Request $request) {
