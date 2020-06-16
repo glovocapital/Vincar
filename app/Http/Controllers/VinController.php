@@ -1756,12 +1756,28 @@ class VinController extends Controller
             "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
         );
 
+
         $empresa = DB::table('vins')
             ->join('users', 'vins.user_id','=','users.user_id')
             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-            ->where('users.user_id',$request->vin_ids[1])
+            ->where('vins.vin_id',$request->vin_ids[0])
             ->select('empresas.empresa_id')
-            ->first();
+            ->get();
+
+
+            dd($empresa);
+            $empresa_id = $empresa[0]->empresa_id;
+
+
+            foreach( $empresa as $emp){
+
+                if($emp->empresa_id != $empresa_id){
+                    // dd($empresa_id);
+                    flash('Error existen VIN de diferentes empresas.')->error();
+                    return redirect()->route('vin.index');
+                }
+            }
+         //   dd(123);
 
         $fecha = date('Y-m-d');
 
