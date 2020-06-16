@@ -55,22 +55,22 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                             origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                             [
-                                $vin_nuevo->vin_id, 
-                                1, 
-                                $fecha, $user->user_id, 
-                                null, 
-                                null, 
-                                $user->belongsToEmpresa->empresa_id, 
+                                $vin_nuevo->vin_id,
+                                1,
+                                $fecha, $user->user_id,
+                                null,
+                                null,
+                                $user->belongsToEmpresa->empresa_id,
                                 "Anuncio de llegada del VIN.",
                                 "Origen: Puerto",
                                 "Patio: BLoque y Ubicación por asignar."
                             ]
                         );
                 }
-                
+
                 DB::commit();
             } catch (\Throwable $th) {
-               // dd($th);
+                //dd($th);
                 DB::rollBack();
                 flash('Error inesperado al insertar datos masivos.')->error();
                 return back();

@@ -1756,41 +1756,35 @@ class VinController extends Controller
             "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
         );
 
+            $i =0;
+            foreach( $request->vin_ids as $emp){
+                $empresa = DB::table('vins')
+                    ->join('users', 'vins.user_id','=','users.user_id')
+                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                    ->where('vins.vin_id',$emp)
+                    ->select('empresas.empresa_id')
+                    ->first();
 
-        $empresa = DB::table('vins')
-            ->join('users', 'vins.user_id','=','users.user_id')
-            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-            ->where('vins.vin_id',$request->vin_ids[0])
-            ->select('empresas.empresa_id')
-            ->get();
+                $empresa_id[$i] = $empresa->empresa_id;
+                $i++;
 
-
-            dd($empresa);
-            $empresa_id = $empresa[0]->empresa_id;
-
-
-            foreach( $empresa as $emp){
-
-                if($emp->empresa_id != $empresa_id){
-                    // dd($empresa_id);
+                if($empresa_id[0] != $empresa->empresa_id){
                     flash('Error existen VIN de diferentes empresas.')->error();
                     return redirect()->route('vin.index');
                 }
+
+
             }
-         //   dd(123);
 
         $fecha = date('Y-m-d');
-
         try {
 
-
             DB::beginTransaction();
-
 
             $guia = new Guia();
             $guia->guia_ruta = $path;
             $guia->guia_fecha = $fecha;
-            $guia->empresa_id = $empresa->empresa_id;
+            $guia->empresa_id = $empresa_id[0];
             $guia->save();
 
             foreach($request->vin_ids as $vin_id){
