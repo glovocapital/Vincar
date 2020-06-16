@@ -1003,7 +1003,7 @@ class ApiController extends Controller
                     $user->user_nombre = $nombres;
                     $user->user_apellido = $apellidos;
                     $user->user_rut = $rut;
-                    $user->user_cargo = 0;
+                    $user->user_cargo = "";
                     $user->user_estado = 1;
                     $user->email = "";
                     $user->password = "";
