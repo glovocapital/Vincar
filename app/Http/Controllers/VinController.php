@@ -1757,11 +1757,11 @@ class VinController extends Controller
         );
 
             $i =0;
-            foreach( $request->vin_ids as $emp){
+            foreach( $request->vin_ids as $vinid){
                 $empresa = DB::table('vins')
                     ->join('users', 'vins.user_id','=','users.user_id')
                     ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                    ->where('vins.vin_id',$emp)
+                    ->where('vins.vin_id',$vinid)
                     ->select('empresas.empresa_id')
                     ->first();
 
