@@ -48,7 +48,7 @@ Route::post('condano','ApiController@InpeccionarConDano')->name('api.con_dano');
 
 Route::post('entrega','ApiController@Entregar')->name('api.entrega');
 
-Route::get('buscartransportista','ApiController@BuscarTransportista')->name('api.buscartransportista');
+Route::get('buscartransportista/{user_rut}','ApiController@BuscarTransportista')->name('api.buscartransportista');
 
 
 
