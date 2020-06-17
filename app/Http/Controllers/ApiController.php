@@ -303,7 +303,7 @@ class ApiController extends Controller
                 ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
                 ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','vins.vin_marca as marca', 'vins.created_at as fecha'
                     ,'vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id',
-                    'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id' );
+                    'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id','vin_predespacho');
 
             if(strlen($vins_id)==6){
                 $Vin->where('vins.vin_codigo', 'like', '%'.$vins_id);
@@ -1020,7 +1020,7 @@ class ApiController extends Controller
                 $entregar->responsable_id = (int)$user_id;
                 $entregar->vin_id = $Vin->vin_id;
                 $entregar->tipo_id = $tipo_id;
-                $entregar->recibe_rut = $user->user_id;
+                $entregar->user_id = $user->user_id;
                 $entregar->foto_rut="";
                 $entregar->foto_patente="";
 
