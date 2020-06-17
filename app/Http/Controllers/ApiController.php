@@ -1160,9 +1160,8 @@ class ApiController extends Controller
                 "Err" => 0,
                 "Msg" => "Datos Exitoso",
                 "users"=>$user
-                )
+                );
 
-            );
 
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Users obligatorio");
