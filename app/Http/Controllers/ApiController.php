@@ -1152,21 +1152,27 @@ class ApiController extends Controller
 
         $user_rut = $request->user_rut;
 
-        $user =DB::table('users')->where('user_rut','=', $user_rut)->select('users.*');
+        if(empty($user_rut)){
+            $usersf = Array("Err" => 1, "Msg" => "Users obligatorio");
+        }else {
 
-        $user=$user->first();
+            $user = DB::table('users')->where('user_rut', '=', $user_rut)->select('users.*');
 
-        if($user){
+            $user = $user->first();
 
-            $usersf = Array(
-                "Err" => 0,
-                "Msg" => "Datos Exitoso",
-                "users"=>$user
+            if ($user) {
+
+                $usersf = Array(
+                    "Err" => 0,
+                    "Msg" => "Datos Exitoso",
+                    "users" => $user
                 );
 
 
-        }else{
-            $usersf = Array("Err" => 1, "Msg" => "Users obligatorio");
+            } else {
+                $usersf = Array("Err" => 1, "Msg" => "Usuario  no se encuentra");
+            }
+
         }
 
         return response()->json($usersf);
