@@ -977,7 +977,7 @@ class ApiController extends Controller
         $nombres = $request->input('nombres');
         $apellidos = $request->input('apellidos');
         $file_rut = $request->file('file_rut');
-        $file_patente = (isset($request->file('file_patente'))?$request->file('file_patente'):"";
+        $file_patente = $request->file('file_patente');
         $obs = $request->file('observaciones');
 
 
