@@ -977,7 +977,9 @@ class ApiController extends Controller
         $nombres = $request->input('nombres');
         $apellidos = $request->input('apellidos');
         $file_rut = $request->file('file_rut');
-        $file_patente = $request->file('file_patente');
+        $file_patente = (isset($request->file('file_patente'))?$request->file('file_patente'):"";
+        $obs = $request->file('observaciones');
+
 
         $Vin =DB::table('vins')
             ->select('vins.*')
@@ -1025,6 +1027,7 @@ class ApiController extends Controller
                 $entregar->user_id = $user->user_id;
                 $entregar->foto_rut="";
                 $entregar->foto_patente="";
+               // $entregar->observaciones=$obs;
 
                 if($entregar->save()){
 
