@@ -243,6 +243,10 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
     Route::post('vin/export', 'VinController@exportResultadoBusquedaVins')->name('vin.exportResultadoBusquedaVins');
 
+
+    //Exportar VIN que fueron entregados
+    Route::post('vin/entregaExport', 'VinController@entregaExportResultadoBusquedaVins')->name('vin.entregaExportResultadoBusquedaVins');
+
     Route::post('vin/modal_cambia_estado','VinController@storeModalCambiaEstado')->name('vin.storeModalCambiaEstado');
     Route::post('vin/predespacho','VinController@predespacho')->name('vin.predespacho');
 

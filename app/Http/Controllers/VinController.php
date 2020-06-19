@@ -14,6 +14,7 @@ use App\TipoCampania;
 use App\Vin;
 use App\Campania;
 use App\Exports\BusquedaVinsExport;
+use App\Exports\VinEntregadosExport;
 Use App\Guia;
 Use App\GuiaVins;
 use App\UbicPatio;
@@ -2004,6 +2005,8 @@ class VinController extends Controller
 
     }
 
+
+
     public function exportResultadoBusquedaVins(Request $request)
     {
         $array_vins = [];
@@ -2012,8 +2015,10 @@ class VinController extends Controller
             array_push($array_vins, $vin);
         }
 
-        return Excel::download(new BusquedaVinsExport($array_vins), 'busqueda_vins.xlsx');
+        return Excel::download(new BusquedaVinsExport($array_vins), 'historico_vins.xlsx');
     }
+
+
 
     public function desagendado($id)
     {
@@ -2113,6 +2118,26 @@ class VinController extends Controller
                 return redirect()->route('vin.index');
             }
         }
+    }
+
+    public function  entregaExportResultadoBusquedaVins(Request $request)
+    {
+
+        $vin_request = json_decode($request->resultado_busqueda);
+
+
+
+        $array_vins = [];
+        foreach($vin_request as $vin_id){
+
+            $vin = Vin::find($vin_id->vin_id);
+
+            array_push($array_vins, $vin);
+        }
+
+
+
+        return Excel::download(new VinEntregadosExport($array_vins), 'historico_entregados.xlsx');
     }
 
 }
