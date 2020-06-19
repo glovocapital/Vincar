@@ -985,9 +985,9 @@ class ApiController extends Controller
         $rut = $request->input('rut');
         $nombres = $request->input('nombres');
         $apellidos = $request->input('apellidos');
+        $patente = $request->input('patente');
         $file_rut = $request->file('file_rut');
-        $file_patente = $request->file('file_patente');
-        $obs = $request->file('observaciones');
+        $obs = $request->input('observaciones');
 
 
         $Vin =DB::table('vins')
@@ -1001,7 +1001,7 @@ class ApiController extends Controller
         $estado_nuevo = 8; // Entregado
 
         if($Vin){
-            try {
+
                 DB::beginTransaction();
 
                 $Trans =DB::table('users')
@@ -1035,7 +1035,7 @@ class ApiController extends Controller
                 $entregar->tipo_id = $tipo_id;
                 $entregar->user_id = $user->user_id;
                 $entregar->foto_rut="";
-                $entregar->foto_patente="";
+                $entregar->foto_patente=$patente;
                // $entregar->observaciones=$obs;
 
                 if($entregar->save()){
@@ -1059,25 +1059,6 @@ class ApiController extends Controller
                         $image->save($path);
 
                         $entregar->foto_rut=$path;
-                        $entregar->update();
-
-                    }
-
-                    if(!empty($file_patente)) {
-
-                        $fotoArchivo = $request->file('file_rut');
-                        $extensionFoto = $fotoArchivo->extension();
-                        $path = $fotoArchivo->storeAs(
-                            'fotos_entrega',
-                            "foto_de_patente" . '-' . $entregar->entrega_id() . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto
-                        );
-
-                        //Creamos una instancia de la libreria instalada
-                        $image = \Image::make($fotoArchivo);
-                        // Guardar
-                        $image->save($path);
-
-                        $entregar->foto_patente=$path;
                         $entregar->update();
 
                     }
@@ -1147,10 +1128,10 @@ class ApiController extends Controller
                     DB::rollBack();
                     $usersf = Array("Err" => 1, "Msg" => "Error al registrar");
                 }
-            } catch (\Throwable $th) {
+           /* } catch (\Throwable $th) {
                 DB::rollBack();
                 $usersf = Array("Err" => 1, "Msg" => "Error inesperado al registrar datos");
-            }
+            }*/
 
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
