@@ -2131,7 +2131,6 @@ class VinController extends Controller
         foreach($vin_request as $vin_id){
 
             $vin = Vin::find($vin_id->vin_id);
-
             array_push($array_vins, $vin);
         }
 

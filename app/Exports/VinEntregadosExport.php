@@ -32,12 +32,21 @@ class VinEntregadosExport implements FromArray, WithHeadings
             'VIN',
             'VIN Codigo',
             'Patente',
-            'Tarea',
-            'Usuario Responsable',
-            'Destino',
-            'Fecha finalizacion solicitada',
-            'Hora de termino solicitado',
-            'Fecha y hora de finalizacion real'
+            'Modelo',
+            'Marca',
+            'Color',
+            'Motor',
+            'Segmento',
+            'Fecha de ingreso a patio',
+            'user_id',
+            'created_at',
+            'updated_at',
+            'vin_estado_inventario_id',
+            'vin_sub_estado_inventario_id',
+            'vin_predespacho',
+            'Fecha de entrega',
+            'Fecha de agendamiento para entrega'
+
         ];
     }
 }
