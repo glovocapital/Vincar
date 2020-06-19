@@ -111,6 +111,11 @@ class ApiController extends Controller
         $bloque = $request->input('bloque_id');
         $posicion =  explode("_", $request->input('posicion'));
 
+        if(count($posicion)!=2){
+            $usersf = Array("Err" => 1, "Msg" => "Posición es requerido");
+            return response()->json($usersf);
+            exit;
+        }
 
         $Vin =DB::table('vins')
             ->select('vins.*')
@@ -654,7 +659,11 @@ class ApiController extends Controller
                 ->pluck('empresa', 'empresa_id')
                 ->all();
 
+            if(isset($empresa[$Vin->empresa_id]))
             $inspecciones->cliente = $empresa[$Vin->empresa_id];
+            else
+                $inspecciones->cliente="";
+
 
             if($inspecciones) {
                 $inspecciones->responsable = $users[$inspecciones->responsable_id];
