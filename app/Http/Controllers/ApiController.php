@@ -1012,18 +1012,18 @@ class ApiController extends Controller
                 if($Trans){
                     $transportista= Users::findOrFail($Trans->user_id);
                 }else{
-                    $user = new User();
-                    $user->user_nombre = $nombres;
-                    $user->user_apellido = $apellidos;
-                    $user->user_rut = $rut;
-                    $user->user_cargo = "";
-                    $user->user_estado = 1;
-                    $user->email = "";
-                    $user->password = "";
-                    $user->rol_id = 7;
-                    $user->user_telefono = "";
-                    $user->empresa_id = $user->empresa_id;
-                    $user->save();
+                    $transportista = new User();
+                    $transportista->user_nombre = $nombres;
+                    $transportista->user_apellido = $apellidos;
+                    $transportista->user_rut = $rut;
+                    $transportista->user_cargo = "";
+                    $transportista->user_estado = 1;
+                    $transportista->email = "";
+                    $transportista->password = "";
+                    $transportista->rol_id = 7;
+                    $transportista->user_telefono = "";
+                    $transportista->empresa_id = $user->empresa_id;
+                    $transportista->save();
                 }
 
 
@@ -1033,7 +1033,7 @@ class ApiController extends Controller
                 $entregar->responsable_id = (int)$user_id;
                 $entregar->vin_id = $Vin->vin_id;
                 $entregar->tipo_id = $tipo_id;
-                $entregar->user_id = $user->user_id;
+                $entregar->user_id = $transportista->user_id;
                 $entregar->foto_rut="";
                 $entregar->foto_patente=$patente;
                // $entregar->observaciones=$obs;
