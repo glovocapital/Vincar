@@ -24,6 +24,10 @@ class Vin extends Model
         return $this->hasOne(User::class, 'user_id', 'user_id');
     }
 
+    public function oneMarca(){
+        return $this->hasOne(Marca::class, 'marca_id', 'vin_marca');
+    }
+
     public function oneVinEstadoInventario()
     {
         $estadoInventario = DB::table('vin_estado_inventarios')
