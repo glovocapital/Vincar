@@ -529,6 +529,7 @@
                                 </div>
 
                                 <div class="card-body">
+
                                     <div class="table-responsive">
                                         <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
                                             <thead>
@@ -581,6 +582,18 @@
                                 </div>
 
                                 <div class="card-body">
+                                    <div class="col-lg-12">
+                                        {!! Form::open(['route'=> 'vin.entregaExportResultadoBusquedaVins', 'method'=>'POST']) !!}
+                                            <div class="text pb-3">
+
+
+                                                    <input type="hidden" name="resultado_busqueda" value="{{json_encode($vin_entregados)}}" id="resultado_busqueda_vins" />
+
+                                                    {{ Form::button('<i class="fa fa-file-excel"></i> Exportar historial de entregas ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor'] )  }}
+
+                                            </div>
+                                            {!! Form::close() !!}
+                                    </div>
                                     <div class="table-responsive">
                                         <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
                                             <thead>
@@ -595,15 +608,15 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($vin_entregados as $tarea_finalizada)
-                                                @if(isset($tarea_finalizada))
+                                            @foreach($vin_entregados as $entregados)
+                                                @if(isset($entregados))
                                                     <tr>
-                                                        <td><small>{{ $tarea_finalizada->vin_codigo }}</small></td>
-                                                        <td><small>{{ $tarea_finalizada->vin_patente }}</small></td>
-                                                        <td><small>{{ $tarea_finalizada->vin_color }}</small></td>
-                                                        <td><small>{{ $tarea_finalizada->vin_fecha_agendado }}</small></td>
-                                                        <td><small>{{ $tarea_finalizada->vin_fecha_entrega }}</small></td>
-                                                        <td><small>{{ $tarea_finalizada->empresa_razon_social }}</small></td>
+                                                        <td><small>{{ $entregados->vin_codigo }}</small></td>
+                                                        <td><small>{{ $entregados->vin_patente }}</small></td>
+                                                        <td><small>{{ $entregados->vin_color }}</small></td>
+                                                        <td><small>{{ $entregados->vin_fecha_agendado }}</small></td>
+                                                        <td><small>{{ $entregados->vin_fecha_entrega }}</small></td>
+                                                        <td><small>{{ $entregados->empresa_razon_social }}</small></td>
 
                                                     </tr>
                                                 @endif
@@ -629,11 +642,11 @@
 
                                 <div class="card-body">
                                     <div class="col-lg-12">
-                                        {!! Form::open(['route'=> 'campania.exportResultadoBusquedaVins', 'method'=>'POST']) !!}
+                                        {!! Form::open(['route'=> 'vin.entregaExportResultadoBusquedaVins', 'method'=>'POST']) !!}
                                         <div class="text pb-3">
 
 
-
+                                                <input type="hidden" name="resultado_busqueda" value="{{json_encode($vin_entregados_dia)}}" id="resultado_busqueda_vins" />
 
                                                 {{ Form::button('<i class="fa fa-file-excel"></i> Exportar historial de tareas ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor'] )  }}
 
