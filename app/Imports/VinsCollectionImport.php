@@ -35,8 +35,8 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
             {
                 DB::beginTransaction();
 
-                $marca = Marca::where('marca_nombre','like', "%" . trim($row['marca']) . "%")->first();
-                
+                $marca = Marca::where('marca_nombre', 'ilike', '%' . trim($row['marca']) . '%')->first();
+                                
                 $vin = DB::table('vins')
                     ->where('vin_codigo', $row['vin'])
                     ->exists();
