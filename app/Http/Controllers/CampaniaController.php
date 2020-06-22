@@ -1579,11 +1579,10 @@ class CampaniaController extends Controller
                 $tarea->tarea_fecha_finalizacion = $request->tarea_fecha_finalizacion;
                 $tarea->tarea_prioridad = (int)$request->tarea_prioridad;
                 $tarea->tarea_hora_termino = $request->tarea_hora_termino;
-                $tarea->vin_id = (int)$request->vin_ids[$vin_id];
+                $tarea->vin_id = (int)$vin_id;
                 $tarea->user_id = $request->tarea_responsable_id;
                 $tarea->tipo_tarea_id = $request->tipo_tarea_id;
                 $tarea->tipo_destino_id = $request->tipo_destino_id;
-
                 $tarea->save();
 
                 // REVISAR ESTE BLOQUE DE CÓDIGO
@@ -1706,7 +1705,7 @@ class CampaniaController extends Controller
 
                 $campania->campania_fecha_finalizacion = $request->campania_fecha_finalizacion;
                 $campania->campania_observaciones = $request->campania_observaciones;
-                $campania->vin_id = (int)$request->vin_ids[$vin_id];
+                $campania->vin_id = (int)$vin_id;
                 $campania->user_id = Auth::user()->user_id;
 
                 $campania->save();
