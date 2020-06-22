@@ -1353,7 +1353,7 @@ class CampaniaController extends Controller
         }
 
         return response()->json(
-            $tabla_vins,
+            $tabla_vins
         );
     }
 
@@ -1659,6 +1659,7 @@ class CampaniaController extends Controller
 
 
         }*/
+
 
         $tareas = Tarea::where('tarea_finalizada', false)
             ->where('deleted_at', '=', null)
