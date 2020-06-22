@@ -554,6 +554,7 @@
                 $("#error1").hide();
 
                  datos = $("#TareasVins").serialize();
+
                 $("#error1").text("Error al Guardar");
                 if(enviado == datos){
                     $("#error1").text("Sin cambios");
