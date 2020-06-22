@@ -1571,7 +1571,7 @@ class CampaniaController extends Controller
      */
     public function storeModalTareaLotes(Request $request)
     {
-        try {
+        //try {
             DB::beginTransaction();
 
             foreach($request->vin_ids as $vin_id){
@@ -1646,7 +1646,7 @@ class CampaniaController extends Controller
 
 
 
-        } catch (\Throwable $th) {
+        /*} catch (\Throwable $th) {
             DB::rollBack();
             if($request->ajax())
                 return response()->json(
@@ -1658,7 +1658,7 @@ class CampaniaController extends Controller
             }
 
 
-        }
+        }*/
 
         $tareas = Tarea::where('tarea_finalizada', false)
             ->where('deleted_at', '=', null)
