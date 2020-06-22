@@ -823,7 +823,7 @@ class ApiController extends Controller
         $estado_nuevo = 6; // Estado No Disponible Para la Venta
 
         if($Vin){
-            try {
+            //try {
                 DB::beginTransaction();
 
                 $cliente_id = $request->input('user_id');
@@ -963,10 +963,10 @@ class ApiController extends Controller
                     DB::rollBack();
                     $usersf = Array("Err" => 1, "Msg" => "Error al registrar");
                 }
-            } catch (\Throwable $th) {
+          /*  } catch (\Throwable $th) {
                 DB::rollBack();
                 $usersf = Array("Err" => 1, "Msg" => "Error inesperado al registrar datos");
-           }
+           }*/
 
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
