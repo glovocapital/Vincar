@@ -31,7 +31,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
         foreach ($rows as $row)
         {
             $fila++;
-            try 
+            try
             {
                 DB::beginTransaction();
 
@@ -76,9 +76,9 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
 
                         DB::commit();
                     } else{
-                        flash('Error: Marca no encontrada para el VIN: ' . $row['patente'] . '. Fila: ' . $fila . ' del documento. VIN no agregado, verifique que esté bien escrita la marca.')->error();
+                        flash('Error: Marca no encontrada para el VIN: ' . $row['vin'] . '. Fila: ' . $fila . ' del documento. VIN no agregado, verifique que esté bien escrita la marca.')->error();
                     }
-                } 
+                }
             } catch (\Throwable $th) {
                 //dd($th);
                 DB::rollBack();
