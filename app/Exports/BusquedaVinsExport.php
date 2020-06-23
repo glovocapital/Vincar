@@ -34,14 +34,15 @@ class BusquedaVinsExport implements FromArray, WithHeadings
             'Marca',
             'Modelo',
             'Color',
-            'Segmento',
             'Motor',
-            'Propietario',
+            'Segmento',
             'Fecha de Ingreso',
+            'Propietario',
             'Estado de Inventario',
+            'Fecha de Entrega',
+            'Fecha de Agendado',
             'Patio',
             'Bloque',
-            'ID Ubcación',
             'Fila',
             'Columna'
         ];
