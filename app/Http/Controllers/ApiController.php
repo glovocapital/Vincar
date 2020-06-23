@@ -869,7 +869,7 @@ class ApiController extends Controller
                     $extensionFoto = $fotoArchivo->extension();
                     $path = $fotoArchivo->storeAs(
                         'fotos',
-                        "foto_de_inspeccion".'-'.Auth::id().'-'.date('Y-m-d').'-'.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+                        "foto_de_inspeccion".'-'.$request->user_id.'-'.date('Y-m-d').'-'.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
                     );
 
                     //Creamos una instancia de la libreria instalada
@@ -1026,43 +1026,40 @@ class ApiController extends Controller
                     $transportista->save();
                 }
 
+            $entregar = new Entrega();
+            $entregar->entrega_fecha = date('Y-m-d');
+            $entregar->responsable_id = (int)$user_id;
+            $entregar->vin_id = $Vin->vin_id;
+            $entregar->tipo_id = $tipo_id;
+            $entregar->user_id = $transportista->user_id;
+            $entregar->foto_rut="";
+            $entregar->foto_patente=$patente;
+            $entregar->observaciones=$obs;
 
+            if(!empty($file_rut)) {
 
-                $entregar = new Entrega();
-                $entregar->entrega_fecha = date('Y-m-d');
-                $entregar->responsable_id = (int)$user_id;
-                $entregar->vin_id = $Vin->vin_id;
-                $entregar->tipo_id = $tipo_id;
-                $entregar->user_id = $transportista->user_id;
-                $entregar->foto_rut="";
-                $entregar->foto_patente=$patente;
-               // $entregar->observaciones=$obs;
+                $fotoArchivo = $request->file('file_rut');
+                $extensionFoto = $fotoArchivo->extension();
+                $path = $fotoArchivo->storeAs(
+                    'fotos_entrega',
+                    "foto_de_rut" . '-' . $user_id . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto
+                );
+
+                //Creamos una instancia de la libreria instalada
+                $image = \Image::make($fotoArchivo);
+                // Guardar
+                $image->save($path);
+
+                $entregar->foto_rut=$path;
+
+            }
+
 
                 if($entregar->save()){
 
                     $Vin_= Vin::findOrFail($Vin->vin_id);
                     $Vin_->vin_estado_inventario_id = $estado_nuevo;
                     $Vin_->update();
-
-                    if(!empty($file_rut)) {
-
-                        $fotoArchivo = $request->file('file_rut');
-                        $extensionFoto = $fotoArchivo->extension();
-                        $path = $fotoArchivo->storeAs(
-                            'fotos_entrega',
-                            "foto_de_rut" . '-' . $entregar->entrega_id() . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto
-                        );
-
-                        //Creamos una instancia de la libreria instalada
-                        $image = \Image::make($fotoArchivo);
-                        // Guardar
-                        $image->save($path);
-
-                        $entregar->foto_rut=$path;
-                        $entregar->update();
-
-                    }
-
 
                     $itemlist =self::ListVIN($request);
 
@@ -1079,8 +1076,6 @@ class ApiController extends Controller
                     } else {
                         $bloque_id = null;
                     }
-
-
 
                     if($bloque_id != null){
                         DB::insert('INSERT INTO historico_vins
