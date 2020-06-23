@@ -996,7 +996,7 @@ class ApiController extends Controller
             ->first();
 
         $user = User::find($user_id);
-        
+
         if($Vin){
 
             $estado_previo = $Vin->vin_estado_inventario_id;
@@ -1036,7 +1036,7 @@ class ApiController extends Controller
             $entregar->foto_patente=$patente;
             $entregar->observaciones=$obs;
 
-            if(!empty($file_rut)) {
+           /* if(!empty($file_rut)) {
 
                 $fotoArchivo = $request->file('file_rut');
                 $extensionFoto = $fotoArchivo->extension();
@@ -1052,7 +1052,7 @@ class ApiController extends Controller
 
                 $entregar->foto_rut=$path;
 
-            }
+            }*/
 
 
                 if($entregar->save()){
