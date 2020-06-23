@@ -2012,10 +2012,47 @@ class VinController extends Controller
         $array_vins = [];
         foreach($request->vin_ids as $vin_id){
             $vin = Vin::find($vin_id);
-            array_push($array_vins, $vin);
+
+            $vinExport = new Vin();
+            $vinExport->vin_id = $vin->vin_id;
+            $vinExport->vin_codigo = $vin->vin_codigo;
+            $vinExport->vin_patente = $vin->vin_patente;
+            $vinExport->vin_marca = $vin->oneMarca->marca_nombre;
+            $vinExport->vin_modelo = $vin->vin_modelo;
+            $vinExport->vin_color = $vin->vin_color;
+            $vinExport->vin_motor = $vin->vin_motor;
+            $vinExport->vin_segmento = $vin->vin_segmento;
+            $vinExport->vin_fec_ingreso = $vin->vin_fec_ingreso;
+            $vinExport->user_id = $vin->oneUser->belongsToEmpresa->empresa_razon_social;
+            $vinExport->vin_estado_inventario_id = $vin->oneVinEstadoInventario();
+            $vinExport->vin_fecha_entrega = $vin->vin_fecha_entrega;
+            $vinExport->vin_fecha_agendado = $vin->vin_fecha_agendado;
+
+            if($vin->vin_estado_inventario_id == 4 || $vin->vin_estado_inventario_id == 5 || $vin->vin_estado_inventario_id == 6){
+                $vinUbic = DB::table('ubic_patios')
+                    ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                    ->join('patios','bloques.patio_id','=','patios.patio_id')
+                    ->where('ubic_patios.vin_id', $vin_id)
+                    ->get();    
+
+                $vinExport->patio_nombre = $vinUbic[0]->patio_nombre;
+                $vinExport->bloque_nombre = $vinUbic[0]->bloque_nombre;
+                $vinExport->ubic_patio_fila = $vinUbic[0]->ubic_patio_fila;
+                $vinExport->ubic_patio_columna = $vinUbic[0]->ubic_patio_columna;
+                
+            } else {
+                $vinExport->patio_nombre = null;
+                $vinExport->bloque_nombre = null;
+                $vinExport->ubic_patio_fila = null;
+                $vinExport->ubic_patio_columna = null;
+            }
+            
+            array_push($array_vins, $vinExport);
         }
 
-        return Excel::download(new BusquedaVinsExport($array_vins), 'historico_vins.xlsx');
+        // dd($array_vins);
+
+        return Excel::download(new BusquedaVinsExport($array_vins), 'export_busqueda_vins.xlsx');
     }
 
 
