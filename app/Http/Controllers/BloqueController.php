@@ -177,7 +177,7 @@ class BloqueController extends Controller
                 $bloque->bloque_nombre = $request->bloque_nombre;
 
                 if($bloque->bloque_filas != $request->bloque_filas || $bloque->bloque_columnas != $request->bloque_columnas){
-                    $ocupadas = UbicPatio::where('ubic_patio_ocupada', true)->get();
+                    $ocupadas = UbicPatio::where('ubic_patio_ocupada', true)->where('bloque_id', $bloque_id)->get();
                     
                     if(count($ocupadas) == 0){
                         UbicPatio::where('bloque_id', $bloque_id)->delete();

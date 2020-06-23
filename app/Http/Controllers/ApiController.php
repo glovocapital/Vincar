@@ -127,6 +127,7 @@ class ApiController extends Controller
             $UbicPatio_ = UbicPatio::where('bloque_id','=', $bloque)
                 ->where('ubic_patio_fila','=', $posicion[0])
                 ->where('ubic_patio_columna','=', $posicion[1])
+                ->where('deleted_at', null)
                 ->get();
 
             if(count($UbicPatio_)>0){
@@ -135,7 +136,7 @@ class ApiController extends Controller
                 }else{
                     try {
                         DB::beginTransaction();
-                        $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->get();
+                        $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->where('deleted_at', null)->get();
                         if(count($UbicPatio)>0){
                             $UbicPatios = UbicPatio::findOrFail($UbicPatio[0]->ubic_patio_id);
                             $UbicPatios->ubic_patio_ocupada = false;
@@ -463,7 +464,7 @@ class ApiController extends Controller
                 $fecha = date('Y-m-d');
                 $user = User::find($request->user_id);
 
-                $ubic_patio = UbicPatio::where('vin_id', $Vin[0]->vin_id)->first();
+                $ubic_patio = UbicPatio::where('vin_id', $Vin[0]->vin_id)->where('deleted_at', null)->first();
                 if(isset($ubic_patio)){
                     $bloque_id = $ubic_patio->bloque_id;
                 } else {
@@ -734,7 +735,7 @@ class ApiController extends Controller
 
                     // Guardar historial del cambio
                     if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
-                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
+                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->where('deleted_at', null)->first();
                         if($ubic_patio != null){
                             $bloque_id = $ubic_patio->bloque_id;
                         } else {
@@ -905,7 +906,7 @@ class ApiController extends Controller
 
                     // Guardar historial del cambio
                     if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
-                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
+                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->where('deleted_at', null)->first();
                         if($ubic_patio != null){
                             $bloque_id = $ubic_patio->bloque_id;
                         } else {
@@ -1067,7 +1068,7 @@ class ApiController extends Controller
 
                     // Guardar historial del cambio
                     if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
-                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
+                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id->where('deleted_at', null)->first();
                         if($ubic_patio != null){
                             $bloque_id = $ubic_patio->bloque_id;
                         } else {
