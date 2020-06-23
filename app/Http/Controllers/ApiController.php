@@ -996,11 +996,11 @@ class ApiController extends Controller
             ->first();
 
         $user = User::find($user_id);
-
-        $estado_previo = $Vin->vin_estado_inventario_id;
-        $estado_nuevo = 8; // Entregado
-
+        
         if($Vin){
+
+            $estado_previo = $Vin->vin_estado_inventario_id;
+            $estado_nuevo = 8; // Entregado
 
                 DB::beginTransaction();
 
