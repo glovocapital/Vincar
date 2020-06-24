@@ -76,8 +76,8 @@
                                 <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
                                 <th>Vin</th>
                                 <th>Patente</th>
-                                <th>Modelo</th>
                                 <th>Marca</th>
+                                <th>Modelo</th>
                                 <th>Color</th>
                                 <!-- <th>Motor</th> -->
                                 <th>Segmento</th>
@@ -98,8 +98,8 @@
                                         <td><input type="checkbox" class="check-tarea" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
                                         <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
                                         <td><small>{{ $vin->vin_patente }}</small></td>
-                                        <td><small>{{ $vin->vin_modelo }}</small></td>
                                         <td><small>{{ $vin->vin_marca }}</small></td>
+                                        <td><small>{{ $vin->vin_modelo }}</small></td>
                                         <td><small>{{ $vin->vin_color }}</small></td>
                                     <!-- <td><small>{{ $vin->vin_motor }}</small></td> -->
                                         <td><small>{{ $vin->vin_segmento }}</small></td>
