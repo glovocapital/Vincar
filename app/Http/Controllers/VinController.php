@@ -2033,20 +2033,20 @@ class VinController extends Controller
                     ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                     ->join('patios','bloques.patio_id','=','patios.patio_id')
                     ->where('ubic_patios.vin_id', $vin_id)
-                    ->get();    
+                    ->get();
 
                 $vinExport->patio_nombre = $vinUbic[0]->patio_nombre;
                 $vinExport->bloque_nombre = $vinUbic[0]->bloque_nombre;
                 $vinExport->ubic_patio_fila = $vinUbic[0]->ubic_patio_fila;
                 $vinExport->ubic_patio_columna = $vinUbic[0]->ubic_patio_columna;
-                
+
             } else {
                 $vinExport->patio_nombre = null;
                 $vinExport->bloque_nombre = null;
                 $vinExport->ubic_patio_fila = null;
                 $vinExport->ubic_patio_columna = null;
             }
-            
+
             array_push($array_vins, $vinExport);
         }
 
@@ -2174,6 +2174,21 @@ class VinController extends Controller
 
 
         return Excel::download(new VinEntregadosExport($array_vins), 'historico_entregados.xlsx');
+    }
+
+
+    public function cambiodueno()
+    {
+
+
+        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
+            ->orderBy('empresa_id')
+            ->where('deleted_at', null)
+            ->pluck('empresa_razon_social', 'empresa_id')
+            ->all();
+
+        return view('vincambiocliente.index', compact('empresas'));
+
     }
 
 }
