@@ -222,10 +222,11 @@ class ApiController extends Controller
             ->join('tipo_tareas', 'tipo_tareas.tipo_tarea_id','=', 'tareas.tipo_tarea_id')
             ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id','=', 'tareas.tipo_destino_id')
             ->join('vins', 'tareas.vin_id','=', 'vins.vin_id')
+            ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
             ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
             ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id')
 
-            ->select('vins.vin_estado_inventario_id as vin_estado_inventario_id','tarea_prioridad','tarea_id','tipo_tarea_descripcion as ico','vins.vin_codigo as vin','vins.vin_modelo as modelo','vins.vin_marca as marca', 'vins.created_at as fecha'
+            ->select('vins.vin_estado_inventario_id as vin_estado_inventario_id','tarea_prioridad','tarea_id','tipo_tarea_descripcion as ico','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.created_at as fecha'
                 ,'vin_estado_inventario_desc as estado','tipo_destino_descripcion as destino','vins.vin_color as color','ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id'
                  )
             ->where('tareas.user_id',$request->user_id)
@@ -305,9 +306,10 @@ class ApiController extends Controller
             $patios = Patio::select('patio_id','patio_nombre')->get();
 
             $Vin =DB::table('vins')
+                ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
                 ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
                 ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
-                ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','vins.vin_marca as marca', 'vins.created_at as fecha'
+                ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.created_at as fecha'
                     ,'vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id',
                     'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id','vin_predespacho');
 
@@ -344,9 +346,10 @@ class ApiController extends Controller
 
                 $ubicados = DB::table('ubic_patios')
                     ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+                    ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
                     ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
                     ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
-                    ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc", 'patio_id')
+                    ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc", 'patio_id')
                     ->get();
 
                if(count($_patio)==0) $vin[0]->patio_id=null;
@@ -364,9 +367,10 @@ class ApiController extends Controller
 
                    $ubicados = DB::table('ubic_patios')
                        ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+                       ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
                        ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
                        ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
-                       ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc","vins.vin_predespacho as vin_predespacho")
+                       ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc","vins.vin_predespacho as vin_predespacho")
                        ->where('patio_id','=',$_patio[0]->patio_id)
                        ->get();
 
@@ -1068,7 +1072,7 @@ class ApiController extends Controller
 
                     // Guardar historial del cambio
                     if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
-                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id->where('deleted_at', null)->first();
+                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->where('deleted_at', null)->first();
                         if($ubic_patio != null){
                             $bloque_id = $ubic_patio->bloque_id;
                         } else {
