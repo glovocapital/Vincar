@@ -449,7 +449,6 @@ class PatioController extends Controller
             }
 
 
-
              $ubicados = DB::table('ubic_patios')
                  ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
                  ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
