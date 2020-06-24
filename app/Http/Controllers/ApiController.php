@@ -1068,7 +1068,7 @@ class ApiController extends Controller
 
                     // Guardar historial del cambio
                     if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
-                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id->where('deleted_at', null)->first();
+                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->where('deleted_at', null)->first();
                         if($ubic_patio != null){
                             $bloque_id = $ubic_patio->bloque_id;
                         } else {
