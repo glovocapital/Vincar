@@ -4,11 +4,11 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Cambiar Estado</h4>
+                <h4 class="modal-title">Traspasar Vin</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                {!! Form::open(['route'=> 'vin.storeModalCambiaEstado', 'method'=>'POST', 'id'=>"EstadosVins"]) !!}
+                {!! Form::open(['route'=> 'vin.traspasovin', 'method'=>'POST', 'id'=>"EstadosVins"]) !!}
                 @csrf
                 <div class="row row-fluid">
                     <div class="col-md-12">
@@ -21,8 +21,15 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="vin_estado_inventario_id" >Estado de Inventario </label>
+                            <label for="vin_estado_inventario_id" >Cliente Actual </label>
+                            {!! Form::select('vin_codigo', $empresas,null, ['class'=>'form-control col-sm-9', 'readonly']) !!}
+                        </div>
+                    </div>
 
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="vin_estado_inventario_id" >Cliente Nuevo </label>
+                            {!! Form::select('vin_estado_inventario_id', $empresas, null,['class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
 

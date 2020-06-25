@@ -16,7 +16,7 @@
                         <div class="card-body">
                             {!! Form::open(['route'=> 'vin.index3', 'method'=>'post', 'id' => 'VinForm']) !!}
                             <div class="row">
-                                <div class="col-md-4" id="wrapper_2">
+                                <div class="col-md-5" id="wrapper_2">
                                     <div class="form-group">
                                         <label for="vin_numero" >Vin <strong>*</strong></label>
                                         {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
@@ -36,7 +36,7 @@
 
                             <div class="text-right pb-5" id="botones">
 
-                                    <button type="button" class="btn btn-warning btn-edo-vins btn-rol13" style="display:none">Cambiar estado por lotes</button>
+                                    <button type="button" class="btn btn-warning btn-edo-vins btn-rol13" style="display:none">Traspasar VIN</button>
 
                                     <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
 
@@ -274,79 +274,6 @@
             });
 
 
-             //modal predespacho
-             $('.btn-predespacho-vins').click(function (e){
-                e.preventDefault();
-                var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
-                    return this.value;
-                }).get();
-                var url = "planificacion/obtener_codigos_vins";
-                var request = {
-                    _token: $("input[name='_token']").attr("value"),
-                    vin_ids: vin_ids,
-                };
-                $.post(url, request, function (res) {
-                    //Validar primero si algo salió mal
-                    if(!res.success){
-                        alert(
-                            "Error inesperado al solicitar la información.\n\n" +
-                            "MENSAJE DEL SISTEMA:\n" +
-                            res.message + "\n\n"
-                        );
-                        return;  // Finaliza el intento de obtener
-                    }
-                    var arr_codigos = $.map(res.codigos, function (e1) {
-                        return e1;
-                    });
-                    $("#vin_codigo_predespacho").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
-                    $("#vin_codigo_predespacho").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
-                    for (var i = 1; i < arr_codigos.length; i++){
-                        $("#vin_codigo_predespacho").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
-                        $("#vin_codigo_predespacho").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
-                    }
-                    $("#predespachoModal").modal('show');
-                }).fail(function () {
-                    alert('Error: Debe seleccionar al menos un vin de la lista');
-                });
-            });
-
-            //Modal Histórico del VIN
-            $('#TablaVins tbody').on('click', '.btn-historico', function (e) {
-                e.preventDefault();
-                var id_vin = $(this).attr("value");
-                var url = "/historico_vin/historicoVin/" + id_vin;
-                $.get(url, function (res) {
-                    //Validar primero si algo salió mal
-                    if(!res.success){
-                        alert(
-                            "Error inesperado al solicitar la información.\n\n" +
-                            "MENSAJE DEL SISTEMA:\n" +
-                            res.message + "\n\n"
-                        );
-                        return;  // Finaliza el intento de obtener
-                    }
-                    var arr_eventos = $.map(res.historico_vin, function (e1) {
-                        return e1;
-                    });
-                    // Limpiar la tabla del modal antes de mostrar el historial del vin
-                    $("#eventos_vin").empty();
-                    for (var i = 0; i < arr_eventos.length; i++){
-                        $("#eventos_vin").append("<tr>");
-                        $("#eventos_vin").append("<td>" + arr_eventos[i]['vin_codigo'] + "</td>");
-                        $("#eventos_vin").append("<td>" + arr_eventos[i]['historico_fecha'] + "</td>");
-                        $("#eventos_vin").append("<td>" + arr_eventos[i]['historico_estado'] + "</td>");
-                        $("#eventos_vin").append("<td>" + arr_eventos[i]['responsable'] + "</td>");
-                        $("#eventos_vin").append("<td>" + arr_eventos[i]['origen'] + "</td>");
-                        $("#eventos_vin").append("<td>" + arr_eventos[i]['destino'] + "</td>");
-                        $("#eventos_vin").append("<td>" + arr_eventos[i]['empresa'] + "</td>");
-                        $("#eventos_vin").append("<td>" + arr_eventos[i]['descripcion'] + "</td>");
-                        $("#eventos_vin").append("</tr>");
-                    }
-                    $("#historicoVin").modal('show');
-                }).fail(function () {
-                    alert('Error: Datos no encontrados o incorrectos');
-                });
-            });
         });
     </script>
 
