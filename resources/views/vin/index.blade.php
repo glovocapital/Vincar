@@ -440,7 +440,7 @@
 
                                             <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
                                             <td><small>{{ $vin->vin_patente }}</small></td>
-                                            <td><small>{{ $vin->vin_marca }}</small></td>
+                                            <td><small>{{ $vin->oneMarca->marca_nombre }}</small></td>
                                             <td><small>{{ $vin->vin_modelo }}</small></td>
                                             <td><small>{{ $vin->vin_color }}</small></td>
                                             <td><small>{{ $vin->vin_segmento }}</small></td>
