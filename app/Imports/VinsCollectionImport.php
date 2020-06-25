@@ -64,7 +64,8 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                             [
                                 $vin_nuevo->vin_id,
                                 1,
-                                $fecha, $user->user_id,
+                                $fecha, 
+                                $user->user_id,
                                 null,
                                 null,
                                 $user->belongsToEmpresa->empresa_id,
@@ -77,6 +78,42 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                         DB::commit();
                     } else{
                         flash('Error: Marca no encontrada para el VIN: ' . $row['patente'] . '. Fila: ' . $fila . ' del documento. VIN no agregado, verifique que esté bien escrita la marca.')->error();
+                    }
+                } else {
+                    $vin = Vin::where('vin_codigo', $row['vin'])->first();
+
+                    if ($vin->vin_estado_inventario_id == 7 || $vin->vin_estado_inventario_id == 8){
+                        $comentario = "";
+                        $vin->vin_estado_inventario_id = 1;
+
+                        if ($vin->user_id != $user->user_id){
+                            $vin->user_id = $user->user_id;
+                            $comentario = "VIN cambió de propietario.";
+                        }
+
+                        $vin->vin_fec_ingreso = $fecha;
+
+                        $vin->save();
+
+                        DB::insert('INSERT INTO historico_vins
+                                (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                [
+                                    $vin->vin_id,
+                                    $vin->vin_estado_inventario_id,
+                                    $fecha, 
+                                    $user->user_id,
+                                    null,
+                                    null,
+                                    $user->belongsToEmpresa->empresa_id,
+                                    "VIN reingresando al sistema." . $comentario,
+                                    "Origen: Reingreso de VIN al sistema",
+                                    "Patio: BLoque y Ubicación por asignar."
+                                ]
+                            );
+                    } else {
+                        flash('Error: El VIN: ' . $vin->vin_codigo . 'no puede ser reingresado porque ya existe en el sistema con estado: ' . $vin->oneVinEstadoInventario())->error();
                     }
                 } 
             } catch (\Throwable $th) {
