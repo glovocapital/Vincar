@@ -181,13 +181,13 @@
                             value.vin_color,
                             value.vin_fec_ingreso,
                             value.empresa_razon_social,
-                            value.vin_estado_inventario_desc,
+                            value.vin_estado_inventario_desc ,
                             '<font color="'+((value.vin_downloadGuiaN == "Sin Guia")?"Blue":"Green")+'">'+value.vin_downloadGuiaN+'</font>',
                                 (typeof value.patio_nombre !== 'undefined')?value.patio_nombre:"",
                                 (typeof value.bloque_nombre !== 'undefined')?value.bloque_nombre:"",
                                 (typeof value.ubic_patio_id !== 'undefined')?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):"",
 
-                                '<small>'+
+                                 '<small>'+
                                     '<a href="#" type="button" class="btn-historico"  value="'+value.vin_encrypt+'" title="Ver Historico"><i class="fas fa fa-lightbulb"></i></a>'+
                                 '</small>'+
                                 ((value.rol_id == 1 || value.rol_id == 2  || value.rol_id == 3)?(
@@ -263,15 +263,7 @@
                 });
             });
 
-            //Modal Solicitar Tarea
-            $('.btn-edo_tarea').click(function (e) {
-                e.preventDefault();
-                var vin_id = $(this).val();
-                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
-                $(".vin-id").val(vin_id);
-                $("#vin_codigo_edo").html("<h4>VIN: " + vin_codigo + "</h4>");
-                $("#cambiarEdoModalLote").modal('show');
-            });
+
 
 
         });
@@ -289,83 +281,6 @@
                     checked = false;
                 }
             });
-            $('.btn-lote-vins').click(function (e){
-                e.preventDefault();
-                var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
-                    return this.value;
-                }).get();
-                var url = "planificacion/obtener_codigos_vins";
-                var request = {
-                    _token: $("input[name='_token']").attr("value"),
-                    vin_ids: vin_ids,
-                };
-                $.post(url, request, function (res) {
-                    //Validar primero si algo salió mal
-                    if(!res.success){
-                        alert(
-                            "Error inesperado al solicitar la información.\n\n" +
-                            "MENSAJE DEL SISTEMA:\n" +
-                            res.message + "\n\n"
-                        );
-                        return;  // Finaliza el intento de obtener
-                    }
-                    var arr_codigos = $.map(res.codigos, function (e1) {
-                        return e1;
-                    });
-                    $("#vin_codigo_lote").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
-                    $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
-                    for (var i = 1; i < arr_codigos.length; i++){
-                        $("#vin_codigo_lote").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
-                        $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
-                    }
-                    $("#asignarTareaModalLote").modal('show');
-                }).fail(function () {
-                    alert('Error: Debe seleccionar al menos un vin de la lista');
-                });
-            });
-
-            $('#btn-guardar-estados-lotes').on('click',function(e){
-                e.preventDefault();
-
-                $("#error0").hide();
-                $("#error1").hide();
-
-                $.post("{{route('vin.storeModalCambiaEstado')}}", $("#EstadosVins").serialize(), function (res) {
-
-                    $dat = res;
-
-                    if($dat.error==0) $("#error0").show();
-                    else {$("#error1").show();  $("#error1").html($dat.mensaje); }
-
-                }).fail(function () {
-                    alert('Error: ');
-                });
-
-            });
-
-            $('#btn-pre-despacho').on('click',function(e){
-                e.preventDefault();
-
-                $("#error_0").hide();
-                $("#error_1").hide();
-
-                $.post("{{route('vin.predespacho')}}", $("#PredespachoVins").serialize(), function (res) {
-
-                    $dat = res;
-                 //  console.log($dat);
-
-                    if($dat.error==0) $("#error0_predespacho").show();
-                    else {$("#error1_predespacho").show();  $("#error1").html($dat.mensaje); }
-
-
-
-                }).fail(function () {
-                    alert('Error: ');
-                });
-                $('#btn-pre-despacho').attr("disabled", true);
-
-            });
-
 
             //Modal Solicitar Tarea
             $('.btn-tarea').click(function (e) {
@@ -377,27 +292,6 @@
                 $("#asignarTareaModal").modal('show');
             });
 
-            // Histórico de Vins por lotes
-            $('.btn-historico-vin-lote').click(function (e){
-                e.preventDefault();
-
-                var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
-                    return this.value;
-                }).get();
-
-                if(vin_ids.length > 0){
-                    $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
-                    for (var i = 1; i < vin_ids.length; i++){
-                        $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
-                    }
-                    $("#btn-descargar-historico").removeAttr("disabled");
-                } else {
-                    alert("Debe seleccionar al menos un vin del listado.");
-                    $("#btn-descargar-historico").attr("disabled", "disabled");
-                }
-
-
-            });
         });
     </script>
 

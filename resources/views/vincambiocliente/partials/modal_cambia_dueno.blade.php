@@ -21,15 +21,16 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="vin_estado_inventario_id" >Cliente Actual </label>
-                            {!! Form::select('vin_codigo', $empresas,null, ['class'=>'form-control col-sm-9', 'readonly']) !!}
+                            <label for="vin_empresa_anterior" >Cliente Actual </label>
+                            {!! Form::select('vin_empresa_anterior', $empresas,null, ['class'=>'form-control col-sm-9', 'readonly']) !!}
+                            {!! Form::text('vin_empresa_anterior', $empresas->empresa_razon_social, ['class'=>'form-control col-sm-9', 'readonly']) !!}
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="vin_estado_inventario_id" >Cliente Nuevo </label>
-                            {!! Form::select('vin_estado_inventario_id', $empresas, null,['class'=>'form-control col-sm-9']) !!}
+                            <label for="vin_empresa_nueva" >Cliente Nuevo </label>
+                            {!! Form::select('vin_empresa_nueva', $empresas, null,['class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
 
