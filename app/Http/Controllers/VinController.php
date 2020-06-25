@@ -17,6 +17,7 @@ use App\Exports\BusquedaVinsExport;
 use App\Exports\VinEntregadosExport;
 Use App\Guia;
 Use App\GuiaVins;
+use App\Marca;
 use App\UbicPatio;
 use Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -177,13 +178,11 @@ class VinController extends Controller
                     $estado_id = 0;
                 }
 
-                $marca = DB::table('marcas')
-                    ->where('marca_id',$request->marca_id)
-                    ->get();
-
-                if(!empty($marca[0]->marca_nombre))
+                $marca = Marca::find($request->marca_id);
+                
+                if($marca)
                 {
-                    $marca_nombre = $marca[0]->marca_nombre;
+                    $marca_nombre = $marca->marca_nombre;
                 }else{
                     $marca_nombre = 'Sin marca';
                 }
@@ -239,8 +238,8 @@ class VinController extends Controller
                             }
 
                             if($marca_nombre != 'Sin marca'){
-                                // $query->where('vin_marca',$marca_nombre);
-                                $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
+                                $query->where('vin_marca',$marca->marca_id);
+                                //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                             }
 
                             if($estado_id > 0){
@@ -311,8 +310,8 @@ class VinController extends Controller
                                 }
 
                                 if($marca_nombre != 'Sin marca'){
-                                    // $query->where('vin_marca',$marca_nombre);
-                                    $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
+                                    $query->where('vin_marca',$marca->marca_id);
+                                    //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                                 }
 
                                 if($estado_id > 0){
@@ -358,8 +357,8 @@ class VinController extends Controller
 
 
                     if($marca_nombre != 'Sin marca'){
-                        // $query->where('vin_marca', $marca_nombre);
-                        $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
+                        $query->where('vin_marca',$marca->marca_id);
+                        //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                     }
 
                     if($estado_id > 0){
@@ -416,6 +415,7 @@ class VinController extends Controller
             $vins->vin_editarestado =  route('vin.editarestado', Crypt::encrypt($vins->vin_id));
             $vins->vin_edit =  route('vin.edit', Crypt::encrypt($vins->vin_id));
             $vins->rol_id = auth()->user()->rol_id;
+            $vins->vin_marca = Vin::find($vins->vin_id)->oneMarca->marca_nombre;
 
 
 
@@ -485,13 +485,11 @@ class VinController extends Controller
                 $estado_id = 0;
             }
 
-            $marca = DB::table('marcas')
-                ->where('marca_id',$request->marca_id)
-                ->get();
+            $marca = Marca::find($request->marca_id);
 
-            if(!empty($marca[0]->marca_nombre))
+            if($marca)
             {
-                $marca_nombre = $marca[0]->marca_nombre;
+                $marca_nombre = $marca->marca_nombre;
             }else{
                 $marca_nombre = 'Sin marca';
             }
@@ -547,8 +545,8 @@ class VinController extends Controller
                         }
 
                         if($marca_nombre != 'Sin marca'){
-                            // $query->where('vin_marca',$marca_nombre);
-                            $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
+                            $query->where('vin_marca',$marca->marca_id);
+                            //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
 
                         if($estado_id > 0){
@@ -619,8 +617,8 @@ class VinController extends Controller
                             }
 
                             if($marca_nombre != 'Sin marca'){
-                                // $query->where('vin_marca',$marca_nombre);
-                                $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
+                                $query->where('vin_marca',$marca->marca_id);
+                                //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                             }
 
                             if($estado_id > 0){
@@ -665,8 +663,8 @@ class VinController extends Controller
                 }
 
                 if($marca_nombre != 'Sin marca'){
-                    // $query->where('vin_marca', $marca_nombre);
-                    $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
+                    $query->where('vin_marca',$marca->marca_id);
+                    //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                 }
 
                 if($estado_id > 0){
@@ -760,13 +758,11 @@ class VinController extends Controller
                 $estado_id = 0;
             }
 
-            $marca = DB::table('marcas')
-                ->where('marca_id',$request->marca_id)
-                ->get();
+            $marca = Marca::find($request->marca_id);
 
-            if(!empty($marca[0]->marca_nombre))
+            if($marca)
             {
-                $marca_nombre = $marca[0]->marca_nombre;
+                $marca_nombre = $marca->marca_nombre;
             }else{
                 $marca_nombre = 'Sin marca';
             }
@@ -811,8 +807,8 @@ class VinController extends Controller
                             ->where('empresas.empresa_id', $user_empresa_id);
 
                         if($marca_nombre != 'Sin marca'){
-
-                            $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
+                            $query->where('vin_marca',$marca->marca_id);
+                            //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
 
                         if($estado_id > 0){
@@ -876,8 +872,8 @@ class VinController extends Controller
                             ->where('vins.user_id',$user_empresa_id);
 
                         if($marca_nombre != 'Sin marca'){
-                            // $query->where('vin_marca', $marca_nombre);
-                            $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
+                            $query->where('vin_marca',$marca->marca_id);
+                            //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
 
                         if($estado_id > 0){
@@ -916,8 +912,8 @@ class VinController extends Controller
                     ->where('empresas.empresa_id', $user_empresa_id);
 
                 if($marca_nombre != 'Sin marca'){
-                    // $query->where('vin_marca', $marca_nombre);
-                    $query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
+                    $query->where('vin_marca',$marca->marca_id);
+                    //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                 }
 
                 if($estado_id > 0){

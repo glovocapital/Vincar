@@ -98,7 +98,8 @@
                                         <td><input type="checkbox" class="check-tarea" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
                                         <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
                                         <td><small>{{ $vin->vin_patente }}</small></td>
-                                        <td><small>{{ $vin->vin_marca }}</small></td>
+                                        @php($vin_model = Vin::find($vin->vin_id))
+                                        <td><small>{{ $vin_model->oneMarca->marca_nombre }}</small></td>
                                         <td><small>{{ $vin->vin_modelo }}</small></td>
                                         <td><small>{{ $vin->vin_color }}</small></td>
                                     <!-- <td><small>{{ $vin->vin_motor }}</small></td> -->
