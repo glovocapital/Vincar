@@ -179,7 +179,7 @@ class VinController extends Controller
                 }
 
                 $marca = Marca::find($request->marca_id);
-                
+
                 if($marca)
                 {
                     $marca_nombre = $marca->marca_nombre;
@@ -2175,8 +2175,6 @@ class VinController extends Controller
 
     public function cambiodueno()
     {
-
-
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
             ->where('deleted_at', null)
@@ -2189,79 +2187,14 @@ class VinController extends Controller
 
     public function traspasovin(Request $request)
     {
-        //$fecha = Carbon::now();
-        $fecha = date('Y-m-d');
-
-        $user = User::find(Auth::id());
-
-        try {
-
-            DB::beginTransaction();
-
-            $guardados=0;
-            foreach($request->vin_ids as $vin_id){
-                $vin = Vin::findOrfail($vin_id);
-
-                $estado_estado_inventario = $vin->vin_estado_inventario_id;
 
 
-                // Colocar el check para predespacho del VIN
-                if($request->predespacho == 1 ){
-                    $vin->vin_predespacho = true;
-                    $vin->vin_fecha_agendado  = $request->vin_fecha_despacho;
-                    $vin->save();
-                    $guardados++;
-
-                    // Guardar historial del cambio
-                    DB::insert('INSERT INTO historico_vins
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                        [
-                            $vin->vin_id,
-                            $estado_estado_inventario,
-                            $fecha,
-                            $user->user_id,
-                            null,
-                            null,
-                            $user->belongsToEmpresa->empresa_id,
-                            "VIN autorizado para despacho.",
-                            "VIN autorizado para despacho.",
-                            "VIN autorizado para despacho."
-                        ]
-                    );
-                }
-
-            }
-            DB::commit();
 
 
-            if($request->ajax())
-                if($guardados>0)
-                    return response()->json(
-                        Array("error"=>0,"mensaje"=>"Guardado con Èxito")
-                    );
-               else
-                   return response()->json(
-                       Array("error"=>1,"mensaje"=>"Guardado Incompleto")
-                   );
-            else{
-                flash('Estados cambiados con éxito.')->success();
-                return redirect()->route('vin.index');
-            }
-        }
-        catch (\Throwable $th) {
-            DB::rollBack();
-            if($request->ajax())
-                return response()->json(
-                    Array("error"=>1,"mensaje"=>"Error al cambiar estado")
-                );
-            else{
-                flash('Error al cambiar estados.')->error();
-                return redirect()->route('vin.index');
-            }
-        }
     }
+
+
+
 
 }
 
