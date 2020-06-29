@@ -2209,8 +2209,8 @@ class VinController extends Controller
                 // Colocar el check para predespacho del VIN
 
                 if($nuevo_cliente){
-                    //var_dump($nuevo_cliente); exit;
-                    $vin->user_id  = $nuevo_cliente;
+                   // var_dump($nuevo_cliente); exit;
+                    $vin->user_id  = $nuevo_cliente->user_id;
                     $vin->save();
                     $guardados++;
 
@@ -2241,14 +2241,14 @@ class VinController extends Controller
             if($request->ajax())
                 if($guardados>0)
                     return response()->json(
-                        Array("error"=>0,"mensaje"=>"Guardado con Èxito")
+                        Array("error"=>0,"mensaje"=>"Cambio de cliente realizado con Èxito")
                     );
                else
                    return response()->json(
                        Array("error"=>1,"mensaje"=>"Guardado Incompleto")
                    );
             else{
-                flash('Estados cambiados con éxito.')->success();
+                flash('Cambio de cliente realizado con éxito.')->success();
                 return redirect()->route('vincambiodecliente.index');
             }
         }
@@ -2257,10 +2257,10 @@ class VinController extends Controller
 
             if($request->ajax())
                 return response()->json(
-                    Array("error"=>1,"mensaje"=>"Error al cambiar estado")
+                    Array("error"=>1,"mensaje"=>"Error al cambiar el cliente")
                 );
             else{
-                flash('Error al cambiar estados.')->error();
+                flash('Error al cambiar el cliente.')->error();
                 return redirect()->route('vincambiodecliente.index');
             }
         }

@@ -36,7 +36,7 @@
                     </div>
                     <div class="text-right pb-5">
 
-                            <button type="button" style="display:none" class="btn-rol btn btn-success btn-lote-vins">Asignar Tareas por lotes</i></button>
+                            <button type="button" style="display:none" class="btn-rol btn btn-success btn-lote-vins">Cambio de propietario VIN</i></button>
 
 
                             <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
@@ -196,6 +196,7 @@
                     $("#error1").show();
                     return 0;
                 }
+                $('#btn-guardar-campania-lotes').attr("disabled", true);
 
                 $.post("{{route('vin.cambio')}}", datos, function (res) {
 
