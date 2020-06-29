@@ -74,8 +74,6 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 "Patio: BLoque y Ubicación por asignar."
                             ]
                         );
-
-                        DB::commit();
                     } else{
                         flash('Error: Marca no encontrada para el VIN: ' . $row['vin'] . '. Fila: ' . $fila . ' del documento. VIN no agregado, verifique que esté bien escrita la marca.')->error();
                     }
@@ -84,6 +82,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
 
                     if ($vin->vin_estado_inventario_id == 7 || $vin->vin_estado_inventario_id == 8){
                         $comentario = "";
+                        
                         $vin->vin_estado_inventario_id = 1;
 
                         if ($vin->user_id != $user->user_id){
@@ -92,7 +91,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                         }
 
                         $vin->vin_fec_ingreso = $fecha;
-
+                        
                         $vin->save();
 
                         DB::insert('INSERT INTO historico_vins
@@ -111,13 +110,13 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                     "Origen: Reingreso de VIN al sistema",
                                     "Patio: BLoque y Ubicación por asignar."
                                 ]
-                            );
+                            );  
                     } else {
                         flash('Error: El VIN: ' . $vin->vin_codigo . 'no puede ser reingresado porque ya existe en el sistema con estado: ' . $vin->oneVinEstadoInventario())->error();
                     }
                 } 
+                DB::commit();
             } catch (\Throwable $th) {
-                //dd($th);
                 DB::rollBack();
                 flash('Error inesperado al insertar datos masivos.')->error();
                 return back();
