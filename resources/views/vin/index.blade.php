@@ -1024,7 +1024,7 @@
                 }).fail(function () {
                     alert('Error: ');
                 });
-                $('#btn-pre-despacho').attr("disabled", true);
+                $('#btn-guardar-campania-lotes').attr("disabled", true);
 
             });
 

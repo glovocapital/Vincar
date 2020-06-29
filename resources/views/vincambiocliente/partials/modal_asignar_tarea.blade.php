@@ -8,7 +8,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                {!! Form::open(['route'=> 'campania.storeModalTarea', 'method'=>'POST']) !!}
+                {!! Form::open(['route'=> 'vin.cambio', 'method'=>'POST']) !!}
                 @csrf
                 <div class="row row-fluid">
                     <div class="col-md-12">
@@ -23,19 +23,8 @@
                             {!! Form::select('tarea_prioridad', [0 => 'Baja', '1' => 'Media', '2' => 'Alta', '3' => 'Urgente'], null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-prioridad']) !!}
                         </div>
 
-                        <div class="form-group">
-                            <label for="tipo_campanias" >Campañas Seleccionadas <strong>*</strong></label>
-                            <select name="tipo_campanias" id="tipo_campanias" multiple disabled class="form-control col-sm-12 select-tipo-campanias">
-                            @if(count($arrayTCampanias ?? '') > 0)
-                                @foreach($arrayTCampanias ?? '' as $tCamp)
-                                    @foreach($tCamp as $camp)
-                                    <option value="" selected>{{ $camp->tipo_campania_descripcion }}</option>
-                                    @endforeach
-                                @endforeach
-                            @endif
-                            </select>
-                        </div>
-                        
+
+
                         <label for="tarea_fecha_finalizacion">Fecha de finalización de tareas solicitadas</label>
                         <div class="input-group">
                             <input type="date" id="tarea_fecha_finalizacion" class="form-control"  name="tarea_fecha_finalizacion" required/><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
@@ -43,21 +32,10 @@
                         <div id="mensaje1" class="error" style="color: red; font-weight: bold"> Fecha requerida.</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="tarea_responsable_id" >Usuario Responsable <strong>*</strong></label>
-                            {!! Form::select('tarea_responsable_id', $responsables_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-responsable']) !!}
-                        </div>
 
-                        <div class="form-group">
-                            <label for="tipo_tarea_id" >Tarea <strong>*</strong></label>
-                            {!! Form::select('tipo_tarea_id', $tipo_tareas_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-tarea']) !!}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="tipo_destino_id" >Destino <strong>*</strong></label>
-                            {!! Form::select('tipo_destino_id', $tipo_destinos_array, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-tipo-destino']) !!}
-                        </div>
-                        
+
+
+
                         <div class="form-group">
                             <label for="tarea_hora_termino" >Hora de Término <strong>*</strong></label>
                             {{ Form::time('tarea_hora_termino', null, ['class'=>'form-control col-sm-12 select-tipo-destino']) }}

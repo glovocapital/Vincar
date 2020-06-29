@@ -563,8 +563,6 @@
                     return 0;
                 }
 
-
-
                 $.post("{{route('campania.storeModalTareaLotes')}}", datos, function (res) {
 
                     $dat = res;
