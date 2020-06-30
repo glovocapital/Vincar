@@ -36,7 +36,7 @@
                     </div>
                     <div class="text-right pb-5">
 
-                            <button type="button" style="display:none" class="btn-rol btn btn-success btn-lote-vins">Cambio de propietario VIN</i></button>
+                            <button type="button" style="display:none" class="btn-rol btn btn-success btn-lote-vins">Cambio de propietario VIN</button>
 
 
                             <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
@@ -75,7 +75,7 @@
                                 <th>Patio</th>
                                 <th>Bloque</th>
                                 <th>Ubicación</th>
-                                <th>Acciones de VIN</th>
+
 
                             </tr>
                             </thead>
@@ -153,22 +153,7 @@
 
                             (typeof value.patio_nombre !== 'undefined')?value.patio_nombre:"",
                             (typeof value.bloque_nombre !== 'undefined')?value.bloque_nombre:"",
-                            (typeof value.ubic_patio_id !== 'undefined')?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):"",
-
-                                '<small>'+
-                                '<a target="_blank" href="'+value.vin_edit+'" type="button" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>'+
-                                '</small>'+
-                                '<small>'+
-                                '<a target="_blank" href="'+value.vin_editarestado+'" type="button" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>'+
-                                '</small>'+
-
-
-                                '<small>'+
-                                '<a href="#" type="button" class="btn-tarea" vin_codigo="'+value.vin_codigo+'"  value="'+value.vin_encrypt+'" title="Solicitar Tarea"><i class="fas fa fa-lightbulb"></i></a>'+
-                                '</small>'
-
-
-
+                            (typeof value.ubic_patio_id !== 'undefined')?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):""
 
                         ] ).draw( false );
 
