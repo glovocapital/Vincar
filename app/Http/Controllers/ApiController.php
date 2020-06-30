@@ -1015,7 +1015,7 @@ class ApiController extends Controller
                     ->first();
 
                 if($Trans){
-                    $transportista= Users::findOrFail($Trans->user_id);
+                    $transportista= User::findOrFail($Trans->user_id);
                 }else{
                     $transportista = new User();
                     $transportista->user_nombre = $nombres;
