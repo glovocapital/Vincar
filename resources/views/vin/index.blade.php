@@ -446,6 +446,7 @@
                                             <td><small>{{ $vin->vin_color }}</small></td>
                                             <td><small>{{ $vin->vin_segmento }}</small></td>
                                             <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
+                                            <td><small>{{ $vin->vin_fecha_entrega }}</small></td>
                                             <td><small>{{ $vin->empresa_razon_social }}</small></td>
                                             <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
                                             <td>
