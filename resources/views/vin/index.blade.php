@@ -416,6 +416,7 @@
                                     <th>Color</th>
                                     <th>Segmento</th>
                                     <th>Fecha de Ingreso</th>
+                                    <th>Fecha de Entrega</th>
                                     <th>Cliente</th>
                                     <th>Estado</th>
                                     <th>Guia</th>
@@ -769,6 +770,7 @@
                             value.vin_color,
                             value.vin_segmento,
                             value.vin_fec_ingreso,
+                            value.vin_fecha_entrega,
                             value.empresa_razon_social,
                             value.vin_estado_inventario_desc,
                             '<font color="'+((value.vin_downloadGuiaN == "Sin Guia")?"Blue":"Green")+'">'+value.vin_downloadGuiaN+'</font>',
