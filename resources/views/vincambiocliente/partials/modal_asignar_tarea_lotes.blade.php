@@ -19,10 +19,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="tarea_prioridad" >Dueño Anterior <strong>*</strong></label>
-                            {!! Form::select('cliente_anterior', $empresas, null, ['placeholder' => 'Seleccione...', 'class'=>'form-control col-sm-12 select-prioridad', 'required' => 'required', 'readonly']) !!}
-                        </div>
+
                     </div>
 
                     <div class="col-md-6">

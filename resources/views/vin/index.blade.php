@@ -416,6 +416,7 @@
                                     <th>Color</th>
                                     <th>Segmento</th>
                                     <th>Fecha de Ingreso</th>
+                                    <th>Fecha de Entrega</th>
                                     <th>Cliente</th>
                                     <th>Estado</th>
                                     <th>Guia</th>
@@ -445,6 +446,7 @@
                                             <td><small>{{ $vin->vin_color }}</small></td>
                                             <td><small>{{ $vin->vin_segmento }}</small></td>
                                             <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
+                                            <td><small>{{ $vin->vin_fecha_entrega }}</small></td>
                                             <td><small>{{ $vin->empresa_razon_social }}</small></td>
                                             <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
                                             <td>
@@ -769,6 +771,7 @@
                             value.vin_color,
                             value.vin_segmento,
                             value.vin_fec_ingreso,
+                            value.vin_fecha_entrega,
                             value.empresa_razon_social,
                             value.vin_estado_inventario_desc,
                             '<font color="'+((value.vin_downloadGuiaN == "Sin Guia")?"Blue":"Green")+'">'+value.vin_downloadGuiaN+'</font>',

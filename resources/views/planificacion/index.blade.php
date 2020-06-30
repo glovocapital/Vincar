@@ -48,7 +48,7 @@
                     </div>
                     <div class="text-right pb-5">
 
-                            <button type="button" style="display:none" class="btn-rol btn btn-success btn-lote-vins">Asignar Tareas por lotes</i></button>
+                            <button type="button" style="display:none" class="btn-rol btn btn-success btn-lote-vins">Asignar Tareas por lotes</button>
 
 
                             <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
@@ -82,6 +82,7 @@
                                 <!-- <th>Motor</th> -->
                                 <th>Segmento</th>
                                 <th>Fecha de Ingreso</th>
+                                <th>Fecha de Entrega</th>
                                 <th>Cliente</th>
                                 <th>Estado</th>
                                 <th>Patio</th>
@@ -105,6 +106,7 @@
                                     <!-- <td><small>{{ $vin->vin_motor }}</small></td> -->
                                         <td><small>{{ $vin->vin_segmento }}</small></td>
                                         <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
+                                        <td><small>{{ $vin->vin_fecha_entrega }}</small></td>
                                         <td><small>{{ $vin->empresa_razon_social }}</small></td>
                                         <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
                                         @if(isset($vin->patio_nombre))
@@ -160,7 +162,7 @@
         <div class="ibox float-e-margins">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Campañas Solicitadas</strong></h3>
+                    <h3 class="card-title">Campañas Solicitadas</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -233,7 +235,7 @@
                     <div class="ibox float-e-margins">
                         <div class="card card-default">
                             <div class="card-header">
-                                <h3 class="card-title">Tareas Asignadas</strong></h3>
+                                <h3 class="card-title">Tareas Asignadas</h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -303,7 +305,7 @@
                     <div class="ibox float-e-margins">
                         <div class="card card-default">
                             <div class="card-header">
-                                <h3 class="card-title">Tareas Finalizadas</strong></h3>
+                                <h3 class="card-title">Tareas Finalizadas</h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -371,7 +373,7 @@
                     <div class="ibox float-e-margins">
                         <div class="card card-default">
                             <div class="card-header">
-                                <h3 class="card-title">Histórico Tareas</strong></h3>
+                                <h3 class="card-title">Histórico Tareas</h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -514,6 +516,7 @@
                             value.vin_color,
                             value.vin_segmento,
                             value.vin_fec_ingreso,
+                            value.vin_fecha_entrega,
                             value.empresa_razon_social,
                             value.vin_estado_inventario_desc,
 

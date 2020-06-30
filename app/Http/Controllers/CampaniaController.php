@@ -135,7 +135,7 @@ class CampaniaController extends Controller
                 ->join('bloques', 'bloques.bloque_id', '=', 'ubic_patios.bloque_id')
                 ->join('patios', 'patios.patio_id', '=', 'bloques.patio_id')
                 ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_motor',
-                    'empresas.empresa_razon_social', 'vin_fec_ingreso', 'patio_nombre', 'bloque_nombre', 'ubic_patio_fila',
+                    'empresas.empresa_razon_social', 'vin_fec_ingreso',  'vin_fecha_entrega','patio_nombre', 'bloque_nombre', 'ubic_patio_fila',
                     'ubic_patio_columna')
                 ->orderByRaw('ubic_patio_fila, ubic_patio_columna ASC')
                 ->where('users.empresa_id', $user_empresa_id )
@@ -674,7 +674,7 @@ class CampaniaController extends Controller
                 ->join('bloques', 'bloques.bloque_id', '=', 'ubic_patios.bloque_id')
                 ->join('patios', 'patios.patio_id', '=', 'bloques.patio_id')
                 ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_motor',
-                    'empresas.empresa_razon_social', 'vin_fec_ingreso', 'patio_nombre', 'bloque_nombre', 'ubic_patio_fila',
+                    'empresas.empresa_razon_social', 'vin_fec_ingreso',  'vin_fecha_entrega','patio_nombre', 'bloque_nombre', 'ubic_patio_fila',
                     'ubic_patio_columna')
                 ->orderByRaw('ubic_patio_fila, ubic_patio_columna ASC')
                 ->where('users.empresa_id', $user_empresa_id )
@@ -1139,7 +1139,7 @@ class CampaniaController extends Controller
 
     public function index5_json(Request $request)
     {
-        
+
 
         /** Búsqueda de vins para la cabecera de la vista de planificación */
         $vins = Vin::all();
@@ -1160,7 +1160,7 @@ class CampaniaController extends Controller
             }
 
             $marca = Marca::find($request->marca_id);
-            
+
             if($marca)
             {
                 $marca_nombre = $marca->marca_nombre;
@@ -1341,6 +1341,7 @@ class CampaniaController extends Controller
             $vins->vin_edit =  route('vin.edit', Crypt::encrypt($vins->vin_id));
             $vins->rol_id = auth()->user()->rol_id;
             $vins->vin_marca = Vin::find($vins->vin_id)->oneMarca->marca_nombre;
+            $vins->vin_fecha_entrega = "";
 
         }
 
