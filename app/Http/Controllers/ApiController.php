@@ -1043,17 +1043,22 @@ class ApiController extends Controller
 
             if(!empty($file_rut)) {
 
+                // $filename  = time() . '.' . $image->getClientOriginalExtension();
+                // $path = public_path('img/products/' . $filename);
+                // Image::make($image->getRealPath())->resize(468, 249)->save($path);
+
                 $fotoArchivo = $request->file('file_rut');
                 $extensionFoto = $fotoArchivo->extension();
+                // $filename = "foto_de_rut" . '-' . $user_id . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto;
                 $path = $fotoArchivo->storeAs(
                     'entrega_fotos',
                     "foto_de_rut" . '-' . $user_id . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto
                 );
 
                 //Creamos una instancia de la libreria instalada
-                $image = \Image::make($fotoArchivo);
+                $image = \Image::make($fotoArchivo->getRealPath());
                 // Guardar
-                $image->save($path).$fotoArchivo->getClientOriginalName();
+                $image->save($path);
 
                 $entregar->foto_rut=$path;
 
