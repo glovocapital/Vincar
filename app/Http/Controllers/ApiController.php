@@ -1041,12 +1041,12 @@ class ApiController extends Controller
             $entregar->foto_patente=$patente;
             $entregar->observaciones=$obs;
 
-           /* if(!empty($file_rut)) {
+            if(!empty($file_rut)) {
 
                 $fotoArchivo = $request->file('file_rut');
                 $extensionFoto = $fotoArchivo->extension();
                 $path = $fotoArchivo->storeAs(
-                    'fotos_entrega',
+                    'entrega_fotos',
                     "foto_de_rut" . '-' . $user_id . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto
                 );
 
@@ -1057,7 +1057,7 @@ class ApiController extends Controller
 
                 $entregar->foto_rut=$path;
 
-            }*/
+            }
 
 
                 if($entregar->save()){
