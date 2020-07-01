@@ -1023,7 +1023,7 @@ class ApiController extends Controller
                     $transportista->user_rut = $rut;
                     $transportista->user_cargo = "";
                     $transportista->user_estado = 1;
-                    $transportista->email = "";
+                    $transportista->email = $request->correo;
                     $transportista->password = "";
                     $transportista->rol_id = 7;
                     $transportista->user_telefono = "";
