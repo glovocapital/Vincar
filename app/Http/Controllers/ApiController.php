@@ -1058,7 +1058,7 @@ class ApiController extends Controller
                 $image->save($path . $filename);
                 // $image->save($path);
 
-                $entregar->foto_rut=$path;
+                $entregar->foto_rut = $path . $filename;
 
             }
 
