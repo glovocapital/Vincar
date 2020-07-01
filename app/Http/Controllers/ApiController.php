@@ -1053,7 +1053,7 @@ class ApiController extends Controller
                 //Creamos una instancia de la libreria instalada
                 $image = \Image::make($fotoArchivo);
                 // Guardar
-                $image->save($path);
+                $image->save($path).$fotoArchivo->getClientOriginalName();
 
                 $entregar->foto_rut=$path;
 
