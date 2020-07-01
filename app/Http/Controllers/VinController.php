@@ -423,7 +423,7 @@ class VinController extends Controller
         }
 
         return response()->json(
-            $tabla_vins,
+            $tabla_vins
         );
 
     }
