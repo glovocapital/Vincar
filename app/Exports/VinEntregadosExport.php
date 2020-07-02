@@ -29,24 +29,13 @@ class VinEntregadosExport implements FromArray, WithHeadings
     public function headings(): array
     {
         return [
-            'VIN',
             'VIN Codigo',
             'Patente',
-            'Modelo',
-            'Marca',
             'Color',
-            'Motor',
-            'Segmento',
             'Fecha de ingreso a patio',
-            'user_id',
-            'created_at',
-            'updated_at',
-            'vin_estado_inventario_id',
-            'vin_sub_estado_inventario_id',
-            'vin_predespacho',
+            'Fecha de agendamiento para entrega',
             'Fecha de entrega',
-            'Fecha de agendamiento para entrega'
-
+            'Empresa'
         ];
     }
 }

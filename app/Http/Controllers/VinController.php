@@ -1157,7 +1157,6 @@ class VinController extends Controller
         $vin_id =  Crypt::decrypt($id);
         $vin = Vin::findOrfail($vin_id);
 
-        $user = User::find($vin->user_id)->first();
 
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
@@ -1166,11 +1165,9 @@ class VinController extends Controller
             ->pluck('user_nombres', 'user_id')
             ->all();
 
-        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
-            ->orderBy('empresa_id')
-            ->where('deleted_at', null)
-            ->pluck('empresa_razon_social', 'empresa_id')
-            ->all();
+        $marcas = DB::table('marcas')
+            ->select('marca_id','marca_nombre')
+            ->pluck('marca_nombre','marca_id');
 
         $estadosInventario = DB::table('vin_estado_inventarios')
             ->select('vin_estado_inventario_id', 'vin_estado_inventario_desc')
@@ -1180,7 +1177,7 @@ class VinController extends Controller
             ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
-        return view('vin.edit', compact('vin', 'user', 'users','empresas', 'estadosInventario', 'subEstadosInventario'));
+        return view('vin.edit', compact('vin', 'users', 'marcas', 'estadosInventario', 'subEstadosInventario'));
     }
 
     /**
@@ -1200,6 +1197,7 @@ class VinController extends Controller
             DB::beginTransaction();
 
             $vin = Vin::findOrfail($vin_id);
+          //  dd($vin);
 
             $estado_previo = $vin->vin_estado_inventario_id;
             $estado_nuevo = Crypt::decrypt($request->vin_estado_inventario_id);
@@ -2165,9 +2163,21 @@ class VinController extends Controller
         foreach($vin_request as $vin_id){
 
             $vin = Vin::find($vin_id->vin_id);
-            array_push($array_vins, $vin);
-        }
 
+            $vin = DB::table('vins')
+            ->join('users','vins.user_id','=','users.user_id')
+            ->join('empresas','empresas.empresa_id','=','users.empresa_id')
+            ->join('entregas','entregas.vin_id','=','vins.vin_id')
+            ->select('vins.vin_codigo','vins.vin_patente','vins.vin_color','vin_fec_ingreso', 'vins.vin_fecha_agendado', 'entregas.entrega_fecha','empresas.empresa_razon_social')
+            ->whereNotNull('entregas.entrega_fecha')
+            ->first();
+
+            if($vin){
+                array_push($array_vins, $vin);
+            }
+
+
+        }
 
 
         return Excel::download(new VinEntregadosExport($array_vins), 'historico_entregados.xlsx');

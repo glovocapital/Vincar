@@ -29,7 +29,8 @@
 
                             <div class="form-group">
                                     <label for="vin_marca" >Marca <strong>*</strong></label>
-                                    {!! Form::text('vin_marca', $vin->vin_marca, ['class'=>'form-control col-sm-9', 'required']) !!}
+                                    {!! Form::select('vin_marca', $marcas, $vin->vin_marca,['id' => 'marca', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+
                             </div>
 
                             <div class="form-group">
@@ -56,35 +57,28 @@
 
                             <div class="form-group">
                                     <label for="vin_fec_ingreso" >Fecha ingreso <strong>*</strong></label>
-                                    {!! Form::text('vin_fec_ingreso', $vin->vin_fec_ingreso, ['class'=>'form-control col-sm-9', 'required']) !!}
+                                    {!! Form::date('vin_fec_ingreso', $vin->vin_fec_ingreso, ['class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="empresa_id" >Empresa <strong>*</strong></label>
-                                {{-- {!! Form::select('empresa_id', $empresas, $user->belongsToEmpresa->empresa_id, ['class'=>'form-control col-sm-12', 'required'=>'required']) !!}  --}}
-                                <select name="empresa_id" id="empresa" class="form-control select-empresa">
-                                    <option value="">Seleccionar Empresa</option>
-                                @foreach($empresas as $k => $v)
-                                    @if($k == $user->belongsToEmpresa->empresa_id)
-                                        <option value="{!! Crypt::encrypt($user->belongsToEmpresa->empresa_id) !!}" selected>{{$user->belongsToEmpresa->empresa_razon_social}}</option>
-                                    @else
-                                        <option value="{!! Crypt::encrypt($k) !!}">{{$v}}</option>
-                                    @endif
-                                @endforeach
-                                </select>
+                                {!! Form::text('empresa_id',  $vin->oneUser->belongsToEmpresa->empresa_razon_social, ['class'=>'form-control col-sm-12', 'readonly']) !!}
+
                             </div>
 
                             <div class="form-group">
-                                <label for="user_id" >Seleccionar Cliente <strong>*</strong></label>
-                                {!! Form::select('user_id', $users, $vin->user_id,['id' => 'user_id', 'class'=>'form-control', 'required'=>'required']) !!}
+                                <label for="user_id" >Usuario Responsable <strong>*</strong></label>
+                                {!! Form::text('user_id', $vin->oneUser->user_nombre .' ' .$vin->oneUser->user_apellido ,['id' => 'user_id', 'class'=>'form-control', 'readonly']) !!}
                             </div>
+
+
 
                             <div class="form-group">
                                     <label for="vin_estado_inventario_id" >Estado de Inventario <strong>*</strong></label>
-                                    {{-- {!! Form::select('vin_estado_inventario_id', $estadosInventario, $vin->vin_estado_inventario_id,['class'=>'form-control col-sm-9', 'required'=>'required']) !!} --}}
-                                    <select name="vin_estado_inventario_id" id="estado-inventario" class="form-control select-estado-inventario">
+                                    {!! Form::select('vin_estado_inventario_id', $estadosInventario, $vin->vin_estado_inventario_id,['class'=>'form-control col-sm-9', 'readonly']) !!}
+                                   <!-- <select name="vin_estado_inventario_id" id="estado-inventario" class="form-control select-estado-inventario">
                                         <option value="">Seleccione Estado de Inventario</option>
                                     @foreach($estadosInventario as $k => $v)
                                         @if($k == $vin->vin_estado_inventario_id)
@@ -93,12 +87,12 @@
                                             <option value="{!! Crypt::encrypt($k) !!}">{{$v}}</option>
                                         @endif
                                     @endforeach
-                                </select>
+                                </select> -->
                             </div>
 
                             <div class="form-group">
-                                <label for="vin_sub_estado_inventario_id" >Sub-Estado de Inventario <strong>*</strong></label>
-                                {!! Form::select('vin_sub_estado_inventario_id', $subEstadosInventario, $vin->vin_sub_estado_inventario_id,['id' => 'vin_sub_estado_inventario_id', 'class'=>'form-control']) !!}
+                               <!-- <label  for="vin_sub_estado_inventario_id" >Sub-Estado de Inventario <strong>*</strong></label> -->
+                                {!! Form::hidden('vin_sub_estado_inventario_id', $subEstadosInventario, $vin->vin_sub_estado_inventario_id,['id' => 'vin_sub_estado_inventario_id', 'class'=>'form-control' ]) !!}
                             </div>
                         </div>
 
