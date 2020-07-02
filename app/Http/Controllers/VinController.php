@@ -1197,14 +1197,13 @@ class VinController extends Controller
             DB::beginTransaction();
 
             $vin = Vin::findOrfail($vin_id);
-          //  dd($vin);
 
-            $estado_previo = $vin->vin_estado_inventario_id;
-            $estado_nuevo = Crypt::decrypt($request->vin_estado_inventario_id);
-
+            $estado_previo = $vin->vin_estado_inventario_id;            
+            $estado_nuevo = (int)$request->vin_estado_inventario_id;
+            
             $vin->vin_codigo = $request->vin_codigo;
             $vin->vin_patente = $request->vin_patente;
-            $vin->vin_marca = $request->vin_marca;
+            $vin->vin_marca = (int)$request->vin_marca;
             $vin->vin_modelo = $request->vin_modelo;
             $vin->vin_color = $request->vin_color;
             $vin->vin_motor = $request->vin_motor;
@@ -1212,7 +1211,7 @@ class VinController extends Controller
             $vin->vin_fec_ingreso = $request->vin_fec_ingreso;
             $vin->user_id = (int)$request->user_id;
             $vin->vin_sub_estado_inventario_id = $request->vin_sub_estado_inventario_id;
-
+    
             if($estado_previo != $estado_nuevo){
                 // Pasar el VIN de estado "Anunciado" a estado "Arribado"
                 if($estado_previo == 1 && $estado_nuevo == 2){
