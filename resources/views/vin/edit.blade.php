@@ -70,7 +70,8 @@
 
                             <div class="form-group">
                                 <label for="user_id" >Usuario Responsable <strong>*</strong></label>
-                                {!! Form::text('user_id', $vin->oneUser->user_nombre .' ' .$vin->oneUser->user_apellido ,['id' => 'user_id', 'class'=>'form-control', 'readonly']) !!}
+                                {!! Form::text('user_nombre', $vin->oneUser->user_nombre .' ' .$vin->oneUser->user_apellido ,['id' => 'user_id', 'class'=>'form-control', 'readonly']) !!}
+                                {!! Form::hidden('user_id', $vin->user_id) !!}
                             </div>
 
 
@@ -92,7 +93,7 @@
 
                             <div class="form-group">
                                <!-- <label  for="vin_sub_estado_inventario_id" >Sub-Estado de Inventario <strong>*</strong></label> -->
-                                {!! Form::hidden('vin_sub_estado_inventario_id', $subEstadosInventario, $vin->vin_sub_estado_inventario_id,['id' => 'vin_sub_estado_inventario_id', 'class'=>'form-control' ]) !!}
+                                {!! Form::hidden('vin_sub_estado_inventario_id', $vin->vin_sub_estado_inventario_id,['id' => 'vin_sub_estado_inventario_id', 'class'=>'form-control' ]) !!}
                             </div>
                         </div>
 
