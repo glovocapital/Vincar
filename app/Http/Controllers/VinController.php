@@ -392,8 +392,6 @@ class VinController extends Controller
             }
         }
 
-
-
         foreach($tabla_vins as $vins){
 
             $guia = DB::table('guia_vins')
@@ -417,14 +415,16 @@ class VinController extends Controller
             $vins->vin_edit =  route('vin.edit', Crypt::encrypt($vins->vin_id));
             $vins->rol_id = auth()->user()->rol_id;
             $vins->vin_marca = Vin::find($vins->vin_id)->oneMarca->marca_nombre;
+
+            $vinConsultado = Vin::find($vins->vin_id);
             
-            if ($vins->vin_estado_inventario_id == 8){
+            if ($vinConsultado->vin_estado_inventario_id == 8){
                 $vinFechaEntrega = Entrega::where('vin_id', $vins->vin_id)
                                     ->select('entrega_fecha')
                                     ->orderBy('entrega_fecha', 'desc')
                                     ->limit(1)
                                     ->value('entrega_fecha');
-                                    
+
                 $vins->vin_fecha_entrega = $vinFechaEntrega;
             } else {
                 $vins->vin_fecha_entrega = "";
