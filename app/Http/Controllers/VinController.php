@@ -13,6 +13,7 @@ use App\Patio;
 use App\TipoCampania;
 use App\Vin;
 use App\Campania;
+use App\Entrega;
 use App\Exports\BusquedaVinsExport;
 use App\Exports\VinEntregadosExport;
 Use App\Guia;
@@ -416,10 +417,18 @@ class VinController extends Controller
             $vins->vin_edit =  route('vin.edit', Crypt::encrypt($vins->vin_id));
             $vins->rol_id = auth()->user()->rol_id;
             $vins->vin_marca = Vin::find($vins->vin_id)->oneMarca->marca_nombre;
-            $vins->vin_fecha_entrega = "";
-
-
-
+            
+            if ($vins->vin_estado_inventario_id == 8){
+                $vinFechaEntrega = Entrega::where('vin_id', $vins->vin_id)
+                                    ->select('entrega_fecha')
+                                    ->orderBy('entrega_fecha', 'desc')
+                                    ->limit(1)
+                                    ->value('entrega_fecha');
+                                    
+                $vins->vin_fecha_entrega = $vinFechaEntrega;
+            } else {
+                $vins->vin_fecha_entrega = "";
+            }
         }
 
         return response()->json(
