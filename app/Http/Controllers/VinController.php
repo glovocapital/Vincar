@@ -72,6 +72,7 @@ class VinController extends Controller
         $vin_entregados = Vin::where('vin_estado_inventario_id', 8)
             ->join('users','vins.user_id','=','users.user_id')
             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+            ->join('entregas','entregas.vin_id','=','vins.vin_id')
             ->orderBy('vin_fecha_entrega')
             ->get();
 
@@ -417,7 +418,7 @@ class VinController extends Controller
             $vins->vin_marca = Vin::find($vins->vin_id)->oneMarca->marca_nombre;
 
             $vinConsultado = Vin::find($vins->vin_id);
-            
+
             if ($vinConsultado->vin_estado_inventario_id == 8){
                 $vinFechaEntrega = Entrega::where('vin_id', $vins->vin_id)
                                     ->select('entrega_fecha')
@@ -1207,9 +1208,9 @@ class VinController extends Controller
 
             $vin = Vin::findOrfail($vin_id);
 
-            $estado_previo = $vin->vin_estado_inventario_id;            
+            $estado_previo = $vin->vin_estado_inventario_id;
             $estado_nuevo = (int)$request->vin_estado_inventario_id;
-            
+
             $vin->vin_codigo = $request->vin_codigo;
             $vin->vin_patente = $request->vin_patente;
             $vin->vin_marca = (int)$request->vin_marca;
@@ -1220,7 +1221,7 @@ class VinController extends Controller
             $vin->vin_fec_ingreso = $request->vin_fec_ingreso;
             $vin->user_id = (int)$request->user_id;
             $vin->vin_sub_estado_inventario_id = $request->vin_sub_estado_inventario_id;
-    
+
             if($estado_previo != $estado_nuevo){
                 // Pasar el VIN de estado "Anunciado" a estado "Arribado"
                 if($estado_previo == 1 && $estado_nuevo == 2){
@@ -2165,30 +2166,27 @@ class VinController extends Controller
 
         $vin_request = json_decode($request->resultado_busqueda);
 
-
-
         $array_vins = [];
-        foreach($vin_request as $vin_id){
 
-            $vin = Vin::find($vin_id->vin_id);
-
-            $vin = DB::table('vins')
+        $vin_entregados = DB::table('vins')
             ->join('users','vins.user_id','=','users.user_id')
             ->join('empresas','empresas.empresa_id','=','users.empresa_id')
             ->join('entregas','entregas.vin_id','=','vins.vin_id')
             ->select('vins.vin_codigo','vins.vin_patente','vins.vin_color','vin_fec_ingreso', 'vins.vin_fecha_agendado', 'entregas.entrega_fecha','empresas.empresa_razon_social')
             ->whereNotNull('entregas.entrega_fecha')
-            ->first();
+            ->get();
 
-            if($vin){
-                array_push($array_vins, $vin);
+        foreach($vin_entregados as $vin_ent){
+
+            if($vin_ent){
+                array_push($array_vins, $vin_ent);
             }
 
-
         }
+        $data= json_decode( json_encode($array_vins), true);
 
 
-        return Excel::download(new VinEntregadosExport($array_vins), 'historico_entregados.xlsx');
+        return Excel::download(new VinEntregadosExport($data), 'historico_entregados.xlsx');
     }
 
 

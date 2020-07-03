@@ -617,7 +617,7 @@
                                                         <td><small>{{ $entregados->vin_patente }}</small></td>
                                                         <td><small>{{ $entregados->vin_color }}</small></td>
                                                         <td><small>{{ $entregados->vin_fecha_agendado }}</small></td>
-                                                        <td><small>{{ $entregados->vin_fecha_entrega }}</small></td>
+                                                        <td><small>{{ $entregados->entrega_fecha }}</small></td>
                                                         <td><small>{{ $entregados->empresa_razon_social }}</small></td>
 
                                                     </tr>
