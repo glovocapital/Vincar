@@ -8,6 +8,7 @@ use App\Http\Middleware\CheckSession;
 use App\Http\Middleware\PreventBackHistory;
 use App\Patio;
 use App\Tarea;
+use App\Entrega;
 use App\TipoCampania;
 use App\UbicPatio;
 use App\User;
@@ -1342,6 +1343,20 @@ class CampaniaController extends Controller
             $vins->rol_id = auth()->user()->rol_id;
             $vins->vin_marca = Vin::find($vins->vin_id)->oneMarca->marca_nombre;
             $vins->vin_fecha_entrega = "";
+
+            $vinConsultado = Vin::find($vins->vin_id);
+
+            if ($vinConsultado->vin_estado_inventario_id == 8){
+                $vinFechaEntrega = Entrega::where('vin_id', $vins->vin_id)
+                                    ->select('entrega_fecha')
+                                    ->orderBy('entrega_fecha', 'desc')
+                                    ->limit(1)
+                                    ->value('entrega_fecha');
+
+                $vins->vin_fecha_entrega = $vinFechaEntrega;
+            } else {
+                $vins->vin_fecha_entrega = "";
+            }
 
         }
 
