@@ -56,6 +56,7 @@ class VinController extends Controller
 
         /** Tareas creadas para mostrarse */
          $vin_agendados = Vin::where('vin_predespacho', true)
+         ->where('vin_estado_inventario_id','!=', 8)
          ->join('users','vins.user_id','=','users.user_id')
          ->join('empresas','users.empresa_id','=','empresas.empresa_id')
          ->orderBy('vin_fecha_entrega')
