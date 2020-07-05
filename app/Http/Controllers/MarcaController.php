@@ -55,9 +55,10 @@ class MarcaController extends Controller
     public function store(Request $request)
     {
         $validate = DB::table('marcas')
-        ->where('marca_nombre', $request->marca_nombre)
-        ->orWhere('marca_codigo', $request->marca_codigo)
-        ->exists();
+            ->where('marca_nombre', $request->marca_nombre)
+            ->orWhere('marca_codigo', $request->marca_codigo)
+            ->where('deleted_at', null)
+            ->exists();
 
         if($validate == true)
         {
