@@ -537,7 +537,7 @@ class ApiController extends Controller
 
         $vins_codigo = $request->vin;
 
-        $Vin =DB::table('vins')->select('vins.*');
+        $Vin = DB::table('vins')->select('vins.*');
 
         if(strlen($vins_codigo)==6){
             $Vin->where('vins.vin_codigo', 'like', '%'.$vins_codigo);
@@ -545,47 +545,54 @@ class ApiController extends Controller
             $Vin->where('vins.vin_codigo', '=', $vins_codigo);
         }
 
-        $Vin=$Vin->first();
+        $Vin = $Vin->first();
 
         if($Vin){
             try {
-                DB::beginTransaction();
+                $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->where('deleted_at', null)->get();
+                
+                if (count($UbicPatio == 1)){
+                    DB::beginTransaction();
 
-                $Vin_= Vin::findOrFail($Vin->vin_id);
-                $Vin_->vin_estado_inventario_id = 2;
-                $Vin_->vin_fec_ingreso = date('Y-m-d');
-                $Vin_->update();
+                    $Vin_= Vin::findOrFail($Vin->vin_id);
+                    $Vin_->vin_estado_inventario_id = 2;
+                    $Vin_->vin_fec_ingreso = date('Y-m-d');
+                    $Vin_->update();
 
 
-                // Guardar historial del cambio
-                $fecha = date('Y-m-d');
-                $user = User::find($request->user_id);
+                    // Guardar historial del cambio
+                    $fecha = date('Y-m-d');
+                    $user = User::find($request->user_id);
 
-                DB::insert('INSERT INTO historico_vins
-                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                    [
-                        $Vin->vin_id,
-                        2,
-                        $fecha,
-                        $user->user_id,
-                        null,
-                        null,
-                        $user->belongsToEmpresa->empresa_id,
-                        "VIN Arribado.",
-                        "Origen Externo: Llegada a patio.",
-                        "Patio: BLoque y Ubicación por asignar."
-                    ]
-                );
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $Vin->vin_id,
+                            2,
+                            $fecha,
+                            $user->user_id,
+                            null,
+                            null,
+                            $user->belongsToEmpresa->empresa_id,
+                            "VIN Arribado.",
+                            "Origen Externo: Llegada a patio.",
+                            "Patio: BLoque y Ubicación por asignar."
+                        ]
+                    );
 
-                $itemlist =self::ListVIN($request);
+                    $itemlist =self::ListVIN($request);
 
-                $itemlistData = json_decode($itemlist->content(),true);
+                    $itemlistData = json_decode($itemlist->content(),true);
 
-                $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
+                    $usersf = Array("Err" => 0, "Msg" => "Cambio Exitoso", "itemlistData"=>$itemlistData['items']);
 
-                DB::commit();
+                    DB::commit();
+                } else {
+                    $usersf = Array("Err" => 1, "Msg" => "Error: VIN sin ubicación. Debe asignar una ubicación para el VIN antes de dar arribo.");
+                }
+                
             }catch (\Exception $e) {
                 DB::rollBack();
                 $usersf = Array("Err" => 1, "Msg" => "Error actualizando datos para dar arribo al VIN");
@@ -1073,16 +1080,22 @@ class ApiController extends Controller
 
                     $itemlistData = json_decode($itemlist->content(),true);
 
+                    $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->where('deleted_at', null)->first();
+
+                    $bloque_id = null;
+
                     // Guardar historial del cambio
                     if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
-                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->where('deleted_at', null)->first();
                         if($ubic_patio != null){
                             $bloque_id = $ubic_patio->bloque_id;
+
+                            // Liberar la posición ocupada del patio.
+                            $ubic_patio->ubic_patio_ocupada = false;
+                            $ubic_patio->vin_id = null;
+                            $ubic_patio->update();
                         } else {
                             $bloque_id = null;
                         }
-                    } else {
-                        $bloque_id = null;
                     }
 
                     if($bloque_id != null){
