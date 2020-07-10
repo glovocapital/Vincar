@@ -551,7 +551,7 @@ class ApiController extends Controller
             try {
                 $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->where('deleted_at', null)->get();
                 
-                if (count($UbicPatio) == 1){
+                if (count($UbicPatio == 1)){
                     DB::beginTransaction();
 
                     $Vin_= Vin::findOrFail($Vin->vin_id);
