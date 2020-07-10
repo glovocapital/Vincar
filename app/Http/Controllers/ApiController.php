@@ -1104,7 +1104,7 @@ class ApiController extends Controller
                                 $bloque_id,
                                 $bloque_id,
                                 $user->belongsToEmpresa->empresa_id,
-                                "VIN Inspeccionado Con Daño."
+                                "VIN Entregado."
                             ]
                         );
                     } else {
@@ -1120,9 +1120,9 @@ class ApiController extends Controller
                                 $bloque_id,
                                 $bloque_id,
                                 $user->belongsToEmpresa->empresa_id,
-                                "VIN Inspeccionado Con Daño.",
-                                "Vin sin ubicación (fuera de bloque) para realizar inspección.",
-                                "Inspeccionado y preparado para ser asignado a nueva ubicación y estado."
+                                "VIN Entregado.",
+                                "VIN sin ubicación (fuera de bloque) para realizar Entrega.",
+                                "VIN Entregado."
 
                             ]
                         );
