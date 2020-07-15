@@ -613,10 +613,8 @@ class ApiController extends Controller
         }
 
         $Vin=$Vin->first();
-        
-        var_dump($Vin);
 
-        exit;
+
 
         if($Vin){
 
@@ -668,7 +666,7 @@ class ApiController extends Controller
                 ->pluck('empresa', 'empresa_id')
                 ->all();
 
-            if(isset($empresa[$Vin->empresa_id]))
+            if(array_key_exists($Vin->empresa_id, $empresa))
             $inspecciones->cliente = $empresa[$Vin->empresa_id];
             else
                 $inspecciones->cliente="";
