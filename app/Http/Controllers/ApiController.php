@@ -613,6 +613,10 @@ class ApiController extends Controller
         }
 
         $Vin=$Vin->first();
+        
+        var_dump($Vin);
+
+        exit;
 
         if($Vin){
 
