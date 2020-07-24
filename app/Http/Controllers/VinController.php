@@ -232,10 +232,18 @@ class VinController extends Controller
                     $message = [];
 
                     foreach($arreglo_vins as $v){
-                        $validate = DB::table('vins')
-                            ->where('vin_codigo', $v)
-                            ->orWhere('vin_patente', $v)
-                            ->exists();
+                        if(Auth::user()->rol_id == 4) {
+                            $validate = DB::table('vins')
+                                ->where('vin_codigo', $v)
+                                ->orWhere('vin_patente', $v)
+                                ->where('user_id', Auth::user()->user_id)
+                                ->exists();
+                        } else {
+                            $validate = DB::table('vins')
+                                ->where('vin_codigo', $v)
+                                ->orWhere('vin_patente', $v)
+                                ->exists();
+                        }
                         
                         if($validate == true){
                             $query->where('vin_codigo',$v)
@@ -261,7 +269,11 @@ class VinController extends Controller
                             array_push($tabla_vins, $query->first());
                         } else {
                             if(count($arreglo_vins) >= 1){
-                                $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista";
+                                if(Auth::user()->rol_id == 4){
+                                    $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista o no pertenece a la empresa " . Auth::user()->belongsToEmpresa->empresa_id . ".";
+                                } else {
+                                    $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista"
+                                }
                             } else {
                                 if($user_empresa_id > 0){
                                     $query->where('empresas.empresa_id',$user_empresa_id);
