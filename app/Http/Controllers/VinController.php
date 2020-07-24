@@ -272,7 +272,7 @@ class VinController extends Controller
                                 if(Auth::user()->rol_id == 4){
                                     $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista o no pertenece a la empresa " . Auth::user()->belongsToEmpresa->empresa_id . ".";
                                 } else {
-                                    $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista"
+                                    $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista";
                                 }
                             } else {
                                 if($user_empresa_id > 0){
