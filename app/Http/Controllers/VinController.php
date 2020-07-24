@@ -234,9 +234,11 @@ class VinController extends Controller
                     foreach($arreglo_vins as $v){
                         if(Auth::user()->rol_id == 4) {
                             $validate = DB::table('vins')
-                                ->where('vin_codigo', $v)
-                                ->orWhere('vin_patente', $v)
                                 ->where('user_id', Auth::user()->user_id)
+                                ->where(function ($query){
+                                    $query->where('vin_codigo', $v)
+                                        ->orWhere('vin_patente', $v);
+                                })
                                 ->exists();
                         } else {
                             $validate = DB::table('vins')
