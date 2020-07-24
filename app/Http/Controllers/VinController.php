@@ -170,6 +170,11 @@ class VinController extends Controller
 
             // Primer caso: Consulta general sin ningún criterio de filtro. 
             if(empty($request->empresa_id) && empty($request->vin_numero) && empty($request->estadoinventario_id) && empty($request->patio_id) && empty($request->marca_id) && empty($request->vin_numero)){                
+                if(Auth::user()->rol_id == 4) {
+                    $user_empresa_id = Auth::user()->belongsToEmpresa->empresa_id;
+                    $query->where('empresas.empresa_id',$user_empresa_id);
+                }
+
                 $tabla_vins = $query->get();
             } elseif($request->has('empresa_id') || $request->has('vin_numero') || $request->has('estadoinventario_id') || $request->has('patio_id') || $request->has('marca_id')){
                 // Segundo caso: Se seleccionó algún criterio de filtro para la búsqueda.
@@ -206,8 +211,7 @@ class VinController extends Controller
                     }else{
                         $user_empresa_id = 0;
                     }
-                }
-                
+                }               
                 
                 $patio = DB::table('patios')
                     ->where('patio_id', $request->patio_id)
