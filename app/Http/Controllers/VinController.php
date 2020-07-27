@@ -154,7 +154,10 @@ class VinController extends Controller
 
             /** A partir de aqui las consultas del cuadro de busqueda */
 
-            $query = DB::table('vins')
+
+            // Primer caso: Consulta general sin ningún criterio de filtro. 
+            if(empty($request->empresa_id) && empty($request->vin_numero) && empty($request->estadoinventario_id) && empty($request->patio_id) && empty($request->marca_id) && empty($request->vin_numero)){                
+                $query = DB::table('vins')
                     ->join('users','users.user_id','=','vins.user_id')
                     ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                     ->join('empresas','users.empresa_id','=','empresas.empresa_id')
@@ -168,8 +171,6 @@ class VinController extends Controller
                         'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
                         'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila','ubic_patio_columna','guias.guia_ruta');
 
-            // Primer caso: Consulta general sin ningún criterio de filtro. 
-            if(empty($request->empresa_id) && empty($request->vin_numero) && empty($request->estadoinventario_id) && empty($request->patio_id) && empty($request->marca_id) && empty($request->vin_numero)){                
                 if(Auth::user()->rol_id == 4) {
                     $user_empresa_id = Auth::user()->belongsToEmpresa->empresa_id;
                     $query->where('empresas.empresa_id',$user_empresa_id);
@@ -232,6 +233,20 @@ class VinController extends Controller
                     $message = [];
 
                     foreach($arreglo_vins as $v){
+                        $query = DB::table('vins')
+                            ->join('users','users.user_id','=','vins.user_id')
+                            ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
+                            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                            ->join('marcas','vins.vin_marca','=','marcas.marca_id')
+                            ->leftjoin('guia_vins','guia_vins.vin_id','=','vins.vin_id')
+                            ->leftjoin('guias','guia_vins.guia_id','guias.guia_id')
+                            ->leftJoin('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                            ->leftJoin('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                            ->leftJoin('patios','bloques.patio_id','=','patios.patio_id')
+                            ->select('vins.vin_id','vin_codigo', 'vin_patente', 'marca_nombre', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                                'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
+                                'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila','ubic_patio_columna','guias.guia_ruta');
+                        
                         if(Auth::user()->rol_id == 4) {
                             $validate = DB::table('vins')
                                 ->where('user_id', Auth::user()->user_id)
@@ -299,6 +314,20 @@ class VinController extends Controller
                         }
                     }
                 } else {
+                    $query = DB::table('vins')
+                        ->join('users','users.user_id','=','vins.user_id')
+                        ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
+                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                        ->join('marcas','vins.vin_marca','=','marcas.marca_id')
+                        ->leftjoin('guia_vins','guia_vins.vin_id','=','vins.vin_id')
+                        ->leftjoin('guias','guia_vins.guia_id','guias.guia_id')
+                        ->leftJoin('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                        ->leftJoin('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                        ->leftJoin('patios','bloques.patio_id','=','patios.patio_id')
+                        ->select('vins.vin_id','vin_codigo', 'vin_patente', 'marca_nombre', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
+                            'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
+                            'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila','ubic_patio_columna','guias.guia_ruta');
+                    
                     if($user_empresa_id > 0){
                         $query->where('empresas.empresa_id', $user_empresa_id);
                     }
