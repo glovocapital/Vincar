@@ -239,6 +239,7 @@ class ApiController extends Controller
         $bloques =DB::table('bloques')
             ->select('bloque_id', 'bloque_nombre', 'bloque_filas', 'bloque_columnas')
             ->where('bloques.deleted_at','=',null)
+            ->orderBy('bloque_nombre', 'asc')
             ->get();
 
 
@@ -282,6 +283,7 @@ class ApiController extends Controller
                 ->select('bloque_id', 'bloque_nombre', 'bloque_filas', 'bloque_columnas')
                 ->where('patio_id','=',$patio_id)
                 ->where('bloques.deleted_at','=',null)
+                ->orderBy('bloque_nombre', 'asc')
                 ->get();
 
             $resul = Array("Err"=>0,"Bloques"=>$bloques);
