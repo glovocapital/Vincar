@@ -1019,18 +1019,27 @@ class ApiController extends Controller
                 if($Trans){
                     $transportista= User::findOrFail($Trans->user_id);
                 }else{
-                    $transportista = new User();
-                    $transportista->user_nombre = $nombres;
-                    $transportista->user_apellido = $apellidos;
-                    $transportista->user_rut = $rut;
-                    $transportista->user_cargo = "";
-                    $transportista->user_estado = 1;
-                    $transportista->email = $request->correo;
-                    $transportista->password = "";
-                    $transportista->rol_id = 7;
-                    $transportista->user_telefono = "";
-                    $transportista->empresa_id = $user->empresa_id;
-                    $transportista->save();
+                    $emailExists = DB::table('users')
+                        ->where('email', $request->correo)
+                        ->exists();
+
+                    if($emailExists){
+                        $usersf = Array("Err" => 1, "Msg" => "Email ya existente. Por favor introducir otro.");
+                        return response()->json($usersf);
+                    } else {
+                        $transportista = new User();
+                        $transportista->user_nombre = $nombres;
+                        $transportista->user_apellido = $apellidos;
+                        $transportista->user_rut = $rut;
+                        $transportista->user_cargo = "";
+                        $transportista->user_estado = 1;
+                        $transportista->email = $request->correo;
+                        $transportista->password = "";
+                        $transportista->rol_id = 7;
+                        $transportista->user_telefono = "";
+                        $transportista->empresa_id = $user->empresa_id;
+                        $transportista->save();
+                    }
                 }
 
             $entregar = new Entrega();
