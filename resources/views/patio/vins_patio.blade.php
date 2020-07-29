@@ -471,7 +471,7 @@
                                                     var vin_marca = new String(ubic.vin_marca);
                                                     console.log(vin_marca.toLowerCase());
 
-                                                    num = "<img style='width:24px' data-toggle='tooltip' data-html='true' title='VIN:"+ubic.vin_codigo+"<br>["+ubic.vin_estado_inventario_desc+"]' src ='{{asset('base/img/svg/')}}/"+vin_marca.toLowerCase()+".svg'/>";
+                                                    num = "<img style='width:24px' data-toggle='tooltip' data-html='true' title='VIN:"+ubic.vin_codigo+"<br>["+ubic.vin_estado_inventario_desc+"]' src ='{{asset('base/img/svg/')}}/"+vin_marca+".svg'/>";
 
                                                 }
                                            });
