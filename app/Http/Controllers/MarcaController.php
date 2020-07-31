@@ -23,7 +23,7 @@ class MarcaController extends Controller
 
             $marca['img']="";
 
-            $ruta="base/img/svg/".$marca['marca_nombre'].".svg";
+            $ruta="base/img/svg/".strtolower($marca['marca_nombre']).".svg";
 
             if(file_exists(__DIR__."/../../../public/".$ruta))
             $marca['img']=$ruta;
@@ -55,8 +55,8 @@ class MarcaController extends Controller
     public function store(Request $request)
     {
         $validate = DB::table('marcas')
-            ->where('marca_nombre', $request->marca_nombre)
-            ->orWhere('marca_codigo', $request->marca_codigo)
+            ->where('marca_nombre', strtolower($request->marca_nombre))
+            ->orWhere('marca_codigo', strtoupper($request->marca_codigo))
             ->where('deleted_at', null)
             ->exists();
 
@@ -71,7 +71,7 @@ class MarcaController extends Controller
         if(!empty($_FILES)) {
             if(is_uploaded_file($_FILES['logo_marca']['tmp_name'])) {
 
-                $ruta="base/img/svg/".$request->marca_nombre.".svg";
+                $ruta="base/img/svg/".strtolower($request->marca_nombre).".svg";
                 $path = __DIR__."/../../../public/".$ruta;
 
                 $sourcePath = $_FILES['logo_marca']['tmp_name'];
@@ -83,12 +83,12 @@ class MarcaController extends Controller
         try {
 
             $marca = new Marca();
-            $marca->marca_nombre = $request->marca_nombre;
-            $marca->marca_codigo =$request->marca_codigo;
-            //$marca->marca_guia = $path;
+            $marca->marca_nombre = strtolower($request->marca_nombre);
+            $marca->marca_codigo =strtoupper($request->marca_codigo);
+            $marca->marca_guia = $path;
             $marca->save();
 
-            flash('La marca se creo correctamente.')->success();
+            flash('La marca se creó correctamente.')->success();
             return redirect('marcas');
 
         }catch (\Exception $e) {
@@ -141,11 +141,11 @@ class MarcaController extends Controller
         {
             try {
 
-                $marca->marca_nombre = $request->marca_nombre;
-                $marca->marca_codigo =$request->marca_codigo;
+                $marca->marca_nombre = strtolower($request->marca_nombre);
+                $marca->marca_codigo =strtoupper($request->marca_codigo);
                 $marca->save();
 
-                flash('La marca se actualizo correctamente.')->success();
+                flash('La marca se actualizó correctamente.')->success();
                 return redirect('marcas');
 
                 }catch (\Exception $e) {
@@ -167,12 +167,12 @@ class MarcaController extends Controller
             try {
 
 
-                $marca->marca_nombre = $request->marca_nombre;
-                $marca->marca_codigo =$request->marca_codigo;
+                $marca->marca_nombre = strtolower($request->marca_nombre);
+                $marca->marca_codigo =strtoupper($request->marca_codigo);
                 $marca->marca_guia = $path;
                 $marca->save();
 
-                flash('La marca se creo correctamente.')->success();
+                flash('La marca se creó correctamente.')->success();
                 return redirect('marcas');
 
             }catch (\Exception $e) {

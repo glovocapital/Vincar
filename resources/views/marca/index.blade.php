@@ -86,7 +86,7 @@
 
                                             <tr>
                                                 <td><small>{{ $p->marca_codigo }}</small></td>
-                                                <td><small>{{ $p->marca_nombre }}</small></td>
+                                                <td><small>{{ ucfirst(strtolower($p->marca_nombre)) }}</small></td>
                                                 <td style="text-align: center"><small>
                                                         @if ($p->img!="")
                                                         <img height='30px' width="30px" src='{{ $p->img }}'/>
