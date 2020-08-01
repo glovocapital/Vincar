@@ -157,12 +157,24 @@ class MarcaController extends Controller
 
         }else
         {
-            $logoMarca = $request->file('logo_marca');
-            $extensionFoto = $logoMarca->extension();
-            $path = $logoMarca->storeAs(
-                'logosMarca',
-                'Foto del logo'.'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-            );
+            //$logoMarca = $request->file('logo_marca');
+
+            if(is_uploaded_file($_FILES['logo_marca']['tmp_name'])) {
+
+                $ruta="base/img/svg/".strtolower($marca->marca_nombre).".svg";
+                $path = __DIR__."/../../../public/".$ruta;
+
+                $sourcePath = $_FILES['logo_marca']['tmp_name'];
+                move_uploaded_file($sourcePath, $path);
+            } else {
+                $path= null;
+            }
+
+            // $extensionFoto = $logoMarca->extension();
+            // $path = $logoMarca->storeAs(
+            //     'logosMarca',
+            //     'Foto del logo'.'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+            // );
 
             try {
 
