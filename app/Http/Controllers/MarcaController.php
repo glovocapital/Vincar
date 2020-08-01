@@ -157,8 +157,6 @@ class MarcaController extends Controller
 
         }else
         {
-            //$logoMarca = $request->file('logo_marca');
-
             if(is_uploaded_file($_FILES['logo_marca']['tmp_name'])) {
 
                 $ruta="base/img/svg/".strtolower($marca->marca_nombre).".svg";
@@ -169,12 +167,6 @@ class MarcaController extends Controller
             } else {
                 $path= null;
             }
-
-            // $extensionFoto = $logoMarca->extension();
-            // $path = $logoMarca->storeAs(
-            //     'logosMarca',
-            //     'Foto del logo'.'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-            // );
 
             try {
 

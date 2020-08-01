@@ -43,7 +43,7 @@
 
                 </div>
                 <div class="text-right pb-5">
-                        {!! Form::submit('Editar Marca ', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                        {!! Form::submit('Actualizar Marca ', ['class' => 'btn btn-primary block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>
                     <div class="text-center texto-leyenda">
