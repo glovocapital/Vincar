@@ -1042,6 +1042,11 @@ class VinController extends Controller
                 }
             } else if($estado_previo == 8 && $estado_nuevo == 1){
                 $vin->vin_estado_inventario_id = $estado_nuevo;
+                $vin->vin_fecha_ingreso = Carbon::now();
+                $vin->vin_predespacho = false;
+                $vin->vin_fecha_entrega = null;
+                $vin->vin_fecha_agendado = null;
+
                 $vin->save();
 
                 // Guardar historial del cambio
@@ -1057,7 +1062,7 @@ class VinController extends Controller
                         null,
                         null,
                         $user->belongsToEmpresa->empresa_id,
-                        "VIN nuevamente Anunciado luego de haber sido entregado.",
+                        "VIN nuevamente Anunciado (reingresado al sistema) luego de haber sido entregado anteriormente.",
                         "Sin ubicación previa en bloque. Reingreso de VIN.",
                         "Patio: BLoque y Ubicación por asignar."
                     ]
