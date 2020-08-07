@@ -423,6 +423,7 @@ class ApiController extends Controller
                     $vin[0]->HabilitadoInspeccion = false;
                     $vin[0]->HabilitadoCambio = false;
                     $vin[0]->HabilitadoArribo = false;
+                    $vin[0]->HabilitadoEntregarVeh = false;
                 }
 
                 if($vin[0]->vin_predespacho==1)
