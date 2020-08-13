@@ -8,7 +8,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                {!! Form::open(['route'=> 'campania.storeModalTareaLotes', 'method'=>'POST', 'id'=>"TareasVins"]) !!}
+                {!! Form::open(['route'=> 'vin.cambio', 'method'=>'POST', 'id'=>"TareasVins"]) !!}
                 @csrf
                 <div class="row row-fluid">
                     <div class="col-md-12">

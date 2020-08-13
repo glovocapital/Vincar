@@ -142,8 +142,6 @@ class CampaniaController extends Controller
                 ->where('users.empresa_id', $user_empresa_id )
                 ->get();
         } else {
-            // dd($tabla_vins)
-
             /** A partir de aqui las consultas del cuadro de busqueda */
 
             $estado = DB::table('vin_estado_inventarios')
