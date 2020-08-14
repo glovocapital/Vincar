@@ -143,7 +143,7 @@
                             '<input type="checkbox" class="check-tarea" value="'+value.vin_id+'" name="checked_vins[]" id="check-vin-'+value.vin_id+'">',
                             value.vin_codigo,
                             value.vin_patente,
-                            value.vin_marca,
+                            value.marca_nombre.toUpperCase(),
                             value.vin_modelo,
                             value.vin_color,
                             value.vin_segmento,
