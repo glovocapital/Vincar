@@ -412,7 +412,7 @@
                                         {!! Form::open(['route'=> 'vin.exportMasivoResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_masivo_busqueda_vins_form']) !!}
                                             Descargar Todos <br/>
                                             <input type="hidden" name="vin_ids" value="" id="resultado_busqueda_vins" />
-                                            {{ Form::button('<i class="fa fa-file-excel"></i> Excel', ['id' => 'btn-listado-masivo', 'type' => 'submit', 'class' => 'btn btn-sm btn-info block full-width m-b btn-listado-masivo-vins', 'disabled'] )  }}
+                                            {{ Form::button('<i class="fa fa-file-excel"></i> Excel', ['id' => 'btn-listado-masivo', 'type' => 'submit', 'class' => 'btn btn-sm btn-success block full-width m-b btn-listado-masivo-vins', 'disabled'] )  }}
                                         {!! Form::close() !!}
                                     </th>
                                     <th>Vin</th>
