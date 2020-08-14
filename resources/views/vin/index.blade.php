@@ -69,7 +69,7 @@
                                         {!! Form::close() !!}
                                     </div>
                                     <div class="text  pb-3">
-                                        Haz click para exportar tu búsqueda
+                                    Selecciona los VINs y haz click para exportar tu búsqueda
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +94,7 @@
                                         {!! Form::close() !!}
                                     </div>
                                     <div class="text  pb-3">
-                                        Haz click para exportar histórico por lotes
+                                    Selecciona los VINs y haz click para exportar histórico por lotes
                                     </div>
                                 </div>
                             </div>
@@ -149,7 +149,7 @@
                                     </div>
                                     {!! Form::close() !!}
                                     <div class="text  pb-3">
-                                        Haz click para exportar tu búsqueda
+                                    Selecciona los VINs y haz click para exportar tu búsqueda
                                     </div>
                                 </div>
                             </div>
@@ -175,7 +175,7 @@
                                         {!! Form::close() !!}
                                     </div>
                                     <div class="text  pb-3">
-                                        Haz click para exportar histórico por lotes
+                                    Selecciona los VINs y haz click para exportar histórico por lotes
                                     </div>
                                 </div>
                             </div>
@@ -222,16 +222,16 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-12">
+                                    {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_busqueda_vins_form']) !!}
                                     <div class="text pb-3">
                                         <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</button>
                                         <hr />
                                         <br />
-                                        {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_busqueda_vins_form']) !!}
                                         {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Listado de VINs ', ['id' => 'btn-listado-vins', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-listado-vins', 'disabled'] )  }}
                                     </div>
                                     {!! Form::close() !!}
                                     <div class="text  pb-3">
-                                        Haz click para exportar tu búsqueda
+                                    Selecciona los VINs y haz click para exportar tu búsqueda
                                     </div>
                                 </div>
                             </div>
@@ -257,7 +257,7 @@
                                         {!! Form::close() !!}
                                     </div>
                                     <div class="text  pb-3">
-                                        Haz click para exportar histórico por lotes
+                                    Selecciona los VINs y haz click para exportar histórico por lotes
                                     </div>
                                 </div>
                             </div>
@@ -407,7 +407,14 @@
                             <table class="table table-hover" id="TablaVins" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
-                                    <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
+                                    <!-- <th><input type="checkbox" class="check-all" />Seleccionar Todos</th> -->
+                                    {!! Form::open(['route'=> 'vin.exportMasivoResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_masivo_busqueda_vins_form']) !!}
+                                        <th>
+                                            Descargar Todos <br/>
+                                            <input type="hidden" name="vin_ids" value="" id="resultado_busqueda_vins" />
+                                            {{ Form::button('<i class="fa fa-file-excel"></i> Excel', ['id' => 'btn-listado-masivo', 'type' => 'submit', 'class' => 'btn btn-sm btn-info block full-width m-b btn-listado-masivo-vins', 'disabled'] )  }}
+                                        </th>
+                                    {!! Form::close() !!}
                                     <th>Vin</th>
                                     <th>Patente</th>
 
@@ -587,14 +594,9 @@
                                     <div class="col-lg-12">
                                         {!! Form::open(['route'=> 'vin.entregaExportResultadoBusquedaVins', 'method'=>'POST']) !!}
                                             <div class="text pb-3">
-
-
-                                                    <input type="hidden" name="resultado_busqueda" value="{{json_encode($vin_entregados)}}" id="resultado_busqueda_vins" />
-
-                                                    {{ Form::button('<i class="fa fa-file-excel"></i> Exportar historial de entregas ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor'] )  }}
-
+                                                {{ Form::button('<i class="fa fa-file-excel"></i> Exportar historial de entregas ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor'] )  }}
                                             </div>
-                                            {!! Form::close() !!}
+                                        {!! Form::close() !!}
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
@@ -646,15 +648,9 @@
                                     <div class="col-lg-12">
                                         {!! Form::open(['route'=> 'vin.entregaExportResultadoBusquedaVins', 'method'=>'POST']) !!}
                                         <div class="text pb-3">
-
-
-                                                <input type="hidden" name="resultado_busqueda" value="{{json_encode($vin_entregados_dia)}}" id="resultado_busqueda_vins" />
-
-                                                {{ Form::button('<i class="fa fa-file-excel"></i> Exportar historial de tareas ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor'] )  }}
-
+                                            {{ Form::button('<i class="fa fa-file-excel"></i> Exportar historial de tareas ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor'] )  }}
                                         </div>
                                         {!! Form::close() !!}
-
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table table-hover" id="TareaCampanias" width="100%" cellspacing="0">
@@ -737,6 +733,7 @@
 
 
             });
+            
             $('#btn-src').on('click',function(e){
                 e.preventDefault();
 
@@ -748,9 +745,10 @@
 
                 $.post("{{route('vin.index_json')}}", $("#VinForm").serialize(), function (res) {
 
-                    // $("#resultado_busqueda_vins").val(JSON.stringify(res));
+                    var array_vin_ids = [];
 
                     $(res).each(function( index , value ) {
+                        array_vin_ids.push(value.vin_id);
 
                         if(var_roles==0){
                             $(".btn-expor").attr("disabled", false);
@@ -800,6 +798,9 @@
 
                     });
 
+                    $("#resultado_busqueda_vins").attr('value', array_vin_ids);
+                    $("#btn-listado-masivo").removeAttr('disabled')
+                    
                     datatablesButtons.columns.adjust().draw();
 
                 }).fail(function () {
@@ -807,8 +808,6 @@
                 });
 
             });
-
-
 
             $('.check-all').on('click',function(){
                 if(checked == false) {

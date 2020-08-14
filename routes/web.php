@@ -242,6 +242,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post('vin/modal_tarea_lotes','VinController@storeModalTareaLotes')->name('vin.storeModalTareaLotes');
 
     Route::post('vin/export', 'VinController@exportResultadoBusquedaVins')->name('vin.exportResultadoBusquedaVins');
+    Route::post('vin/export_masivo', 'VinController@exportMasivoResultadoBusquedaVins')->name('vin.exportMasivoResultadoBusquedaVins');
 
     Route::get('traspasovin','VinController@traspasovin')->name('vin.traspasovin');
 
