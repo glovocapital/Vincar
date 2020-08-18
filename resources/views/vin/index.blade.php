@@ -548,11 +548,14 @@
                                             <tr>
                                                 <th>Código VIN</th>
                                                 <th>Patente</th>
+                                                <th>Marca</th>
                                                 <th>Vin Color</th>
-                                                <th>Fecha Agendamiento</th>
+                                                <th>Fecha <br/> Agendamiento</th>
                                                 <th>Empresa</th>
+                                                <th>Patio</th>
+                                                <th>Ubicación</th>
                                                 <th>Eliminar</th>
-                                                <th>Bloquear Entrega</th>
+                                                <th>Bloquear <br/> Entrega</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -565,9 +568,12 @@
 
                                                         <td><small>{{ $vin_agendado->vin_codigo }}</small></td>
                                                         <td><small>{{ $vin_agendado->vin_patente }}</small></td>
+                                                        <td><small>{{ strtoupper($vin_agendado->oneMarca->marca_nombre) }}</small></td>
                                                         <td><small>{{ $vin_agendado->vin_color }}</small></td>
                                                         <td><small>{{ $vin_agendado->vin_fecha_agendado }}</small></td>
                                                         <td><small>{{ $vin_agendado->empresa_razon_social }}</small></td>
+                                                        <td><small>{{ strtoupper($vin_agendado->patio_nombre) }}</small></td>
+                                                        <td><small>BLOQUE: {{ $vin_agendado->bloque_nombre }} <br/> FILA: {{ $vin_agendado->ubic_patio_fila }} <br/> COLUMNA: {{ $vin_agendado->ubic_patio_columna }}</small></td>
 
                                                         <td>
 

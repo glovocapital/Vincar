@@ -52,6 +52,9 @@ class VinController extends Controller
          ->where('vin_estado_inventario_id','!=', 8)
          ->join('users','vins.user_id','=','users.user_id')
          ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+         ->join('ubic_patios', 'vins.vin_id', '=', 'ubic_patios.vin_id')
+         ->join('bloques', 'ubic_patios.bloque_id', '=', 'bloques.bloque_id')
+         ->join('patios', 'bloques.patio_id', '=', 'patios.patio_id')
          ->orderBy('vin_fecha_entrega')
          ->get();
 
