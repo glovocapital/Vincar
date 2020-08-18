@@ -302,8 +302,7 @@ class ApiController extends Controller
 
         if(empty($vins_id)){
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
-        }else{
-
+        } else {
             $bloques=null;
             $patios = Patio::select('patio_id','patio_nombre')->get();
 
@@ -318,16 +317,12 @@ class ApiController extends Controller
             if(strlen($vins_id)==6){
                 $Vin->where('vins.vin_codigo', 'like', '%'.$vins_id);
                 $Vin->orWhere('vins.vin_patente', '=', $vins_id);
-            }else{
+            } else {
                 $Vin->where('vins.vin_codigo', '=', $vins_id);
                 $Vin->orWhere('vins.vin_patente', '=', $vins_id);
             }
 
-
-
             $vin = $Vin->get();
-
-
 
             if(count($vin)>0){
 
@@ -337,9 +332,9 @@ class ApiController extends Controller
                     ->where('tareas.vin_id',$vin[0]->vin_id)
                     ->get();
 
-               $vin[0]->destino = (count($tarea)>0)?$tarea[0]->destino:'';
+                $vin[0]->destino = (count($tarea)>0)?$tarea[0]->destino:'';
 
-               $_patio =DB::table('bloques')
+                $_patio =DB::table('bloques')
                    ->join('patios', 'patios.patio_id','=','bloques.patio_id')
                     ->select('bloques.patio_id', 'bloque_nombre','patio_nombre')
                     ->where('bloque_id','=',$vin[0]->bloque_id)
@@ -354,29 +349,30 @@ class ApiController extends Controller
                     ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc", 'patio_id')
                     ->get();
 
-               if(count($_patio)==0) $vin[0]->patio_id=null;
-               else {
-                   $vin[0]->bloque_nombre=$_patio[0]->bloque_nombre;
-                   $vin[0]->patio_id=$_patio[0]->patio_id;
-                   $vin[0]->patio_nombre=$_patio[0]->patio_nombre;
-                   $vin[0]->posicion=$_patio[0]->bloque_nombre." Fil:".$vin[0]->ubic_patio_fila." Col:".$vin[0]->ubic_patio_columna;
+                if(count($_patio)==0){
+                    $vin[0]->patio_id=null;
+                } else {
+                    $vin[0]->bloque_nombre=$_patio[0]->bloque_nombre;
+                    $vin[0]->patio_id=$_patio[0]->patio_id;
+                    $vin[0]->patio_nombre=$_patio[0]->patio_nombre;
+                    $vin[0]->posicion=$_patio[0]->bloque_nombre." Fil:".$vin[0]->ubic_patio_fila." Col:".$vin[0]->ubic_patio_columna;
 
-                   $bloques =DB::table('bloques')
-                       ->select('bloque_id', 'bloque_nombre', 'bloque_filas', 'bloque_columnas')
-                       ->where('patio_id','=',$_patio[0]->patio_id)
-                       ->where('bloques.deleted_at','=',null)
-                       ->get();
+                    $bloques =DB::table('bloques')
+                        ->select('bloque_id', 'bloque_nombre', 'bloque_filas', 'bloque_columnas')
+                        ->where('patio_id','=',$_patio[0]->patio_id)
+                        ->where('bloques.deleted_at','=',null)
+                        ->get();
 
-                   $ubicados = DB::table('ubic_patios')
-                       ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
-                       ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
-                       ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
-                       ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
-                       ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc","vins.vin_predespacho as vin_predespacho")
-                       ->where('patio_id','=',$_patio[0]->patio_id)
-                       ->get();
+                    $ubicados = DB::table('ubic_patios')
+                        ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+                        ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
+                        ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
+                        ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
+                        ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc","vins.vin_predespacho as vin_predespacho")
+                        ->where('patio_id','=',$_patio[0]->patio_id)
+                        ->get();
 
-               }
+                }
 
                 $vin[0]->HabilitadoInspeccion = true;
                 $vin[0]->HabilitadoCambio = true;
@@ -419,11 +415,11 @@ class ApiController extends Controller
                     $vin[0]->HabilitadoArribo = false;
                 }
 
-                if($vin[0]->vin_predespacho==1)
-                $vin[0]->HabilitadoEntregarVeh = true;
-                else
+                if(($vin[0]->vin_predespacho == true) && ($vin[0]->vin_bloqueado_entrega == false)) {    
+                    $vin[0]->HabilitadoEntregarVeh = true;
+                } else {
                     $vin[0]->HabilitadoEntregarVeh = false;
-
+                }
                 
                 if($vin[0]->estado=="Entregado") {
                      $vin[0]->HabilitadoInspeccion = false;
@@ -432,13 +428,8 @@ class ApiController extends Controller
                      $vin[0]->HabilitadoEntregarVeh = false;
                 }
 
-                if($vin[0]->vin_bloqueado_entrega==TRUE) {
-                    
-                    $vin[0]->HabilitadoEntregarVeh = false;
-               }
-
                 $usersf = Array("Err"=>0,"items"=>$vin[0], "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
-            }else{
+            } else {
                 $usersf = Array("Err" => 1, "Msg" => "No se encuentra el Vin");
             }
         }
