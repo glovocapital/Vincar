@@ -1739,4 +1739,39 @@ class VinController extends Controller
             }
         }
     }
+
+    /**
+     * Bloque la entrega de un VIN a nivel administrativo.
+     */
+
+    public function bloqueaEntrega(Request $request)
+    {
+        $vin_id =  $request->vin_id;
+        $vin = Vin::findOrfail($vin_id);
+        
+        try{
+            $vin->vin_bloqueado_entrega = $request->bloqueado;
+            
+            if($vin->save()){
+                if($request->bloqueado){
+                    $mensaje = "VIN bloqueado correctamente.";
+                } else {
+                    $mensaje = "VIN desbloqueado correctamente.";
+                }
+            }
+        }  catch (\Throwable $th) {
+            flash('Error bloqueando el VIN.')->error();
+            
+            return response()->json([
+                'success' => false,
+                'message' => "Error bloqueando o desbloqueando el VIN: " . $th . ".",
+            ]);
+        }
+        flash('VIN bloqueado correctamente.')->success();
+        
+        return response()->json([
+            'success' => true,
+            'message' => $mensaje,
+        ]);
+    }
 }

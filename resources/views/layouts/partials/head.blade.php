@@ -127,3 +127,5 @@
 <script  src="{{ asset('base/js/settings.js') }}"></script>
 
 <link href="{{ asset('base/css/classic.css') }}" type="text/css" rel="stylesheet">
+
+@yield('custom_styles')

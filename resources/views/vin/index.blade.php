@@ -1,5 +1,8 @@
 @extends('layouts.app')
 @section('title','Vin index')
+@section('custom_styles')
+<link href="{{asset('css/switch_button.css')}}" type="text/css" rel="stylesheet">
+@endsection
 @section('content')
 @include('flash::message')
 
@@ -549,10 +552,14 @@
                                                 <th>Fecha Agendamiento</th>
                                                 <th>Empresa</th>
                                                 <th>Eliminar</th>
+                                                <th>Bloquear Entrega</th>
                                             </tr>
                                             </thead>
                                             <tbody>
+                                            @php($item = 0)
                                             @foreach($vin_agendados as $vin_agendado)
+                                                @php($item++)
+
                                                 @if(isset($vin_agendado))
                                                     <tr>
 
@@ -567,6 +574,14 @@
                                                             <small>
                                                                 <a href = "{{ route('vin.desagendado', Crypt::encrypt($vin_agendado->vin_id)) }}" onclick="return confirm('¿Esta seguro que desea quitar el agendamiento del VIN?')" class="btn-bloque" title="Eliminar Agendamiento"><i class="far fa-trash-alt"></i></a>
                                                             </small>
+                                                        </td>
+                                                        <td>
+                                                            <div class="switch-button">
+                                                            {!! Form::open(['route' => 'vin.bloquea_entrega', 'method'=>'POST']) !!}
+                                                                <input type="checkbox" name="switch-button" id="switch-label-{{$item}}" class="switch-button__checkbox" value="{{$vin_agendado->vin_id}}"/>
+                                                                <label for="switch-label-{{$item}}" class="switch-button__label"></label>
+                                                            {!! Form::close() !!}
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 @endif
@@ -709,6 +724,40 @@
                 },
                 @endif
                 buttons: ["copy", "print"],
+            });
+
+            $(".switch-button__checkbox").change(function() {
+                //e.preventDefault();
+
+                var vin_id = $(this).val();
+                
+                var bloqueado = false;
+                //Si el checkbox está seleccionado
+                if($(this).is(":checked")) {
+                    bloqueado = true;
+                }
+
+                var request = {
+                    _token: $("input[name='_token']").attr("value"),
+                    bloqueado: bloqueado,
+                    vin_id
+                };
+
+                var url = 'vin/bloqueaEntrega';
+
+                $.post(url, request, function (res) {
+                    if(!res.success){
+                        alert(
+                            "Error inesperado al intentar bloquear entrega de VIN.\n\n" +
+                            "MENSAJE DEL SISTEMA:\n" +
+                            res.message + "\n\n"
+                        );
+                        return;  // Finaliza el intento de bloquear
+                    }
+                }).fail(function () {
+                    alert('Error: Fallo al intentar bloquear entrega de VIN.');
+                });
+            
             });
 
 

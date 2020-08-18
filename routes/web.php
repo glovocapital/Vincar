@@ -254,6 +254,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
     Route::post('vin/modal_cambia_estado','VinController@storeModalCambiaEstado')->name('vin.storeModalCambiaEstado');
     Route::post('vin/predespacho','VinController@predespacho')->name('vin.predespacho');
+    Route::post('vin/bloqueaEntrega', 'VinController@bloqueaEntrega')->name('vin.bloquea_entrega');
 
     Route::post ('vin/index_json', 'VinController@index_json')->name('vin.index_json');
     Route::get('vin/{id}/desagendado','VinController@desagendado')->name('vin.desagendado');
