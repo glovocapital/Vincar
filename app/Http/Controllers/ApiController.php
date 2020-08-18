@@ -432,7 +432,7 @@ class ApiController extends Controller
                      $vin[0]->HabilitadoEntregarVeh = false;
                 }
 
-                if($vin[0]->vin_bloqueado_entrega==TRUE {
+                if($vin[0]->vin_bloqueado_entrega==TRUE) {
                     
                     $vin[0]->HabilitadoEntregarVeh = false;
                }
