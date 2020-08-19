@@ -361,6 +361,7 @@ class ApiController extends Controller
                         ->select('bloque_id', 'bloque_nombre', 'bloque_filas', 'bloque_columnas')
                         ->where('patio_id','=',$_patio[0]->patio_id)
                         ->where('bloques.deleted_at','=',null)
+                        ->orderBy('bloque_nombre', 'asc')
                         ->get();
 
                     $ubicados = DB::table('ubic_patios')
@@ -1202,8 +1203,4 @@ class ApiController extends Controller
 
         echo json_encode(Array("Err"=>0,"badgeData"=>Array("list"=>count($Vin), "car"=>0, "boat"=>0)));
     }
-
-
-
-
 }
