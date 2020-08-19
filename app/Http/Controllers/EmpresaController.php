@@ -173,7 +173,7 @@ class EmpresaController extends Controller
     {
         $empresa_id =  Crypt::decrypt($id);
         $empresa =  Empresa::findOrfail($empresa_id);
-
+        
         try {
            //dd($request->es_proveedor);
 
@@ -193,7 +193,7 @@ class EmpresaController extends Controller
             }else
             {
                 $empresa->empresa_es_proveedor = false;
-                $empresa->tipo_proveedor_id = NULL;
+                $empresa->tipo_proveedor_id = null;
             }
 
 
