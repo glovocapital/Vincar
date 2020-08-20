@@ -171,7 +171,7 @@ class VinController extends Controller
                     ->leftJoin('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                     ->leftJoin('patios','bloques.patio_id','=','patios.patio_id')
                     ->select('vins.vin_id','vin_codigo', 'vin_patente', 'marca_nombre', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
-                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
+                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_agendado', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
                         'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila','ubic_patio_columna','guias.guia_ruta');
 
                 if(Auth::user()->rol_id == 4) {
@@ -247,7 +247,7 @@ class VinController extends Controller
                             ->leftJoin('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                             ->leftJoin('patios','bloques.patio_id','=','patios.patio_id')
                             ->select('vins.vin_id','vin_codigo', 'vin_patente', 'marca_nombre', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
-                                'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
+                                'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_agendado', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
                                 'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila','ubic_patio_columna','guias.guia_ruta');
                         
                         if(Auth::user()->rol_id == 4) {
@@ -328,7 +328,7 @@ class VinController extends Controller
                         ->leftJoin('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                         ->leftJoin('patios','bloques.patio_id','=','patios.patio_id')
                         ->select('vins.vin_id','vin_codigo', 'vin_patente', 'marca_nombre', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
-                            'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
+                            'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_agendado', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
                             'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila','ubic_patio_columna','guias.guia_ruta');
                     
                     if($user_empresa_id > 0){
