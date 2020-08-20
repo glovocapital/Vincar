@@ -425,14 +425,15 @@
                                     <th>Modelo</th>
                                     <th>Color</th>
                                     <th>Segmento</th>
-                                    <th>Fecha de Ingreso</th>
-                                    <th>Fecha de Entrega</th>
                                     <th>Cliente</th>
                                     <th>Estado</th>
-                                    <th>Guia</th>
                                     <th>Patio</th>
                                     <th>Bloque</th>
                                     <th>Ubicación</th>
+                                    <th>Guia</th>
+                                    <th>Fecha de Ingreso</th>
+                                    <th>Fecha de Agendado</th>
+                                    <th>Fecha de Entrega</th>
 
 
 
@@ -819,36 +820,36 @@
                             '<input type="checkbox" class="check-tarea" value="'+value.vin_id+'" name="checked_vins[]" id="check-vin-'+value.vin_id+'">',
                             value.vin_codigo,
                             value.vin_patente,
-                            value.marca_nombre,
+                            value.marca_nombre.toUpperCase(),
                             value.vin_modelo,
                             value.vin_color,
                             value.vin_segmento,
-                            value.vin_fec_ingreso,
-                            value.vin_fecha_entrega,
                             value.empresa_razon_social,
                             value.vin_estado_inventario_desc,
+                            (typeof value.patio_nombre !== 'undefined')?value.patio_nombre:"",
+                            (typeof value.bloque_nombre !== 'undefined')?('<small>BLOQUE: ' + value.bloque_nombre + '</small>'):"",
+                            (typeof value.ubic_patio_id !== 'undefined')?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):"",
                             '<font color="'+((value.vin_downloadGuiaN == "Sin Guia")?"Blue":"Green")+'">'+value.vin_downloadGuiaN+'</font>',
-                                (typeof value.patio_nombre !== 'undefined')?value.patio_nombre:"",
-                                (typeof value.bloque_nombre !== 'undefined')?value.bloque_nombre:"",
-                                (typeof value.ubic_patio_id !== 'undefined')?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):"",
+                            value.vin_fec_ingreso,
+                            value.vin_fecha_agendado,
+                            value.vin_fecha_entrega,
+                            '<small>'+
+                                '<a href="#" type="button" class="btn-historico"  value="'+value.vin_encrypt+'" title="Ver Historico"><i class="fas fa fa-lightbulb"></i></a>'+
+                            '</small>'+
+                            ((value.rol_id == 1 || value.rol_id == 2  || value.rol_id == 3)?(
 
+                            '<small>'+
+                            '<a href="'+value.vin_edit+'" type="button" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>'+
+                            '</small>'+
                                 '<small>'+
-                                    '<a href="#" type="button" class="btn-historico"  value="'+value.vin_encrypt+'" title="Ver Historico"><i class="fas fa fa-lightbulb"></i></a>'+
-                                '</small>'+
-                                ((value.rol_id == 1 || value.rol_id == 2  || value.rol_id == 3)?(
-
-                                '<small>'+
-                                '<a href="'+value.vin_edit+'" type="button" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>'+
-                                '</small>'+
-                                    '<small>'+
-                                    '<a  href="'+value.vin_editarestado+'" type="button" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>'+
-                                    '</small>'
-
-                                ):"")+
-                                '<small>'+
-                                ((value.vin_downloadGuiaN == "Sin Guia")?'<a href="'+value.vin_guia+'" type="button" class="btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>':'<a href="'+value.vin_downloadGuia+'" type="button" class="btn-vin"  title="Descargar Guía"><i class="fas fa fa-barcode2"></i></a>')+
-
+                                '<a  href="'+value.vin_editarestado+'" type="button" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>'+
                                 '</small>'
+
+                            ):"")+
+                            '<small>'+
+                            ((value.vin_downloadGuiaN == "Sin Guia")?'<a href="'+value.vin_guia+'" type="button" class="btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>':'<a href="'+value.vin_downloadGuia+'" type="button" class="btn-vin"  title="Descargar Guía"><i class="fas fa fa-barcode2"></i></a>')+
+
+                            '</small>',
                         ]).draw( false );
 
                     });
