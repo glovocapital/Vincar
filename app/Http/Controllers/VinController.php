@@ -375,6 +375,15 @@ class VinController extends Controller
             $vins->vin_editarestado =  route('vin.editarestado', Crypt::encrypt($vins->vin_id));
             $vins->vin_edit =  route('vin.edit', Crypt::encrypt($vins->vin_id));
             $vins->rol_id = auth()->user()->rol_id;
+            if($vins->vin_fec_ingreso != null){
+                $vins->vin_fec_ingreso = date("d-m-Y", strtotime($vins->vin_fec_ingreso));
+            }
+            if ($vins->vin_fecha_agendado != null){
+                $vins->vin_fecha_agendado = date("d-m-Y", strtotime($vins->vin_fecha_agendado));
+            }
+            if ($vins->vin_fecha_entrega != null){
+                $vins->vin_fecha_entrega = date("d-m-Y", strtotime($vins->vin_fecha_entrega));
+            }
 
             if ($vins->vin_estado_inventario_id == 8){
                 $vinFechaEntrega = Entrega::where('vin_id', $vins->vin_id)
