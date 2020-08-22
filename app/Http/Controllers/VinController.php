@@ -1518,7 +1518,11 @@ class VinController extends Controller
 
         $array_vins = [];
         foreach($vin_ids as $vin_id){
-            $vin = Vin::find($vin_id);
+            $vin = Vin::leftJoin('entregas', 'vins.vin_id', '=', 'entregas.vin_id')
+                ->select('vins.*', 'entrega_fecha')
+                ->where('vins.vin_id', $vin_id)
+                ->first();
+            
             $vinExport = new Vin();
             $vinExport->vin_id = $vin->vin_id;
             $vinExport->vin_codigo = $vin->vin_codigo;
@@ -1537,7 +1541,7 @@ class VinController extends Controller
             $vinExport->vin_fec_ingreso = $vin->vin_fec_ingreso;
             $vinExport->user_id = $vin->oneUser->belongsToEmpresa->empresa_razon_social;
             $vinExport->vin_estado_inventario_id = $vin->oneVinEstadoInventario();
-            $vinExport->vin_fecha_entrega = $vin->vin_fecha_entrega;
+            $vinExport->vin_fecha_entrega = $vin->entrega_fecha;
             $vinExport->vin_fecha_agendado = $vin->vin_fecha_agendado;
 
             if($vin->vin_estado_inventario_id == 4 || $vin->vin_estado_inventario_id == 5 || $vin->vin_estado_inventario_id == 6){
