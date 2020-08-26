@@ -783,7 +783,7 @@ class VinController extends Controller
                     }
                 } else if($estado_previo == 8 && $estado_nuevo == 1){
                     $vin->vin_estado_inventario_id = $estado_nuevo;
-                    $vin->vin_fecha_ingreso = Carbon::now();
+                    $vin->vin_fec_ingreso = Carbon::now();
                     $vin->vin_predespacho = false;
                     $vin->vin_bloqueado_entrega = false;
                     $vin->vin_fecha_entrega = null;
@@ -1082,7 +1082,7 @@ class VinController extends Controller
                 }
             } else if($estado_previo == 8 && $estado_nuevo == 1){
                 $vin->vin_estado_inventario_id = $estado_nuevo;
-                $vin->vin_fecha_ingreso = Carbon::now();
+                $vin->vin_fec_ingreso = Carbon::now();
                 $vin->vin_predespacho = false;
                 $vin->vin_bloqueado_entrega = false;
                 $vin->vin_fecha_entrega = null;
@@ -1396,7 +1396,7 @@ class VinController extends Controller
                     }
                 } else if($estado_previo == 8 && $estado_nuevo == 1){
                     $vin->vin_estado_inventario_id = $estado_nuevo;
-                    $vin->vin_fecha_ingreso = Carbon::now();
+                    $vin->vin_fec_ingreso = Carbon::now();
                     $vin->vin_predespacho = false;
                     $vin->vin_bloqueado_entrega = false;
                     $vin->vin_fecha_entrega = null;
