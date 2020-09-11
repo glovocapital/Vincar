@@ -48,15 +48,28 @@ class VinController extends Controller
     public function index(Request $request)
     {
         /** Tareas creadas para mostrarse */
-         $vin_agendados = Vin::where('vin_predespacho', true)
-         ->where('vin_estado_inventario_id','!=', 8)
-         ->join('users','vins.user_id','=','users.user_id')
-         ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-         ->join('ubic_patios', 'vins.vin_id', '=', 'ubic_patios.vin_id')
-         ->join('bloques', 'ubic_patios.bloque_id', '=', 'bloques.bloque_id')
-         ->join('patios', 'bloques.patio_id', '=', 'patios.patio_id')
-         ->orderBy('vin_fecha_entrega')
-         ->get();
+        $queryAgendados = Vin::where('vin_predespacho', true)
+            ->where('vin_estado_inventario_id','!=', 8)
+            ->join('users','vins.user_id','=','users.user_id')
+            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+            ->join('ubic_patios', 'vins.vin_id', '=', 'ubic_patios.vin_id')
+            ->join('bloques', 'ubic_patios.bloque_id', '=', 'bloques.bloque_id')
+            ->join('patios', 'bloques.patio_id', '=', 'patios.patio_id');
+
+        if($request->from){
+            $date = Carbon::createFromFormat('Y-d-m', $request->from);
+
+            $queryAgendados->whereDate('vins.vin_fecha_agendado', '>=', $date);
+        }
+
+        if($request->to){
+            $date = Carbon::createFromFormat('Y-d-m', $request->to);
+
+            $queryAgendados->whereDate('vins.vin_fecha_agendado', '<=', $date);
+        }
+
+        $vin_agendados = $queryAgendados->orderBy('vin_fecha_entrega')
+            ->get();    
 
         $vin_entregados_dia = Vin::where('vin_estado_inventario_id', 8)
             ->join('users','vins.user_id','=','users.user_id')

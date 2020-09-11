@@ -63,6 +63,7 @@
           @endif
 
             <li class="sidebar-item @if(request()->route()->getName()=='vin.traspasovin') active @endif"><a class="sidebar-link" href="{{ route('vin.traspasovin') }}">Traspaso de VIN</a></li>
+            <li class="sidebar-item @if(request()->route()->getName()=='entrega.index') active @endif"><a class="sidebar-link" href="{{ route('entrega.index') }}">Entrega de VIN</a></li>
 
 
         </ul>

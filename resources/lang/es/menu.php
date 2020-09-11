@@ -35,6 +35,7 @@ return [
     'Vins'=>'Vins',
     'Patios'=>'Patios',
     'Planificacion'=>'Planificación',
+    'Entrega'=>'Entrega',
 
     'Solicitud_Servicio'=>'Solicitud de Servicio',
     'Solicitud_Campanas'=>'Solicitud de Campañas',

@@ -514,198 +514,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="mx-auto col-sm-12 main-section" id="myTab" role="tablist">
-                <ul class="nav nav-tabs justify-content-end">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="vin_agendados-tab" data-toggle="tab" href="#vin_agendados" role="tab" aria-controls="vin_agendados" aria-selected="true">VIN Agendados</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="vin_entregados-tab" data-toggle="tab" href="#vin_entregados" role="tab" aria-controls="vin_entregados" aria-selected="false">VIN Entregados</a>
-                    </li>
-              <!--      <li class="nav-item">
-                        <a class="nav-link" id="tareas-historicos-tab" data-toggle="tab" href="#tareas-historicos" role="tab" aria-controls="tareas-historicos" aria-selected="false">Histórico  Tareas</a>
-                    </li>  -->
-                </ul>
-
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="vin_agendados" role="tabpanel" aria-labelledby="vin_agendados-tab">
-                        <div class="ibox float-e-margins">
-                            <div class="card card-default">
-                                <div class="card-header">
-                                    <h3 class="card-title">VIN agendados para entrega</h3>
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                                    </div>
-                                </div>
-
-                                <div class="card-body">
-
-                                    <div class="table-responsive">
-                                        <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
-                                            <thead>
-                                            <tr>
-                                                <th>Código VIN</th>
-                                                <th>Patente</th>
-                                                <th>Marca</th>
-                                                <th>Vin Color</th>
-                                                <th>Fecha <br/> Agendamiento</th>
-                                                <th>Empresa</th>
-                                                <th>Patio</th>
-                                                <th>Ubicación</th>
-                                                <th>Eliminar</th>
-                                                <th>Bloquear <br/> Entrega</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            @php($item = 0)
-                                            @foreach($vin_agendados as $vin_agendado)
-                                                @php($item++)
-
-                                                @if(isset($vin_agendado))
-                                                    <tr>
-
-                                                        <td><small>{{ $vin_agendado->vin_codigo }}</small></td>
-                                                        <td><small>{{ $vin_agendado->vin_patente }}</small></td>
-                                                        <td><small>{{ strtoupper($vin_agendado->oneMarca->marca_nombre) }}</small></td>
-                                                        <td><small>{{ $vin_agendado->vin_color }}</small></td>
-                                                        <td><small>{{ date("d-m-Y", strtotime($vin_agendado->vin_fecha_agendado)) }}</small></td>
-                                                        <td><small>{{ $vin_agendado->empresa_razon_social }}</small></td>
-                                                        <td><small>{{ strtoupper($vin_agendado->patio_nombre) }}</small></td>
-                                                        <td><small>BLOQUE: {{ $vin_agendado->bloque_nombre }} <br/> FILA: {{ $vin_agendado->ubic_patio_fila }} <br/> COLUMNA: {{ $vin_agendado->ubic_patio_columna }}</small></td>
-
-                                                        <td>
-
-                                                            <small>
-                                                                <a href = "{{ route('vin.desagendado', Crypt::encrypt($vin_agendado->vin_id)) }}" onclick="return confirm('¿Esta seguro que desea quitar el agendamiento del VIN?')" class="btn-bloque" title="Eliminar Agendamiento"><i class="far fa-trash-alt"></i></a>
-                                                            </small>
-                                                        </td>
-                                                        <td>
-                                                            <div class="switch-button">
-                                                            {!! Form::open(['route' => 'vin.bloquea_entrega', 'method'=>'POST']) !!}
-                                                                <input type="checkbox" name="switch-button" id="switch-label-{{$item}}" class="switch-button__checkbox" value="{{$vin_agendado->vin_id}}"/>
-                                                                <label for="switch-label-{{$item}}" class="switch-button__label"></label>
-                                                            {!! Form::close() !!}
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                            @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tab-pane fade" id="vin_entregados" role="tabpanel" aria-labelledby="vin_entregados-tab">
-                        <div class="ibox float-e-margins">
-                            <div class="card card-default">
-                                <div class="card-header">
-                                    <h3 class="card-title">VIN entregados</h3>
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                                    </div>
-                                </div>
-
-                                <div class="card-body">
-                                    <div class="col-lg-12">
-                                        {!! Form::open(['route'=> 'vin.entregaExportResultadoBusquedaVins', 'method'=>'POST']) !!}
-                                            <div class="text pb-3">
-                                                {{ Form::button('<i class="fa fa-file-excel"></i> Exportar historial de entregas ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor'] )  }}
-                                            </div>
-                                        {!! Form::close() !!}
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
-                                            <thead>
-                                            <tr>
-                                                <th>Código VIN</th>
-                                                <th>Patente</th>
-                                                <th>Vin Color</th>
-                                                <th>Fecha Agendamiento</th>
-                                                <th>Fecha Retiro</th>
-                                                <th>Empresa</th>
-
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            @foreach($vin_entregados as $entregados)
-                                                @if(isset($entregados))
-                                                    <tr>
-                                                        <td><small>{{ $entregados->vin_codigo }}</small></td>
-                                                        <td><small>{{ $entregados->vin_patente }}</small></td>
-                                                        <td><small>{{ $entregados->vin_color }}</small></td>
-                                                        <td><small>{{ $entregados->vin_fecha_agendado }}</small></td>
-                                                        <td><small>{{ $entregados->entrega_fecha }}</small></td>
-                                                        <td><small>{{ $entregados->empresa_razon_social }}</small></td>
-
-                                                    </tr>
-                                                @endif
-                                            @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tab-pane fade " id="tareas-historicos" role="tabpanel" aria-labelledby="tareas-historicos-tab">
-                        <div class="ibox float-e-margins">
-                            <div class="card card-default">
-                                <div class="card-header">
-                                    <h3 class="card-title">Histórico Tareas</h3>
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                                    </div>
-                                </div>
-
-                                <div class="card-body">
-                                    <div class="col-lg-12">
-                                        {!! Form::open(['route'=> 'vin.entregaExportResultadoBusquedaVins', 'method'=>'POST']) !!}
-                                        <div class="text pb-3">
-                                            {{ Form::button('<i class="fa fa-file-excel"></i> Exportar historial de tareas ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor'] )  }}
-                                        </div>
-                                        {!! Form::close() !!}
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover" id="TareaCampanias" width="100%" cellspacing="0">
-                                            <thead>
-                                            <tr>
-                                                <th>Código VIN</th>
-                                                <th>Prioridad</th>
-
-                                                <th>Destino</th>
-
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            @foreach($vin_entregados_dia as $htarea)
-                                                <tr>
-                                                    <td><small>{{ $htarea->vin_codigo }}</small></td>
-                                                    <td><small>{{ $htarea->vin_patente }}</small></td>
-
-                                                </tr>
-                                            @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     @include('vin.partials.modal_asignar_tarea_lotes')
     @include('vin.partials.modal_cambia_estado')
@@ -714,7 +522,16 @@
 
 @stop
 @section('local-scripts')
-
+    <script>
+        $('#from').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: 'dd/mm/yyyy'
+        });
+        $('#to').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: 'dd/mm/yyyy'
+        });
+    </script>
 
 
     <script>
