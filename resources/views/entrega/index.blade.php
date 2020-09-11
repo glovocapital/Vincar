@@ -656,3 +656,42 @@
 
 
 @endsection
+
+@section('local-scripts')
+<script>
+    $(document).ready(function () {
+        $(".switch-button__checkbox").change(function() {
+            //e.preventDefault();
+
+            var vin_id = $(this).val();
+            
+            var bloqueado = false;
+            //Si el checkbox está seleccionado
+            if($(this).is(":checked")) {
+                bloqueado = true;
+            }
+
+            var request = {
+                _token: $("input[name='_token']").attr("value"),
+                bloqueado: bloqueado,
+                vin_id
+            };
+
+            var url = 'vin/bloqueaEntrega';
+
+            $.post(url, request, function (res) {
+                if(!res.success){
+                    alert(
+                        "Error inesperado al intentar bloquear entrega de VIN.\n\n" +
+                        "MENSAJE DEL SISTEMA:\n" +
+                        res.message + "\n\n"
+                    );
+                    return;  // Finaliza el intento de bloquear
+                }
+            }).fail(function () {
+                alert('Error: Fallo al intentar bloquear entrega de VIN.');
+            });
+        
+        });
+    });
+</script>

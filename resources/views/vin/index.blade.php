@@ -43,7 +43,7 @@
                                 <div class="col-lg-12">
                                     {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
                                     <div class="text pb-3">
-                                        {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary block full-width m-b', 'disabled'] )  }}
+                                        {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary btn-vehiculo-n-n block full-width m-b', 'disabled'] )  }}
                                     </div>
                                     {!! Form::close() !!}
                                     <div class="text  pb-3">
@@ -122,7 +122,7 @@
                                 <div class="col-lg-12">
                                     {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
                                     <div class="text pb-3">
-                                        {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary block full-width m-b', 'disabled'] )  }}
+                                        {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary btn-vehiculo-n-n block full-width m-b', 'disabled'] )  }}
                                     </div>
                                     {!! Form::close() !!}
                                     <div class="text  pb-3">
@@ -519,6 +519,7 @@
     @include('vin.partials.modal_cambia_estado')
     @include('vin.partials.modal_historico_vin')
     @include('vin.partials.modal_predespacho')
+    @include('vin.partials.modal_vehiculo_n_n')
 
 @stop
 @section('local-scripts')
@@ -826,6 +827,7 @@
                     checked = false;
                 }
             });
+            
             $('.btn-lote-vins').click(function (e){
                 e.preventDefault();
                 var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
