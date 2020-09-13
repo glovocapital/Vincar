@@ -543,6 +543,9 @@
             $('.btn-vehiculo-n-n').click(function (e) {
                 e.preventDefault();
 
+                $("#vin_id_nn").empty();
+                $("#vin_id_nn").append("<option value=''>Seleccione VIN</option>");
+
                 $.get("{{route('vehiculo_nn')}}", function (res) {
                     if(!res.success){
                         alert(
@@ -565,6 +568,8 @@
                     }
                     
                     $("#vehiculoN_NModal").modal('show');
+                }).fail(function () {
+                    alert('Error: ');
                 });
 
             });
@@ -616,6 +621,8 @@
                         $("#vin_marca_nombre_n_n").val(res.marca);
                         $("#vin_color_n_n").attr('value', res.vin.vin_color).val(res.vin.vin_color);
                         $("#vin_motor_n_n").attr('value', res.vin.vin_motor).val(res.vin.vin_motor);
+                    }).fail(function () {
+                        alert('Error: ');
                     });
                 } else {
                     $("#user_id_nn").val('');
@@ -635,16 +642,44 @@
             $('#btn-send-vehiculo-n-n').click(function (e) {
                 e.preventDefault();
 
-                $.post("{{route('vehiculo_nn.store')}}", $("#form-vehiculo-nn").serialize(), function (res) {
-                    if(!res.success){
-                        alert(
-                            "Error inesperado al solicitar la información.\n\n" +
-                            "MENSAJE DEL SISTEMA:\n" +
-                            res.message + "\n\n"
-                        );
-                        return;  // Finaliza el intento de obtener
-                    }
-                });   
+                if($.isNumeric($("#vin_id_nn").val())){
+                    $.post("{{route('vehiculo_nn.registrarVin')}}", $("#form-vehiculo-nn").serialize(), function (res) {
+                        if(!res.success){
+                            alert(
+                                "Error inesperado al solicitar la información.\n\n" +
+                                "MENSAJE DEL SISTEMA:\n" +
+                                res.message + "\n\n"
+                            );
+                            return;  // Finaliza el intento de obtener
+                        }
+
+                        $("#user_id_nn").val('');
+                        $("#usuario_responsable_nn").val('');
+                        $('#fotos_nn').empty(); 
+                        $("#thumbnail_nn").empty();
+                        $("#vin_codigo_n_n").attr('value', '').val('');
+                        $("#vin_patente_n_n").attr('value', '').val('');
+                        $("#vin_modelo_n_n").attr('value', '').val('');
+                        $("#vin_marca_nn").val('');
+                        $("#vin_marca_nombre_n_n").attr('value', '').val('');
+                        $("#vin_color_n_n").attr('value', '').val('');
+                        $("#vin_motor_n_n").attr('value', '').val('');
+
+                        $('#vin_id_nn option').each(function() {
+                            if ( $(this).val() == $('#vin_id_nn').val() ) {
+                                $(this).remove();
+                                $("#messages_n_n").empty();
+                                $("#messages_n_n").fadeIn();
+                            }
+                        });
+
+                        $("#messages_n_n").append('<p id="success-msg" class="bg-success" style="color: white;">' + res.message + '</p>').fadeOut(4500);
+                    }).fail(function () {
+                        alert('Error: ');
+                    });   
+                } else {
+                    alert("No se han enviado datos. Por favor seleccione un VIN.");
+                }   
             });
 
             // Búsqueda global de VINs

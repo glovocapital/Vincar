@@ -7,9 +7,10 @@
                 <h3 class="modal-title">Vehículos No Registrados</h3>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            {!! Form::open(['route'=> 'vehiculo_nn.store', 'method'=>'POST', 'id'=>"form-vehiculo-nn"]) !!}
+            {!! Form::open(['route'=> 'vehiculo_nn.registrarVin', 'method'=>'POST', 'id'=>"form-vehiculo-nn"]) !!}
             <div class="modal-body">
-
+                <div id="messages_n_n"></div>
+                    
                 <div class="row row-fluid">
                     <div class="col-md-6">
                         <div class="form-group">
