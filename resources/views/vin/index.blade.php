@@ -635,18 +635,16 @@
             $('#btn-send-vehiculo-n-n').click(function (e) {
                 e.preventDefault();
 
-                console.log($("#form-vehiculo-nn").serialize());
-
-                // $.post("{{route('vehiculo_nn.store')}}", $("#form-vehiculo-nn").serialize(), function (res) {
-                //     if(!res.success){
-                //         alert(
-                //             "Error inesperado al solicitar la información.\n\n" +
-                //             "MENSAJE DEL SISTEMA:\n" +
-                //             res.message + "\n\n"
-                //         );
-                //         return;  // Finaliza el intento de obtener
-                //     }
-                // });   
+                $.post("{{route('vehiculo_nn.store')}}", $("#form-vehiculo-nn").serialize(), function (res) {
+                    if(!res.success){
+                        alert(
+                            "Error inesperado al solicitar la información.\n\n" +
+                            "MENSAJE DEL SISTEMA:\n" +
+                            res.message + "\n\n"
+                        );
+                        return;  // Finaliza el intento de obtener
+                    }
+                });   
             });
 
             // Búsqueda global de VINs
