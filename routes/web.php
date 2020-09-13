@@ -86,7 +86,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
     Route::get('inspeccion/obtener_subcategorias_pieza/{id_categoria}', ['as' => 'inspeccion.subcategorias', 'uses' => 'InspeccionController@subcategorias']);
     Route::get('inspeccion/obtener_piezas/{id_subcategoria}', ['as' => 'inspeccion.piezas', 'uses' => 'InspeccionController@piezas']);
     Route::get('/fotos/{file}', function ($file) {
-    return Storage::response("fotos/$file");
+        return Storage::response("fotos/$file");
     });
 
     //Rutas mantenedor patios
@@ -343,7 +343,15 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('tour/{id}/edit','TourController@editTarea')->name('tour.edit');
     Route::patch('tour/{id}/update','TourController@update')->name('tour.update');
     Route::get('tour/{id}/delete','TourController@destroy')->name('tour.destroy');
+    
 
+
+    // Vehículos N/N
+    Route::get('vehiculo_nn','VehiculoNNController@index')->name('vehiculo_nn');
+    
+    Route::get('vehiculo_nn/{vin_id}/data_vin_nn','VehiculoNNController@dataVinNN')->name('vehiculo_nn.data_vin_nn');
+
+    Route::post('vehiculo_nn/store','VehiculoNNController@store')->name('vehiculo_nn.store');
 
 });
 

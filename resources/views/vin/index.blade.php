@@ -43,7 +43,7 @@
                                 <div class="col-lg-12">
                                     {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
                                     <div class="text pb-3">
-                                        {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary btn-vehiculo-n-n block full-width m-b', 'disabled'] )  }}
+                                        {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary btn-vehiculo-n-n block full-width m-b'] )  }}
                                     </div>
                                     {!! Form::close() !!}
                                     <div class="text  pb-3">
@@ -122,7 +122,7 @@
                                 <div class="col-lg-12">
                                     {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
                                     <div class="text pb-3">
-                                        {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary btn-vehiculo-n-n block full-width m-b', 'disabled'] )  }}
+                                        {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary btn-vehiculo-n-n block full-width m-b'] )  }}
                                     </div>
                                     {!! Form::close() !!}
                                     <div class="text  pb-3">
@@ -524,18 +524,6 @@
 @stop
 @section('local-scripts')
     <script>
-        $('#from').datepicker({
-            uiLibrary: 'bootstrap4',
-            format: 'dd/mm/yyyy'
-        });
-        $('#to').datepicker({
-            uiLibrary: 'bootstrap4',
-            format: 'dd/mm/yyyy'
-        });
-    </script>
-
-
-    <script>
         $(document).ready(function () {
             var checked = false;
 
@@ -551,40 +539,115 @@
                 buttons: ["copy", "print"],
             });
 
-            $(".switch-button__checkbox").change(function() {
-                //e.preventDefault();
+            //Carga de Modal Vehículos N/N
+            $('.btn-vehiculo-n-n').click(function (e) {
+                e.preventDefault();
 
-                var vin_id = $(this).val();
-                
-                var bloqueado = false;
-                //Si el checkbox está seleccionado
-                if($(this).is(":checked")) {
-                    bloqueado = true;
-                }
-
-                var request = {
-                    _token: $("input[name='_token']").attr("value"),
-                    bloqueado: bloqueado,
-                    vin_id
-                };
-
-                var url = 'vin/bloqueaEntrega';
-
-                $.post(url, request, function (res) {
+                $.get("{{route('vehiculo_nn')}}", function (res) {
                     if(!res.success){
                         alert(
-                            "Error inesperado al intentar bloquear entrega de VIN.\n\n" +
+                            "Error inesperado al solicitar la información.\n\n" +
                             "MENSAJE DEL SISTEMA:\n" +
                             res.message + "\n\n"
                         );
-                        return;  // Finaliza el intento de bloquear
+                        return;  // Finaliza el intento de obtener
                     }
-                }).fail(function () {
-                    alert('Error: Fallo al intentar bloquear entrega de VIN.');
+                    var arr_vins = $.map(res.vins, function (e1) {
+                        return e1;
+                    });
+
+                    var arr_vin_ids = $.map(res.vin_ids, function (e1) {
+                        return e1;
+                    });
+
+                    for (var i = 0; i < arr_vins.length; i++){
+                        $("#vin_id_nn").append("<option value=" + arr_vin_ids[i] + ">" + arr_vins[i] + "</option>");
+                    }
+                    
+                    $("#vehiculoN_NModal").modal('show');
                 });
-            
+
             });
 
+            $('#vin_id_nn').on('change', function(e) {
+                e.preventDefault();
+
+                var sel = $(this).val();
+
+                if($.isNumeric(sel)) {
+                    
+                    var url = "vehiculo_nn/" + sel +"/data_vin_nn";                                    
+
+                    $.get(url, function (res) {
+                        if(!res.success){
+                            alert(
+                                "Error inesperado al solicitar la información.\n\n" +
+                                "MENSAJE DEL SISTEMA:\n" +
+                                res.message + "\n\n"
+                            );
+                            return;  // Finaliza el intento de obtener
+                        }
+
+                        $("#user_id_nn").val(res.user.user_id);
+                        $("#usuario_responsable_nn").val(res.user.user_nombre + ' ' + res.user.user_apellido);
+
+                        var arr_fotos = $.map(res.fotos, function (e1) {
+                            return e1;
+                        }); 
+
+                        if(arr_fotos.length > 0){
+                            $('#fotos_nn').append('<h4 id="titulo_fotos_nn">Fotos Pre-inspección</h4>'); 
+                            $('#fotos_nn').append('<h5 id="nota_fotos_nn">Serán añadidas al realizar la inspección del VIN</h5>'); 
+                            $('#fotos_nn').append('<table class="table table-borderless table-hover" id="thumbnail_nn"></table>'); 
+                        }
+
+                        for (var i = 0; i < arr_fotos.length; i++){
+                            if (i == 0){
+                                $("#thumbnail_nn").empty();
+                            }
+
+                            $("#thumbnail_nn").append("<td><img src='/" + arr_fotos[i].foto_ubic_archivo + "' alt='/" + arr_fotos[i].foto_ubic_archivo + "' width='100' height='100'></td>");                            
+                        }
+
+                        $("#vin_codigo_n_n").attr('value', res.vin.vin_codigo).val(res.vin.vin_codigo);
+                        $("#vin_patente_n_n").attr('value', res.vin.vin_patente).val(res.vin.vin_patente);
+                        $("#vin_modelo_n_n").attr('value', res.vin.vin_modelo).val(res.vin.vin_modelo);
+                        $("#vin_marca_nn").val(res.vin.vin_marca);
+                        $("#vin_marca_nombre_n_n").val(res.marca);
+                        $("#vin_color_n_n").attr('value', res.vin.vin_color).val(res.vin.vin_color);
+                        $("#vin_motor_n_n").attr('value', res.vin.vin_motor).val(res.vin.vin_motor);
+                    });
+                } else {
+                    $("#user_id_nn").val('');
+                    $("#usuario_responsable_nn").val('');
+                    $('#fotos_nn').empty(); 
+                    $("#thumbnail_nn").empty();
+                    $("#vin_codigo_n_n").attr('value', '').val('');
+                    $("#vin_patente_n_n").attr('value', '').val('');
+                    $("#vin_modelo_n_n").attr('value', '').val('');
+                    $("#vin_marca_nn").val('');
+                    $("#vin_marca_nombre_n_n").attr('value', '').val('');
+                    $("#vin_color_n_n").attr('value', '').val('');
+                    $("#vin_motor_n_n").attr('value', '').val('');
+                }       
+            });
+
+            $('#btn-send-vehiculo-n-n').click(function (e) {
+                e.preventDefault();
+
+                console.log($("#form-vehiculo-nn").serialize());
+
+                // $.post("{{route('vehiculo_nn.store')}}", $("#form-vehiculo-nn").serialize(), function (res) {
+                //     if(!res.success){
+                //         alert(
+                //             "Error inesperado al solicitar la información.\n\n" +
+                //             "MENSAJE DEL SISTEMA:\n" +
+                //             res.message + "\n\n"
+                //         );
+                //         return;  // Finaliza el intento de obtener
+                //     }
+                // });   
+            });
 
             // Búsqueda global de VINs
             $('.btn-busqueda-vin-lote').click(function (e){
@@ -604,8 +667,6 @@
                     alert("Debe seleccionar al menos un vin del listado.");
                     $("#btn-listado-vins").attr("disabled", "disabled");
                 }
-
-
             });
             
             $('#btn-src').on('click',function(e){
@@ -827,7 +888,7 @@
                     checked = false;
                 }
             });
-            
+
             $('.btn-lote-vins').click(function (e){
                 e.preventDefault();
                 var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
