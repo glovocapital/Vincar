@@ -50,7 +50,12 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="marca_id" >Marca <strong>*</strong></label>
-                                {!! Form::select('marca_id', $marcas, null,['id' => 'marca', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9']) !!}
+                                <select name="marca_id" id="marca_id" class="form-control col-sm-9" placeholder="Marca">
+                                    <option value="">Marca</option>
+                                    @foreach ($marcas as $marca_id => $marca_nombre)
+                                    <option value="{{ $marca_id }}">{{ ucwords($marca_nombre) }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="form-group">

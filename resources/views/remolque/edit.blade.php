@@ -39,13 +39,20 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="remolque_marca" >Marca <strong>*</strong></label>
-                                {!! Form::text('remolque_marca', $remolque->remolque_marca, ['placeholder'=>'Marca', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            <label for="marca_id" >Marca <strong>*</strong></label>
+                                <select name="marca_id" id="marca_id" class="form-control">
+                                    <option value="">Marca</option>
+                                    @foreach ($marcas as $marca_id => $marca_nombre)
+                                        <option value="{{ $marca_id }}" {{ old('marca_id', $remolque->remolque_marca) == $marca_id ? ' selected' : '' }}>
+                                            {{ ucwords($marca_nombre) }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="empresa_id" >Empresa <strong>*</strong></label>
-                                {!! Form::select('empresa_id', $empresa, $remolque->empresa_id, ['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                                {!! Form::select('empresa_id', $empresas, $remolque->empresa_id, ['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                             </div>
 
                             <div class="form-group">

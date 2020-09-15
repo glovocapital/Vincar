@@ -17,37 +17,44 @@
                     <div class="row">
 
                         <div class="col-md-4">
-                            {!! Form::open(['route'=> ['camiones.update', Crypt::encrypt($camiones->camion_id)], 'method'=>'PATCH', 'files' => true]) !!}
+                            {!! Form::open(['route'=> ['camiones.update', Crypt::encrypt($camion->camion_id)], 'method'=>'PATCH', 'files' => true]) !!}
 
                             <div class="form-group">
                                 <label for="camion_patente" >Patente <strong>*</strong></label>
-                                {!! Form::text('camion_patente', $camiones->camion_patente, ['placeholder'=>'Patente', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                {!! Form::text('camion_patente', $camion->camion_patente, ['placeholder'=>'Patente', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
 
                             <div class="form-group">
                                 <label for="camion_anio" >Año <strong>*</strong></label>
-                                {!! Form::number('camion_anio', $camiones->camion_anio, ['placeholder'=>'Año ', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                {!! Form::number('camion_anio', $camion->camion_anio, ['placeholder'=>'Año ', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
                             <div class="form-group">
                                 <label for="camion_fecha_revision" >Próxima Revisión <strong>*</strong></label>
-                                {!! Form::date('camion_fecha_revision', $camiones->camion_fecha_revision, [ 'class'=>'form-control col-sm-9', 'required']) !!}
+                                {!! Form::date('camion_fecha_revision', $camion->camion_fecha_revision, [ 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="camion_marca" >Marca <strong>*</strong></label>
-                                {!! Form::text('camion_marca', $camiones->camion_marca, ['placeholder'=>'Marca', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                <label for="marca_id" >Marca <strong>*</strong></label>
+                                <select name="marca_id" id="marca_id" class="form-control">
+                                    <option value="">Marca</option>
+                                    @foreach ($marcas as $marca_id => $marca_nombre)
+                                        <option value="{{ $marca_id }}" {{ old('marca_id', $camion->camion_marca) == $marca_id ? ' selected' : '' }}>
+                                            {{ ucwords($marca_nombre) }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="empresa_id" >Empresa <strong>*</strong></label>
-                                {!! Form::select('empresa_id', $empresa, $camiones->empresa_id, ['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                                {!! Form::select('empresa_id', $empresas, $camion->empresa_id, ['class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                             </div>
 
                             <div class="form-group">
                                 <label for="">Subir Foto</label>
-                                {!! Form::file('camion_foto_documento',$camiones->camion_foto_documento); !!}
+                                {!! Form::file('camion_foto_documento',$camion->camion_foto_documento); !!}
                             </div>
 
                         </div>
@@ -55,11 +62,11 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="camion_modelo" >Modelo <strong>*</strong></label>
-                                {!! Form::text('camion_modelo', $camiones->camion_modelo, ['placeholder'=>'Modelo', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                {!! Form::text('camion_modelo', $camion->camion_modelo, ['placeholder'=>'Modelo', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
                             <div class="form-group">
                                 <label for="camion_fecha_circulacion" >Permiso de Circulación <strong>*</strong></label>
-                                 {!! Form::date('camion_fecha_circulacion', $camiones->camion_fecha_circulacion, [ 'class'=>'form-control col-sm-9', 'required']) !!}
+                                 {!! Form::date('camion_fecha_circulacion', $camion->camion_fecha_circulacion, [ 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
                         </div>
                     </div>

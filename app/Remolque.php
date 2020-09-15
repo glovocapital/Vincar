@@ -17,6 +17,10 @@ class Remolque extends Model
         'remolque_patente', 'remolque_modelo', 'remolque_marca', 'remolque_anio', 'remolque_capacidad',
     ];
 
+    public function oneMarca(){
+        return $this->hasOne(Marca::class, 'marca_id', 'remolque_marca');
+    }
+
     public function belongsToEmpresa (){
         return $this->belongsTo(Empresa::class, 'empresa_id', 'empresa_id');
     }

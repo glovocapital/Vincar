@@ -33,9 +33,11 @@ class RemolqueController extends Controller
         $remolques = Remolque::all(); 
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
+            ->orderBy('empresa_razon_social')
             ->pluck('empresa_razon_social', 'empresa_id');
 
         $marcas = Marca::select('marca_id', 'marca_nombre')
+            ->orderBy('marca_nombre')
             ->pluck('marca_nombre', 'marca_id');
 
         return view('remolque.index', compact('remolques','empresas', 'marcas'));
@@ -90,7 +92,7 @@ class RemolqueController extends Controller
 
             $remolque->save();
 
-            flash('El remolque se creo correctamente.')->success();
+            flash('Remolque registrado correctamente.')->success();
             return redirect('remolque');
 
         }catch (\Exception $e) {
@@ -105,6 +107,7 @@ class RemolqueController extends Controller
     {
         $remolque_id =  Crypt::decrypt($id);
         $remolque = Remolque::findOrfail($remolque_id);
+        
         $name = $remolque->remolque_foto_documentos;
         if(!is_null($name))
         {
@@ -115,8 +118,6 @@ class RemolqueController extends Controller
             return redirect('remolque');
 
         }
-
-
     }
 
     /**
@@ -141,12 +142,15 @@ class RemolqueController extends Controller
         $remolque_id =  Crypt::decrypt($id);
         $remolque = Remolque::findOrfail($remolque_id);
 
-        $empresa = DB::table('empresas')
-        ->select('empresa_id', 'empresa_razon_social')
-        ->where('deleted_at', null)
-        ->pluck('empresa_razon_social', 'empresa_id');
+        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
+            ->orderBy('empresa_razon_social')
+            ->pluck('empresa_razon_social', 'empresa_id');
 
-        return view('remolque.edit', compact('remolque', 'empresa'));
+        $marcas = Marca::select('marca_id', 'marca_nombre')
+            ->orderBy('marca_nombre')
+            ->pluck('marca_nombre', 'marca_id');
+
+        return view('remolque.edit', compact('remolque', 'empresas', 'marcas'));
 
     }
 
@@ -163,67 +167,38 @@ class RemolqueController extends Controller
         $remolque_id =  Crypt::decrypt($id);
         $remolque =  Remolque::findOrfail($remolque_id);
 
-        if(is_null($request->remolque_foto_documento)){
+        try {
+            $remolque->remolque_patente = $request->remolque_patente;
+            $remolque->remolque_modelo = $request->remolque_modelo;
+            $remolque->remolque_marca = $request->marca_id;
+            $remolque->remolque_anio = $request->remolque_anio;
+            $remolque->empresa_id = $request->empresa_id;
+            $remolque->remolque_capacidad = $request->remolque_capacidad;
+            $remolque->remolque_fecha_circulacion = $request->remolque_fecha_circulacion;
+            $remolque->remolque_fecha_revision = $request->remolque_fecha_revision;
 
-            try {
-
-                $remolque->remolque_patente = $request->remolque_patente;
-                $remolque->remolque_modelo = $request->remolque_modelo;
-                $remolque->remolque_marca = $request->remolque_marca;
-                $remolque->remolque_anio = $request->remolque_anio;
-                $remolque->empresa_id = $request->empresa_id;
-                $remolque->remolque_capacidad = $request->remolque_capacidad;
-                $remolque->remolque_fecha_circulacion = $request->remolque_fecha_circulacion;
-                $remolque->remolque_fecha_revision = $request->remolque_fecha_revision;
-
-                $remolque->save();
-
-                flash('Los datos del remolque se editaron correctamente.')->success();
-                return redirect('remolque');
-
-            }catch (\Exception $e) {
-
-                flash('Error al editar el remolque.')->error();
-               //flash($e->getMessage())->error();
-                return redirect('remolque');
-            }
-
-        }else{
-
-            $fotoRemolque = $request->file('remolque_foto_documento');
-            $extensionFoto = $fotoRemolque->extension();
-
-            $path = $fotoRemolque->storeAs(
-                'documentosRemolque',
-                "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-            );
-
-            try {
-
-                $remolque->remolque_patente = $request->remolque_patente;
-                $remolque->remolque_modelo = $request->remolque_modelo;
-                $remolque->remolque_marca = $request->remolque_marca;
-                $remolque->remolque_anio = $request->remolque_anio;
-                $remolque->empresa_id = $request->empresa_id;
-                $remolque->remolque_capacidad = $request->remolque_capacidad;
-                $remolque->remolque_fecha_circulacion = $request->remolque_fecha_circulacion;
-                $remolque->remolque_fecha_revision = $request->remolque_fecha_revision;
+            if(!is_null($request->remolque_foto_documento)){
+                $fotoRemolque = $request->file('remolque_foto_documento');
+                $extensionFoto = $fotoRemolque->extension();
+    
+                $path = $fotoRemolque->storeAs(
+                    'documentosRemolque',
+                    "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+                );            
                 $remolque->remolque_foto_documentos = $path;
-
-                $remolque->save();
-
-                flash('Los datos del remolque se editaron correctamente.')->success();
-                return redirect('remolque');
-
-            }catch (\Exception $e) {
-
-                flash('Error al editar el remolque.')->error();
-               //flash($e->getMessage())->error();
-                return redirect('remolque');
             }
 
-        }
+            $remolque->save();
 
+            flash('Remolque actualizado correctamente.')->success();
+            return redirect('remolque');
+
+        }catch (\Exception $e) {
+
+            flash('Error al actualizar el remolque.')->error();
+           //flash($e->getMessage())->error();
+            return redirect('remolque');
+        }
     }
 
     /**
