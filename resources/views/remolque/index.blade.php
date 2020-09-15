@@ -3,6 +3,17 @@
 @section('content')
 @include('flash::message')
 
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h5 style="color:white"><i class="icon fa fa-times-circle"></i> Por favor corrige los siguientes errores:</h5>
+        <ul>
+            @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+@endif
 
 <div class="col-lg-12">
         <div class="ibox float-e-margins">
@@ -20,33 +31,15 @@
                             {!! Form::open(['route'=> 'remolque.store', 'method'=>'POST', 'files' => true]) !!}
 
                             <div class="form-group">
-                                    <label for="remolque_patente" >Patente <strong>*</strong></label>
-                                    {!! Form::text('remolque_patente', null, ['placeholder'=>'Patente', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                <label for="remolque_patente" >Patente <strong>*</strong></label>
+                                {!! Form::text('remolque_patente', null, ['placeholder'=>'Patente', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
 
                             <div class="form-group">
                                 <label for="remolque_anio" >Año <strong>*</strong></label>
                                 {!! Form::number('remolque_anio', '2020', ['min' => '1980','placeholder'=>'Año', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
-                            <div class="form-group">
-                                <label for="remolque_fecha_circulacion" >Permiso de Circulación <strong>*</strong></label>
-                                 {!! Form::date('remolque_fecha_circulacion', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                    <label for="remolque_marca">Marca <strong>*</strong></label>
-                                    {!! Form::text('remolque_marca', null, ['placeholder'=>'Marca', 'class'=>'form-control col-sm-9', 'required']) !!}
-
-                            </div>
-
-                            <div class="form-group">
-                                <label for="empresa_id">Empresa <strong>*</strong></label>
-                                {!! Form::select('empresa_id', $empresa, null,['placeholder'=>'Empresa','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                            </div>
-
+                            
                             <div class="form-group">
                                 <label for="remolque_fecha_revision" >Próxima Revisión <strong>*</strong></label>
                                  {!! Form::date('remolque_fecha_revision', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
@@ -56,19 +49,38 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                    <label for="remolque_modelo" class="col-sm-3">Modelo<strong>*</strong></label>
-                                    {!! Form::text('remolque_modelo', null, ['placeholder'=>'Modelo', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                <label for="marca_id" >Marca <strong>*</strong></label>
+                                {!! Form::select('marca_id', $marcas, null,['id' => 'marca', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9']) !!}
                             </div>
 
                             <div class="form-group">
-                                    <label for="remolque_capacidad" >Capacidad <strong>*</strong></label>
-                                    {!! Form::number('remolque_capacidad', '0', ['min' => '0','placeholder'=>'Capaciad', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                <label for="empresa_id">Empresa <strong>*</strong></label>
+                                {!! Form::select('empresa_id', $empresas, null,['placeholder'=>'Empresa','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                             </div>
 
                             <div class="form-group">
-                                <label for="">Subir Foto</label>
+                                <label for="">Foto del documento del Remolque</label>
                                 {!! Form::file('remolque_foto_documento'); !!}
                             </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="remolque_modelo">Modelo<strong>*</strong></label>
+                                {!! Form::text('remolque_modelo', null, ['placeholder'=>'Modelo', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="remolque_fecha_circulacion" >Permiso de Circulación <strong>*</strong></label>
+                                 {!! Form::date('remolque_fecha_circulacion', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="remolque_capacidad" >Capacidad <strong>*</strong></label>
+                                {!! Form::number('remolque_capacidad', '0', ['min' => '0','placeholder'=>'Capacidad', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
+                            
                         </div>
                     </div>
 
@@ -118,27 +130,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach($remolque as $p)
+                            @foreach($remolques as $remolque)
 
                                 <tr>
-                                    <td><small>{{ $p->remolque_patente }}</small></td>
-                                    <td><small>{{ $p->remolque_marca }}</small></td>
-                                    <td><small>{{ $p->remolque_modelo }}</small></td>
-                                    <td><small>{{ $p->remolque_anio }}</small></td>
-                                    <td><small>{{ $p->remolque_capacidad }}</small></td>
-                                    <td><small>{{ $p->remolque_fecha_circulacion }}</small></td>
-                                    <td><small>{{ $p->remolque_fecha_revision }}</small></td>
+                                    <td><small>{{ $remolque->remolque_patente }}</small></td>
+                                    <td><small>{{ $remolque->remolque_marca }}</small></td>
+                                    <td><small>{{ $remolque->remolque_modelo }}</small></td>
+                                    <td><small>{{ $remolque->remolque_anio }}</small></td>
+                                    <td><small>{{ $remolque->remolque_capacidad }}</small></td>
+                                    <td><small>{{ $remolque->remolque_fecha_circulacion }}</small></td>
+                                    <td><small>{{ $remolque->remolque_fecha_revision }}</small></td>
 
-                                    <td><small>{{ $p->belongsToEmpresa->empresa_razon_social }}</small></td>
+                                    <td><small>{{ $remolque->belongsToEmpresa->empresa_razon_social }}</small></td>
 
-                                    <td><small> <a href="{{route('remolque.download', Crypt::encrypt($p->remolque_id)) }}">Documento</small> </td>
+                                    <td><small> <a href="{{route('remolque.download', Crypt::encrypt($remolque->remolque_id)) }}">Documento</small> </td>
 
                                     <td>
                                         <small>
-                                            <a href="{{ route('remolque.edit', Crypt::encrypt($p->remolque_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
+                                            <a href="{{ route('remolque.edit', Crypt::encrypt($remolque->remolque_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
                                         </small>
                                         <small>
-                                                <a href = "{{ route('remolque.destroy', Crypt::encrypt($p->remolque_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
+                                                <a href = "{{ route('remolque.destroy', Crypt::encrypt($remolque->remolque_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
                                                 </a>
                                         </small>
                                     </td>

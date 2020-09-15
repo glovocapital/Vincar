@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Crypt;
-use App\Http\Middleware\CheckSession;
+use App\Camion;
+use App\Empresa;
+use App\Marca;
 use DB;
 use Illuminate\Support\Facades\Auth;
-use App\Camion;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Middleware\CheckSession;
+use App\Http\Requests\CrearCamionRequest;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CamionesController extends Controller
 {
@@ -30,15 +33,15 @@ class CamionesController extends Controller
      */
     public function index()
     {
+        $camiones = Camion::all();
 
+        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
+            ->pluck('empresa_razon_social', 'empresa_id');
 
-        $empresa = DB::table('empresas')
-        ->select('empresa_id', 'empresa_razon_social')
-        ->where('deleted_at', null)
-        ->pluck('empresa_razon_social', 'empresa_id');
+        $marcas = Marca::select('marca_id', 'marca_nombre')
+            ->pluck('marca_nombre', 'marca_id');
 
-        $camion = Camion::all();
-        return view('camion.index', compact('camion','empresa'));
+        return view('camion.index', compact('camiones', 'empresas', 'marcas'));
     }
 
     /**
@@ -65,7 +68,7 @@ class CamionesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CrearCamionRequest $request)
     {
         $fotoCamion = $request->file('camion_foto_documento');
         $extensionFoto = $fotoCamion->extension();
@@ -74,13 +77,13 @@ class CamionesController extends Controller
             "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
         );
 
-
         try {
 
             $camion = new Camion();
+            
             $camion->camion_patente = $request->camion_patente;
             $camion->camion_modelo = $request->camion_modelo;
-            $camion->camion_marca = $request->camion_marca;
+            $camion->camion_marca = $request->marca_id;
             $camion->camion_anio = $request->camion_anio;
             $camion->camion_fecha_circulacion = $request->camion_fecha_circulacion;
             $camion->camion_fecha_revision = $request->camion_fecha_revision;

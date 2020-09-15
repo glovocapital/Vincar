@@ -3,6 +3,17 @@
 @section('content')
 @include('flash::message')
 
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h5 style="color:white"><i class="icon fa fa-times-circle"></i> Por favor corrige los siguientes errores:</h5>
+        <ul>
+            @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+@endif
 
 <div class="col-lg-12">
         <div class="ibox float-e-margins">
@@ -20,8 +31,8 @@
                             {!! Form::open(['route'=> 'camiones.store', 'method'=>'POST', 'files' => true]) !!}
 
                             <div class="form-group">
-                                    <label for="camion_patente" >Patente <strong>*</strong></label>
-                                    {!! Form::text('camion_patente', null, ['placeholder'=>'Patente', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                <label for="camion_patente" >Patente <strong>*</strong></label>
+                                {!! Form::text('camion_patente', null, ['placeholder'=>'Patente', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
 
                             <div class="form-group">
@@ -38,17 +49,17 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                    <label for="camion_marca">Marca <strong>*</strong></label>
-                                    {!! Form::text('camion_marca', null, ['placeholder'=>'Marca', 'class'=>'form-control col-sm-9', 'required']) !!}
+                                <label for="marca_id" >Marca <strong>*</strong></label>
+                                {!! Form::select('marca_id', $marcas, null,['id' => 'marca', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9']) !!}
                             </div>
 
                             <div class="form-group">
-                                <label for="empresa_id" >Empresa <strong>*</strong></label>
-                                {!! Form::select('empresa_id', $empresa, null,['placeholder'=>'Empresa','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                                <label for="empresa_id">Empresa <strong>*</strong></label>
+                                {!! Form::select('empresa_id', $empresas, null,['placeholder'=>'Empresa','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                             </div>
 
                             <div class="form-group">
-                                <label for="">Subir Foto</label>
+                                <label for="">Foto del documento del Camión</label>
                                 {!! Form::file('camion_foto_documento'); !!}
                             </div>
 
@@ -59,6 +70,7 @@
                                 <label for="camion_modelo">Modelo <strong>*</strong></label>
                                 {!! Form::text('camion_modelo', null, ['placeholder'=>'Modelo', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
+
                             <div class="form-group">
                                 <label for="camion_fecha_circulacion" >Permiso de Circulación <strong>*</strong></label>
                                  {!! Form::date('camion_fecha_circulacion', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
@@ -114,26 +126,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach($camion as $p)
+                            @foreach($camiones as $camion)
 
                                 <tr>
-                                    <td><small>{{ $p->camion_patente }}</small></td>
-                                    <td><small>{{ $p->camion_marca }}</small></td>
-                                    <td><small>{{ $p->camion_modelo }}</small></td>
-                                    <td><small>{{ $p->camion_anio }}</small></td>
-                                    <td><small>{{ $p->camion_fecha_circulacion }}</small></td>
-                                    <td><small>{{ $p->camion_fecha_revision }}</small></td>
+                                    <td><small>{{ $camion->camion_patente }}</small></td>
+                                    <td><small>{{ $camion->camion_marca }}</small></td>
+                                    <td><small>{{ $camion->camion_modelo }}</small></td>
+                                    <td><small>{{ $camion->camion_anio }}</small></td>
+                                    <td><small>{{ $camion->camion_fecha_circulacion }}</small></td>
+                                    <td><small>{{ $camion->camion_fecha_revision }}</small></td>
 
-                                    <td><small>{{ $p->belongsToEmpresa->empresa_razon_social }}</small></td>
+                                    <td><small>{{ $camion->belongsToEmpresa->empresa_razon_social }}</small></td>
 
-                                    <td><small> <a href="{{route('camiones.download', Crypt::encrypt($p->camion_id)) }}">Documento</small> </td>
+                                    <td><small> <a href="{{route('camiones.download', Crypt::encrypt($camion->camion_id)) }}">Documento</small> </td>
 
                                     <td>
                                         <small>
-                                            <a href="{{ route('camiones.edit', Crypt::encrypt($p->camion_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
+                                            <a href="{{ route('camiones.edit', Crypt::encrypt($camion->camion_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
                                         </small>
                                         <small>
-                                                <a href = "{{ route('camiones.destroy', Crypt::encrypt($p->camion_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
+                                                <a href = "{{ route('camiones.destroy', Crypt::encrypt($camion->camion_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
                                                 </a>
                                         </small>
                                     </td>

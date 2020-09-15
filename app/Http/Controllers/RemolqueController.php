@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Http\Middleware\CheckSession;
+use App\Empresa;
+use App\Marca;
 use App\Remolque;
-use Illuminate\Support\Facades\Crypt;
 use DB;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Middleware\CheckSession;
+use App\Http\Requests\CrearRemolqueRequest;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class RemolqueController extends Controller
@@ -28,13 +30,15 @@ class RemolqueController extends Controller
      */
     public function index()
     {
-        $empresa = DB::table('empresas')
-        ->select('empresa_id', 'empresa_razon_social')
-        ->where('deleted_at', null)
-        ->pluck('empresa_razon_social', 'empresa_id');
+        $remolques = Remolque::all(); 
 
-        $remolque = Remolque::all();
-        return view('remolque.index', compact('remolque','empresa'));
+        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
+            ->pluck('empresa_razon_social', 'empresa_id');
+
+        $marcas = Marca::select('marca_id', 'marca_nombre')
+            ->pluck('marca_nombre', 'marca_id');
+
+        return view('remolque.index', compact('remolques','empresas', 'marcas'));
     }
 
     /**
@@ -61,7 +65,7 @@ class RemolqueController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CrearRemolqueRequest $request)
     {
         $fotoRemolque = $request->file('remolque_foto_documento');
         $extensionFoto = $fotoRemolque->extension();
@@ -76,15 +80,13 @@ class RemolqueController extends Controller
 
             $remolque->remolque_patente = $request->remolque_patente;
             $remolque->remolque_modelo = $request->remolque_modelo;
-            $remolque->remolque_marca = $request->remolque_marca;
+            $remolque->remolque_marca = $request->marca_id;
             $remolque->remolque_anio = $request->remolque_anio;
-            $remolque->remolque_capacidad = $request->remolque_capacidad;
             $remolque->remolque_fecha_circulacion = $request->remolque_fecha_circulacion;
             $remolque->remolque_fecha_revision = $request->remolque_fecha_revision;
+            $remolque->remolque_capacidad = $request->remolque_capacidad;
             $remolque->empresa_id = $request->empresa_id;
             $remolque->remolque_foto_documentos = $path;
-
-
 
             $remolque->save();
 

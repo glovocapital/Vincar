@@ -127,6 +127,7 @@ class TourController extends Controller
 
 */
 
+        
         $diferencia_licencia = $fecha_viaje->diffInDays($licencia_valida);
         $diferencia_revision_camion = $fecha_viaje->diffInDays($revision_camion);
         $diferencia_permiso_camion = $fecha_viaje->diffInDays($permiso_camion);
@@ -134,19 +135,24 @@ class TourController extends Controller
         $diferencia_permiso_remolque = $fecha_viaje->diffInDays($permiso_remolque);
 
 
-
+        // La licencia debe tener al menos 16 días de vigencia al momento del viaje. 
+        // La fecha del viaje no puede ser posterior al vencimiento de la licencia
         if($diferencia_licencia <= 15 || $fecha_viaje > $licencia_valida )
         {
             flash('No se puede crear el tour con este conductor, licencia de conducir vencida o a punto de vencer')->error();
             return redirect('tour');
         }
 
+        // La revisión y permiso de circulación del camión deben tener al menos 16 días de vigencia al momento del viaje.
+        // La fecha del viaje no puede ser posterior al vencimiento de la revisión y/o permiso de circulación del camión.
         if($diferencia_revision_camion <= 15 || $diferencia_permiso_camion <= 15 || $fecha_viaje > $permiso_camion || $fecha_viaje > $revision_camion)
         {
             flash('No se puede crear el tour con este camión, debe revisar el permisos de circulación o fecha de revisión del mismo')->error();
             return redirect('tour');
         }
 
+        // La revisión y permiso de circulación del remolque deben tener al menos 16 días de vigencia al momento del viaje.
+        // La fecha del viaje no puede ser posterior al vencimiento de la revisión y/o permiso de circulación del remolque.
         if($diferencia_revision_remolque <= 15 || $diferencia_permiso_remolque <= 15 || $fecha_viaje > $revision_remolque || $fecha_viaje > $revision_remolque)
         {
             flash('No se puede crear el tour con este remolque, debe revisar el permisos de circulación o fecha de revisión del mismo')->error();

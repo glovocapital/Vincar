@@ -348,11 +348,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
     // Vehículos N/N
     Route::get('vehiculo_nn','VehiculoNNController@index')->name('vehiculo_nn');
-    
     Route::get('vehiculo_nn/{vin_id}/data_vin_nn','VehiculoNNController@dataVinNN')->name('vehiculo_nn.dataVinNn');
-
     Route::post('vehiculo_nn/registrar_vin','VehiculoNNController@registrarVin')->name('vehiculo_nn.registrarVin');
-
 });
 
 
