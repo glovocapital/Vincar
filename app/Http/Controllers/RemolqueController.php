@@ -201,6 +201,42 @@ class RemolqueController extends Controller
         }
     }
 
+    public function trash($id){
+        $remolque_id =  Crypt::decrypt($id);
+
+        try{
+            $remolque = Remolque::where('remolque_id', $remolque_id)->firstOrFail();
+        
+            $remolque->delete();
+
+            flash('Los datos del remolque han sido eliminados satisfactoriamente.')->success();
+            return redirect('remolque');
+        }catch (\Exception $e) {
+
+            flash('Error al intentar eliminación de los datos del remolque.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('remolque');
+        }
+    }
+
+    public function restore($id){
+        $remolque_id =  Crypt::decrypt($id);
+
+        try{
+            $remolque = Remolque::onlyTrashed()->where('remolque_id', $remolque_id)->firstOrFail();
+            
+            $remolque->restore();
+
+            flash('Datos del remolque restaurados satisfactoriamente.')->success();
+            return redirect('remolque');
+        }catch (\Exception $e) {
+
+            flash('Error al intentar restaurar los datos del remolque.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('remolque');
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -212,15 +248,17 @@ class RemolqueController extends Controller
         $remolque_id =  Crypt::decrypt($id);
 
         try {
-            $remolque = Remolque::findOrfail($remolque_id)->delete();
+            $remolque = Remolque::onlyTrashed()->where('remolque_id', $remolque_id)->firstOrFail();
 
-            flash('Los datos del remolque  han sido eliminados satisfactoriamente.')->success();
-            return redirect('camiones');
+            $remolque->forceDelete();
+
+            flash('Los datos del remolque han sido eliminados definitivamente.')->success();
+            return redirect('remolque');
         }catch (\Exception $e) {
 
-            flash('Error al intentar eliminar los datos del remolque.')->error();
+            flash('Error al intentar eliminación definitiva del remolque.')->error();
             //flash($e->getMessage())->error();
-            return redirect('camiones');
+            return redirect('remolque');
         }
     }
 }

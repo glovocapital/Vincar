@@ -200,6 +200,42 @@ class CamionesController extends Controller
         }
     }
 
+    public function trash($id){
+        $camion_id =  Crypt::decrypt($id);
+
+        try{
+            $camion = Camion::where('camion_id', $camion_id)->firstOrFail();
+        
+            $camion->delete();
+
+            flash('Los datos del camión han sido eliminados satisfactoriamente.')->success();
+            return redirect('camiones');
+        }catch (\Exception $e) {
+
+            flash('Error al intentar eliminación de los datos del Camión.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('camiones');
+        }
+    }
+
+    public function restore($id){
+        $camion_id =  Crypt::decrypt($id);
+
+        try{
+            $camion = Camion::onlyTrashed()->where('camion_id', $camion_id)->firstOrFail();
+            
+            $camkion->restore();
+
+            flash('Datos del camión restaurados satisfactoriamente.')->success();
+            return redirect('camiones');
+        }catch (\Exception $e) {
+
+            flash('Error al intentar restaurar los datos del Camión.')->error();
+            //flash($e->getMessage())->error();
+            return redirect('camiones');
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -211,13 +247,15 @@ class CamionesController extends Controller
         $camion_id =  Crypt::decrypt($id);
 
         try {
-            $camion = Camion::findOrfail($camion_id)->delete();
+            $camion = Camion::onlyTrashed()->where('camion_id', $camion_id)->firstOrFail();
 
-            flash('Los datos del camión han sido eliminados satisfactoriamente.')->success();
+            $camion->forceDelete();
+
+            flash('Los datos del camión han sido eliminados definitivamente.')->success();
             return redirect('camiones');
         }catch (\Exception $e) {
 
-            flash('Error al intentar eliminar los datos del Camión.')->error();
+            flash('Error al intentar eliminación definitiva del Camión.')->error();
             //flash($e->getMessage())->error();
             return redirect('camiones');
         }

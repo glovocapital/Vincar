@@ -150,8 +150,8 @@
                                             <a href="{{ route('camiones.edit', Crypt::encrypt($camion->camion_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
                                         </small>
                                         <small>
-                                                <a href = "{{ route('camiones.destroy', Crypt::encrypt($camion->camion_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
-                                                </a>
+                                            <a href = "{{ route('camiones.trash', Crypt::encrypt($camion->camion_id))  }}" onclick="return confirm('¿Está seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
+                                            </a>
                                         </small>
                                     </td>
 
