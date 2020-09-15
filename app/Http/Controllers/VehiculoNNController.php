@@ -97,13 +97,15 @@ class VehiculoNNController extends Controller
             $vin->vin_predespacho = false;
             
             if ($vin->save()) {
-                if (VehiculoNN::find($request->vin_id)->delete()){
-                    DB::commit();
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => "VIN: " . $vin->vin_codigo . " registrado exitosamente.",
-                    ]);
+                if ($this->guardarHistorialVin($vin)){
+                    if (VehiculoNN::find($request->vin_id)->delete()){
+                        DB::commit();
+    
+                        return response()->json([
+                            'success' => true,
+                            'message' => "VIN: " . $vin->vin_codigo . " registrado exitosamente.",
+                        ]);
+                    }
                 }       
             }
 
@@ -119,6 +121,32 @@ class VehiculoNNController extends Controller
                 'message' => "Error: Llamado a procedimiento no permitido",
             ]);
         }
+    }
+
+    protected function guardarHistorialVin(Vin $vin)
+    {
+        $fecha = date('Y-m-d');
+
+        // Guardar historial del cambio
+        $result = DB::insert('INSERT INTO historico_vins
+            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [
+                $vin->vin_id,
+                $vin->vin_estado_inventario_id,
+                $fecha,
+                $vin->user_id,
+                null,
+                null,
+                $vin->oneUser->belongsToEmpresa->empresa_id,
+                "VIN Creado.",
+                "Origen: Vehículos N/N.",
+                "Patio: BLoque y Ubicación por asignar."
+            ]
+        );
+        
+        return $result;
     }
 
     /**
