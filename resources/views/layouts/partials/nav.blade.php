@@ -110,11 +110,11 @@
             <i class="align-middle" data-feather="truck"></i> <span class="align-middle">{{trans('menu.Transporte')}}</span>
             </a>
             <ul id="Transporte" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
-            <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Generar_Guia')}}</a></li>
-            <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Asignacion_Ruta')}}</a></li>
+            <!-- <li class="sidebar-item"><a class="sidebar-link" href="">{{--trans('menu.Generar_Guia')--}}</a></li> -->
+            <li class="sidebar-item"><a class="sidebar-link" href="{{ route('tour.index') }}">{{trans('menu.Asignacion_Ruta')}}</a></li>
             <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Administracion_Ruta')}}</a></li>
-            <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Disponibilidad')}}</a></li>
-                </ul>
+            <!-- <li class="sidebar-item"><a class="sidebar-link" href="">{{--trans('menu.Disponibilidad')--}}</a></li> -->
+            </ul>
         </li>
     @endif
 

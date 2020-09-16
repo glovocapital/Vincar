@@ -183,6 +183,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
 
     // ruta mantenedor conductores
     Route::get('conductores', 'ConductorController@index')->name('conductores.index');
+    Route::get('conductores/create_conductor','ConductorController@createUserConductor')->name('conductores.create_conductor');
     Route::get('conductores/create','ConductorController@create')->name('conductores.create');
     Route::get('conductores/{id}/edit','ConductorController@edit')->name('conductores.edit');
     Route::post('conductores','ConductorController@store')->name('conductores.store');

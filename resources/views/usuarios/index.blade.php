@@ -18,24 +18,17 @@
                         <div class="col-md-4">
                             {!! Form::open(['route'=> 'usuarios.store', 'method'=>'POST']) !!}
 
-
-                                <label for="user_rut" >Rut <strong>*</strong></label>
-
+                            <label for="user_rut" >Rut <strong>*</strong></label>
                             <div class="input-group" >
-
                                 {!! Form::text('user_rut', null, ['placeholder'=>'Rut del usuario', 'class'=>'form-control col-sm-9 rut', 'required']) !!}
-
-
                                 <div class="input-group-append">
                                     <span class="input-group-text" id="validador">
                                         <span style="color:red;" aria-hidden="true">&times;</span>
                                     </span>
-
                                 </div>
                             </div>
 
-
-                            <div class="form-group">
+                            <div class="form-group mt-3">
                                 <label for="user_nombre" >Nombre <strong>*</strong></label>
                                 {!! Form::text('user_nombre', null, ['placeholder'=>'Nombre del usuario', 'class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
@@ -74,8 +67,8 @@
                                 {{ Form::password('user_pass',array('placeholder'=>'Contraseña','class' => 'form-control col-sm-9', 'required')) }}
                                 @if ($errors->has('user_pass'))
                                     <span class="invalid-feedback" role="alert">
-                                    <script>{{ $errors->first('user_pass') }}</script>
-                                </span>
+                                        <script>{{ $errors->first('user_pass') }}</script>
+                                    </span>
                                 @endif
                             </div>
 

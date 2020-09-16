@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
 use App\Conductor;
+use App\Empresa;
+use App\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
@@ -20,11 +22,10 @@ class ConductorController extends Controller
     {
         $conductor = Conductor::all();
 
-        $usuario = DB::table('users')
-        ->select(DB::raw("CONCAT(user_nombre,' ',user_apellido) AS nombre"),'user_id')
-        ->where('rol_id', 5)
-        ->where('deleted_at', null)
-        ->pluck('nombre', 'user_id');
+
+        $usuario = User::select(DB::raw("CONCAT(user_nombre,' ',user_apellido) AS nombre"),'user_id')
+            ->where('rol_id', 5)
+            ->pluck('nombre', 'user_id');
 
 
         $tipo_licencia = DB::table('tipo_licencias')
@@ -57,6 +58,21 @@ class ConductorController extends Controller
         ->pluck('tipo_licencia_nombre','tipo_licencia_id');
 
         return view('conductor.index', compact('usuario','conductor','tipo_licencia'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createUserConductor()
+    {
+        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
+            ->orderBy('empresa_razon_social')
+            ->pluck('empresa_razon_social', 'empresa_id');
+
+
+        return view('conductor.create_user', compact('empresas'));
     }
 
     /**

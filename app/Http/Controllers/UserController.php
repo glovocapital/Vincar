@@ -80,10 +80,7 @@ class UserController extends Controller
      */
     public function store(CrearUsuarioRequest $request)
     {
-
         $validate = DB::table('users')->where('email', $request->user_email)->exists();
-
-
 
         if($validate == true)
         {
@@ -109,7 +106,12 @@ class UserController extends Controller
             $user->rol_id = $request->rol_id;
             $user->user_telefono = $request->user_telefono;
             $user->empresa_id = $request->empresa_id;
-            $user->save();
+            //$user->save();
+
+            if ($request->crear_conductor){
+                flash('El usuario-conductor ha sido creado correctamente.')->success();
+                return redirect('conductores');        
+            }
 
         flash('El usuario ha sido creado correctamente.')->success();
         return redirect('usuarios');

@@ -7,11 +7,17 @@
         <div class="ibox float-e-margins">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Nuevo Conductor</h3>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <h3 class="card-title pb-3">Registro de Conductores</h3>
+                        <p>
+                            <a href="{{ route('conductores.create_conductor') }}" type="button" class="btn btn-success">Crear Conductor</a>
+                        </p>
+                    </div>
+        
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -23,7 +29,7 @@
                                 {!! Form::select('user_id', $usuario, null,['placeholder'=>'Seleccione','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
                             </div>
                             <div class="form-group">
-                                <label for="">Foto Documentos <strong>*</strong></label>
+                                <label for="">Foto del Documento <strong>*</strong></label>
                                 {!! Form::file('conductor_foto_documento'); !!}
                             </div>
                         </div>
@@ -44,7 +50,7 @@
                     </div>
 
                     <div class="text-right pb-5">
-                        {!! Form::submit('Registrar Conductor ', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                        {!! Form::submit('Registrar Licencia ', ['class' => 'btn btn-primary block full-width m-b']) !!}
                         {!! Form::close() !!}
                     </div>
 
