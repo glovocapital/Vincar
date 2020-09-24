@@ -33,8 +33,13 @@
                                     {!! Form::select('patio_id', $patios, null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                             <div class="form-group">
-                                <label for="marca_nombre" >Seleccionar Marca </label>
-                                {!! Form::select('marca_id', $marcas, null,['id' => 'marca', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                <label for="marca_id" >Seleccionar Marca </label>
+                                <select name="marca_id" id="marca" class="form-control col-sm-9 select-cliente" placeholder="Marca">
+                                    <option value="">Marca</option>
+                                    @foreach ($marcas as $marca_id => $marca_nombre)
+                                    <option value="{{ $marca_id }}">{{ ucwords($marca_nombre) }}</option>
+                                    @endforeach
+                                </select>  
                             </div>
                         </div>
                     </div>
@@ -100,7 +105,7 @@
                                         <td><input type="checkbox" class="check-campania" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
                                         <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
                                         <td><small>{{ $vin->vin_patente }}</small></td>
-                                        <td><small>{{ $vin->vin_marca }}</small></td>
+                                        <td><small>{{ strtoupper($vin->marca_nombre) }}</small></td>
                                         <td><small>{{ $vin->vin_modelo }}</small></td>
                                         <td><small>{{ $vin->vin_color }}</small></td>
                                     <!-- <td><small>{{ $vin->vin_motor }}</small></td> -->
@@ -150,7 +155,7 @@
                                                 <a type="button" value="{{ $vin->vin_id }}" class="btn-campania-modal"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></a>
                                             </small>
                                             <small>
-                                                <a type="button"  class="btn-agendar"  title="Agendar Entrega"><i class="far fa-address-book"></i></a>
+                                                <a type="button"  value="{{ $vin->vin_id }}" class="btn-agendar"  title="Agendar Entrega"><i class="far fa-address-book"></i></a>
                                             </small>
 
                                         </td>
@@ -172,6 +177,7 @@
 
 @include('campania.partials.modal_solicitud_campania')
 @include('campania.partials.modal_solicitar_campania_lotes')
+@include('vin.partials.modal_predespacho')
 
 <div class="row">
     <div class="col-lg-12">
@@ -243,16 +249,59 @@
 
             $("#dataTableCamp tbody").on("click",".btn-campania-modal", function (e) {
 
-                    e.preventDefault();
+                e.preventDefault();
 
-                    var vin_id = $(this).attr("value");
-                    var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
+                var vin_id = $(this).attr("value");
+                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
 
                 $(".vin-id").val(vin_id);
                 $("#vin_codigo").html("VIN: " + vin_codigo);
 
-                    $("#solicitudCampaniaModal").modal('show');
+                $("#solicitudCampaniaModal").modal('show');
+            });
+
+
+            // Mostrar modal de Agendamiento de VINs
+            $("#dataTableCamp tbody").on("click",".btn-agendar", function (e) {
+
+                e.preventDefault();
+
+                var vin_id = $(this).attr("value");
+
+                var vin_ids = [vin_id];
+
+                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
+
+                $(".vin-id").val(vin_id);
+                $("#vin_codigo_predespacho").html("VIN: " + vin_codigo);
+                $("#vin_codigo_predespacho").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]' value='" + vin_ids[0] + "'/>");
+
+                $("#predespachoModal").modal('show');
+            });
+
+            // Agendar el VIN
+            $('#btn-pre-despacho').on('click',function(e){
+                e.preventDefault();
+
+                $("#error_0").hide();
+                $("#error_1").hide();
+
+                $.post("{{route('vin.predespacho')}}", $("#PredespachoVins").serialize(), function (res) {
+
+                    $dat = res;
+                 //  console.log($dat);
+
+                    if($dat.error==0) $("#error0_predespacho").show();
+                    else {$("#error1_predespacho").show();  $("#error1").html($dat.mensaje); }
+
+
+
+                }).fail(function () {
+                    alert('Error: ');
                 });
+                $('#btn-guardar-campania-lotes').attr("disabled", true);
+
+            });
 
 
             var checked = false;

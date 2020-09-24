@@ -620,6 +620,7 @@ class CampaniaController extends Controller
         $marcas = DB::table('marcas')
             ->select('marca_id', 'marca_nombre')
             ->where('deleted_at', null)
+            ->orderBy('marca_nombre')
             ->pluck('marca_nombre', 'marca_id');
 
         $tipo_campanias_array = TipoCampania::select('tipo_campania_id', 'tipo_campania_descripcion')
@@ -669,17 +670,18 @@ class CampaniaController extends Controller
             /** Búsqueda de vins para la cabecera de la vista de solicitud de campañas */
             $tabla_vins = Vin::join('users','users.user_id','=','vins.user_id')
                 ->join('empresas','empresas.empresa_id','=','users.empresa_id')
+                ->join('marcas','vins.vin_marca','=','marcas.marca_id')
                 ->join('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id')
                 ->join('bloques', 'bloques.bloque_id', '=', 'ubic_patios.bloque_id')
                 ->join('patios', 'patios.patio_id', '=', 'bloques.patio_id')
-                ->select('vins.vin_id','vin_codigo', 'vin_patente', 'vin_marca', 'vin_modelo', 'vin_color', 'vin_motor',
+                ->select('vins.vin_id','vin_codigo', 'vin_patente', 'marca_nombre', 'vin_modelo', 'vin_color', 'vin_motor',
                     'empresas.empresa_razon_social', 'vin_fec_ingreso',  'vin_fecha_entrega','patio_nombre', 'bloque_nombre', 'ubic_patio_fila',
                     'ubic_patio_columna')
                 ->orderByRaw('ubic_patio_fila, ubic_patio_columna ASC')
                 ->where('users.empresa_id', $user_empresa_id )
                 ->get();
         } else {
-            // dd($tabla_vins)
+            // dd($user_empresa_id);
 
             /** A partir de aqui las consultas del cuadro de busqueda */
 
@@ -722,22 +724,29 @@ class CampaniaController extends Controller
                 }
 
                 foreach($arreglo_vins as $v){
-
                     $validate = DB::table('vins')
-                        ->where('vin_codigo', $v)
-                        ->orWhere('vin_patente', $v)
+                        ->join('users','users.user_id','=','vins.user_id')
+                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                        ->where(function ($q) use ($v) {
+                            $q->where('vin_codigo', $v)
+                                ->orWhere('vin_patente', $v);
+                        })
+                        ->where('empresas.empresa_id', $user_empresa_id)
                         ->exists();
-
+                    
                     if($validate == true){
                         $query = DB::table('vins')
                             ->join('users','users.user_id','=','vins.user_id')
                             ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                            ->where('vin_codigo',$v)
-                            ->orWhere('vin_patente',$v)
+                            ->join('marcas','vins.vin_marca','=','marcas.marca_id')
+                            ->where(function ($q) use ($v) {
+                                $q->where('vin_codigo', $v)
+                                    ->orWhere('vin_patente', $v);
+                            })
                             ->where('empresas.empresa_id', $user_empresa_id);
 
-                        if($marca_nombre != 'Sin marca'){
+                        if($marca_nombre != 'Sin marca'){                    
                             $query->where('vin_marca', $marca->marca_id);
                             //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
                         }
@@ -775,12 +784,13 @@ class CampaniaController extends Controller
                         array_push($tabla_vins, $query->first());
                     } else {
                         if(count($arreglo_vins) >= 1){
-                            $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista";
+                            $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista, o no pertenece a la empresa.";
                         } else {
                             $query = DB::table('vins')
                                 ->join('users','users.user_id','=','vins.user_id')
                                 ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                                 ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                                ->join('marcas','vins.vin_marca','=','marcas.marca_id')
                                 ->where('vins.user_id',$user_empresa_id);
 
                             if($marca_nombre != 'Sin marca'){
@@ -814,6 +824,7 @@ class CampaniaController extends Controller
                     ->join('users','users.user_id','=','vins.user_id')
                     ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                     ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                    ->join('marcas','vins.vin_marca','=','marcas.marca_id')
                     ->where('empresas.empresa_id', $user_empresa_id);
 
                 if($marca_nombre != 'Sin marca'){
