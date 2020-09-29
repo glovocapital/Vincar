@@ -106,7 +106,7 @@ class UserController extends Controller
             $user->rol_id = $request->rol_id;
             $user->user_telefono = $request->user_telefono;
             $user->empresa_id = $request->empresa_id;
-            //$user->save();
+            $user->save();
 
             if ($request->crear_conductor){
                 flash('El usuario-conductor ha sido creado correctamente.')->success();
