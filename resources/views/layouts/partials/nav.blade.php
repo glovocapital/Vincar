@@ -112,7 +112,7 @@
             <ul id="Transporte" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
             <!-- <li class="sidebar-item"><a class="sidebar-link" href="">{{--trans('menu.Generar_Guia')--}}</a></li> -->
             <li class="sidebar-item"><a class="sidebar-link" href="{{ route('tour.index') }}">{{trans('menu.Panel_Tours')}}</a></li>
-            <li class="sidebar-item"><a class="sidebar-link" href="{{ route('tour.tour') }}">{{trans('menu.Asignacion_Ruta')}}</a></li>
+            <li class="sidebar-item"><a class="sidebar-link" href="{{ route('tour.tour') }}">{{trans('menu.Gestion_viajes')}}</a></li>
             <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Administracion_Ruta')}}</a></li>
             <!-- <li class="sidebar-item"><a class="sidebar-link" href="">{{--trans('menu.Disponibilidad')--}}</a></li> -->
             </ul>

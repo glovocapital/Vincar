@@ -47,6 +47,20 @@ class TourController extends Controller
      */
     public function tour()
     {
+        $toursIniciales = Tour::all();
+        
+        $tours = [];
+
+        foreach ($toursIniciales as $tour){
+            $fecha_inicio = new Carbon($tour->tour_fec_inicio);
+            
+            if (($fecha_inicio < Carbon::today()) && (!$tour->tour_iniciado) && (!$tour->tour_finalizado)){
+                $this->finalizarTourNoIniciado($tour->tour_id);
+            } else {
+                array_push($tours, $tour);
+            }
+        }
+
         $conductor = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS conductor_nombres"), 'users.user_id')
             ->join('conductors', 'users.user_id', '=', 'conductors.user_id' )
             ->where('users.deleted_at', null)
@@ -70,9 +84,7 @@ class TourController extends Controller
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
-        $tour = Tour::all();
-
-        return view('transporte.tour', compact('tour', 'camion', 'transporte', 'remolque', 'conductor'));
+        return view('transporte.tour', compact('tours', 'camion', 'transporte', 'remolque', 'conductor'));
     }
 
     /**
@@ -161,6 +173,7 @@ class TourController extends Controller
             $tour->conductor_id = $request->conductor_id;
             $tour->tour_fec_inicio = $request->tour_fecha_inicio;
             $tour->tour_finalizado = false;
+            $tour->tour_comentarios = "Tour agendado. Pendiente por iniciar";
             $tour->save();
 
             $id_tour = $tour->tour_id;
@@ -815,5 +828,13 @@ class TourController extends Controller
         //
     }
 
+    protected function finalizarTourNoIniciado($tour_id)
+    {
+        $tour = Tour::findOrFail($tour_id);
 
+        $tour->tour_finalizado = true;
+        $tour->tour_comentarios = "Tour cancelado o no iniciado.";
+
+        $tour->save();
+    }
 }

@@ -88,30 +88,49 @@
                                                 <th>Patente Camión</th>
                                                 <th>Patente Remolque</th>
                                                 <th>Conductor</th>
-                                                <th>Fecha</th>
+                                                <th>Fecha Inicio</th>
+                                                <th>Estatus</th>
+                                                <th>Comentarios</th>
                                                 <th>Acción</th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
-                                        @foreach($tour as $t)
+                                        @foreach($tours as $tour)
 
 
                                             <tr>
-                                                <td><small>{{ $t->oneProveedor->empresa_razon_social }}</small></td>
-                                                <td><small>{{ $t->belongsToCamion->camion_patente }}</small></td>
-                                                <td><small>{{ $t->belongsToRemolque->remolque_patente }}</small></td>
-                                                <td><small>{{ $t->oneConductor->user_nombre }} {{ $t->oneConductor->user_apellido }}</small></td>
-                                                <td><small>{{ $t->tour_fec_inicio}}</td><small>
+                                                <td><small>{{ $tour->oneProveedor->empresa_razon_social }}</small></td>
+                                                <td><small>{{ $tour->belongsToCamion->camion_patente }}</small></td>
+                                                <td><small>{{ $tour->belongsToRemolque->remolque_patente }}</small></td>
+                                                <td><small>{{ $tour->oneConductor->user_nombre }} {{ $tour->oneConductor->user_apellido }}</small></td>
+                                                <td><small>{{ $tour->tour_fec_inicio}}</td><small>
+                                                
+                                                @if($tour->tour_iniciado)
+                                                    @if(!$tour->tour_finalizado)
+                                                        <td style="color: blue;"><small><strong>En Tránsito</strong></td><small>
+                                                    @else
+                                                        <td style="color: green;"><small><strong>Finalizado</strong></td><small>
+                                                    @endif
+                                                @else 
+                                                    @if($tour->tour_finalizado)
+                                                        <td style="color: red;"><small><strong>Cancelado</strong></td><small>
+                                                    @else
+                                                        <td style="color: yellow;"><small><strong>No iniciado</strong></td><small>
+                                                    @endif
+                                                @endif
+
+                                                <td><small>{{ $tour->tour_comentarios}}</td><small>
+
                                                 <td>
                                                    <small>
-                                                        <a href="{{ route('tour.edit', Crypt::encrypt($t->tour_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
+                                                        <a href="{{ route('tour.edit', Crypt::encrypt($tour->tour_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
                                                     </small>
                                                     <small>
-                                                            <a href = "{{ route('tour.destroy', Crypt::encrypt($t->tour_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i></a>
+                                                            <a href = "{{ route('tour.destroy', Crypt::encrypt($tour->tour_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i></a>
                                                     </small>
                                                     <small>
-                                                        <a href="{{ route('tour.editrutas', Crypt::encrypt($t->tour_id)) }}" class=" btn-vin"  title="Rutas"><i class="fas fa fa-barcode"></i></a>
+                                                        <a href="{{ route('tour.editrutas', Crypt::encrypt($tour->tour_id)) }}" class=" btn-vin"  title="Rutas"><i class="fas fa fa-barcode"></i></a>
                                                     </small>
                                                 </td>
                                             </tr>

@@ -43,7 +43,7 @@ return [
     'Transporte'=>'Transport',
     'Generar_Guia'=>'Generate Guide',
     'Panel_Tours'=>'Tours Dashboard',
-    'Asignacion_Ruta'=>'Route Assignment',
+    'Gestion_viajes'=>'Trips Management',
     'Administracion_Ruta'=>'Route Administration',
     'Disponibilidad'=>'Availability',
 
