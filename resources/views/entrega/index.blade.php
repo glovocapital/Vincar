@@ -89,7 +89,7 @@
                                                             <td>
                                                                 <div class="switch-button">
                                                                 {!! Form::open(['route' => 'vin.bloquea_entrega', 'method'=>'POST']) !!}
-                                                                    <input type="checkbox" name="switch-button" id="switch-label-{{$item}}" class="switch-button__checkbox" value="{{$vin_agendado->vin_id}}"/>
+                                                                    <input type="checkbox" name="switch-button" id="switch-label-{{$item}}" class="switch-button__checkbox" value="{{$vin_agendado->vin_id}}"{{$vin_agendado->vin_bloqueado_entrega ?' checked':''}}/>
                                                                     <label for="switch-label-{{$item}}" class="switch-button__label"></label>
                                                                 {!! Form::close() !!}
                                                                 </div>
