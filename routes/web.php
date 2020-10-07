@@ -26,7 +26,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::any('logout', 'Auth\LoginController@logout');
     Route::get('home', 'HomeController@index')->name('home');
-    Route::get('homeDashboard', 'HomeController@Dashboard')->name('home.dashboard');
+    Route::get('homeDashboard', 'HomeController@dashboard')->name('home.dashboard');
 
 
 
@@ -337,9 +337,11 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     // Rutas para los tours
 
     Route::get('tour', 'TourController@index')->name('tour.index');
+    Route::get('tour/tour', 'TourController@tour')->name('tour.tour');
     Route::get('tour/addrutas', 'TourController@addrutas')->name('tour.addrutas');
     Route::get('tour/{id}/editrutas', 'TourController@editrutas')->name('tour.editrutas');
     Route::patch('tour/{id}/update_rutas','TourController@updateRutas')->name('tour.update_rutas');
+    Route::get('tour/admin_rutas', 'TourController@adminRutas')->name('tour.admin_rutas');
 
     Route::post('tour/crearutas', 'TourController@crearutas')->name('tour.crearutas');
     Route::post('tour/crearutas2', 'TourController@crearutas2')->name('tour.crearutas2');

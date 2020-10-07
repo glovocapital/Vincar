@@ -7,26 +7,26 @@
     <div class="ibox float-e-margins">
         <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">Agregar Guías y Rutas Adicionales al Tour</h3>
+                <h3 class="card-title">Agregar Rutas al Tour</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
             <div class="card-body">
-                {!! Form::open(['route'=>'tour.crearutas2', 'method'=>'POST', 'files' => true]) !!}
+                {!! Form::open(['route'=>'tour.crearutas', 'method'=>'POST', 'files' => true]) !!}
 
                 <div class="row">
                     {!! Form::hidden('id_tour', $tour_id ) !!}
 
                     <div class="col-md-4" id="wrapper_2">
                         <div class="form-group">
-                            <label for="guia_fecha" >Fecha de la Guía:</label>
-                            {!! Form::date('guia_fecha', null, ['class'=>'form-control col-sm-9', 'required']) !!}
-                        </div>
-                        <div class="form-group">
                                 <label for="vin_numero" >Vin <strong>*</strong></label>
                                 {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
+                        </div>
+                        <div class="form-group">
+                            <label for="empresa_id" >Cliente <strong> *</strong></label>
+                                {!! Form::select('empresa_id', $empresas, null,['id' => 'empresa_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
                         </div>
                     </div>
                     <div class="col-md-4" id="wrapper_2">
@@ -42,12 +42,12 @@
 
                     <div class="col-md-4" id="wrapper_2">
                         <div class="form-group">
-                            <label for="empresa_id" >Cliente <strong> *</strong></label>
-                                {!! Form::select('empresa_id', $empresas, null,['id' => 'empresa_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
-                            </div>
+                            <label for="guia_fecha" >Fecha de la Guía:</label>
+                            {!! Form::date('guia_fecha', null, ['class'=>'form-control col-sm-9', 'required']) !!}
+                        </div>
                         <div class="form-group">
-                            <label for="">Cargar Guia</label>
-                            {!! Form::file('guia_ruta'); !!}
+                            <label for="guia_numero" >Número de Guía:</label>
+                            {!! Form::text('guia_numero', null, ['class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
                     </div>
 
@@ -76,17 +76,13 @@
                     @foreach ($vins_guia_array as $vg)
                         {!! Form::hidden('ruta_id[' . $i . ']', $rutas[$i]->ruta_id) !!}
                         <div class="col-md-4" id="wrapper_2">
-                        @foreach ($fecha_guias_array as $fg)
-                            @if(($fg[0][0] == $vg[1][0]) && ($fg[0][1] == $vg[1][1]))
-                            <div class="form-group">
-                                <label for="guia_fecha" >Fecha de la Guía:</label>
-                                {!! Form::date('guia_fecha[' . $i . ']', $fg[1], ['class'=>'form-control col-sm-9', 'required']) !!}
-                            </div>
-                            @endif
-                        @endforeach
                             <div class="form-group">
                                 <label for="vin_numero" >Vin <strong>*</strong></label>
                                 {!! Form::textarea('vin_numero['. $i .']', $vg[2], ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
+                            </div>
+                            <div class="form-group">
+                                <label for="empresa_id" >Cliente <strong> *</strong></label>
+                                    {!! Form::select('empresa_id[' . $i . ']', $empresas, $vg[0],['id' => 'empresa_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
                             </div>
                         </div>
 
@@ -104,15 +100,18 @@
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
-                            <div class="form-group">
-                                <label for="empresa_id" >Cliente <strong> *</strong></label>
-                                    {!! Form::select('empresa_id[' . $i . ']', $empresas, $vg[0],['id' => 'empresa_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
-                            </div>
-                            <div class="form-group">
-                                <label for="">Cargar Guia</label>
-                                {!! Form::file('guia_ruta['. $i .']'); !!}
-                                {!! Form::hidden('guia_id['. $i .']', $vg[3]) !!}
-                            </div>
+                            @foreach ($fecha_guias_array as $fg)
+                                @if(($fg[0][0] == $vg[1][0]) && ($fg[0][1] == $vg[1][1]))
+                                <div class="form-group">
+                                    <label for="guia_fecha" >Fecha de la Guía:</label>
+                                    {!! Form::date('guia_fecha[' . $i . ']', $fg[1], ['class'=>'form-control col-sm-9', 'required']) !!}
+                                </div>
+                                <div class="form-group">
+                                    <label for="guia_numero" >Número de Guía:</label>
+                                    {!! Form::text('guia_numero[' . $i . ']', $fg[2], ['class'=>'form-control col-sm-9', 'required']) !!}
+                                </div>
+                                @endif
+                            @endforeach
                         </div>
                         @php($i++)
                         <div class="col-md-12" >

@@ -43,6 +43,7 @@ return [
 
     'Transporte'=>'Transporte',
     'Generar_Guia'=>'Generar Guía',
+    'Panel_Tours'=>'Panel de Tours',
     'Asignacion_Ruta'=>'Asignación de Ruta',
     'Administracion_Ruta'=>'Administración de Ruta',
     'Disponibilidad'=>'Disponibilidad',

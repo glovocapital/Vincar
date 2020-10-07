@@ -13,8 +13,7 @@ use App\Guia;
 use App\GuiaVins;
 use App\Remolque;
 use App\Tour;
-use App\Rutas;
-use App\RutasVin;
+use App\Ruta;
 use App\Vin;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -38,13 +37,16 @@ class TourController extends Controller
      */
     public function index()
     {
+        return view('transporte.index');
+    }
 
-        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
-            ->orderBy('empresa_id')
-            ->where('deleted_at', null)
-            ->pluck('empresa_razon_social', 'empresa_id')
-            ->all();
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function tour()
+    {
         $conductor = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS conductor_nombres"), 'users.user_id')
             ->join('conductors', 'users.user_id', '=', 'conductors.user_id' )
             ->where('users.deleted_at', null)
@@ -53,7 +55,6 @@ class TourController extends Controller
 
         $camion = Camion::select('camion_id', 'camion_patente')
             ->orderBy('camion_id')
-            ->where('deleted_at', null)
             ->pluck('camion_patente', 'camion_id')
             ->all();
 
@@ -63,16 +64,15 @@ class TourController extends Controller
             ->all();
 
         $transporte = Empresa::select('empresa_id', 'empresa_razon_social')
-            ->orderBy('empresa_id')
+            ->orderBy('empresa_razon_social')
             ->where('empresa_es_proveedor', true)
             ->where('tipo_proveedor_id', 8)
-            ->where('deleted_at', null)
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
         $tour = Tour::all();
 
-        return view('transporte.index', compact('tour', 'empresas', 'camion', 'transporte', 'remolque', 'conductor'));
+        return view('transporte.tour', compact('tour', 'camion', 'transporte', 'remolque', 'conductor'));
     }
 
     /**
@@ -93,22 +93,18 @@ class TourController extends Controller
      */
     public function store(Request $request)
     {
-        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
-            ->orderBy('empresa_id')
-            ->where('deleted_at', null)
-            ->pluck('empresa_razon_social', 'empresa_id')
-            ->all();
-
-        $conductor_id = Conductor::where('user_id',$request->conductor_id)
-            ->first();
-
-        $camion_id = Camion::where('camion_id',$request->camion_id)
-            ->first();
-
-        $remolque_id = Remolque::where('remolque_id',$request->remolque_id)
-            ->first();
-
         $fecha_viaje = new Carbon($request->tour_fecha_inicio);
+
+        if ($fecha_viaje < Carbon::today()){
+            flash('Error: Fecha incorrecta. La fecha no puede ser anterior al día actual.')->error();
+            return back()->withInput();
+        }
+
+        $conductor_id = Conductor::where('user_id',$request->conductor_id)->first();
+
+        $camion_id = Camion::where('camion_id',$request->camion_id)->first();
+
+        $remolque_id = Remolque::where('remolque_id',$request->remolque_id)->first();
 
         $licencia_valida = new Carbon($conductor_id->conductor_fecha_vencimiento);
 
@@ -126,7 +122,6 @@ class TourController extends Controller
         $diferencia_permiso_remolque = $permiso_remolque->diff($fecha_viaje)->days;
 
 */
-
         
         $diferencia_licencia = $fecha_viaje->diffInDays($licencia_valida);
         $diferencia_revision_camion = $fecha_viaje->diffInDays($revision_camion);
@@ -134,13 +129,12 @@ class TourController extends Controller
         $diferencia_revision_remolque = $fecha_viaje->diffInDays($revision_remolque);
         $diferencia_permiso_remolque = $fecha_viaje->diffInDays($permiso_remolque);
 
-
         // La licencia debe tener al menos 16 días de vigencia al momento del viaje. 
         // La fecha del viaje no puede ser posterior al vencimiento de la licencia
         if($diferencia_licencia <= 15 || $fecha_viaje > $licencia_valida )
         {
             flash('No se puede crear el tour con este conductor, licencia de conducir vencida o a punto de vencer')->error();
-            return redirect('tour');
+            return redirect('tour/tour');
         }
 
         // La revisión y permiso de circulación del camión deben tener al menos 16 días de vigencia al momento del viaje.
@@ -148,7 +142,7 @@ class TourController extends Controller
         if($diferencia_revision_camion <= 15 || $diferencia_permiso_camion <= 15 || $fecha_viaje > $permiso_camion || $fecha_viaje > $revision_camion)
         {
             flash('No se puede crear el tour con este camión, debe revisar el permisos de circulación o fecha de revisión del mismo')->error();
-            return redirect('tour');
+            return redirect('tour/tour');
         }
 
         // La revisión y permiso de circulación del remolque deben tener al menos 16 días de vigencia al momento del viaje.
@@ -156,15 +150,12 @@ class TourController extends Controller
         if($diferencia_revision_remolque <= 15 || $diferencia_permiso_remolque <= 15 || $fecha_viaje > $revision_remolque || $fecha_viaje > $revision_remolque)
         {
             flash('No se puede crear el tour con este remolque, debe revisar el permisos de circulación o fecha de revisión del mismo')->error();
-            return redirect('tour');
+            return redirect('tour/tour');
         }
 
-
         try {
-
             $tour = new Tour();
             $tour->camion_id = $request->camion_id;
-            // $tour->cliente_id = $request->cliente_id;
             $tour->remolque_id = $request->remolque_id;
             $tour->proveedor_id = $request->transporte_id;
             $tour->conductor_id = $request->conductor_id;
@@ -174,17 +165,14 @@ class TourController extends Controller
 
             $id_tour = $tour->tour_id;
 
-            flash('El Tour se creo correctamente.')->success();
-            return view('transporte.addrutas', compact('id_tour', 'empresas'));
+            flash('El Tour se creo correctamente. Ahora puede añadir las rutas.')->success();
+            return view('transporte.tour');
 
         }catch (\Exception $e) {
-
             flash('Error al crear el Tour.')->error();
            //flash($e->getMessage())->error();
-            return redirect('tour');
+            return redirect('transporte.tour');
         }
-
-
     }
 
     public function addrutas()
@@ -192,20 +180,33 @@ class TourController extends Controller
         return view('transporte.addrutas');
     }
 
+    public function adminRutas()
+    {
+        return view('transporte.admin_rutas');
+    }
+
 
     public function crearutas(Request $request)
     {
+        $existeGuia = Guia::where('guia_numero', $request->guia_numero)
+            ->where('guia_carga_entregada', false)
+            ->exists();
+
+        if($existeGuia){
+            return back()->with('error', 'Número de Guía ya asignada a otra ruta. Por favor intente con otra.');
+        }
+        
         $id_tour = $request->id_tour;
+        
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
-            ->orderBy('empresa_id')
-            ->where('deleted_at', null)
+            ->orderBy('empresa_razon_social')
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
         
         try
         {
             DB::beginTransaction();
-            $ruta_existe = Rutas::where('tour_id', $id_tour)
+            $ruta_existe = Ruta::where('tour_id', $id_tour)
                 ->where('ruta_origen', $request->origen)
                 ->where('ruta_destino', $request->destino)
                 ->exists();
@@ -216,7 +217,7 @@ class TourController extends Controller
                     
             // Si no existe la ruta se crea la ruta en la base de datos asociada al tour
             if(!$ruta_existe){
-                $ruta = new Rutas();
+                $ruta = new Ruta();
                 $ruta->ruta_origen = $request->origen;
                 $ruta->ruta_destino = $request->destino;
                 $ruta->tour_id = $id_tour;
@@ -224,25 +225,26 @@ class TourController extends Controller
                 $ruta->save();
             } else{
                 // Existe la ruta, entonces se consulta el registro para usar más adelante.
-                $ruta = Rutas::where('tour_id', $id_tour)->first();
+                $ruta = Ruta::where('tour_id', $id_tour)->first();
             }
 
             $guia = new Guia();
             $guia->guia_fecha = $request->guia_fecha;
+            $guia->guia_numero = $request->guia_numero;
             $guia->empresa_id = $request->empresa_id;
+            
+            // $path = "";
 
-            $path = "";
+            // if($request->file('guia_ruta') !== null){
+            //     $fotoGuiaTour = $request->file('guia_ruta');
+            //     $extensionFoto = $fotoGuiaTour->extension();
+            //     $path = $fotoGuiaTour->storeAs(
+            //         'guiasTour',
+            //         "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+            //     );
+            // }
 
-            if($request->file('guia_ruta') !== null){
-                $fotoGuiaTour = $request->file('guia_ruta');
-                $extensionFoto = $fotoGuiaTour->extension();
-                $path = $fotoGuiaTour->storeAs(
-                    'guiasTour',
-                    "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-                );
-            }
-
-            $guia->guia_ruta = $path;
+            // $guia->guia_ruta = $path;
             
             if($guia->save()){
                 DB::insert('INSERT INTO ruta_guias (ruta_id, guia_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [$ruta->ruta_id, $guia->guia_id, Carbon::now(), Carbon::now()]);
@@ -306,32 +308,52 @@ class TourController extends Controller
                 }
 
                 if($cuenta > 0){
-                    // Se añadieron los vins a la guía. Se aceptan los cambios a la base de datos.
+                    // Se añadieron los vins a la ruta. Se aceptan los cambios a la base de datos.
                     DB::commit();
                     flash('La ruta se agregó correctamente.')->success();
-                    return view('transporte.addrutas', compact('id_tour', 'empresas'));
+                    return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
                 } else {
-                    // No se añadieron vins a la guía, se echa para atrás el cambio a la base de datos
-                    DB::rollBack();
+                    // No se añadieron vins a la ruta, se echa para atrás el cambio a la base de datos
                     flash('Error: No se creó la ruta. VINs no válidos')->error();
-                    return view('transporte.addrutas', compact('id_tour', 'empresas'));
+                    DB::rollBack();
+                    return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
                 }
+
+                // if($cuenta > 0){
+                //     // Se añadieron los vins a la ruta. Se aceptan los cambios a la base de datos.
+                //     DB::commit();
+                //     flash('La ruta se agregó correctamente.')->success();
+                //     return view('transporte.addrutas', compact('id_tour', 'empresas'));
+                // } else {
+                //     // No se añadieron vins a la guía, se echa para atrás el cambio a la base de datos
+                //     DB::rollBack();
+                //     flash('Error: No se creó la ruta. VINs no válidos')->error();
+                //     return view('transporte.addrutas', compact('id_tour', 'empresas'));
+                // }
             } else{
                 DB::rollBack();
                 flash('Error: Debe proporcionar al menos un VIN válido.')->error();
-                return view('transporte.addrutas', compact('id_tour', 'empresas'));
+                return view('transporte.editrutas', compact('id_tour', 'empresas'));
             }
         }  catch (\Exception $e) {
 
             DB::rollBack();
             flash('Error al añadir las rutas al Tour.')->error();
             flash($e->getMessage())->error();
-            return redirect('tour');
+            return redirect('tour.tour');
         }
     }
 
     public function crearutas2(Request $request)
     {
+        dd("Aquí, pero no debe ser aquí.");
+        $existeGuia = Guia::where('guia_numero', $request->guia_numero)
+            ->exists();
+
+        if($existeGuia){
+            return back()->with('error', 'Número de Guía ya existente en base de datos. Por favor intente con otra.');
+        }
+
         $id_tour = $request->id_tour;
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_id')
@@ -342,7 +364,7 @@ class TourController extends Controller
         try
         {
             DB::beginTransaction();
-            $ruta_existe = Rutas::where('tour_id', $id_tour)
+            $ruta_existe = Ruta::where('tour_id', $id_tour)
                 ->where('ruta_origen', $request->origen_id)
                 ->where('ruta_destino', $request->destino_id)
                 ->exists();
@@ -353,7 +375,7 @@ class TourController extends Controller
 
             // Si no existe la ruta se crea la ruta en la base de datos asociada al tour
             if(!$ruta_existe){
-                $ruta = new Rutas();
+                $ruta = new Ruta();
                 $ruta->ruta_origen = $request->origen;
                 $ruta->ruta_destino = $request->destino;
                 $ruta->tour_id = $id_tour;
@@ -361,25 +383,26 @@ class TourController extends Controller
                 $ruta->save();
             } else{
                 // Existe la ruta, entonces se consulta el registro para usar más adelante.
-                $ruta = Rutas::where('tour_id', $id_tour)->first();
+                $ruta = Ruta::where('tour_id', $id_tour)->first();
             }
 
             $guia = new Guia();
             $guia->guia_fecha = $request->guia_fecha;
+            $guia->guia_numero = $request->guia_numero;
             $guia->empresa_id = $request->empresa_id;
 
-            $path = "";
+            // $path = "";
 
-            if($request->file('guia_ruta') !== null){
-                $fotoGuiaTour = $request->file('guia_ruta');
-                $extensionFoto = $fotoGuiaTour->extension();
-                $path = $fotoGuiaTour->storeAs(
-                    'guiasTour',
-                    "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-                );
-            }
+            // if($request->file('guia_ruta') !== null){
+            //     $fotoGuiaTour = $request->file('guia_ruta');
+            //     $extensionFoto = $fotoGuiaTour->extension();
+            //     $path = $fotoGuiaTour->storeAs(
+            //         'guiasTour',
+            //         "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+            //     );
+            // }
 
-            $guia->guia_ruta = $path;
+            // $guia->guia_ruta = $path;
 
             if($guia->save()){
                 DB::insert('INSERT INTO ruta_guias (ruta_id, guia_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [$ruta->ruta_id, $guia->guia_id, Carbon::now(), Carbon::now()]);
@@ -479,8 +502,7 @@ class TourController extends Controller
         $tour = Tour::findOrfail($tour_id);
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
-            ->orderBy('empresa_id')
-            ->where('deleted_at', null)
+            ->orderBy('empresa_razon_social')
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
@@ -539,12 +561,14 @@ class TourController extends Controller
             $cadena_vins = "";
             $e = 0;
             $empresa_id = 0;
+            $guia_numero = '';
             $guia_id = 0;
 
             foreach($guia_vins as $guia_vin){
                 if(($ruta[0] == $guia_vin->ruta_origen) && ($ruta[1] == $guia_vin->ruta_destino)){
                     $cadena_vins .= $guia_vin->vin_codigo . "\n";
                     $empresa_id = $guia_vin->empresa_id;
+                    $guia_numero = $guia_vin->guia_numero;
                     $guia_id = $guia_vin->guia_id;
                 }
             }
@@ -557,8 +581,8 @@ class TourController extends Controller
                 }
             }
             
-            array_push($vins_guia_array, [$empresa_id, $ruta, $cadena_vins, $guia_id]);
-            array_push($fecha_guias_array, [$ruta, $fecha]);
+            array_push($vins_guia_array, [$empresa_id, $ruta, $cadena_vins, $guia_numero, $guia_id]);
+            array_push($fecha_guias_array, [$ruta, $fecha, $guia_numero]);
         }
 
         return view('transporte.editrutas', compact('tour_id', 'rutas','guia_vins', 'fecha_guias_array', 'vins_guia_array', 'empresas'));
@@ -614,7 +638,7 @@ class TourController extends Controller
                 // $guia->save();
 
                 // Buscar si la ruta ya existe para este tour
-                $ruta_existe = Rutas::where('tour_id', $id_tour)
+                $ruta_existe = Ruta::where('tour_id', $id_tour)
                     ->where('ruta_origen', $request->origen_id[$i])
                     ->where('ruta_destino', $request->destino_id[$i])
                     ->exists();
@@ -623,7 +647,7 @@ class TourController extends Controller
 
                 // Si no existe la ruta se crea la ruta en la base de datos asociada al tour
                 if(!$ruta_existe){
-                    $ruta = new Rutas();
+                    $ruta = new Ruta();
                     $ruta->ruta_origen = $request->origen_id[$i];
                     $ruta->ruta_destino = $request->destino_id[$i];
                     $ruta->tour_id = $id_tour;
@@ -633,7 +657,7 @@ class TourController extends Controller
                     // DB::insert('INSERT INTO ruta_guias (ruta_id, guia_id) VALUES (?, ?)', [$ruta->ruta_id, $guia->guia_id]);
                 } else{
                     // Si la ruta sí existe, entonces se consulta.
-                    $ruta = Rutas::where('tour_id', $id_tour)
+                    $ruta = Ruta::where('tour_id', $id_tour)
                         ->where('ruta_origen', $request->origen_id[$i])
                         ->where('ruta_destino', $request->destino_id[$i])
                         ->first();
@@ -726,7 +750,7 @@ class TourController extends Controller
                 } else{
                     // Este es el caso de cuando viene vacía la casilla de código.
                     // Se elimina la ruta
-                    Rutas::where('tour_id', $id_tour)
+                    Ruta::where('tour_id', $id_tour)
                         ->where('ruta_origen', $request->origen_id[$i])
                         ->where('ruta_destino', $request->destino_id[$i])
                         ->delete();

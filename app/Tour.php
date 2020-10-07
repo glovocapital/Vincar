@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Tour extends Model
@@ -14,14 +15,14 @@ class Tour extends Model
      * @var array
      */
     protected $fillable = [
-
+        'tour_fec_inicio', 'tour_fec_fin', 'camion_id', 'proveedor_id', 'remolque_id', 'conductor_id'
     ];
 
     public function belongsToCamion (){
         return $this->belongsTo(Camion::class, 'camion_id', 'camion_id');
     }
 
-    public function OneConductor (){
+    public function oneConductor (){
         return $this->belongsTo(User::class, 'conductor_id', 'user_id');
     }
 
