@@ -66,8 +66,8 @@
                                                     <th>Empresa</th>
                                                     <th>Patio</th>
                                                     <th>Ubicación</th>
-                                                    <th>Eliminar</th>
                                                     <th>Bloquear <br/> Entrega</th>
+                                                    <th>Eliminar</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -86,13 +86,6 @@
                                                             <td><small>{{ $vin_agendado->empresa_razon_social }}</small></td>
                                                             <td><small>{{ strtoupper($vin_agendado->patio_nombre) }}</small></td>
                                                             <td><small>BLOQUE: {{ $vin_agendado->bloque_nombre }} <br/> FILA: {{ $vin_agendado->ubic_patio_fila }} <br/> COLUMNA: {{ $vin_agendado->ubic_patio_columna }}</small></td>
-
-                                                            <td>
-
-                                                                <small>
-                                                                    <a href = "{{ route('vin.desagendado', Crypt::encrypt($vin_agendado->vin_id)) }}" onclick="return confirm('¿Esta seguro que desea quitar el agendamiento del VIN?')" class="btn-bloque btn-sm" title="Eliminar Agendamiento"><i class="far fa-trash-alt"></i></a>
-                                                                </small>
-                                                            </td>
                                                             <td>
                                                                 <div class="switch-button">
                                                                 {!! Form::open(['route' => 'vin.bloquea_entrega', 'method'=>'POST']) !!}
@@ -101,6 +94,14 @@
                                                                 {!! Form::close() !!}
                                                                 </div>
                                                             </td>
+
+                                                            <td>
+
+                                                                <small>
+                                                                    <a href = "{{ route('vin.desagendado', Crypt::encrypt($vin_agendado->vin_id)) }}" onclick="return confirm('¿Esta seguro que desea quitar el agendamiento del VIN?')" class="btn-bloque btn-sm" title="Eliminar Agendamiento"><i class="far fa-trash-alt"></i></a>
+                                                                </small>
+                                                            </td>
+                                                            
                                                         </tr>
                                                     @endif
                                                 @endforeach
