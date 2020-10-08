@@ -58,6 +58,7 @@ return [
 
     'Configuracion_Facturacion'=>'Configuración de Facturación',
 
+    'KPI' => 'KPI',
     'Estadisticas'=>'Estadísticas'
 
 ,];

@@ -161,7 +161,7 @@
                 <i class="align-middle" data-feather="grid"></i> <span class="align-middle">KPI</span>
             </a>
             <ul id="KPI" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
-
+              <li class="sidebar-item"><a class="sidebar-link" href="{{ route('kpi.index') }}">{{trans('menu.KPI')}}</a></li>
             </ul>
         </li>
     @endif

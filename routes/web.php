@@ -215,7 +215,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Administrador']], fu
     Route::patch('pais/{id}/update','PaisController@update')->name('pais.update');
     Route::get('pais/{id}/delete','PaisController@destroy')->name('pais.destroy');
 
-
+    Route::get('kpi', 'KpiController@index')->name('kpi.index');
 
 });
 
