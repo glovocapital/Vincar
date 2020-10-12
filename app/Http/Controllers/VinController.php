@@ -554,7 +554,7 @@ class VinController extends Controller
             DB::beginTransaction();
 
             $vin = new Vin();
-            $vin->vin_codigo = $request->vin_codigo;
+            $vin->vin_codigo = trim($request->vin_codigo);
             $vin->vin_patente = $request->vin_patente;
             $vin->vin_marca = $request->vin_marca;
             $vin->vin_modelo = $request->vin_modelo;
@@ -665,7 +665,7 @@ class VinController extends Controller
             $estado_previo = $vin->vin_estado_inventario_id;
             $estado_nuevo = (int)$request->vin_estado_inventario_id;
 
-            $vin->vin_codigo = $request->vin_codigo;
+            $vin->vin_codigo = trim($request->vin_codigo);
             $vin->vin_patente = $request->vin_patente;
             $vin->vin_marca = (int)$request->vin_marca;
             $vin->vin_modelo = $request->vin_modelo;
