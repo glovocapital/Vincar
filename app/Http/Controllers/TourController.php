@@ -14,6 +14,7 @@ use App\GuiaVins;
 use App\Remolque;
 use App\Tour;
 use App\Ruta;
+use App\RutaGuia;
 use App\Vin;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -105,64 +106,68 @@ class TourController extends Controller
      */
     public function store(Request $request)
     {
-        $fecha_viaje = new Carbon($request->tour_fecha_inicio);
+        $fechaViaje = new Carbon($request->tour_fecha_inicio);
 
-        if ($fecha_viaje < Carbon::today()){
+        if ($fechaViaje < Carbon::today()){
             flash('Error: Fecha incorrecta. La fecha no puede ser anterior al día actual.')->error();
             return back()->withInput();
         }
 
-        $conductor_id = Conductor::where('user_id',$request->conductor_id)->first();
+        $conductor = Conductor::where('user_id',$request->conductor_id)->first();
 
-        $camion_id = Camion::where('camion_id',$request->camion_id)->first();
+        if (!$this->validarData($conductor, 'conductor', $fechaViaje)){
+            return back()->withInput();
+        }
 
-        $remolque_id = Remolque::where('remolque_id',$request->remolque_id)->first();
+        $camion = Camion::where('camion_id', $request->camion_id)->first();
 
-        $licencia_valida = new Carbon($conductor_id->conductor_fecha_vencimiento);
+        if (!$this->validarData($camion, 'camion', $fechaViaje)){
+            return back()->withInput();
+        }
 
-        $revision_remolque = new Carbon($remolque_id->remolque_fecha_revision);
-        $permiso_remolque = new Carbon($remolque_id->remolque_fecha_circulacion);
+        $remolque = Remolque::where('remolque_id', $request->remolque_id)->first();
 
-        $permiso_camion = new Carbon($camion_id->camion_fecha_circulacion);
-        $revision_camion = new Carbon($camion_id->camion_fecha_revision);
+        if (!$this->validarData($remolque, 'remolque', $fechaViaje)){
+            return back()->withInput();
+        }
 
-/*
-        $diferencia_licencia = $licencia_valida->diff($fecha_viaje)->days;
-        $diferencia_revision_camion = $revision_camion->diff($fecha_viaje)->days;
-        $diferencia_permiso_camion = $permiso_camion->diff($fecha_viaje)->days;
-        $diferencia_revision_remolque = $revision_remolque->diff($fecha_viaje)->days;
-        $diferencia_permiso_remolque = $permiso_remolque->diff($fecha_viaje)->days;
+        $licenciaValida = new Carbon($conductor->conductor_fecha_vencimiento);
 
-*/
-        
-        $diferencia_licencia = $fecha_viaje->diffInDays($licencia_valida);
-        $diferencia_revision_camion = $fecha_viaje->diffInDays($revision_camion);
-        $diferencia_permiso_camion = $fecha_viaje->diffInDays($permiso_camion);
-        $diferencia_revision_remolque = $fecha_viaje->diffInDays($revision_remolque);
-        $diferencia_permiso_remolque = $fecha_viaje->diffInDays($permiso_remolque);
+        $revisionRemolque = new Carbon($remolque->remolque_fecha_revision);
+        $permisoRemolque = new Carbon($remolque->remolque_fecha_circulacion);
+
+        $permisoCamion = new Carbon($camion->camion_fecha_circulacion);
+        $revisionCamion = new Carbon($camion->camion_fecha_revision);
+
+        // Asignación de fechas por Carbon
+        $diferenciaLicencia = $fechaViaje->diffInDays($licenciaValida);
+        $diferenciaRevisionCamion = $fechaViaje->diffInDays($revisionCamion);
+        $diferenciaPermisoCamion = $fechaViaje->diffInDays($permisoCamion);
+        $diferenciaRevisionRemolque = $fechaViaje->diffInDays($revisionRemolque);
+        $diferenciaPermisoRemolque = $fechaViaje->diffInDays($permisoRemolque);
 
         // La licencia debe tener al menos 16 días de vigencia al momento del viaje. 
         // La fecha del viaje no puede ser posterior al vencimiento de la licencia
-        if($diferencia_licencia <= 15 || $fecha_viaje > $licencia_valida )
+        if($diferenciaLicencia <= 15 || $fechaViaje > $licenciaValida )
         {
             flash('No se puede crear el tour con este conductor, licencia de conducir vencida o a punto de vencer')->error();
-            return redirect('tour/tour');
+            return redirect()->action('TourController@tour')->withInput();
         }
 
         // La revisión y permiso de circulación del camión deben tener al menos 16 días de vigencia al momento del viaje.
         // La fecha del viaje no puede ser posterior al vencimiento de la revisión y/o permiso de circulación del camión.
-        if($diferencia_revision_camion <= 15 || $diferencia_permiso_camion <= 15 || $fecha_viaje > $permiso_camion || $fecha_viaje > $revision_camion)
+        if($diferenciaRevisionCamion <= 15 || $diferenciaPermisoCamion <= 15 || $fechaViaje > $permisoCamion || $fechaViaje > $revisionCamion)
         {
             flash('No se puede crear el tour con este camión, debe revisar el permisos de circulación o fecha de revisión del mismo')->error();
-            return redirect('tour/tour');
+            return redirect()->action('TourController@tour')->withInput();
         }
 
         // La revisión y permiso de circulación del remolque deben tener al menos 16 días de vigencia al momento del viaje.
         // La fecha del viaje no puede ser posterior al vencimiento de la revisión y/o permiso de circulación del remolque.
-        if($diferencia_revision_remolque <= 15 || $diferencia_permiso_remolque <= 15 || $fecha_viaje > $revision_remolque || $fecha_viaje > $revision_remolque)
+        if($diferenciaRevisionRemolque <= 15 || $diferenciaPermisoRemolque <= 15 || $fechaViaje > $revisionRemolque || $fechaViaje > $revisionRemolque)
         {
             flash('No se puede crear el tour con este remolque, debe revisar el permisos de circulación o fecha de revisión del mismo')->error();
-            return redirect('tour/tour');
+            return redirect()->action('TourController@tour')->withInput();
         }
 
         try {
@@ -178,14 +183,61 @@ class TourController extends Controller
 
             $id_tour = $tour->tour_id;
 
-            flash('El Tour se creo correctamente. Ahora puede añadir las rutas.')->success();
-            return view('transporte.tour');
+            flash('El Tour se creó correctamente. Ahora puede añadir las rutas.')->success();
+            return redirect()->action('TourController@tour');
 
         }catch (\Exception $e) {
             flash('Error al crear el Tour.')->error();
            //flash($e->getMessage())->error();
-            return redirect('transporte.tour');
+            return redirect()->action('TourController@tour')->withInput();
         }
+    }
+
+    /**  Validar que un recurso: Conductor, Camión o Remolque no estén asignados a un viaje activo o
+    * a realizarse en al menos 1 semana.
+    *
+    * Parámetros:
+    * data: datos del modelo enviado
+    * modelo: nombre del modelo en minúsculas
+    * fechaViaje: fecha del nuevo viaje a realizarse
+    */
+    protected function validarData($data, $modelo, $fechaViaje)
+    {
+        $cadenaConsulta = $modelo . '_id';
+
+        if ($modelo === 'conductor') {
+            $id_modelo = $data->user_id;
+        } else {
+            $id_modelo = $data->$cadenaConsulta;
+        }
+        
+        $noDisponible = Tour::where($cadenaConsulta, $id_modelo)
+            ->where('tour_iniciado', true)
+            ->where('tour_finalizado', false)
+            ->exists();
+        
+        if($noDisponible){
+            flash('Error: Conductor no disponible.')->error();
+            return false;
+        }
+        
+        $fechaOtroTour = Tour::where($cadenaConsulta, $id_modelo)
+            ->where('tour_iniciado', false)
+            ->where('tour_finalizado', false)
+            ->orderByDesc('tour_fec_inicio')
+            ->limit(1)
+            ->value('tour_fec_inicio');
+        
+        $fechaInicioOtroTour = new Carbon($fechaOtroTour);
+        
+        $diferenciaFechaNuevoTour = $fechaViaje->diffInDays($fechaInicioOtroTour);
+
+        if($diferenciaFechaNuevoTour <= 7){
+            flash('Error: ' . ucfirst($modelo) . ' con otro viaje agendado en menos de una semana.')->error();
+            return false;
+        }
+
+        return true;
     }
 
     public function addrutas()
@@ -201,12 +253,18 @@ class TourController extends Controller
 
     public function crearutas(Request $request)
     {
-        $existeGuia = Guia::where('guia_numero', $request->guia_numero)
-            ->where('guia_carga_entregada', false)
-            ->exists();
+        $guia = Guia::where('guia_numero', $request->guia_numero)->first();
+
+        // Verificar si la guía ya está asignada a una ruta existente.
+        $existeGuia= false;
+
+        if ($guia){
+            $existeGuia = RutaGuia::where('guia_id', $guia->guia_id)
+                ->exists();
+        }
 
         if($existeGuia){
-            return back()->with('error', 'Número de Guía ya asignada a otra ruta. Por favor intente con otra.');
+            return back()->with('error', 'Número de Guía ya asignada a otra ruta. Por favor intente con otra.')->withInput();
         }
         
         $id_tour = $request->id_tour;
@@ -219,6 +277,8 @@ class TourController extends Controller
         try
         {
             DB::beginTransaction();
+
+            // Verificar si la ruta enviada existe o no.
             $ruta_existe = Ruta::where('tour_id', $id_tour)
                 ->where('ruta_origen', $request->origen)
                 ->where('ruta_destino', $request->destino)
@@ -243,7 +303,7 @@ class TourController extends Controller
 
             $guia = new Guia();
             $guia->guia_fecha = $request->guia_fecha;
-            $guia->guia_numero = $request->guia_numero;
+            $guia->guia_numero = trim($request->guia_numero);
             $guia->empresa_id = $request->empresa_id;
             
             // $path = "";
@@ -259,8 +319,12 @@ class TourController extends Controller
 
             // $guia->guia_ruta = $path;
             
+            // Si se almacena exitosamente la guía, entonces se crea la relación entre la guía y la ruta
             if($guia->save()){
-                DB::insert('INSERT INTO ruta_guias (ruta_id, guia_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [$ruta->ruta_id, $guia->guia_id, Carbon::now(), Carbon::now()]);
+                $rutaGuia = new RutaGuia();
+                $rutaGuia->ruta_id = $ruta->ruta_id;
+                $rutaGuia->guia_id = $guia->guia_id;
+                $rutaGuia->save();
             }
 
             if(!empty($request->vin_numero)){
@@ -280,11 +344,10 @@ class TourController extends Controller
                         ->orWhere('vin_patente', $v)
                         ->exists();
                     
-                    if($validate == true)
+                    if($validate)
                     {
                         // Existe el VIN, luego se procede a consultar el registro para usarlo.
-                        $vin = DB::table('vins')
-                            ->where('vin_codigo', $v)
+                        $vin = Vin::where('vin_codigo', $v)
                             ->orWhere('vin_patente', $v)
                             ->first();
                         

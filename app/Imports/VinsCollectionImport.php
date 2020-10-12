@@ -44,7 +44,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                 if($vin != true) {
                     if($marca != null){
                         $vin_nuevo = Vin::create([
-                            'vin_codigo' => $row['vin'],
+                            'vin_codigo' => trim($row['vin']),
                             'vin_patente' => $row['patente'],
                             'vin_marca' => $marca->marca_id,
                             'vin_modelo' => $row['modelo'],
