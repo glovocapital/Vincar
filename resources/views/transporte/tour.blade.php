@@ -104,23 +104,23 @@
                                                 <td><small>{{ $tour->belongsToCamion->camion_patente }}</small></td>
                                                 <td><small>{{ $tour->belongsToRemolque->remolque_patente }}</small></td>
                                                 <td><small>{{ $tour->oneConductor->user_nombre }} {{ $tour->oneConductor->user_apellido }}</small></td>
-                                                <td><small>{{ $tour->tour_fec_inicio}}</td><small>
+                                                <td><small>{{ $tour->tour_fec_inicio}}</small></td>
                                                 
                                                 @if($tour->tour_iniciado)
                                                     @if(!$tour->tour_finalizado)
-                                                        <td><small><strong style="background-color: blue; color: white">En Tránsito</strong></td><small>
+                                                        <td><small><button class="btn btn-info btn-sm rounded">En Tránsito</button></small></td>
                                                     @else
-                                                        <td><small><strong style="background-color: green; color: white">Finalizado</strong></td><small>
+                                                        <td><small><button class="btn btn-success btn-sm rounded">Finalizado</button></small></td>
                                                     @endif
                                                 @else 
                                                     @if($tour->tour_finalizado)
-                                                        <td><small><strong style="background-color: red; color: white">Cancelado</strong></td><small>
+                                                        <td><small><button class="btn btn-danger btn-sm rounded">Cancelado</button></small></td>
                                                     @else
-                                                        <td><small><strong style="background-color: yellow; color: green">No iniciado</strong></td><small>
+                                                        <td><small><button class="btn btn-warning btn-sm rounded">Pendiente</button></small></td>
                                                     @endif
                                                 @endif
 
-                                                <td><small>{{ $tour->tour_comentarios}}</td><small>
+                                                <td><small>{{ $tour->tour_comentarios}}</small></td>
 
                                                 <td>
                                                     @if($tour->tour_iniciado)

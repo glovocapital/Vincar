@@ -74,11 +74,12 @@
                 <div class="row">
                     @php($i = 0)
                     @foreach ($vins_guia_array as $vg)
-                        {!! Form::hidden('ruta_id[' . $i . ']', $rutas[$i]->ruta_id) !!}
+                        {!! Form::hidden('ruta_id[' . $i . ']', $vg[2]) !!}
+                        {!! Form::hidden('guia_id[' . $i . ']', $vg[6]) !!}
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                 <label for="vin_numero" >Vin <strong>*</strong></label>
-                                {!! Form::textarea('vin_numero['. $i .']', $vg[2], ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
+                                {!! Form::textarea('vin_numero['. $i .']', $vg[3], ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
                             </div>
                             <div class="form-group">
                                 <label for="empresa_id" >Cliente <strong> *</strong></label>
@@ -100,18 +101,14 @@
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
-                            @foreach ($fecha_guias_array as $fg)
-                                @if(($fg[0][0] == $vg[1][0]) && ($fg[0][1] == $vg[1][1]))
-                                <div class="form-group">
-                                    <label for="guia_fecha" >Fecha de la Guía:</label>
-                                    {!! Form::date('guia_fecha[' . $i . ']', $fg[1], ['class'=>'form-control col-sm-9', 'required']) !!}
-                                </div>
-                                <div class="form-group">
-                                    <label for="guia_numero" >Número de Guía:</label>
-                                    {!! Form::text('guia_numero[' . $i . ']', $fg[2], ['class'=>'form-control col-sm-9', 'required']) !!}
-                                </div>
-                                @endif
-                            @endforeach
+                            <div class="form-group">
+                                <label for="guia_fecha" >Fecha de la Guía:</label>
+                                {!! Form::date('guia_fecha[' . $i . ']', $vg[5], ['class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
+                            <div class="form-group">
+                                <label for="guia_numero" >Número de Guía:</label>
+                                {!! Form::text('guia_numero[' . $i . ']', $vg[4], ['class'=>'form-control col-sm-9', 'required']) !!}
+                            </div>
                         </div>
                         @php($i++)
                         <div class="col-md-12" >
