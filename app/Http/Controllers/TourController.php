@@ -579,25 +579,24 @@ class TourController extends Controller
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
         
-        $rutas = Ruta::where('tour_id', $tour_id)
-            ->get();
-
-        $ruta_guias = Ruta::join('ruta_guias','ruta_guias.ruta_id','=','rutas.ruta_id')
-            ->where('tour_id', $tour_id)
-            ->select()
-            ->get();
-
         $guia_vins = GuiaVin::join('guias','guias.guia_id','=','guia_vins.guia_id')
             ->join('ruta_guias','ruta_guias.guia_id','=', 'guias.guia_id')
             ->join('rutas','rutas.ruta_id','=','ruta_guias.ruta_id')
             ->join('vins','vins.vin_id','=','guia_vins.vin_id')
             ->where('rutas.tour_id', $tour_id)
+            ->select('guia_vin_id', 'guia_vins.vin_id', 'guia_vins.guia_id', 'vin_codigo')
             ->get(); 
+
+        $viajes = Tour::join('rutas','rutas.tour_id','=','tours.tour_id')
+            ->join('ruta_guias','ruta_guias.ruta_id','=', 'rutas.ruta_id')
+            ->join('guias','guias.guia_id','=','ruta_guias.guia_id')
+            ->where('tours.tour_id', $tour_id)
+            ->get();
             
         $vins_guia_array = [];
         $fecha_guias_array = [];
 
-        foreach ($rutas as $ruta){
+        foreach ($viajes as $viaje){
             $cadena_vins = "";
             $e = 0;
             $empresa_id = 0;
@@ -605,31 +604,30 @@ class TourController extends Controller
             $guia_id = 0;
             $ruta_id = 0;
 
-            $ruta_simple = [$ruta->ruta_origen, $ruta->ruta_destino];
+            $ruta_simple = [$viaje->ruta_origen, $viaje->ruta_destino];
             
-            foreach ($ruta_guias as $ruta_guia){
-                foreach($guia_vins as $guia_vin){
-                    if(($ruta_guia->guia_id == $guia_vin->guia_id)){
-                        $cadena_vins .= $guia_vin->vin_codigo . "\n";
-                        $empresa_id = $guia_vin->empresa_id;
-                        $guia_numero = $guia_vin->guia_numero;
-                        $guia_fecha = $guia_vin->guia_fecha;
-                        $guia_id = $guia_vin->guia_id;
-                        $ruta_id = $guia_vin->ruta_id;
-                    }
+            foreach($guia_vins as $guia_vin){
+                if(($viaje->guia_id == $guia_vin->guia_id)){
+                    $cadena_vins .= $guia_vin->vin_codigo . "\n";
                 }
-
-                array_push($vins_guia_array, [$empresa_id, $ruta_simple, $ruta_id, $cadena_vins, $guia_numero, $guia_fecha, $guia_id]);
-                $cadena_vins = "";
-                $empresa_id = 0;
-                $guia_numero = '';
-                $guia_fecha = '';
-                $guia_id = 0;
-                $ruta_id = 0;
             }
+
+            $empresa_id = $viaje->empresa_id;
+            $guia_numero = $viaje->guia_numero;
+            $guia_fecha = $viaje->guia_fecha;
+            $guia_id = $viaje->guia_id;
+            $ruta_id = $viaje->ruta_id;
+
+            array_push($vins_guia_array, [$empresa_id, $ruta_simple, $ruta_id, $cadena_vins, $guia_numero, $guia_fecha, $guia_id]);
+            $cadena_vins = "";
+            $empresa_id = 0;
+            $guia_numero = '';
+            $guia_fecha = '';
+            $guia_id = 0;
+            $ruta_id = 0;
         }
 
-        return view('transporte.editrutas', compact('tour_id', 'rutas','guia_vins', 'vins_guia_array', 'empresas'));
+        return view('transporte.editrutas', compact('tour_id', 'vins_guia_array', 'empresas'));
     }
     
 
