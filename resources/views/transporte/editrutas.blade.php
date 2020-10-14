@@ -32,11 +32,11 @@
                     <div class="col-md-4" id="wrapper_2">
                         <div class="form-group">
                             <label for="origen" >De:</label>
-                            {!! Form::text('origen', null, ['placeholder'=>'Dirección de origen', 'id' => 'search_term', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            {!! Form::text('ruta_origen', null, ['placeholder'=>'Dirección de origen', 'id' => 'search_term', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
                         <div class="form-group">
                             <label for="destino" >A:</label>
-                            {!! Form::text('destino', null, ['placeholder'=>'Dirección de destino', 'id' => 'search_term2', 'class'=>'form-control col-sm-9', 'required']) !!}
+                            {!! Form::text('ruta_destino', null, ['placeholder'=>'Dirección de destino', 'id' => 'search_term2', 'class'=>'form-control col-sm-9', 'required']) !!}
                         </div>
                     </div>
 
@@ -79,7 +79,7 @@
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                 <label for="vin_numero" >Vin <strong>*</strong></label>
-                                {!! Form::textarea('vin_numero['. $i .']', $vg[3], ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control"]) !!}
+                                {!! Form::textarea('vin_numero['. $i .']', $vg[3], ['placeholder'=>'Ingrese VINS', 'id' => 'vin_numero', 'rows' => 4, 'class'=>"form-control", 'title' => 'Sin información de VINs se elimina esta ruta-guía']) !!}
                             </div>
                             <div class="form-group">
                                 <label for="empresa_id" >Cliente <strong> *</strong></label>
@@ -90,13 +90,13 @@
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                 <label for="marca_nombre" >De:</label>
-                                {!! Form::text('origen_id['. $i .']', $vg[1][0], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
-                                {!! Form::hidden('origen_id['. $i .']', $vg[1][0]) !!}
+                                {!! Form::text('ruta_origen['. $i .']', $vg[1][0], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
+                                {!! Form::hidden('ruta_origen['. $i .']', $vg[1][0]) !!}
                             </div>
                             <div class="form-group">
                                 <label for="marca_nombre" >A:</label>
-                                {!! Form::text('destino_id['. $i .']', $vg[1][1], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
-                                {!! Form::hidden('destino_id['. $i .']', $vg[1][1]) !!}
+                                {!! Form::text('ruta_destino['. $i .']', $vg[1][1], ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'disabled']) !!}
+                                {!! Form::hidden('ruta_destino['. $i .']', $vg[1][1]) !!}
                             </div>
                         </div>
 
@@ -118,9 +118,8 @@
                 </div>
 
                 <div class="text-right pb-5">
-
-                    {!! Form::submit('Actualizar Rutas ', ['class' => 'btn btn-success block full-width m-b']) !!}
-                    {!! Form::close() !!}
+                {!! Form::submit('Actualizar Rutas ', ['class' => 'btn btn-success block full-width m-b']) !!}
+                {!! Form::close() !!}
                     <a type="button" href="{{route('tour.index')}}" class="btn btn-primary block full-width m-b">Regresar</a>
                 </div>
 

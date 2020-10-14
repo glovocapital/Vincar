@@ -282,8 +282,8 @@ class TourController extends Controller
 
             // Verificar si la ruta enviada existe o no.
             $ruta_existe = Ruta::where('tour_id', $id_tour)
-                ->where('ruta_origen', $request->origen)
-                ->where('ruta_destino', $request->destino)
+                ->where('ruta_origen', $request->ruta_origen)
+                ->where('ruta_destino', $request->ruta_destino)
                 ->exists();
 
             $cuenta = 0;
@@ -293,8 +293,8 @@ class TourController extends Controller
             // Si no existe la ruta se crea la ruta en la base de datos asociada al tour
             if(!$ruta_existe){
                 $ruta = new Ruta();
-                $ruta->ruta_origen = $request->origen;
-                $ruta->ruta_destino = $request->destino;
+                $ruta->ruta_origen = $request->ruta_origen;
+                $ruta->ruta_destino = $request->ruta_destino;
                 $ruta->tour_id = $id_tour;
             
                 $ruta->save();
@@ -422,153 +422,6 @@ class TourController extends Controller
         }
     }
 
-    public function crearutas2(Request $request)
-    {
-        dd("Aquí, pero no debe ser aquí.");
-        $existeGuia = Guia::where('guia_numero', $request->guia_numero)
-            ->exists();
-
-        if($existeGuia){
-            return back()->with('error', 'Número de Guía ya existente en base de datos. Por favor intente con otra.');
-        }
-
-        $id_tour = $request->id_tour;
-        $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
-            ->orderBy('empresa_id')
-            ->where('deleted_at', null)
-            ->pluck('empresa_razon_social', 'empresa_id')
-            ->all();
-
-        try
-        {
-            DB::beginTransaction();
-            $ruta_existe = Ruta::where('tour_id', $id_tour)
-                ->where('ruta_origen', $request->origen_id)
-                ->where('ruta_destino', $request->destino_id)
-                ->exists();
-
-            $cuenta = 0;
-
-            $ruta = null;
-
-            // Si no existe la ruta se crea la ruta en la base de datos asociada al tour
-            if(!$ruta_existe){
-                $ruta = new Ruta();
-                $ruta->ruta_origen = $request->origen;
-                $ruta->ruta_destino = $request->destino;
-                $ruta->tour_id = $id_tour;
-            
-                $ruta->save();
-            } else{
-                // Existe la ruta, entonces se consulta el registro para usar más adelante.
-                $ruta = Ruta::where('tour_id', $id_tour)->first();
-            }
-
-            $guia = new Guia();
-            $guia->guia_fecha = $request->guia_fecha;
-            $guia->guia_numero = $request->guia_numero;
-            $guia->empresa_id = $request->empresa_id;
-
-            // $path = "";
-
-            // if($request->file('guia_ruta') !== null){
-            //     $fotoGuiaTour = $request->file('guia_ruta');
-            //     $extensionFoto = $fotoGuiaTour->extension();
-            //     $path = $fotoGuiaTour->storeAs(
-            //         'guiasTour',
-            //         "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-            //     );
-            // }
-
-            // $guia->guia_ruta = $path;
-
-            if($guia->save()){
-                DB::insert('INSERT INTO ruta_guias (ruta_id, guia_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [$ruta->ruta_id, $guia->guia_id, Carbon::now(), Carbon::now()]);
-            }
-
-            if(!empty($request->vin_numero)){
-                // Si el campo de VINs del formulario viene con VINS
-                // Se procede a extraer uno por uno los VINS separados por salto de línea
-                foreach(explode(PHP_EOL,$request->vin_numero) as $row){
-                    if($row !== ""){
-                        $arreglo_vins[] = trim($row);
-                    }
-                }
-
-                // Por cada uno de los VINs pasados desde el formulario realizar las acciones correspondientes
-                foreach($arreglo_vins as $v){
-                    // Validar si el VIN existe en la base de datos.
-                    $validate = DB::table('vins')
-                        ->where('vin_codigo', $v)
-                        ->orWhere('vin_patente', $v)
-                        ->exists();
-
-                    if($validate == true)
-                    {
-                        // Existe el VIN, luego se procede a consultar el registro para usarlo.
-                        $vin = DB::table('vins')
-                            ->where('vin_codigo', $v)
-                            ->orWhere('vin_patente', $v)
-                            ->first();
-
-                        // Validar si ya existe previamente un registro donde el VIN esté asociado a una guía 
-                        $val2 = GuiaVin::where('vin_id', $vin->vin_id)->exists();
-
-
-                        if(!$val2){
-                            // Si no existe la asociación, entonces se asocia el VIN a la guía $guia
-                            $guiavin = new GuiaVin();
-                            $guiavin->vin_id = $vin->vin_id;
-                            $guiavin->guia_id = $guia->guia_id;
-                            $guiavin->save();
-                            $cuenta++;
-                        } else {
-                            // Si existe la asociación, entonces se consulta el registro correspondiente.
-                            $guia_vin = GuiaVin::where('vin_id', $vin->vin_id)->first();
-
-                            // SOLO DEBE EXISTIR UN REGISTRO DEL VIN ASOCIADO CON UNA GUÍA
-                            if($guia->guia_id !== $guia_vin->guia_id){
-                                // Si la guía actual no es la misma guía donde estaba registrado el vin
-                                // se elimina la asociación anterior y se crea una nueva.
-                                GuiaVin::where('vin_id', $vin->vin_id)->delete();
-
-                                $guiavin = new GuiaVin();
-                                $guiavin->vin_id = $vin->vin_id;
-                                $guiavin->guia_id = $guia->guia_id;
-                                $guiavin->save();   
-                                $cuenta++;   
-                            }
-                        }
-                    } else {
-                        flash('Error. VIN: ' . $v . 'no existe en la base de datos.')->error();
-                    }
-                }
-
-                if($cuenta > 0){
-                    // Se añadieron vins a la ruta. Se aceptan los cambios a la base de datos.
-                    DB::commit();
-                    flash('La ruta se agrego correctamente.')->success();
-                    return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
-                } else {
-                    // No se añadieron vins a la ruta, se echa para atrás el cambio a la base de datos
-                    flash('Error: No se creó la ruta. VINs no válidos')->error();
-                    DB::rollBack();
-                    return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
-                }
-            } else{
-                DB::rollBack();
-                flash('Error: Debe proporcionar al menos un VIN válido.')->error();
-                return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
-            }
-        }  catch (\Exception $e) {
-
-            DB::rollBack();
-            flash('Error al editar el Tour. Modifiaciones canceladas')->error();
-            flash($e->getMessage())->error();
-            return redirect('tour');
-        }
-    }
-
     public function editrutas($id)
     {
         $tour_id =  Crypt::decrypt($id);
@@ -639,7 +492,7 @@ class TourController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function updateRutas(Request $request, $id)
-    { 
+    {
         $id_tour = Crypt::decrypt($id);
 
         $size = count($request->vin_numero);
@@ -647,65 +500,54 @@ class TourController extends Controller
         for($i = 0 ; $i < $size; $i++){
             $arreglo_vins = [];
 
-            foreach(explode(PHP_EOL,$request->vin_numero[$i]) as $row){
+            foreach(explode(PHP_EOL, $request->vin_numero[$i]) as $row){
                 if($row !== ""){
                     $arreglo_vins[] = trim($row);
                 }
             }
-            
+
             try
             {
                 DB::beginTransaction();
 
-                $path = "";
-                $fotoGuiaTour = $request->file('guia_ruta');
+                // $path = "";
+                // $fotoGuiaTour = $request->file('guia_ruta');
                 
-                if($fotoGuiaTour && array_key_exists($i, $fotoGuiaTour)){
-                    $extensionFoto = $fotoGuiaTour[$i]->extension();
-                    $path = $fotoGuiaTour[$i]->storeAs(
-                        'guiasTour',
-                        "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
-                    );
+                // if($fotoGuiaTour && array_key_exists($i, $fotoGuiaTour)){
+                //     $extensionFoto = $fotoGuiaTour[$i]->extension();
+                //     $path = $fotoGuiaTour[$i]->storeAs(
+                //         'guiasTour',
+                //         "guia de tour ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+                //     );
                     
-                    $guia = new Guia();
-                    $guia->guia_fecha = $request->guia_fecha[$i];
-                    $guia->empresa_id = $request->empresa_id[$i];
-                    $guia->guia_ruta = $path;
-                } else {
-                    $guia = Guia::findOrFail($request->guia_id[$i]);
-                    $guia->guia_fecha = $request->guia_fecha[$i];
-                    $guia->empresa_id = $request->empresa_id[$i];
-                }
-                
-                // $guia->save();
+                //     $guia = new Guia();
+                //     $guia->guia_fecha = $request->guia_fecha[$i];
+                //     $guia->empresa_id = $request->empresa_id[$i];
+                //     $guia->guia_ruta = $path;
+                // }
 
-                // Buscar si la ruta ya existe para este tour
-                $ruta_existe = Ruta::where('tour_id', $id_tour)
-                    ->where('ruta_origen', $request->origen_id[$i])
-                    ->where('ruta_destino', $request->destino_id[$i])
-                    ->exists();
-                
-                $ruta = null;
+                $guiaOriginal = Guia::findOrFail($request->guia_id[$i]);
 
-                // Si no existe la ruta se crea la ruta en la base de datos asociada al tour
-                if(!$ruta_existe){
-                    $ruta = new Ruta();
-                    $ruta->ruta_origen = $request->origen_id[$i];
-                    $ruta->ruta_destino = $request->destino_id[$i];
-                    $ruta->tour_id = $id_tour;
-            
-                    // $ruta->save();
-
-                    // DB::insert('INSERT INTO ruta_guias (ruta_id, guia_id) VALUES (?, ?)', [$ruta->ruta_id, $guia->guia_id]);
-                } else{
-                    // Si la ruta sí existe, entonces se consulta.
-                    $ruta = Ruta::where('tour_id', $id_tour)
-                        ->where('ruta_origen', $request->origen_id[$i])
-                        ->where('ruta_destino', $request->destino_id[$i])
-                        ->first();
-                }
-                
+                // Recorrer el arreglo de VINs enviados
                 if($arreglo_vins !== []){
+                    // Verificar si se cambió el número de la guía.
+                    $cambioGuia = false;
+                    if ($guiaOriginal->guia_numero !== $request->guia_numero[$i]) {
+                        $cambioGuia = true;
+                        $guiaOriginal->delete();
+
+                        // Crear nueva guía
+                        $guia = new Guia();
+                        $guia->guia_numero = $request->guia_numero[$i];
+                    } else {
+                        $guia = $guiaOriginal;
+                    }
+                    
+                    $guia->guia_fecha = $request->guia_fecha[$i];
+                    $guia->empresa_id = $request->empresa_id[$i];                
+
+                    $guia->save();
+
                     $cuenta = 0;
 
                     foreach($arreglo_vins as $codigo){
@@ -726,16 +568,8 @@ class TourController extends Controller
                             // Validar si existe asociación de este VIN con guías anteriores.
                             $val2 = GuiaVin::where('vin_id', $vin->vin_id)->exists();
                             
-                            // Si no existe ninguna asociación del VIN con otra guía, se crea la asociación
-                            // correspondiente con esta guía
-                            if(!$val2){
-                                $guiavin = new GuiaVin();
-                                $guiavin->vin_id = $vin->vin_id;
-                                $guiavin->guia_id = $guia->guia_id;
-                                $guiavin->save();
-                                
-                                $cuenta++;
-                            } else {
+                            if($val2){
+                                // Buscar con cuál guía está asociado el VIN.
                                 $guia_vin = GuiaVin::where('vin_id', $vin->vin_id)->first();
                                 
                                 // Si ya existe otra asociación vin-guía, entonces se elimina para crear
@@ -752,14 +586,19 @@ class TourController extends Controller
                                     
                                     $cuenta++;
                                 }
+                            } else { // Si no existe asociación guía-vin se crea la nueva asociación del VIN con la guía
+                                $guiavin = new GuiaVin();
+                                $guiavin->vin_id = $vin->vin_id;
+                                $guiavin->guia_id = $guia->guia_id;
+                                $guiavin->save();
+                                
+                                $cuenta++;
                             }
                         } else {
                             flash('Error. VIN: ' . $codigo . 'no existe en la base de datos.')->error();
                         }
                     }
 
-
-                    /// VERIFICAR LA LÓGICA A PARTIR DE ACÁ.
                     // Si se eliminaron VINs de una guía se buscan para eliminarlos de la BD
                     // Es una verificación adicional para no dejar registros de más (erróneos).
                     $array_vin_cods = Vin::join('guia_vins', 'guia_vins.vin_id', '=', 'vins.vin_id')
@@ -780,36 +619,39 @@ class TourController extends Controller
                         }
                     }
 
-
                     if($cuenta > 0){
-                        // Se añadieron vins a la ruta. Se aceptan los cambios a la base de datos.
-                        DB::commit();
-                        flash('La ruta: '. $request->origen_id[$i] . ' - ' . $request->destino_id[$i] .' se modificó correctamente.')->success();                        
+                        // Lista de vins modificada. Se aceptan los cambios a la base de datos.
+                        flash('La ruta: '. $request->ruta_origen[$i] . ' - ' . $request->ruta_destino[$i] . ' con guía:' . $guia->guia_numero . ' se modificó correctamente.')->success();
                     } else {
-                        // No se añadieron ni eliminaron vins en la ruta. No hay modificación.
-                        flash('No se modificó la ruta: '. $request->origen_id[$i] . ' - ' . $request->destino_id[$i] .'.')->success();
+                        if ($cambioGuia){
+                            // No se añadieron ni eliminaron vins en la ruta pero cambió la guía.
+                            flash('Guía modificada para la ruta: '. $request->ruta_origen[$i] . ' - ' . $request->ruta_destino[$i] .'.')->success();
+                        } else {
+                            // No se añadieron ni eliminaron vins en la ruta. No hay modificación.
+                            flash('Sin cambios en ruta: '. $request->ruta_origen[$i] . ' - ' . $request->ruta_destino[$i] .' con guía:' . $guia->guia_numero . '.' )->success();
+                        }
                     } 
-                } else{
-                    // Este es el caso de cuando viene vacía la casilla de código.
-                    // Se elimina la ruta
-                    Ruta::where('tour_id', $id_tour)
-                        ->where('ruta_origen', $request->origen_id[$i])
-                        ->where('ruta_destino', $request->destino_id[$i])
-                        ->delete();
 
-                    flash('Ruta: '. $request->origen_id[$i] . ' - ' . $request->destino_id[$i] .' eliminada correctamente.')->success();
+                    DB::commit();
+                } else{
+                    // Este es el caso de cuando viene vacía la casilla de VINs.
+                    // Se elimina la guia
+                    flash('Guía: '. $guiaOriginal->guia_numero .' eliminada correctamente.')->success();
+                    
+                    $guiaOriginal->delete();
+
                     DB::commit();
                 }           
             }  catch (\Exception $e) {
                 DB::rollBack();
                 flash('Error al actualizar rutas del Tour.')->error();
                 flash($e->getMessage())->error();
-                return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
+                return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)])->withInput();
             }
         }
         
         flash('Rutas del tour actualizadas correctamente.')->success();
-        return redirect('tour');
+        return redirect()->route('tour.editrutas', ['id' => Crypt::encrypt($id_tour)]);
     }
 
     /**
