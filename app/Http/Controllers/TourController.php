@@ -592,13 +592,6 @@ class TourController extends Controller
             ->where('rutas.tour_id', $tour_id)
             ->get(); 
             
-        $tour_guias = Tour::join('rutas','rutas.tour_id','=','tours.tour_id')
-            ->join('ruta_guias', 'ruta_guias.ruta_id','=','rutas.ruta_id')
-            ->join('guias', 'guias.guia_id','=','ruta_guias.guia_id')
-            ->select('guias.guia_id', 'guia_fecha', 'guia_numero')
-            ->where('tours.tour_id', $tour_id)
-            ->get();
-        
         $vins_guia_array = [];
         $fecha_guias_array = [];
 
@@ -634,7 +627,7 @@ class TourController extends Controller
             }
         }
 
-        return view('transporte.editrutas', compact('tour_id', 'rutas','guia_vins', /*'fecha_guias_array',*/ 'vins_guia_array', 'empresas'));
+        return view('transporte.editrutas', compact('tour_id', 'rutas','guia_vins', 'vins_guia_array', 'empresas'));
     }
     
 
