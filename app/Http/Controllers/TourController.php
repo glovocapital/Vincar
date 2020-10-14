@@ -577,22 +577,8 @@ class TourController extends Controller
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
         
-        // $rutas = Tour::join('rutas','rutas.tour_id','=','tours.tour_id')
-        //     ->where('tours.tour_id', $tour_id)
-        //     ->where('rutas.deleted_at', null)
-        //     ->select()
-        //     ->orderBy('ruta_id')
-        //     ->get();
-
         $rutas = Ruta::where('tour_id', $tour_id)
             ->get();
-
-        // $ruta_guias = Tour::join('rutas','rutas.tour_id','=','tours.tour_id')
-        //     ->join('ruta_guias','ruta_guias.ruta_id','=','rutas.ruta_id')
-        //     ->where('tours.tour_id', $tour_id)
-        //     ->where('rutas.deleted_at', null)
-        //     ->select()
-        //     ->get();
 
         $ruta_guias = Ruta::join('ruta_guias','ruta_guias.ruta_id','=','rutas.ruta_id')
             ->where('tour_id', $tour_id)
@@ -613,63 +599,6 @@ class TourController extends Controller
             ->where('tours.tour_id', $tour_id)
             ->get();
         
-        // $rutas_array = [];
-        // $i = 0;
-        // $enc = false;
-        
-        // foreach($rutas as $ruta){
-        //     if ($i == 0){
-        //         $rutas_array = [[$ruta->ruta_origen, $ruta->ruta_destino]];
-        //     } else {
-        //         for($j = 0; $j < count($rutas_array); $j++){
-        //             if(($ruta->ruta_origen == $rutas_array[$j][0]) && ($ruta->ruta_destino == $rutas_array[$j][1])){
-        //                 $enc = true;
-        //             } else {
-        //                 continue;
-        //             }
-        //         }
-        //         if(!$enc){
-        //             array_push($rutas_array, [$ruta->ruta_origen, $ruta->ruta_destino]);
-        //         } 
-        //         $enc = false;
-        //     }
-        //     $i++;
-        // }
-
-        // foreach($rutas as $ruta){
-        //     array_push($rutas_array, [$ruta->ruta_origen, $ruta->ruta_destino]);
-        // }
-        
-        // $vins_guia_array = [];
-        // $fecha_guias_array = [];
-        // foreach ($rutas_array as $ruta){
-        //     $cadena_vins = "";
-        //     $e = 0;
-        //     $empresa_id = 0;
-        //     $guia_numero = '';
-        //     $guia_id = 0;
-            
-        //     foreach($guia_vins as $guia_vin){
-        //         if(($ruta[0] == $guia_vin->ruta_origen) && ($ruta[1] == $guia_vin->ruta_destino)){
-        //             $cadena_vins .= $guia_vin->vin_codigo . "\n";
-        //             $empresa_id = $guia_vin->empresa_id;
-        //             $guia_numero = $guia_vin->guia_numero;
-        //             $guia_id = $guia_vin->guia_id;
-        //         }
-        //     }
-
-        //     $fecha = "";
-        //     foreach($guia_vins as $guia_vin){
-        //         if(($ruta[0] == $guia_vin->ruta_origen) && ($ruta[1] == $guia_vin->ruta_destino) && ($e == 0)){
-        //             $fecha = $guia_vin->guia_fecha;
-        //             $e++;
-        //         }
-        //     }
-            
-        //     array_push($vins_guia_array, [$empresa_id, $ruta, $cadena_vins, $guia_numero, $guia_id]);
-        //     array_push($fecha_guias_array, [$ruta, $fecha, $guia_numero]);
-        // }
-
         $vins_guia_array = [];
         $fecha_guias_array = [];
 
@@ -703,24 +632,6 @@ class TourController extends Controller
                 $guia_id = 0;
                 $ruta_id = 0;
             }
-
-            // foreach ($vins_guia_array as $vg){
-            //     dd($vg[1][0]);
-            // }
-
-            // dd($vins_guia_array);
-
-
-            // //continuar aquí OJOOO
-            // $fecha = "";
-            // foreach ($tour_guias as $tour_guia){
-            //     if(($ruta_simple[0] == $guia_vin->ruta_origen) && ($ruta_simple[1] == $guia_vin->ruta_destino) && ($e == 0)){
-            //         $fecha = $guia_vin->guia_fecha;
-            //         $e++;
-            //     }
-            // }
-            
-            // array_push($fecha_guias_array, [$ruta, $fecha, $guia_numero]);
         }
 
         return view('transporte.editrutas', compact('tour_id', 'rutas','guia_vins', /*'fecha_guias_array',*/ 'vins_guia_array', 'empresas'));
