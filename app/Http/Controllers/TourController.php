@@ -227,16 +227,18 @@ class TourController extends Controller
             ->orderByDesc('tour_fec_inicio')
             ->limit(1)
             ->value('tour_fec_inicio');
-        
-        $fechaInicioOtroTour = new Carbon($fechaOtroTour);
-        
-        $diferenciaFechaNuevoTour = $fechaViaje->diffInDays($fechaInicioOtroTour);
 
-        if($diferenciaFechaNuevoTour <= 7){
-            flash('Error: ' . ucfirst($modelo) . ' con otro viaje agendado en menos de una semana.')->error();
-            return false;
+        if ($fechaOtroTour !== null){
+            $fechaInicioOtroTour = new Carbon($fechaOtroTour);
+        
+            $diferenciaFechaNuevoTour = $fechaViaje->diffInDays($fechaInicioOtroTour);
+
+            if($diferenciaFechaNuevoTour <= 7){
+                flash('Error: ' . ucfirst($modelo) . ' con otro viaje agendado en menos de una semana.')->error();
+                return false;
+            }
         }
-
+        
         return true;
     }
 
