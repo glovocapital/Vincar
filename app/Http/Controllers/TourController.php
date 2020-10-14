@@ -10,7 +10,7 @@ use App\Http\Middleware\CheckSession;
 use App\User;
 use App\Empresa;
 use App\Guia;
-use App\GuiaVins;
+use App\GuiaVin;
 use App\Remolque;
 use App\Tour;
 use App\Ruta;
@@ -352,26 +352,26 @@ class TourController extends Controller
                             ->first();
                         
                         // Validar si ya existe previamente un registro donde el VIN esté asociado a una guía 
-                        $val2 = GuiaVins::where('vin_id', $vin->vin_id)->exists();
+                        $val2 = GuiaVin::where('vin_id', $vin->vin_id)->exists();
                         
                         if(!$val2){
                             // Si no existe la asociación, entonces se asocia el VIN a la guía $guia
-                            $guiavin = new GuiaVins();
+                            $guiavin = new GuiaVin();
                             $guiavin->vin_id = $vin->vin_id;
                             $guiavin->guia_id = $guia->guia_id;
                             $guiavin->save();
                             $cuenta++;
                         } else {
                             // Si existe la asociación, entonces se consulta el registro correspondiente.
-                            $guia_vin = GuiaVins::where('vin_id', $vin->vin_id)->first();
+                            $guia_vin = GuiaVin::where('vin_id', $vin->vin_id)->first();
 
                             // SOLO DEBE EXISTIR UN REGISTRO DEL VIN ASOCIADO CON UNA GUÍA
                             if($guia->guia_id !== $guia_vin->guia_id){
                                 // Si la guía actual no es la misma guía donde estaba registrado el vin
                                 // se elimina la asociación anterior y se crea una nueva.
-                                GuiaVins::where('vin_id', $vin->vin_id)->delete();
+                                GuiaVin::where('vin_id', $vin->vin_id)->delete();
 
-                                $guiavin = new GuiaVins();
+                                $guiavin = new GuiaVin();
                                 $guiavin->vin_id = $vin->vin_id;
                                 $guiavin->guia_id = $guia->guia_id;
                                 $guiavin->save();   
@@ -510,27 +510,27 @@ class TourController extends Controller
                             ->first();
 
                         // Validar si ya existe previamente un registro donde el VIN esté asociado a una guía 
-                        $val2 = GuiaVins::where('vin_id', $vin->vin_id)->exists();
+                        $val2 = GuiaVin::where('vin_id', $vin->vin_id)->exists();
 
 
                         if(!$val2){
                             // Si no existe la asociación, entonces se asocia el VIN a la guía $guia
-                            $guiavin = new GuiaVins();
+                            $guiavin = new GuiaVin();
                             $guiavin->vin_id = $vin->vin_id;
                             $guiavin->guia_id = $guia->guia_id;
                             $guiavin->save();
                             $cuenta++;
                         } else {
                             // Si existe la asociación, entonces se consulta el registro correspondiente.
-                            $guia_vin = GuiaVins::where('vin_id', $vin->vin_id)->first();
+                            $guia_vin = GuiaVin::where('vin_id', $vin->vin_id)->first();
 
                             // SOLO DEBE EXISTIR UN REGISTRO DEL VIN ASOCIADO CON UNA GUÍA
                             if($guia->guia_id !== $guia_vin->guia_id){
                                 // Si la guía actual no es la misma guía donde estaba registrado el vin
                                 // se elimina la asociación anterior y se crea una nueva.
-                                GuiaVins::where('vin_id', $vin->vin_id)->delete();
+                                GuiaVin::where('vin_id', $vin->vin_id)->delete();
 
-                                $guiavin = new GuiaVins();
+                                $guiavin = new GuiaVin();
                                 $guiavin->vin_id = $vin->vin_id;
                                 $guiavin->guia_id = $guia->guia_id;
                                 $guiavin->save();   
@@ -567,101 +567,163 @@ class TourController extends Controller
         }
     }
 
-
-    // Esta función debe revisarse en virtud de que ahora sólo habrá una guía por destino
-    // dado que los destinos son direcciones específicas. Y por esta razón cada guía es para
-    // una dirección específica. Se debe proporcionar la posibilidad de modificar toda la información
-    // de la ruta y su guía respectiva, hasta el punto de desechar por completo la información anterior.
     public function editrutas($id)
     {
         $tour_id =  Crypt::decrypt($id);
         $tour = Tour::findOrfail($tour_id);
-
+        
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
             ->orderBy('empresa_razon_social')
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
+        
+        // $rutas = Tour::join('rutas','rutas.tour_id','=','tours.tour_id')
+        //     ->where('tours.tour_id', $tour_id)
+        //     ->where('rutas.deleted_at', null)
+        //     ->select()
+        //     ->orderBy('ruta_id')
+        //     ->get();
 
-        $rutas = DB::table('tours')
-            ->join('rutas','rutas.tour_id','=','tours.tour_id')
-            ->where('tours.tour_id', $tour_id)
-            ->where('rutas.deleted_at', null)
-            ->select()
-            ->orderBy('ruta_id')
+        $rutas = Ruta::where('tour_id', $tour_id)
             ->get();
 
-        $ruta_guias = DB::table('tours')
-            ->join('rutas','rutas.tour_id','=','tours.tour_id')
-            ->join('ruta_guias','ruta_guias.ruta_id','=','rutas.ruta_id')
-            ->where('tours.tour_id', $tour_id)
-            ->where('rutas.deleted_at', null)
+        // $ruta_guias = Tour::join('rutas','rutas.tour_id','=','tours.tour_id')
+        //     ->join('ruta_guias','ruta_guias.ruta_id','=','rutas.ruta_id')
+        //     ->where('tours.tour_id', $tour_id)
+        //     ->where('rutas.deleted_at', null)
+        //     ->select()
+        //     ->get();
+
+        $ruta_guias = Ruta::join('ruta_guias','ruta_guias.ruta_id','=','rutas.ruta_id')
+            ->where('tour_id', $tour_id)
             ->select()
             ->get();
 
-        $guia_vins = DB::table('tours')
-            ->join('rutas','rutas.tour_id','=','tours.tour_id')
-            ->join('ruta_guias','ruta_guias.ruta_id','=', 'rutas.ruta_id')
-            ->join('guias','guias.guia_id','=','ruta_guias.guia_id')
-            ->join('guia_vins','guia_vins.guia_id','=', 'guias.guia_id')
+        $guia_vins = GuiaVin::join('guias','guias.guia_id','=','guia_vins.guia_id')
+            ->join('ruta_guias','ruta_guias.guia_id','=', 'guias.guia_id')
+            ->join('rutas','rutas.ruta_id','=','ruta_guias.ruta_id')
             ->join('vins','vins.vin_id','=','guia_vins.vin_id')
+            ->where('rutas.tour_id', $tour_id)
+            ->get(); 
+            
+        $tour_guias = Tour::join('rutas','rutas.tour_id','=','tours.tour_id')
+            ->join('ruta_guias', 'ruta_guias.ruta_id','=','rutas.ruta_id')
+            ->join('guias', 'guias.guia_id','=','ruta_guias.guia_id')
+            ->select('guias.guia_id', 'guia_fecha', 'guia_numero')
             ->where('tours.tour_id', $tour_id)
-            ->select()
-            ->get();   
+            ->get();
         
-        $rutas_array = [];
-        $i = 0;
-        $enc = false;
+        // $rutas_array = [];
+        // $i = 0;
+        // $enc = false;
         
-        foreach($rutas as $ruta){
-            if ($i == 0){
-                $rutas_array = [[$ruta->ruta_origen, $ruta->ruta_destino]];
-            } else {
-                for($j = 0; $j < count($rutas_array); $j++){
-                    if(($ruta->ruta_origen == $rutas_array[$j][0]) && ($ruta->ruta_destino == $rutas_array[$j][1])){
-                        $enc = true;
-                    } else {
-                        continue;
-                    }
-                }
-                if(!$enc){
-                    array_push($rutas_array, [$ruta->ruta_origen, $ruta->ruta_destino]);
-                } 
-                $enc = false;
-            }
-            $i++;
-        }
+        // foreach($rutas as $ruta){
+        //     if ($i == 0){
+        //         $rutas_array = [[$ruta->ruta_origen, $ruta->ruta_destino]];
+        //     } else {
+        //         for($j = 0; $j < count($rutas_array); $j++){
+        //             if(($ruta->ruta_origen == $rutas_array[$j][0]) && ($ruta->ruta_destino == $rutas_array[$j][1])){
+        //                 $enc = true;
+        //             } else {
+        //                 continue;
+        //             }
+        //         }
+        //         if(!$enc){
+        //             array_push($rutas_array, [$ruta->ruta_origen, $ruta->ruta_destino]);
+        //         } 
+        //         $enc = false;
+        //     }
+        //     $i++;
+        // }
+
+        // foreach($rutas as $ruta){
+        //     array_push($rutas_array, [$ruta->ruta_origen, $ruta->ruta_destino]);
+        // }
+        
+        // $vins_guia_array = [];
+        // $fecha_guias_array = [];
+        // foreach ($rutas_array as $ruta){
+        //     $cadena_vins = "";
+        //     $e = 0;
+        //     $empresa_id = 0;
+        //     $guia_numero = '';
+        //     $guia_id = 0;
+            
+        //     foreach($guia_vins as $guia_vin){
+        //         if(($ruta[0] == $guia_vin->ruta_origen) && ($ruta[1] == $guia_vin->ruta_destino)){
+        //             $cadena_vins .= $guia_vin->vin_codigo . "\n";
+        //             $empresa_id = $guia_vin->empresa_id;
+        //             $guia_numero = $guia_vin->guia_numero;
+        //             $guia_id = $guia_vin->guia_id;
+        //         }
+        //     }
+
+        //     $fecha = "";
+        //     foreach($guia_vins as $guia_vin){
+        //         if(($ruta[0] == $guia_vin->ruta_origen) && ($ruta[1] == $guia_vin->ruta_destino) && ($e == 0)){
+        //             $fecha = $guia_vin->guia_fecha;
+        //             $e++;
+        //         }
+        //     }
+            
+        //     array_push($vins_guia_array, [$empresa_id, $ruta, $cadena_vins, $guia_numero, $guia_id]);
+        //     array_push($fecha_guias_array, [$ruta, $fecha, $guia_numero]);
+        // }
 
         $vins_guia_array = [];
         $fecha_guias_array = [];
-        foreach ($rutas_array as $ruta){
+
+        foreach ($rutas as $ruta){
             $cadena_vins = "";
             $e = 0;
             $empresa_id = 0;
             $guia_numero = '';
             $guia_id = 0;
+            $ruta_id = 0;
 
-            foreach($guia_vins as $guia_vin){
-                if(($ruta[0] == $guia_vin->ruta_origen) && ($ruta[1] == $guia_vin->ruta_destino)){
-                    $cadena_vins .= $guia_vin->vin_codigo . "\n";
-                    $empresa_id = $guia_vin->empresa_id;
-                    $guia_numero = $guia_vin->guia_numero;
-                    $guia_id = $guia_vin->guia_id;
-                }
-            }
-
-            $fecha = "";
-            foreach($guia_vins as $guia_vin){
-                if(($ruta[0] == $guia_vin->ruta_origen) && ($ruta[1] == $guia_vin->ruta_destino) && ($e == 0)){
-                    $fecha = $guia_vin->guia_fecha;
-                    $e++;
-                }
-            }
+            $ruta_simple = [$ruta->ruta_origen, $ruta->ruta_destino];
             
-            array_push($vins_guia_array, [$empresa_id, $ruta, $cadena_vins, $guia_numero, $guia_id]);
-            array_push($fecha_guias_array, [$ruta, $fecha, $guia_numero]);
+            foreach ($ruta_guias as $ruta_guia){
+                foreach($guia_vins as $guia_vin){
+                    if(($ruta_guia->guia_id == $guia_vin->guia_id)){
+                        $cadena_vins .= $guia_vin->vin_codigo . "\n";
+                        $empresa_id = $guia_vin->empresa_id;
+                        $guia_numero = $guia_vin->guia_numero;
+                        $guia_fecha = $guia_vin->guia_fecha;
+                        $guia_id = $guia_vin->guia_id;
+                        $ruta_id = $guia_vin->ruta_id;
+                    }
+                }
+
+                array_push($vins_guia_array, [$empresa_id, $ruta_simple, $ruta_id, $cadena_vins, $guia_numero, $guia_fecha, $guia_id]);
+                $cadena_vins = "";
+                $empresa_id = 0;
+                $guia_numero = '';
+                $guia_fecha = '';
+                $guia_id = 0;
+                $ruta_id = 0;
+            }
+
+            // foreach ($vins_guia_array as $vg){
+            //     dd($vg[1][0]);
+            // }
+
+            // dd($vins_guia_array);
+
+
+            // //continuar aquí OJOOO
+            // $fecha = "";
+            // foreach ($tour_guias as $tour_guia){
+            //     if(($ruta_simple[0] == $guia_vin->ruta_origen) && ($ruta_simple[1] == $guia_vin->ruta_destino) && ($e == 0)){
+            //         $fecha = $guia_vin->guia_fecha;
+            //         $e++;
+            //     }
+            // }
+            
+            // array_push($fecha_guias_array, [$ruta, $fecha, $guia_numero]);
         }
 
-        return view('transporte.editrutas', compact('tour_id', 'rutas','guia_vins', 'fecha_guias_array', 'vins_guia_array', 'empresas'));
+        return view('transporte.editrutas', compact('tour_id', 'rutas','guia_vins', /*'fecha_guias_array',*/ 'vins_guia_array', 'empresas'));
     }
     
 
@@ -758,28 +820,28 @@ class TourController extends Controller
                                 ->first();
                             
                             // Validar si existe asociación de este VIN con guías anteriores.
-                            $val2 = GuiaVins::where('vin_id', $vin->vin_id)->exists();
+                            $val2 = GuiaVin::where('vin_id', $vin->vin_id)->exists();
                             
                             // Si no existe ninguna asociación del VIN con otra guía, se crea la asociación
                             // correspondiente con esta guía
                             if(!$val2){
-                                $guiavin = new GuiaVins();
+                                $guiavin = new GuiaVin();
                                 $guiavin->vin_id = $vin->vin_id;
                                 $guiavin->guia_id = $guia->guia_id;
                                 $guiavin->save();
                                 
                                 $cuenta++;
                             } else {
-                                $guia_vin = GuiaVins::where('vin_id', $vin->vin_id)->first();
+                                $guia_vin = GuiaVin::where('vin_id', $vin->vin_id)->first();
                                 
                                 // Si ya existe otra asociación vin-guía, entonces se elimina para crear
                                 // la nueva asociación. En caso contrario, no se hace nada nuevo.
                                 if($guia->guia_id !== $guia_vin->guia_id){
-                                    GuiaVins::where('vin_id', $vin->vin_id)
+                                    GuiaVin::where('vin_id', $vin->vin_id)
                                         ->where('guia_id', $guia_vin->guia_id)
                                         ->delete();
 
-                                    $guiavin = new GuiaVins();
+                                    $guiavin = new GuiaVin();
                                     $guiavin->vin_id = $vin->vin_id;
                                     $guiavin->guia_id = $guia->guia_id;
                                     $guiavin->save();
@@ -806,7 +868,7 @@ class TourController extends Controller
                             $vin_eliminar_id = Vin::where('vin_codigo', $vin_cod)
                                 ->value('vin_id');
                             
-                            GuiaVins::where('vin_id', $vin_eliminar_id)
+                            GuiaVin::where('vin_id', $vin_eliminar_id)
                                 ->where('guia_id', $request->guia_id[$i])
                                 ->delete();
                             

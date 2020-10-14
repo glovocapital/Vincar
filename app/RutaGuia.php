@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GuiaVins extends Model
+class RutaGuia extends Model
 {
-    protected $primaryKey = 'guia_vin_id';
-    protected $table = 'guia_vins';
+    protected $primaryKey = 'ruta_guia_id';
+    protected $table = 'ruta_guias';
 
     /**
      * The attributes that are mass assignable.
@@ -15,6 +15,6 @@ class GuiaVins extends Model
      * @var array
      */
     protected $fillable = [
-        'guia_id','vin_id'
+        'ruta_id', 'guia_id'
     ];
 }

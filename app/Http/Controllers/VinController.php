@@ -17,7 +17,7 @@ use App\Entrega;
 use App\Exports\BusquedaVinsExport;
 use App\Exports\VinEntregadosExport;
 Use App\Guia;
-Use App\GuiaVins;
+Use App\GuiaVin;
 use App\Marca;
 use App\UbicPatio;
 use Auth;
@@ -1177,7 +1177,7 @@ class VinController extends Controller
 
             $guia->save();
 
-            $guia_vin = new GuiaVins();
+            $guia_vin = new GuiaVin();
             $guia_vin->vin_id = $vin_id;
             $guia_vin->guia_id = $guia->guia_id;
             $guia_vin->save();
@@ -1254,7 +1254,7 @@ class VinController extends Controller
             $guia->save();
 
             foreach($request->vin_ids as $vin_id){
-                $guia_vin = new GuiaVins();
+                $guia_vin = new GuiaVin();
                 $guia_vin->vin_id = $vin_id;
                 $guia_vin->guia_id = $guia->guia_id;
                 $guia_vin->save();
