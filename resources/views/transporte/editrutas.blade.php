@@ -120,7 +120,7 @@
                 <div class="text-right pb-5">
                 {!! Form::submit('Actualizar Rutas ', ['class' => 'btn btn-success block full-width m-b']) !!}
                 {!! Form::close() !!}
-                    <a type="button" href="{{route('tour.index')}}" class="btn btn-primary block full-width m-b">Regresar</a>
+                    <a type="button" href="{{route('tour.tour')}}" class="btn btn-primary block full-width m-b">Regresar</a>
                 </div>
 
                 <div class="text-right pb-5">

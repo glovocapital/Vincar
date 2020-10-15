@@ -347,8 +347,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post('tour/crearutas2', 'TourController@crearutas2')->name('tour.crearutas2');
 
     Route::post('tour','TourController@store')->name('tour.store');
-    Route::get('tour/{id}/edit','TourController@editTarea')->name('tour.edit');
-    Route::patch('tour/{id}/update','TourController@update')->name('tour.update');
+    Route::get('tour/{id}/edit','TourController@editTour')->name('tour.edit');
+    Route::patch('tour/{id}/update','TourController@updateTour')->name('tour.update');
     Route::get('tour/{id}/delete','TourController@destroy')->name('tour.destroy');
     
 

@@ -671,9 +671,36 @@ class TourController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function editTour($id)
     {
-        //
+        $id_tour = Crypt::decrypt($id);
+
+        $tour = Tour::findOrFail($id_tour);
+
+        $conductor = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS conductor_nombres"), 'users.user_id')
+            ->join('conductors', 'users.user_id', '=', 'conductors.user_id' )
+            ->where('users.deleted_at', null)
+            ->pluck('conductor_nombres', 'users.user_id')
+            ->all();
+
+        $camion = Camion::select('camion_id', 'camion_patente')
+            ->orderBy('camion_id')
+            ->pluck('camion_patente', 'camion_id')
+            ->all();
+
+        $remolque = Remolque::select('remolque_id', 'remolque_patente')
+            ->orderBy('remolque_id')
+            ->pluck('remolque_patente', 'remolque_id')
+            ->all();
+
+        $transporte = Empresa::select('empresa_id', 'empresa_razon_social')
+            ->orderBy('empresa_razon_social')
+            ->where('empresa_es_proveedor', true)
+            ->where('tipo_proveedor_id', 8)
+            ->pluck('empresa_razon_social', 'empresa_id')
+            ->all();
+
+        return view('transporte.edittour', compact('tour', 'camion', 'transporte', 'remolque', 'conductor'));
     }
 
     /**
@@ -683,9 +710,112 @@ class TourController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function updateTour(Request $request, $id)
     {
-        //
+        $id_tour = Crypt::decrypt($id);
+
+        $tour = Tour::findOrFail($id_tour);
+        
+        // No se puede modificar un tour que ya haya arrancado, o que ya haya iniciado y finalizado correctamente.
+        // Sólo se permitirá en el caso de tours cancelados o que estén pendientes por arrancar.
+        if ($tour->tour_iniciado && !$tour->finalizado) {
+            flash('Error: Tour en desarrollo. No puede ser modificado.')->error();
+            return back();
+        } elseif ($tour->tour_iniciado && $tour->finalizado) {
+            flash('Error: Tour previamente completado correctamente. No puede ser modificado.')->error();
+            return back();
+        }
+
+        // Validaciones
+        $fechaViaje = new Carbon($request->tour_fecha_inicio);
+
+        if ($fechaViaje < Carbon::today()){
+            flash('Error: Fecha incorrecta. La fecha no puede ser anterior al día actual.')->error();
+            return back()->withInput();
+        }
+
+        $conductor = Conductor::where('user_id', $request->conductor_id)->first();
+
+        if (!$this->validarData($conductor, 'conductor', $fechaViaje)){
+            return back()->withInput();
+        }
+
+        $camion = Camion::where('camion_id', $request->camion_id)->first();
+
+        if (!$this->validarData($camion, 'camion', $fechaViaje)){
+            return back()->withInput();
+        }
+
+        $remolque = Remolque::where('remolque_id', $request->remolque_id)->first();
+
+        if (!$this->validarData($remolque, 'remolque', $fechaViaje)){
+            return back()->withInput();
+        }
+
+        $licenciaValida = new Carbon($conductor->conductor_fecha_vencimiento);
+
+        $revisionRemolque = new Carbon($remolque->remolque_fecha_revision);
+        $permisoRemolque = new Carbon($remolque->remolque_fecha_circulacion);
+
+        $permisoCamion = new Carbon($camion->camion_fecha_circulacion);
+        $revisionCamion = new Carbon($camion->camion_fecha_revision);
+
+        // Asignación de fechas por Carbon
+        $diferenciaLicencia = $fechaViaje->diffInDays($licenciaValida);
+        $diferenciaRevisionCamion = $fechaViaje->diffInDays($revisionCamion);
+        $diferenciaPermisoCamion = $fechaViaje->diffInDays($permisoCamion);
+        $diferenciaRevisionRemolque = $fechaViaje->diffInDays($revisionRemolque);
+        $diferenciaPermisoRemolque = $fechaViaje->diffInDays($permisoRemolque);
+
+        // La licencia debe tener al menos 16 días de vigencia al momento del viaje. 
+        // La fecha del viaje no puede ser posterior al vencimiento de la licencia
+        if($diferenciaLicencia <= 15 || $fechaViaje > $licenciaValida )
+        {
+            flash('No se puede modificar el tour con este conductor, licencia de conducir vencida o a punto de vencer')->error();
+            return redirect()->action('TourController@tour')->withInput();
+        }
+
+        // La revisión y permiso de circulación del camión deben tener al menos 16 días de vigencia al momento del viaje.
+        // La fecha del viaje no puede ser posterior al vencimiento de la revisión y/o permiso de circulación del camión.
+        if($diferenciaRevisionCamion <= 15 || $diferenciaPermisoCamion <= 15 || $fechaViaje > $permisoCamion || $fechaViaje > $revisionCamion)
+        {
+            flash('No se puede modificar el tour con este camión, debe revisar el permisos de circulación o fecha de revisión del mismo')->error();
+            return redirect()->action('TourController@tour')->withInput();
+        }
+
+        // La revisión y permiso de circulación del remolque deben tener al menos 16 días de vigencia al momento del viaje.
+        // La fecha del viaje no puede ser posterior al vencimiento de la revisión y/o permiso de circulación del remolque.
+        if($diferenciaRevisionRemolque <= 15 || $diferenciaPermisoRemolque <= 15 || $fechaViaje > $revisionRemolque || $fechaViaje > $revisionRemolque)
+        {
+            flash('No se puede modificar el tour con este remolque, debe revisar el permisos de circulación o fecha de revisión del mismo')->error();
+            return redirect()->action('TourController@tour')->withInput();
+        }
+
+        try {
+            if(($tour->camion_id != $request->camion_id) || ($tour->remolque_id != $request->remolque_id) || ($tour->proveedor_id != $request->transporte_id)
+                || ($tour->conductor_id != $request->conductor_id) || ($tour->tour_fec_inicio != $request->tour_fecha_inicio)){
+                    $tour->tour_comentarios = "Tour actualizado. Información modificada.";
+                }
+            
+            $tour->camion_id = $request->camion_id;
+            $tour->remolque_id = $request->remolque_id;
+            $tour->proveedor_id = $request->transporte_id;
+            $tour->conductor_id = $request->conductor_id;
+            $tour->tour_fec_inicio = $request->tour_fecha_inicio;
+            // $tour->tour_finalizado = false;
+            
+            if ($tour->save()) {
+                flash('El Tour se actualizó correctamente.')->success();
+                return redirect()->action('TourController@tour');
+            } else {
+                flash('Error actualizando información del Tour.')->error();
+                return redirect()->action('TourController@tour')->withInput();
+            }
+        }catch (\Exception $e) {
+            flash('Error al intentar actualizar el Tour.')->error();
+           //flash($e->getMessage())->error();
+            return redirect()->action('TourController@tour')->withInput();
+        }
     }
 
     /**
