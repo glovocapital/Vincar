@@ -1093,7 +1093,7 @@ class VinController extends Controller
                         );
                     }
                 }
-            } else if($estado_previo == 8 && $estado_nuevo == 1){
+            } else if (($estado_previo == 7 && $estado_nuevo == 1) || ($estado_previo == 8 && $estado_nuevo == 1)){
                 $vin->vin_estado_inventario_id = $estado_nuevo;
                 $vin->vin_fec_ingreso = Carbon::now();
                 $vin->vin_predespacho = false;

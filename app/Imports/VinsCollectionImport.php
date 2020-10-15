@@ -91,6 +91,10 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                         }
 
                         $vin->vin_fec_ingreso = $fecha;
+                        $vin->vin_predespacho = false;
+                        $vin->vin_bloqueado_entrega = false;
+                        $vin->vin_fecha_entrega = null;
+                        $vin->vin_fecha_agendado = null;
                         
                         $vin->save();
 
@@ -106,7 +110,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                     null,
                                     null,
                                     $user->belongsToEmpresa->empresa_id,
-                                    "VIN reingresando al sistema." . $comentario,
+                                    "VIN reingresando al sistema. " . $comentario,
                                     "Origen: Reingreso de VIN al sistema",
                                     "Patio: BLoque y Ubicación por asignar."
                                 ]
