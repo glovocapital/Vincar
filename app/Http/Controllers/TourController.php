@@ -818,6 +818,46 @@ class TourController extends Controller
         }
     }
 
+    public function trash($id){
+        $id_tour =  Crypt::decrypt($id);
+
+        try {
+            // Eliminar primero las guías asociadas
+            $guias = Guia::join('ruta_guias','ruta_guias.guia_id','=', 'guias.guia_id')
+                ->join('rutas','rutas.ruta_id','=','ruta_guias.ruta_id')
+                ->where('rutas.tour_id', $id_tour)
+                ->get();
+
+            if ($guias) {
+                foreach ($guias as $guia) {
+                    $guiaBorrar = Guia::findOrFail($guia->guia_id);
+    
+                    $guiaBorrar->delete();
+                }
+            }
+
+            // Eliminar luego el tour.
+            $tour = Tour::findOrfail($id_tour);
+            $tour->delete();
+                
+            flash('Los todos los datos del Tour han sido eliminados satisfactoriamente.')->success();
+            return redirect()->route('tour.tour');
+        }catch (\Exception $e) {
+            flash('Error al intentar eliminar los datos del Tour.')->error();
+            return redirect()->route('tour.tour');
+        }
+    }
+
+    public function restore($id){
+        $id_tour =  Crypt::decrypt($id);
+
+        $tour = Tour::onlyTrashed()->where('tour_id', $id_tour)->firstOrFail();
+
+        $tour->restore();
+
+        return redirect()->route('tour.tour');
+    }
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -826,7 +866,13 @@ class TourController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $id_tour =  Crypt::decrypt($id);
+
+        $tour = Tour::onlyTrashed()->where('tour_id', $id_tour)->firstOrFail();
+
+        $tour->forceDelete();
+
+        return redirect()->route('tour.tour');
     }
 
     protected function finalizarTourNoIniciado($tour_id)

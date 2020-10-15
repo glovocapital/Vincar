@@ -17,8 +17,4 @@ class Guia extends Model
     protected $fillable = [
         'guia_ruta', 'guia_fecha', 'guia_destino', 'empresa_id'
     ];
-
-
-
-
 }

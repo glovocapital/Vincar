@@ -349,7 +349,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post('tour','TourController@store')->name('tour.store');
     Route::get('tour/{id}/edit','TourController@editTour')->name('tour.edit');
     Route::patch('tour/{id}/update','TourController@updateTour')->name('tour.update');
-    Route::get('tour/{id}/delete','TourController@destroy')->name('tour.destroy');
+    Route::get('tour/{id}/delete','TourController@trash')->name('tour.delete');
     
 
 
