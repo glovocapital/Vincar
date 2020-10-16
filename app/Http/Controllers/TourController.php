@@ -201,7 +201,7 @@ class TourController extends Controller
     * modelo: nombre del modelo en minúsculas
     * fechaViaje: fecha del nuevo viaje a realizarse
     */
-    protected function validarData($data, $modelo, $fechaViaje)
+    protected function validarData($data, $modelo, $fechaViaje, $tour_id=null)
     {
         $cadenaConsulta = $modelo . '_id';
 
@@ -210,24 +210,29 @@ class TourController extends Controller
         } else {
             $id_modelo = $data->$cadenaConsulta;
         }
+
         
-        $noDisponible = Tour::where($cadenaConsulta, $id_modelo)
+        $noDisponible = Tour::where('tour_id', '!=', $tour_id)
+            ->where($cadenaConsulta, $id_modelo)
             ->where('tour_iniciado', true)
             ->where('tour_finalizado', false)
-            ->exists();
-        
+            ->exists();    
+
         if($noDisponible){
             flash('Error: Conductor no disponible.')->error();
             return false;
         }
+
+        // $otroTour = 
         
-        $fechaOtroTour = Tour::where($cadenaConsulta, $id_modelo)
+        $fechaOtroTour = Tour::where('tour_id', '!=', $tour_id)
+            ->where($cadenaConsulta, $id_modelo)
             ->where('tour_iniciado', false)
             ->where('tour_finalizado', false)
             ->orderByDesc('tour_fec_inicio')
             ->limit(1)
             ->value('tour_fec_inicio');
-
+            
         if ($fechaOtroTour !== null){
             $fechaInicioOtroTour = new Carbon($fechaOtroTour);
         
@@ -736,19 +741,19 @@ class TourController extends Controller
 
         $conductor = Conductor::where('user_id', $request->conductor_id)->first();
 
-        if (!$this->validarData($conductor, 'conductor', $fechaViaje)){
+        if (!$this->validarData($conductor, 'conductor', $fechaViaje, $id_tour)){
             return back()->withInput();
         }
 
         $camion = Camion::where('camion_id', $request->camion_id)->first();
 
-        if (!$this->validarData($camion, 'camion', $fechaViaje)){
+        if (!$this->validarData($camion, 'camion', $fechaViaje, $id_tour)){
             return back()->withInput();
         }
 
         $remolque = Remolque::where('remolque_id', $request->remolque_id)->first();
 
-        if (!$this->validarData($remolque, 'remolque', $fechaViaje)){
+        if (!$this->validarData($remolque, 'remolque', $fechaViaje, $id_tour)){
             return back()->withInput();
         }
 
