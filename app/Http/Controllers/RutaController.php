@@ -307,6 +307,20 @@ class RutaController extends Controller
                     $cambioGuia = false;
                     
                     if ($guiaOriginal->guia_numero !== $request->guia_numero[$i]) {
+                        // Verificar si la guía nueva enviada ya está asignada a una ruta existente.
+                        $verificaGuia = Guia::where('guia_numero', $request->guia_numero[$i])->first();
+
+                        $existeGuia= false;
+
+                        if ($verificaGuia){
+                            $existeGuia = RutaGuia::where('guia_id', $verificaGuia->guia_id)
+                                ->exists();
+                        }
+
+                        if($existeGuia){
+                            return back()->with('error', 'Número de Guía ya asignada a otra ruta. Por favor intente con otra.')->withInput();
+                        }
+
                         $cambioGuia = true;
 
                         // Crear nueva guía
