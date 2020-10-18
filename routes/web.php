@@ -334,23 +334,23 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('planificacion/{id}/delete','CampaniaController@destroyTarea')->name('planificacion.destroy');
 
 
-    // Rutas para los tours
+    // Módulo de Transporte: Tours
 
     Route::get('tour', 'TourController@index')->name('tour.index');
     Route::get('tour/tour', 'TourController@tour')->name('tour.tour');
-    Route::get('tour/addrutas', 'TourController@addrutas')->name('tour.addrutas');
-    Route::get('tour/{id}/editrutas', 'TourController@editrutas')->name('tour.editrutas');
-    Route::patch('tour/{id}/update_rutas','TourController@updateRutas')->name('tour.update_rutas');
-    Route::get('tour/admin_rutas', 'TourController@adminRutas')->name('tour.admin_rutas');
-
-    Route::post('tour/crearutas', 'TourController@crearutas')->name('tour.crearutas');
-    Route::post('tour/crearutas2', 'TourController@crearutas2')->name('tour.crearutas2');
-
     Route::post('tour','TourController@store')->name('tour.store');
     Route::get('tour/{id}/edit','TourController@editTour')->name('tour.edit');
     Route::patch('tour/{id}/update','TourController@updateTour')->name('tour.update');
     Route::get('tour/{id}/delete','TourController@trash')->name('tour.delete');
     
+    
+    // Rutas del tour
+    Route::get('tour/addrutas', 'RutaController@addRutas')->name('tour.addrutas');
+    Route::post('tour/crearutas', 'RutaController@creaRutas')->name('tour.crearutas');
+    Route::get('tour/{id}/editrutas', 'RutaController@editRutas')->name('tour.editrutas');
+    Route::patch('tour/{id}/update_rutas','RutaController@updateRutas')->name('tour.update_rutas');
+    Route::get('tour/admin_rutas', 'RutaController@adminRutas')->name('tour.admin_rutas');
+    // Route::post('tour/crearutas2', 'TourController@crearutas2')->name('tour.crearutas2');
 
 
     // Vehículos N/N
