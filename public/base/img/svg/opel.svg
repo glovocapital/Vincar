@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 24.2.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -8,3 +9,6 @@
 <polygon points="15.67,154.71 239.94,154.71 201.45,189.02 328.33,197.97 328.33,221.9 104.49,226.51 145.94,189.02 15.67,180.48 
 	"/>
 </svg>
+=======
+<svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.76 192.76"><defs><style>.cls-1{fill:#fff;}.cls-1,.cls-2{fill-rule:evenodd;}.cls-2{fill:#1d1d1b;}</style></defs><polygon class="cls-1" points="0 0 192.76 0 192.76 192.76 0 192.76 0 0 0 0"/><path class="cls-2" d="M340,398v2.33a59.42,59.42,0,0,0,116.6,16.25l-95.33,1.1,23-17.72L340,398Zm2.2-13.56a59.38,59.38,0,0,1,116.6,15.89v2.93l-44.25-2,23.59-18-95.94,1.1Zm-9.9,13.2-20.78-.86v-12.1l22.61-.24a67.14,67.14,0,0,1,132.37,15.89,25.86,25.86,0,0,1-.13,3.17l20.9.86v12l-22.61.24a67.24,67.24,0,0,1-132.48-16.25,21.1,21.1,0,0,1,.12-2.69Z" transform="translate(-303 -304)"/></svg>
+>>>>>>> 4c6e45831330cfb165002f09cd876c4b5f3172c5

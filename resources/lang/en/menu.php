@@ -42,7 +42,8 @@ return [
 
     'Transporte'=>'Transport',
     'Generar_Guia'=>'Generate Guide',
-    'Asignacion_Ruta'=>'Route Assignment',
+    'Panel_Tours'=>'Tours Dashboard',
+    'Gestion_viajes'=>'Trips Management',
     'Administracion_Ruta'=>'Route Administration',
     'Disponibilidad'=>'Availability',
 
@@ -56,5 +57,6 @@ return [
 
     'Configuracion_Facturacion'=>'Billing Settings',
 
+    'KPI' => 'KPI',
     'Estadisticas'=>'Statistics'
 ];

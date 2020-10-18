@@ -53,7 +53,7 @@
                                 <select name="marca_id" id="marca_id" class="form-control col-sm-9" placeholder="Marca">
                                     <option value="">Marca</option>
                                     @foreach ($marcas as $marca_id => $marca_nombre)
-                                    <option value="{{ $marca_id }}">{{ ucwords($marca_nombre) }}</option>
+                                    <option value="{{ $marca_id }}"{{ old('marca_id', $marca_id) == $marca_id ? ' selected' : ''}} required>{{ ucwords($marca_nombre) }}</option>
                                     @endforeach
                                 </select>                                
                             </div>

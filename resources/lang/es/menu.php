@@ -43,7 +43,8 @@ return [
 
     'Transporte'=>'Transporte',
     'Generar_Guia'=>'Generar Guía',
-    'Asignacion_Ruta'=>'Asignación de Ruta',
+    'Panel_Tours'=>'Panel de Tours',
+    'Gestion_viajes'=>'Gestión de Viajes',
     'Administracion_Ruta'=>'Administración de Ruta',
     'Disponibilidad'=>'Disponibilidad',
 
@@ -57,6 +58,7 @@ return [
 
     'Configuracion_Facturacion'=>'Configuración de Facturación',
 
+    'KPI' => 'KPI',
     'Estadisticas'=>'Estadísticas'
 
 ,];

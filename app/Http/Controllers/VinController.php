@@ -17,7 +17,7 @@ use App\Entrega;
 use App\Exports\BusquedaVinsExport;
 use App\Exports\VinEntregadosExport;
 Use App\Guia;
-Use App\GuiaVins;
+Use App\GuiaVin;
 use App\Marca;
 use App\UbicPatio;
 use Auth;
@@ -554,7 +554,7 @@ class VinController extends Controller
             DB::beginTransaction();
 
             $vin = new Vin();
-            $vin->vin_codigo = $request->vin_codigo;
+            $vin->vin_codigo = trim($request->vin_codigo);
             $vin->vin_patente = $request->vin_patente;
             $vin->vin_marca = $request->vin_marca;
             $vin->vin_modelo = $request->vin_modelo;
@@ -665,7 +665,7 @@ class VinController extends Controller
             $estado_previo = $vin->vin_estado_inventario_id;
             $estado_nuevo = (int)$request->vin_estado_inventario_id;
 
-            $vin->vin_codigo = $request->vin_codigo;
+            $vin->vin_codigo = trim($request->vin_codigo);
             $vin->vin_patente = $request->vin_patente;
             $vin->vin_marca = (int)$request->vin_marca;
             $vin->vin_modelo = $request->vin_modelo;
@@ -1093,7 +1093,7 @@ class VinController extends Controller
                         );
                     }
                 }
-            } else if($estado_previo == 8 && $estado_nuevo == 1){
+            } else if (($estado_previo == 7 && $estado_nuevo == 1) || ($estado_previo == 8 && $estado_nuevo == 1)){
                 $vin->vin_estado_inventario_id = $estado_nuevo;
                 $vin->vin_fec_ingreso = Carbon::now();
                 $vin->vin_predespacho = false;
@@ -1177,7 +1177,7 @@ class VinController extends Controller
 
             $guia->save();
 
-            $guia_vin = new GuiaVins();
+            $guia_vin = new GuiaVin();
             $guia_vin->vin_id = $vin_id;
             $guia_vin->guia_id = $guia->guia_id;
             $guia_vin->save();
@@ -1254,7 +1254,7 @@ class VinController extends Controller
             $guia->save();
 
             foreach($request->vin_ids as $vin_id){
-                $guia_vin = new GuiaVins();
+                $guia_vin = new GuiaVin();
                 $guia_vin->vin_id = $vin_id;
                 $guia_vin->guia_id = $guia->guia_id;
                 $guia_vin->save();
