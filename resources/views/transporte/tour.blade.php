@@ -132,6 +132,9 @@
                                                     @else 
                                                         @if($tour->tour_finalizado)
                                                             <small>
+                                                                <a href="{{ route('tour.edit', Crypt::encrypt($tour->tour_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
+                                                            </small>
+                                                            <small>
                                                                 <a href = "{{ route('tour.delete', Crypt::encrypt($tour->tour_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i></a>
                                                             </small>
                                                         @else
