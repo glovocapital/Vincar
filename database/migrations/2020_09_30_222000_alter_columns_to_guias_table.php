@@ -18,7 +18,7 @@ class AlterColumnsToGuiasTable extends Migration
         Schema::table('guias', function (Blueprint $table) {
             $table->dropForeign(['empresa_id']);
             
-            $table->string('guia_numero')->after('guia_id')->unique();
+            $table->string('guia_numero')->after('guia_id')->default(0);
             $table->date('guia_fecha')->change()->after('guia_numero');
             $table->boolean('guia_carga_entregada')->after('guia_fecha')->default(false);
             
