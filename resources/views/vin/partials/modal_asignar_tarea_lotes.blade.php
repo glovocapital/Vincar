@@ -19,8 +19,23 @@
                         </div>
                     </div>
 
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="empresa_id" >Cliente <strong> *</strong></label>
+                                {!! Form::select('empresa_guia_id', $empresas, null,['id' => 'empresa_id', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-9 select-cliente' , 'required']) !!}
+                        </div>
+                        <div class="form-group">
+                            <label for="guia_fecha" >Fecha de la Guía:</label>
+                            {!! Form::date('guia_fecha', null, ['class'=>'form-control col-sm-9', 'required']) !!}
+                        </div>
+                    </div>
+
 
                     <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="guia_numero" >Número de Guía:</label>
+                            {!! Form::text('guia_numero', null, ['class'=>'form-control col-sm-9', 'required']) !!}
+                        </div>
                             <div class="form-group">
                                 <label for="">Cargar Guia del VIN </label>
                                 {!! Form::file('guia_vin', array('required')); !!}

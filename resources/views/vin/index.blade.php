@@ -320,7 +320,7 @@
 
                                     <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol12" style="display:none">Asignar para entrega</button>
 
-                                    <button type="button" class="btn btn-success btn-lote-vins btn-rol" style="display:none">Cargar de guías por lotes</button>
+                                    <button type="button" class="btn btn-success btn-lote-vins btn-rol" style="display:none">Carga de guías por lotes</button>
 
                                     <button type="button" class="btn btn-warning btn-edo-vins btn-rol13" style="display:none">Cambiar estado por lotes</button>
 

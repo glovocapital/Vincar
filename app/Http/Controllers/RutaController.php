@@ -18,7 +18,9 @@ class RutaController extends Controller
 {
     public function creaRutas(Request $request)
     {
-        $guia = Guia::where('guia_numero', $request->guia_numero)->first();
+        $guia = Guia::where('guia_numero', $request->guia_numero)
+            ->where('empresa_id', $request->empresa_id)
+            ->first();
 
         // Verificar si la guía ya está asignada a una ruta existente.
         $existeGuia= false;
@@ -100,6 +102,8 @@ class RutaController extends Controller
                         $arreglo_vins[] = trim($row);
                     }
                 }
+
+                
                 
                 // Por cada uno de los VINs pasados desde el formulario realizar las acciones correspondientes
                 foreach($arreglo_vins as $v){
@@ -115,6 +119,18 @@ class RutaController extends Controller
                         $vin = Vin::where('vin_codigo', $v)
                             ->orWhere('vin_patente', $v)
                             ->first();
+
+                        // Validación para verificar que los VINs pertenecen a la empresa emisora de la guía
+                        $empresaVin = Vin::join('users', 'vins.user_id','=','users.user_id')
+                            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                            ->where('vins.vin_codigo', $vin->vin_codigo)
+                            ->select('empresas.empresa_id')
+                            ->first();
+                            
+                        if($guia->empresa_id != $empresaVin->empresa_id){
+                            flash('Error. El VIN ingresado como: ' . $vin->vin_codigo . ' no pertenece a la empresa que emitió la guía.')->error();
+                            return back()->withInput();
+                        }
                         
                         // Validar si ya existe previamente un registro donde el VIN esté asociado a una guía 
                         $val2 = GuiaVin::where('vin_id', $vin->vin_id)->exists();
@@ -218,7 +234,7 @@ class RutaController extends Controller
             ->join('guias','guias.guia_id','=','ruta_guias.guia_id')
             ->where('tours.tour_id', $tour_id)
             ->get();
-            
+        
         $vins_guia_array = [];
         $fecha_guias_array = [];
 
@@ -306,9 +322,11 @@ class RutaController extends Controller
                     // Verificar si se cambió el número de la guía.
                     $cambioGuia = false;
                     
-                    if ($guiaOriginal->guia_numero !== $request->guia_numero[$i]) {
+                    if (($guiaOriginal->guia_numero !== $request->guia_numero[$i]) || ($guiaOriginal->empresa_id != $request->empresa_id[$i]) || ($guiaOriginal->guia_fecha !== $request->guia_fecha[$i])) {
                         // Verificar si la guía nueva enviada ya está asignada a una ruta existente.
-                        $verificaGuia = Guia::where('guia_numero', $request->guia_numero[$i])->first();
+                        $verificaGuia = Guia::where('guia_numero', $request->guia_numero[$i])
+                            ->where('empresa_id', $request->empresa_id[$i])
+                            ->first();
 
                         $existeGuia= false;
 
@@ -326,12 +344,11 @@ class RutaController extends Controller
                         // Crear nueva guía
                         $guia = new Guia();
                         $guia->guia_numero = $request->guia_numero[$i];
+                        $guia->empresa_id = $request->empresa_id[$i];                
+                        $guia->guia_fecha = $request->guia_fecha[$i];
                     } else {
                         $guia = $guiaOriginal;
                     }
-                    
-                    $guia->guia_fecha = $request->guia_fecha[$i];
-                    $guia->empresa_id = $request->empresa_id[$i];                
                 
                     if ($guia->save()) {
                         // Si la guía es una nueva guía, actualizar las relaciones guia_vins y
@@ -344,7 +361,7 @@ class RutaController extends Controller
                                     'guia_id' => $guia->guia_id,
                                 ]);
                             
-                            $rutaGuia = RutaGuia::where('ruta_id', $ruta->ruta_id)
+                            RutaGuia::where('ruta_id', $ruta->ruta_id)
                                 ->where('guia_id', $guiaOriginal->guia_id)
                                 ->update([
                                     'guia_id' => $guia->guia_id,
@@ -375,6 +392,18 @@ class RutaController extends Controller
                             $vin = Vin::where('vin_codigo', $codigo)
                                 ->orWhere('vin_patente', $codigo)
                                 ->first();
+                            
+                            // Validación para verificar que los VINs pertenecen a la empresa emisora de la guía
+                            $empresaVin = Vin::join('users', 'vins.user_id','=','users.user_id')
+                                ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                                ->where('vins.vin_codigo', $vin->vin_codigo)
+                                ->select('empresas.empresa_id')
+                                ->first();
+                            
+                            if($guia->empresa_id != $empresaVin->empresa_id){
+                                flash('Error actualizando ruta. El VIN: ' . $vin->vin_codigo . ' y la empresa seleccionada para la guía no se corresponden entre sí.')->error();
+                                return back();
+                            }
                             
                             // Validar si existe asociación de este VIN con guías anteriores.
                             $val2 = GuiaVin::where('vin_id', $vin->vin_id)->exists();

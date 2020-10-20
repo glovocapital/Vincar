@@ -1216,58 +1216,72 @@ class VinController extends Controller
 
     }
 
+    // Función para cargar una guía de empresa y relacionarla con los VINs seleccionados de una búsqueda.
     public function storeModalTareaLotes(Request $request)
     {
+        // Validar que los VINs pertenecen a la empresa que emite la guía
+        foreach( $request->vin_ids as $vinid){
+            $empresa = Vin::join('users', 'vins.user_id','=','users.user_id')
+                ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                ->where('vins.vin_id',$vinid)
+                ->select('empresas.empresa_id')
+                ->first();
+
+            $vinCodigo = Vin::find($vinid)->value('vin_codigo');
+
+            if($request->empresa_guia_id != $empresa->empresa_id){
+                flash('Error. El VIN seleccionado: ' . $vinCodigo . ' no pertenece a la empresa que emitió la guía.')->error();
+                return back()->withInput();
+            }
+        }
+
+        // Almacenar imagen o PDF de la guía en la base de datos.
         $guiaVin = $request->file('guia_vin');
         $extensionGuia = $guiaVin->extension();
         $path = $guiaVin->storeAs(
             'GuiaVin',
             "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
         );
-
-            $i =0;
-            foreach( $request->vin_ids as $vinid){
-                $empresa = DB::table('vins')
-                    ->join('users', 'vins.user_id','=','users.user_id')
-                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                    ->where('vins.vin_id',$vinid)
-                    ->select('empresas.empresa_id')
-                    ->first();
-
-                $empresa_id[$i] = $empresa->empresa_id;
-                $i++;
-
-                if($empresa_id[0] != $empresa->empresa_id){
-                    flash('Error existen VIN de diferentes empresas.')->error();
-                    return redirect()->route('vin.index');
-                }
-            }
-
-        $fecha = date('Y-m-d');
+        
+        // Crear la guía y su relación respectiva con los VINs
         try {
             DB::beginTransaction();
 
             $guia = new Guia();
             $guia->guia_ruta = $path;
-            $guia->guia_fecha = $fecha;
-            $guia->empresa_id = $empresa_id[0];
-            $guia->save();
+            $guia->guia_fecha = $request->guia_fecha;
+            $guia->guia_numero = trim($request->guia_numero);
+            $guia->empresa_id = $request->empresa_guia_id;
+            
+            if($guia->save()) {
+                foreach($request->vin_ids as $vin_id){
+                    $guia_vin = new GuiaVin();
+                    $guia_vin->vin_id = $vin_id;
+                    $guia_vin->guia_id = $guia->guia_id;
+                    
+                    if (!$guia_vin->save()) {
+                        DB::rollBack();
 
-            foreach($request->vin_ids as $vin_id){
-                $guia_vin = new GuiaVin();
-                $guia_vin->vin_id = $vin_id;
-                $guia_vin->guia_id = $guia->guia_id;
-                $guia_vin->save();
+                        flash('Error guardando relación de VIN con guía en la base de datos.')->error();
+                        return back()->withInput();
+                    }
+                }
+            } else {
+                DB::rollBack();    
+
+                flash('Error guardando guía en la base de datos.')->error();
+                return back()->withInput();
             }
 
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            flash('Error asignando guias.')->error();
+
+            flash('Error asignando guía.')->error();
             return redirect()->route('vin.index');
         }
 
-        flash('Guias cargadas con éxito.')->success();
+        flash('Guía cargada con éxito.')->success();
         return redirect()->route('vin.index');
     }
 
