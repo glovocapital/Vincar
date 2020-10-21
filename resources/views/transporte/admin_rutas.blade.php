@@ -19,7 +19,7 @@
         width="600"
         height="450"
         frameborder="0" style="border:0"
-        src="https://www.google.com/maps/embed/v1/directions?origin=San Pablo 1391, Santiago, Chile&destination=Pasaje Manuel Montt 157, Santiago, Chile&key=AIzaSyAKi5ps17L1x9-SVP65NaCUpVBX2GFziaI" allowfullscreen>
+        src="https://www.google.com/maps/embed/v1/directions?origin=San Pablo 1391, Santiago, Chile&destination=Pasaje Manuel Montt 157, Santiago, Chile&key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}" allowfullscreen>
     </iframe>
 
     

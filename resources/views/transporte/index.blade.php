@@ -60,14 +60,13 @@
                     <div class="col-lg-8 col-xl-8 d-flex">
                         <div class="card" style="width: 100%">
                             <div class="card-body" style="padding: 0%" >
-                                <!-- <div class="content" id="base_map" style="height: 300px;"> -->
                                 <iframe
+                                    id="iframe-ruta"
                                     width="100%"
                                     height="600"
                                     frameborder="0" style="border:0"
-                                    src="https://www.google.com/maps/embed/v1/directions?origin=San Pablo 1391, Santiago, Chile&destination=Pasaje Manuel Montt 157, Santiago, Chile&key=AIzaSyAKi5ps17L1x9-SVP65NaCUpVBX2GFziaI" allowfullscreen>
+                                    src="https://www.google.com/maps/embed/v1/directions?origin=undefined&destination=undefined&key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}" allowfullscreen>
                                 </iframe>
-                                <!-- </div> -->
                             </div>
                         </div>
                     </div>
@@ -88,81 +87,37 @@
 
                             <div class="card-body d-flex">
 
-                                    <table width="100%" class="table mb-0 borderless">
+                                    <table width="100%" class="table table-hover mb-0 borderless">
 
                                         <tbody>
+                                        @if (count($rutas) == 0)
                                         <tr>
                                             <td class="text-center">
-                                                Rutal 1
+                                                <h3>No existen rutas activas.</h3>
                                             </td>
-                                            <td style='width: 90%' class="text-right">
-                                                <div style=" position: relative;">
-                                                <div class="progress progress-sm shadow-sm mb-1" style="background: #ddd; position: relative;">
-                                                    <div id="Tareas_progress" class="progress-bar bg-danger" role="progressbar" style="width: 0%"></div>
-                                                </div>
-                                                    <div style="position: absolute; top: -3px; right: 0px; ">
-                                                        <span style="font-size: 14px; z-index: 0" class="fa fa-check-circle bg-cyan"></span>
+                                        </tr>
+                                        @else
+                                            @foreach($rutas as $ruta)
+                                            <tr class="mt-5 mb-5">
+                                                <td class="item-ruta" value="{{ $ruta->ruta_id }}">Ruta: {{ $ruta->ruta_origen }} - {{ $ruta->ruta_destino }}
+                                                    <input type="hidden" id="ruta_origen-{{ $ruta->ruta_id }}" value="{{ $ruta->ruta_origen }}" />
+                                                    <input type="hidden" id="ruta_destino-{{ $ruta->ruta_id }}" value="{{ $ruta->ruta_destino }}" />
+                                                    <div style=" position: relative;">
+                                                        <div class="progress progress-sm shadow-sm mb-1" style="background: #ddd; position: relative;">
+                                                        @if (!$ruta->ruta_finalizada)
+                                                            <div id="rutas_progress" class="progress-bar bg-danger" role="progressbar" style="width: 0%"></div>
+                                                        @else
+                                                            <div id="rutas_progress" class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div>
+                                                        @endif
+                                                        </div>
+                                                        <div style="position: absolute; top: -3px; right: 0px; ">
+                                                            <span style="font-size: 14px; z-index: 0" class="fa fa-check-circle bg-cyan"></span>
+                                                        </div>
                                                     </div>
-
-                                                </div>
-                                            </td>
-
-                                        </tr>
-
-                                        <tr>
-                                            <td class="text-center">
-                                                Ruta 2
-                                            </td>
-                                            <td style='width: 90%' class="text-right">
-                                                <div style=" position: relative;">
-                                                <div class="progress progress-sm shadow-sm mb-1" style="background: #ddd; position: relative;">
-                                                    <div id="DyP_progress" class="progress-bar bg-info" role="progressbar" style="width: 0%"></div>
-                                                </div>
-                                                    <div style="position: absolute; top: -3px; right: 0px; ">
-                                                        <span style="font-size: 14px; z-index: 0" class="fa fa-check-circle bg-cyan"></span>
-                                                    </div>
-
-                                                </div>
-                                            </td>
-
-                                        </tr>
-
-                                        <tr>
-                                            <td class="text-center">
-                                                Ruta 3
-                                            </td>
-                                            <td style='width: 90%' class="text-right">
-                                                <div style=" position: relative;">
-                                                <div class="progress progress-sm shadow-sm mb-1" style="background: #ddd; position: relative;">
-                                                    <div id="Lavados_progress" class="progress-bar bg-warning" role="progressbar" style="width: 0%"></div>
-                                                </div>
-                                                    <div style="position: absolute; top: -3px; right: 0px; ">
-                                                        <span style="font-size: 14px; z-index: 0" class="fa fa-check-circle bg-cyan"></span>
-                                                    </div>
-
-                                                </div>
-                                            </td>
-
-                                        </tr>
-
-                                        <tr>
-                                            <td class="text-center">
-                                                Ruta 4
-                                            </td>
-                                            <td style='width: 90%' class="text-right">
-                                                <div style=" position: relative;">
-                                                <div class="progress progress-sm shadow-sm mb-1" >
-                                                    <div id="Carga_progress" class="progress-bar bg-cyan" role="progressbar" style="width: 0%"></div>
-                                                </div>
-                                                <div style="position: absolute; top: -3px; right: 0px; ">
-                                                    <span style="font-size: 14px; z-index: 0" class="fa fa-check-circle bg-cyan"></span>
-                                                </div>
-
-                                                </div>
-
-                                            </td>
-
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        @endif
                                         </tbody>
                                     </table>
 
@@ -217,7 +172,7 @@
                 dataType: 'json', // added data type
                 success: function(res) {
                     console.log(res);
-                    $("#Tareas_progress").width(res.Tareas+"%");
+                    $("#rutas_progress").width(res.rutas+"%");
                     $("#DyP_progress").width(res.DyP+"%");
                     $("#Lavados_progress").width(res.Lavados+"%");
                     $("#Carga_progress").width(res.Carga+"%");
@@ -241,28 +196,45 @@
                     $("#Unidades_Danadas_progress").width(res.Unidades_Danadas.Porcentaje+"%");
                 }
             });
-
-
-
-            var defaultMap = {
-                zoom: 14,
-                center: {
-                    lat: 40.712784,
-                    lng: -74.005941
-                },
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-
-            
-            if(!(typeof google === 'undefined'))
-
-            google.maps.Map(document.getElementById("base_map"), defaultMap);
-
+        
         });
+
+        // Initialize and add the map
+        // function initMap() {
+        //     // The location of Uluru
+        //     var santiago = {lat:  -33.447487, lng: -70.673676};
+        //     // The map, centered at Uluru
+        //     var map = new google.maps.Map(
+        //         document.getElementById('base_map'), {zoom: 13, center: santiago});
+        //     // The marker, positioned at Uluru
+        //     var marker = new google.maps.Marker({position: santiago, map: map});
+        // }
     </script>
 
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-aWrwgr64q4b3TEZwQ0lkHI4lZK-moM4&callback=initMap">
+    <!-- <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}&callback=initMap">
+    </script> -->
+
+    <script>
+         $(document).ready(function () {
+            var checked = false;
+
+            //Carga de mapa de rutas
+            $('.item-ruta').click(function (e) {
+                e.preventDefault();
+
+                var ruta_id = $(this).attr('value');
+                var cad = '#ruta_origen-' + ruta_id;
+                var ruta_origen = $('#ruta_origen-' + ruta_id).val();
+                var ruta_destino = $('#ruta_destino-' + ruta_id).val();
+
+                var url = "https://www.google.com/maps/embed/v1/directions?origin=" + ruta_origen + "&destination=" + ruta_destino + "&key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}";
+
+                
+
+                $('#iframe-ruta').attr('src', url);
+            });
+        });
     </script>
 
 

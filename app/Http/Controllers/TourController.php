@@ -38,7 +38,21 @@ class TourController extends Controller
      */
     public function index()
     {
-        return view('transporte.index');
+        $tours = Tour::where('tour_iniciado', true)
+            ->where('tour_finalizado', false)
+            ->get();
+
+        $rutas = [];
+
+        foreach ($tours as $tour){
+            $tourRutas = Ruta::where('tour_id', $tour->tour_id)->get();
+            
+            foreach ($tourRutas as $tourRuta){
+                array_push($rutas, $tourRuta);
+            }
+        }
+
+        return view('transporte.index', compact('rutas'));
     }
 
     /**
