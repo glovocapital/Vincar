@@ -122,7 +122,7 @@ class TourController extends Controller
     {
         $fechaViaje = new Carbon($request->tour_fecha_inicio);
 
-        if ($fechaViaje < Carbon::today()){
+        if ($fechaViaje <= Carbon::yesterday()){
             flash('Error: Fecha incorrecta. La fecha no puede ser anterior al día actual.')->error();
             return back()->withInput();
         }
