@@ -376,6 +376,7 @@
                             </div>
 
                             <div class="text-right pb-5">
+                                    <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol4" style="display:none">Asignar para entrega</button>
 
                                     <button type="button" style="display:none" class="btn btn-success btn-lote-vins btn-rol">Carga de guías por lotes</button>
 
@@ -724,6 +725,8 @@
                             if(value.rol_id == 1 ||  value.rol_id == 3){
                                 $(".btn-rol13").show();
                                 $(".btn-rol12").show();
+                            } else if (value.rol_id == 4){
+                                $(".btn-rol4").show();
                             }
                             var_roles=1;
                         }
