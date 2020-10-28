@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Bloque;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -136,12 +138,14 @@ class ApiController extends Controller
                 }else{
                     try {
                         DB::beginTransaction();
-                        $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->where('deleted_at', null)->get();
+                        $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->get();
+                        $ubicPatioOrigen = null;
+
                         if(count($UbicPatio)>0){
-                            $UbicPatios = UbicPatio::findOrFail($UbicPatio[0]->ubic_patio_id);
-                            $UbicPatios->ubic_patio_ocupada = false;
-                            $UbicPatios->vin_id = null;
-                            $UbicPatios->update();
+                            $ubicPatioOrigen = UbicPatio::findOrFail($UbicPatio[0]->ubic_patio_id);
+                            $ubicPatioOrigen->ubic_patio_ocupada = false;
+                            $ubicPatioOrigen->vin_id = null;
+                            $ubicPatioOrigen->update();
                         }
 
                         $UbicPatios = UbicPatio::findOrFail($UbicPatio_[0]->ubic_patio_id);
@@ -163,10 +167,16 @@ class ApiController extends Controller
                         }
 
                         if($bloque_origen != null){
+                            $bloqueOrigen = Bloque::find($bloque_origen);
+                            $bloqueDestino = Bloque::find($bloque);
+
+                            $patioOrigenNombre = $bloqueOrigen->onePatio->patio_nombre;
+                            $patioDestinoNombre = $bloqueDestino->onePatio->patio_nombre;
+                            
                             DB::insert('INSERT INTO historico_vins
                                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                                origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 [
                                     $Vin->vin_id,
                                     $Vin->vin_estado_inventario_id,
@@ -175,14 +185,19 @@ class ApiController extends Controller
                                     $bloque_origen,
                                     $bloque,
                                     $user->belongsToEmpresa->empresa_id,
-                                    "Cambio de ubicación en patio"
+                                    "Cambio de ubicación en patio",
+                                    "Patio: $patioOrigenNombre. Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatioOrigen->ubic_patio_fila. Columna: $ubicPatioOrigen->ubic_patio_columna.",
+                                    "Patio: $patioDestinoNombre. Bloque: $bloqueDestino->bloque_nombre. Fila: $UbicPatios->ubic_patio_fila. Columna: $UbicPatios->ubic_patio_columna.",
                                 ]
                             );
                         } else {
+                            $bloqueDestino = Bloque::find($bloque);
+                            $patioDestinoNombre = $bloqueDestino->onePatio->patio_nombre;
+                            
                             DB::insert('INSERT INTO historico_vins
                                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                                origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 [
                                     $Vin->vin_id,
                                     $Vin->vin_estado_inventario_id,
@@ -192,7 +207,8 @@ class ApiController extends Controller
                                     $bloque,
                                     $user->belongsToEmpresa->empresa_id,
                                     "Primera asignación de ubicación del VIN en el patio.",
-                                    "VIN recién llegado a patio."
+                                    "VIN recién ingresado a patio.",
+                                    "Patio: $patioDestinoNombre. Bloque: $bloqueDestino->bloque_nombre. Fila: $UbicPatios->ubic_patio_fila. Columna: $UbicPatios->ubic_patio_columna.",
                                 ]
                             );
                         }
@@ -467,9 +483,10 @@ class ApiController extends Controller
                 $fecha = date('Y-m-d');
                 $user = User::find($request->user_id);
 
-                $ubic_patio = UbicPatio::where('vin_id', $Vin[0]->vin_id)->where('deleted_at', null)->first();
-                if(isset($ubic_patio)){
-                    $bloque_id = $ubic_patio->bloque_id;
+                $ubicPatio = UbicPatio::where('vin_id', $Vin[0]->vin_id)->first();
+
+                if(isset($ubicPatio)){
+                    $bloque_id = $ubicPatio->bloque_id;
                 } else {
                     $bloque_id = null;
                 }
@@ -481,10 +498,13 @@ class ApiController extends Controller
                 $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
 
                 if($bloque_id != null){
+                    $bloqueOrigen = Bloque::find($bloque_id);
+                    $ubicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->get();
+
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $Vin[0]->vin_id,
                             $Vin[0]->vin_estado_inventario_id,
@@ -493,7 +513,9 @@ class ApiController extends Controller
                             $bloque_id,
                             $bloque_id,
                             $user->belongsToEmpresa->empresa_id,
-                            "Tarea finalizada: " . $desc_tarea
+                            "Tarea finalizada: " . $desc_tarea,
+                            "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                            "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                         ]
                     );
                 } else {
@@ -734,13 +756,13 @@ class ApiController extends Controller
                     $Vin_->vin_estado_inventario_id = $estado_nuevo;
                     $Vin_->update();
 
-                    $itemlist =self::ListVIN($request);
+                    $itemlist = self::ListVIN($request);
 
                     $itemlistData = json_decode($itemlist->content(),true);
 
                     // Guardar historial del cambio
                     if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
-                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->where('deleted_at', null)->first();
+                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
                         if($ubic_patio != null){
                             $bloque_id = $ubic_patio->bloque_id;
                         } else {
@@ -753,10 +775,13 @@ class ApiController extends Controller
                     $user = User::find($request->user_id);
 
                     if($bloque_id != null){
+                        $bloqueOrigen = Bloque::find($bloque_id);
+                        $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->get();
+
                         DB::insert('INSERT INTO historico_vins
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                             [
                                 $Vin->vin_id,
                                 $estado_nuevo,
@@ -765,7 +790,9 @@ class ApiController extends Controller
                                 $bloque_id,
                                 $bloque_id,
                                 $user->belongsToEmpresa->empresa_id,
-                                "VIN Inspeccionado Sin Daño."
+                                "VIN Inspeccionado Sin Daño.",
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                             ]
                         );
                     } else {
@@ -784,7 +811,6 @@ class ApiController extends Controller
                                 "VIN Inspeccionado Sin Daño.",
                                 "Vin sin ubicación (fuera de bloque) para realizar inspección.",
                                 "Inspeccionado y preparado para ser asignado a nueva ubicación y estado."
-
                             ]
                         );
                     }
@@ -924,10 +950,13 @@ class ApiController extends Controller
                     $user = User::find($request->user_id);
 
                     if($bloque_id != null){
+                        $bloqueOrigen = Bloque::find($bloque_id);
+                        $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->get();
+
                         DB::insert('INSERT INTO historico_vins
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                             [
                                 $Vin->vin_id,
                                 $estado_nuevo,
@@ -936,7 +965,9 @@ class ApiController extends Controller
                                 $bloque_id,
                                 $bloque_id,
                                 $user->belongsToEmpresa->empresa_id,
-                                "VIN Inspeccionado Con Daño."
+                                "VIN Inspeccionado Con Daño.",
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                             ]
                         );
                     } else {
@@ -1102,10 +1133,13 @@ class ApiController extends Controller
                     }
 
                     if($bloque_id != null){
+                        $bloqueOrigen = Bloque::find($bloque_id);
+                        $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->get();
+
                         DB::insert('INSERT INTO historico_vins
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                             [
                                 $Vin->vin_id,
                                 $estado_nuevo,
@@ -1114,7 +1148,9 @@ class ApiController extends Controller
                                 $bloque_id,
                                 $bloque_id,
                                 $user->belongsToEmpresa->empresa_id,
-                                "VIN Entregado."
+                                "VIN Entregado.",
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                             ]
                         );
                     } else {
@@ -1133,7 +1169,6 @@ class ApiController extends Controller
                                 "VIN Entregado.",
                                 "VIN sin ubicación (fuera de bloque) para realizar Entrega.",
                                 "VIN Entregado."
-
                             ]
                         );
                     }

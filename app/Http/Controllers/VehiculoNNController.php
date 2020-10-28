@@ -142,7 +142,7 @@ class VehiculoNNController extends Controller
                 $vin->oneUser->belongsToEmpresa->empresa_id,
                 "VIN Creado.",
                 "Origen: Vehículos N/N.",
-                "Patio: BLoque y Ubicación por asignar."
+                "Patio: Bloque y Ubicación por asignar."
             ]
         );
         

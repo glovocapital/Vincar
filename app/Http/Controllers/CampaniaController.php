@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Bloque;
 use App\Campania;
 use App\Empresa;
 use App\Http\Middleware\CheckSession;
@@ -1458,18 +1459,20 @@ class CampaniaController extends Controller
             $fecha = date('Y-m-d');
             $user = User::find(Auth::id());
             $vin = Vin::findOrfail($campania->vin_id);
-            $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-            if(isset($ubic_patio)){
-                $bloque_id = $ubic_patio->bloque_id;
+            $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+            if(isset($ubicPatio)){
+                $bloque_id = $ubicPatio->bloque_id;
             } else {
                 $bloque_id = null;
             }
 
             if($bloque_id != null){
+                $bloqueOrigen = Bloque::find($bloque_id);
+                
                 DB::insert('INSERT INTO historico_vins
                     (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     [
                         $vin->vin_id,
                         $vin->vin_estado_inventario_id,
@@ -1478,7 +1481,9 @@ class CampaniaController extends Controller
                         $bloque_id,
                         $bloque_id,
                         $user->belongsToEmpresa->empresa_id,
-                        "Campañas asignadas:" . $desc_campanias
+                        "Campañas asignadas:" . $desc_campanias,
+                        "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                        "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                     ]
                 );
             } else {
@@ -1540,9 +1545,9 @@ class CampaniaController extends Controller
             $fecha = date('Y-m-d');
             $user = User::find(Auth::id());
             $vin = Vin::findOrfail($tarea->vin_id);
-            $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-            if(isset($ubic_patio)){
-                $bloque_id = $ubic_patio->bloque_id;
+            $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+            if(isset($ubicPatio)){
+                $bloque_id = $ubicPatio->bloque_id;
             } else {
                 $bloque_id = null;
             }
@@ -1554,10 +1559,12 @@ class CampaniaController extends Controller
             $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
 
             if($bloque_id != null){
+                $bloqueOrigen = Bloque::find($bloque_id);
+
                 DB::insert('INSERT INTO historico_vins
                     (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                    origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     [
                         $vin->vin_id,
                         $vin->vin_estado_inventario_id,
@@ -1566,7 +1573,9 @@ class CampaniaController extends Controller
                         $bloque_id,
                         $bloque_id,
                         $user->belongsToEmpresa->empresa_id,
-                        "Tarea asignada: " . $desc_tarea
+                        "Tarea asignada: " . $desc_tarea,
+                        "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                        "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                     ]
                 );
             } else {
@@ -1626,9 +1635,9 @@ class CampaniaController extends Controller
                 $fecha = date('Y-m-d');
                 $user = User::find(Auth::id());
                 $vin = Vin::findOrfail($tarea->vin_id);
-                $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                if(isset($ubic_patio)){
-                    $bloque_id = $ubic_patio->bloque_id;
+                $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                if(isset($ubicPatio)){
+                    $bloque_id = $ubicPatio->bloque_id;
                 } else {
                     $bloque_id = null;
                 }
@@ -1640,10 +1649,12 @@ class CampaniaController extends Controller
                 $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
 
                 if($bloque_id != null){
+                    $bloqueOrigen = Bloque::find($bloque_id);
+
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
                             $vin->vin_estado_inventario_id,
@@ -1652,7 +1663,9 @@ class CampaniaController extends Controller
                             $bloque_id,
                             $bloque_id,
                             $user->belongsToEmpresa->empresa_id,
-                            "Tarea asignada: " . $desc_tarea
+                            "Tarea asignada: " . $desc_tarea,
+                            "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                            "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                         ]
                     );
                 } else {
@@ -1762,18 +1775,20 @@ class CampaniaController extends Controller
                 $fecha = date('Y-m-d');
                 $user = User::find(Auth::id());
                 $vin = Vin::findOrfail($campania->vin_id);
-                $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                if(isset($ubic_patio)){
-                    $bloque_id = $ubic_patio->bloque_id;
+                $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                if(isset($ubicPatio)){
+                    $bloque_id = $ubicPatio->bloque_id;
                 } else {
                     $bloque_id = null;
                 }
 
                 if($bloque_id != null){
+                    $bloqueOrigen = Bloque::find($bloque_id);
+
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
                             $vin->vin_estado_inventario_id,
@@ -1782,7 +1797,9 @@ class CampaniaController extends Controller
                             $bloque_id,
                             $bloque_id,
                             $user->belongsToEmpresa->empresa_id,
-                            "Campañas asignadas:" . $desc_campanias
+                            "Campañas asignadas:" . $desc_campanias,
+                            "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                            "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                         ]
                     );
                 } else {
@@ -1899,9 +1916,9 @@ class CampaniaController extends Controller
                     $fecha = date('Y-m-d');
                     $user = User::find(Auth::id());
                     $vin = Vin::findOrfail($campania->vin_id);
-                    $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                    if(isset($ubic_patio)){
-                        $bloque_id = $ubic_patio->bloque_id;
+                    $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                    if(isset($ubicPatio)){
+                        $bloque_id = $ubicPatio->bloque_id;
                     } else {
                         $bloque_id = null;
                     }
@@ -1909,10 +1926,12 @@ class CampaniaController extends Controller
                     $tipo_camp_desc = TipoCampania::find($tipo_campania_id)->tipo_campania_descripcion;
 
                     if($bloque_id != null){
+                        $bloqueOrigen = Bloque::find($bloque_id);
+
                         DB::insert('INSERT INTO historico_vins
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                             [
                                 $vin->vin_id,
                                 $vin->vin_estado_inventario_id,
@@ -1921,7 +1940,9 @@ class CampaniaController extends Controller
                                 $bloque_id,
                                 $bloque_id,
                                 $user->belongsToEmpresa->empresa_id,
-                                "Nuevo tipo de campaña asignado:" . $tipo_camp_desc
+                                "Nuevo tipo de campaña asignado:" . $tipo_camp_desc,
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                             ]
                         );
                     } else {
@@ -1970,9 +1991,9 @@ class CampaniaController extends Controller
                     $fecha = date('Y-m-d');
                     $user = User::find(Auth::id());
                     $vin = Vin::findOrfail($campania->vin_id);
-                    $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                    if(isset($ubic_patio)){
-                        $bloque_id = $ubic_patio->bloque_id;
+                    $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                    if(isset($ubicPatio)){
+                        $bloque_id = $ubicPatio->bloque_id;
                     } else {
                         $bloque_id = null;
                     }
@@ -1980,10 +2001,12 @@ class CampaniaController extends Controller
                     $tipo_camp_desc = TipoCampania::find($tipo_campania_id)->tipo_campania_descripcion;
 
                     if($bloque_id != null){
+                        $bloqueOrigen = Bloque::find($bloque_id);
+
                         DB::insert('INSERT INTO historico_vins
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                             [
                                 $vin->vin_id,
                                 $vin->vin_estado_inventario_id,
@@ -1992,7 +2015,9 @@ class CampaniaController extends Controller
                                 $bloque_id,
                                 $bloque_id,
                                 $user->belongsToEmpresa->empresa_id,
-                                "Tipo de campaña removido:" . $tipo_camp_desc
+                                "Tipo de campaña removido:" . $tipo_camp_desc,
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                             ]
                         );
                     } else {
@@ -2116,9 +2141,9 @@ class CampaniaController extends Controller
                 $fecha = date('Y-m-d');
                 $user = User::find(Auth::id());
                 $vin = Vin::findOrfail($tarea->vin_id);
-                $ubic_patio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                if(isset($ubic_patio)){
-                    $bloque_id = $ubic_patio->bloque_id;
+                $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
+                if(isset($ubicPatio)){
+                    $bloque_id = $ubicPatio->bloque_id;
                 } else {
                     $bloque_id = null;
                 }
@@ -2130,10 +2155,12 @@ class CampaniaController extends Controller
                 $desc_tarea = $tipo_tarea->tipo_tarea_descripcion;
 
                 if($bloque_id != null){
+                    $bloqueOrigen = Bloque::find($bloque_id);
+
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
                             $vin->vin_estado_inventario_id,
@@ -2142,7 +2169,9 @@ class CampaniaController extends Controller
                             $bloque_id,
                             $bloque_id,
                             $user->belongsToEmpresa->empresa_id,
-                            "Cambio de tarea previamente asignada a: " . $desc_tarea
+                            "Cambio de tarea previamente asignada a: " . $desc_tarea,
+                            "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                            "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                         ]
                     );
                 } else {

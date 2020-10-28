@@ -3,16 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\CheckSession;
 use App\User;
 use App\Empresa;
 use App\Imports\VinsCollectionImport;
-use App\Imports\VinsImport;
-use App\Patio;
 use App\TipoCampania;
 use App\Vin;
-use App\Campania;
 use App\Entrega;
 use App\Exports\BusquedaVinsExport;
 use App\Exports\VinEntregadosExport;
@@ -25,10 +21,7 @@ use Illuminate\Support\Facades\Crypt;
 use DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
-use GuzzleHttp\Psr7\Response;
-use Illuminate\Support\Collection as Collection;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
 
 class VinController extends Controller
 {
@@ -103,8 +96,7 @@ class VinController extends Controller
             ->all();
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
-            ->orderBy('empresa_id')
-            ->where('deleted_at', null)
+            ->orderBy('empresa_razon_social')
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
@@ -148,8 +140,7 @@ class VinController extends Controller
                 ->all();
 
             $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
-                ->orderBy('empresa_id')
-                ->where('deleted_at', null)
+                ->orderBy('empresa_razon_social')
                 ->pluck('empresa_razon_social', 'empresa_id')
                 ->all();
 
@@ -583,7 +574,7 @@ class VinController extends Controller
                     $user->belongsToEmpresa->empresa_id,
                     "VIN Creado.",
                     "Origen Externo.",
-                    "Patio: BLoque y Ubicación por asignar."
+                    "Patio: Bloque y Ubicación por asignar."
                 ]
             );
 
@@ -697,7 +688,7 @@ class VinController extends Controller
                             $user->belongsToEmpresa->empresa_id,
                             "VIN Arribado.",
                             "Origen Externo: Puerto.",
-                            "Patio: BLoque y Ubicación por asignar."
+                            "Patio: Bloque y Ubicación por asignar."
                         ]
                     );
                 } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
@@ -819,7 +810,7 @@ class VinController extends Controller
                             $user->belongsToEmpresa->empresa_id,
                             "VIN nuevamente Anunciado (reingresado al sistema) luego de haber sido entregado anteriormente.",
                             "Sin ubicación previa en bloque. Reingreso de VIN.",
-                            "Patio: BLoque y Ubicación por asignar."
+                            "Patio: Bloque y Ubicación por asignar."
                         ]
                     );
                 }
@@ -996,7 +987,7 @@ class VinController extends Controller
                         $user->belongsToEmpresa->empresa_id,
                         "VIN Arribado.",
                         "Origen Externo: Puerto.",
-                        "Patio: BLoque y Ubicación por asignar."
+                        "Patio: Bloque y Ubicación por asignar."
                     ]
                 );
             } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
@@ -1118,7 +1109,7 @@ class VinController extends Controller
                         $user->belongsToEmpresa->empresa_id,
                         "VIN nuevamente Anunciado (reingresado al sistema) luego de haber sido entregado anteriormente.",
                         "Sin ubicación previa en bloque. Reingreso de VIN.",
-                        "Patio: BLoque y Ubicación por asignar."
+                        "Patio: Bloque y Ubicación por asignar."
                     ]
                 );
             }
@@ -1323,7 +1314,7 @@ class VinController extends Controller
                             $user->belongsToEmpresa->empresa_id,
                             "VIN Arribado.",
                             "Origen Externo: Puerto.",
-                            "Patio: BLoque y Ubicación por asignar."
+                            "Patio: Bloque y Ubicación por asignar."
                         ]
                     );
                 } else if($estado_nuevo == 7 || $estado_nuevo == 8) {    // Pasar el VIN desde cualquier estado a "Suprimido" o "Entregado"
@@ -1445,7 +1436,7 @@ class VinController extends Controller
                             $user->belongsToEmpresa->empresa_id,
                             "VIN nuevamente Anunciado (reingresado al sistema) luego de haber sido entregado anteriormente.",
                             "Sin ubicación previa en bloque. Reingreso de VIN.",
-                            "Patio: BLoque y Ubicación por asignar."
+                            "Patio: Bloque y Ubicación por asignar."
                         ]
                     );
                 }

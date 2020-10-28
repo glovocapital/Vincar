@@ -71,7 +71,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 $user->belongsToEmpresa->empresa_id,
                                 "Anuncio de llegada del VIN.",
                                 "Origen: Puerto",
-                                "Patio: BLoque y Ubicación por asignar."
+                                "Patio: Bloque y Ubicación por asignar."
                             ]
                         );
                     } else{
@@ -112,7 +112,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                     $user->belongsToEmpresa->empresa_id,
                                     "VIN reingresando al sistema. " . $comentario,
                                     "Origen: Reingreso de VIN al sistema",
-                                    "Patio: BLoque y Ubicación por asignar."
+                                    "Patio: Bloque y Ubicación por asignar."
                                 ]
                             );  
                     } else {
