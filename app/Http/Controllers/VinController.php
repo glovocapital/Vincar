@@ -15,6 +15,7 @@ use App\Exports\VinEntregadosExport;
 Use App\Guia;
 Use App\GuiaVin;
 use App\Marca;
+use App\Predespacho;
 use App\UbicPatio;
 use Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -1620,15 +1621,66 @@ class VinController extends Controller
         $fecha = date('Y-m-d');
 
         $user = User::find(Auth::id());
-
+        
         try {
             DB::beginTransaction();
+            
+            $transportista = null;
 
+            if ($request->tipo_agendamiento_id == 1){
+                $trans = User::where('user_rut','=', $request->usuario_rut)
+                    ->first();
+
+                if($trans){
+                    $transportista = User::findOrFail($trans->user_id);
+                } else {
+                    $emailExists = User::where('email', $request->email)
+                        ->exists();
+
+                    if($emailExists){
+                        flash('Error. Email ya existente. Por favor intente con otra dirección de Email.')->error();
+                        return back()->withInput();
+                    } else {
+                        $transportista = new User();
+                        $transportista->user_nombre = $request->usuario_nombre;
+                        $transportista->user_apellido = $request->usuario_apellido;
+                        $transportista->user_rut = $request->usuario_rut;
+                        $transportista->user_cargo = "";
+                        $transportista->user_estado = 1;
+                        $transportista->email = $request->email;
+                        $transportista->password = "";
+                        $transportista->rol_id = 7;
+                        $transportista->user_telefono = "";
+                        $transportista->empresa_id = $user->empresa_id;
+                        $transportista->save();
+                    }
+                }
+            }
+            
             $guardados=0;
             foreach($request->vin_ids as $vin_id){
                 $vin = Vin::findOrfail($vin_id);
 
                 $estado_estado_inventario = $vin->vin_estado_inventario_id;
+
+                $predespacho= new Predespacho();
+
+                if ($request->tipo_agendamiento_id == 2) {
+                    $predespacho->predespacho_origen = $request->ruta_origen;
+                    $predespacho->predespacho_destino = $request->ruta_destino;
+                } elseif (($request->tipo_agendamiento_id != 1) && ($request->tipo_agendamiento_id != 2)) {
+                    flash('Error. Tipo de Agendamiento Inválido.')->error();
+                    return back()->withInput();
+                }
+    
+                $predespacho->responsable_id = Auth::id();
+                if($transportista){
+                    $predespacho->user_id = $transportista->user_id;
+                }
+                $predespacho->vin_id = $vin->vin_id;
+                $predespacho->tipo_agendamiento_id = $request->tipo_agendamiento_id;
+                
+                $predespacho->save();
 
                 // Colocar el check para predespacho del VIN
                 if($request->predespacho == 1 ){

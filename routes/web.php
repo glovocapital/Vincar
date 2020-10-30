@@ -267,6 +267,9 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     // Entregas
     Route::get('entrega', 'EntregaController@index')->name('entrega.index');
 
+    // Predespachos
+    Route::get('entrega/{id}/info_predespacho', 'EntregaController@infoPredespacho')->name('entrega.infoPredespacho');
+
     //Rutas mantenedor Histórico de Vins
     Route::get('historico_vin', 'HistoricoVinController@index')->name('historico_vin.index');
     Route::get('historico_vin/create','HistoricoVinController@create')->name('historico_vin.create');

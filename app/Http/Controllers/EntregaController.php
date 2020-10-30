@@ -6,6 +6,8 @@ use App\Vin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Middleware\CheckSession;
+use App\Predespacho;
+use Illuminate\Support\Facades\Crypt;
 
 class EntregaController extends Controller
 {
@@ -45,8 +47,8 @@ class EntregaController extends Controller
             $queryAgendados->whereDate('vin_fecha_agendado', '<=', $date);
         }
         
-        $vin_agendados = $queryAgendados->orderBy('vin_fecha_entrega')
-            ->get();    
+        $vin_agendados = $queryAgendados->orderBy('vin_fecha_agendado')
+            ->get();
 
         $vin_entregados_dia = Vin::where('vin_estado_inventario_id', 8)
             ->join('users','vins.user_id','=','users.user_id')
@@ -75,5 +77,22 @@ class EntregaController extends Controller
         }
 
         return view('entrega.index', compact( 'vin_entregados', 'vin_entregados_dia','vin_agendados'));
+    }
+
+    public function infoPredespacho($id_vin)
+    {
+        $vin_id = Crypt::decrypt($id_vin);
+
+        $predespacho = Predespacho::where('vin_id', $vin_id)
+            ->orderBy('created_at', 'DESC')
+            ->limit(1)
+            ->first();
+
+        if ($predespacho) {
+            return view('entrega.info_predespacho', compact('predespacho'));
+        } else {
+            flash('Error. Información no encontrada.')->error();
+            return back();
+        }
     }
 }

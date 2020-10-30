@@ -45,7 +45,7 @@
                     </div>
                     <div class="text-right pb-5">
                         @if(count($tabla_vins) > 0)
-                        <button type="button" class="btn btn-danger btn-predespacho-vins-lote btn-rol12">Asignar para entrega</button>
+                        <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol12">Agendar entrega por lote</button>
                         <button type="button" class="btn btn-success btn-lote-vins">Asignar Campañas por lotes</i></button>
                         @endif
 
@@ -155,9 +155,9 @@
                                             <small>
                                                 <a type="button" value="{{ $vin->vin_id }}" class="btn-campania-modal"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></a>
                                             </small>
-                                            <small>
+                                            <!-- <small>
                                                 <a type="button"  value="{{ $vin->vin_id }}" class="btn-agendar"  title="Agendar Entrega"><i class="far fa-address-book"></i></a>
-                                            </small>
+                                            </small> -->
 
                                         </td>
                                     </tr>
@@ -179,7 +179,6 @@
 @include('campania.partials.modal_solicitud_campania')
 @include('campania.partials.modal_solicitar_campania_lotes')
 @include('vin.partials.modal_predespacho')
-@include('campania.partials.modal_predespacho_lote')
 
 <div class="row">
     <div class="col-lg-12">
@@ -282,7 +281,91 @@
             });
 
             // modal predespacho lotes
-            $('.btn-predespacho-vins-lote').click(function (e){
+            $("#agendamiento_tipo_1").on('change', function (e) {
+                e.preventDefault();
+
+                if ($("#agendamiento_tipo_1").prop("checked", true)) {
+                    // Ocultar sección de traslado
+                    $("#datos_traslado_1").css("display", "none");
+                    $("#ruta_origen_1").css("display", "none");
+                    $("#search_term_ruta").removeAttr("required");
+                    $("#ruta_destino_1").css("display", "none");
+                    $("#search_term_ruta_2").removeAttr("required");
+
+                    // Mostrar sección de retiro
+                    $("#datos_usuario_1").css("display", "block");
+                    $("#nombre_usuario_1").css("display", "block");
+                    $("#usuario_nombre").attr("required", "required");
+                    $("#apellido_usuario_1").css("display", "block");
+                    $("#usuario_apellido").attr("required", "required");
+                    $("#rut_usuario_1").css("display", "block");
+                    $("#usuario_rut").attr("required", "required");
+                    $("#email_usuario_1").css("display", "block");
+                    $("#email").attr("required", "required");
+                } else if ($("#agendamiento_tipo_2").prop("checked", true)){
+                    // Ocultar sección de retiro
+                    $("#datos_usuario_1").css("display", "none");
+                    $("#nombre_usuario_1").css("display", "none");
+                    $("#usuario_nombre").removeAttr("required");
+                    $("#apellido_usuario_1").css("display", "none");
+                    $("#usuario_apellido").removeAttr("required");
+                    $("#rut_usuario_1").css("display", "none");
+                    $("#usuario_rut").removeAttr("required");
+                    $("#email_usuario_1").css("display", "none");
+                    $("#email").removeAttr("required");
+
+                    // Mostrar sección de traslado
+                    $("#datos_traslado_1").css("display", "block");
+                    $("#ruta_origen_1").css("display", "block");
+                    $("#search_term_ruta").attr("required", "required");
+                    $("#ruta_destino_1").css("display", "block");
+                    $("#search_term_ruta_2").attr("required", "required");
+                }
+            });
+
+            $("#agendamiento_tipo_2").on('change', function (e) {
+                e.preventDefault();
+
+                if ($("#agendamiento_tipo_2").prop("checked", true)) {
+                    // Ocultar sección de retiro
+                    $("#datos_usuario_1").css("display", "none");
+                    $("#nombre_usuario_1").css("display", "none");
+                    $("#usuario_nombre").removeAttr("required");
+                    $("#apellido_usuario_1").css("display", "none");
+                    $("#usuario_apellido").removeAttr("required");
+                    $("#rut_usuario_1").css("display", "none");
+                    $("#usuario_rut").removeAttr("required");
+                    $("#email_usuario_1").css("display", "none");
+                    $("#email").removeAttr("required");
+
+                    // Mostrar sección de traslado
+                    $("#datos_traslado_1").css("display", "block");
+                    $("#ruta_origen_1").css("display", "block");
+                    $("#search_term_ruta").attr("required", "required");
+                    $("#ruta_destino_1").css("display", "block");
+                    $("#search_term_ruta_2").attr("required", "required");
+                } else if ($("#agendamiento_tipo_1").prop("checked", true)){
+                    // Ocultar sección de traslado
+                    $("#datos_traslado_1").css("display", "none");
+                    $("#ruta_origen_1").css("display", "none");
+                    $("#search_term_ruta").removeAttr("required");
+                    $("#ruta_destino_1").css("display", "none");
+                    $("#search_term_ruta_2").removeAttr("required");
+
+                    // Mostrar sección de retiro
+                    $("#datos_usuario_1").css("display", "block");
+                    $("#nombre_usuario_1").css("display", "block");
+                    $("#usuario_nombre").attr("required", "required");
+                    $("#apellido_usuario_1").css("display", "block");
+                    $("#usuario_apellido").attr("required", "required");
+                    $("#rut_usuario_1").css("display", "block");
+                    $("#usuario_rut").attr("required", "required");
+                    $("#email_usuario_1").css("display", "block");
+                    $("#email").attr("required", "required");
+                }
+            });
+
+            $('.btn-predespacho-vins').click(function (e){
                 e.preventDefault();
                 var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
@@ -305,19 +388,43 @@
                     var arr_codigos = $.map(res.codigos, function (e1) {
                         return e1;
                     });
-                    $("#vin_codigo_predespacho_lote").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
-                    $("#vin_codigo_predespacho_lote").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
+                    $("#vin_codigo_predespacho").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
+                    $("#vin_codigo_predespacho").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
                     for (var i = 1; i < arr_codigos.length; i++){
-                        $("#vin_codigo_predespacho_lote").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
-                        $("#vin_codigo_predespacho_lote").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
+                        $("#vin_codigo_predespacho").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
+                        $("#vin_codigo_predespacho").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
                     }
-                    $("#predespachoModalLote").modal('show');
+                    $("#predespachoModal").modal('show');
                 }).fail(function () {
                     alert('Error: Debe seleccionar al menos un vin de la lista');
                 });
             });
 
-            // Agendar el VIN
+            // // Agendar el VIN
+            // $('#btn-pre-despacho').on('click',function(e){
+            //     e.preventDefault();
+
+            //     $("#error_0").hide();
+            //     $("#error_1").hide();
+
+            //     $.post("{{route('vin.predespacho')}}", $("#PredespachoVins").serialize(), function (res) {
+
+            //         $dat = res;
+            //      //  console.log($dat);
+
+            //         if($dat.error==0) $("#error0_predespacho").show();
+            //         else {$("#error1_predespacho").show();  $("#error1").html($dat.mensaje); }
+
+
+
+            //     }).fail(function () {
+            //         alert('Error: ');
+            //     });
+            //     $('#btn-guardar-campania-lotes').attr("disabled", true);
+
+            // });
+
+            // Agendar el lote de VINs
             $('#btn-pre-despacho').on('click',function(e){
                 e.preventDefault();
 
@@ -331,30 +438,6 @@
 
                     if($dat.error==0) $("#error0_predespacho").show();
                     else {$("#error1_predespacho").show();  $("#error1").html($dat.mensaje); }
-
-
-
-                }).fail(function () {
-                    alert('Error: ');
-                });
-                $('#btn-guardar-campania-lotes').attr("disabled", true);
-
-            });
-
-            // Agendar el lote de VINs
-            $('#btn-pre-despacho-lote').on('click',function(e){
-                e.preventDefault();
-
-                $("#error_0").hide();
-                $("#error_1").hide();
-
-                $.post("{{route('vin.predespacho')}}", $("#PredespachoVinsLote").serialize(), function (res) {
-
-                    $dat = res;
-                 //  console.log($dat);
-
-                    if($dat.error==0) $("#error0_predespacho_lote").show();
-                    else {$("#error1_predespacho_lote").show();  $("#error1").html($dat.mensaje); }
 
 
 

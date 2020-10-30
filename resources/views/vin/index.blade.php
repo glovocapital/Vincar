@@ -979,6 +979,90 @@
 
             });
 
+            $("#agendamiento_tipo_1").on('change', function (e) {
+                e.preventDefault();
+
+                if ($("#agendamiento_tipo_1").prop("checked", true)) {
+                    // Ocultar sección de traslado
+                    $("#datos_traslado_1").css("display", "none");
+                    $("#ruta_origen_1").css("display", "none");
+                    $("#search_term_ruta").removeAttr("required");
+                    $("#ruta_destino_1").css("display", "none");
+                    $("#search_term_ruta_2").removeAttr("required");
+
+                    // Mostrar sección de retiro
+                    $("#datos_usuario_1").css("display", "block");
+                    $("#nombre_usuario_1").css("display", "block");
+                    $("#usuario_nombre").attr("required", "required");
+                    $("#apellido_usuario_1").css("display", "block");
+                    $("#usuario_apellido").attr("required", "required");
+                    $("#rut_usuario_1").css("display", "block");
+                    $("#usuario_rut").attr("required", "required");
+                    $("#email_usuario_1").css("display", "block");
+                    $("#email").attr("required", "required");
+                } else if ($("#agendamiento_tipo_2").prop("checked", true)){
+                    // Ocultar sección de retiro
+                    $("#datos_usuario_1").css("display", "none");
+                    $("#nombre_usuario_1").css("display", "none");
+                    $("#usuario_nombre").removeAttr("required");
+                    $("#apellido_usuario_1").css("display", "none");
+                    $("#usuario_apellido").removeAttr("required");
+                    $("#rut_usuario_1").css("display", "none");
+                    $("#usuario_rut").removeAttr("required");
+                    $("#email_usuario_1").css("display", "none");
+                    $("#email").removeAttr("required");
+
+                    // Mostrar sección de traslado
+                    $("#datos_traslado_1").css("display", "block");
+                    $("#ruta_origen_1").css("display", "block");
+                    $("#search_term_ruta").attr("required", "required");
+                    $("#ruta_destino_1").css("display", "block");
+                    $("#search_term_ruta_2").attr("required", "required");
+                }
+            });
+
+            $("#agendamiento_tipo_2").on('change', function (e) {
+                e.preventDefault();
+
+                if ($("#agendamiento_tipo_2").prop("checked", true)) {
+                    // Ocultar sección de retiro
+                    $("#datos_usuario_1").css("display", "none");
+                    $("#nombre_usuario_1").css("display", "none");
+                    $("#usuario_nombre").removeAttr("required");
+                    $("#apellido_usuario_1").css("display", "none");
+                    $("#usuario_apellido").removeAttr("required");
+                    $("#rut_usuario_1").css("display", "none");
+                    $("#usuario_rut").removeAttr("required");
+                    $("#email_usuario_1").css("display", "none");
+                    $("#email").removeAttr("required");
+
+                    // Mostrar sección de traslado
+                    $("#datos_traslado_1").css("display", "block");
+                    $("#ruta_origen_1").css("display", "block");
+                    $("#search_term_ruta").attr("required", "required");
+                    $("#ruta_destino_1").css("display", "block");
+                    $("#search_term_ruta_2").attr("required", "required");
+                } else if ($("#agendamiento_tipo_1").prop("checked", true)){
+                    // Ocultar sección de traslado
+                    $("#datos_traslado_1").css("display", "none");
+                    $("#ruta_origen_1").css("display", "none");
+                    $("#search_term_ruta").removeAttr("required");
+                    $("#ruta_destino_1").css("display", "none");
+                    $("#search_term_ruta_2").removeAttr("required");
+
+                    // Mostrar sección de retiro
+                    $("#datos_usuario_1").css("display", "block");
+                    $("#nombre_usuario_1").css("display", "block");
+                    $("#usuario_nombre").attr("required", "required");
+                    $("#apellido_usuario_1").css("display", "block");
+                    $("#usuario_apellido").attr("required", "required");
+                    $("#rut_usuario_1").css("display", "block");
+                    $("#usuario_rut").attr("required", "required");
+                    $("#email_usuario_1").css("display", "block");
+                    $("#email").attr("required", "required");
+                }
+            });
+
             $('#btn-pre-despacho').on('click',function(e){
                 e.preventDefault();
 
@@ -1036,6 +1120,14 @@
             });
         });
     </script>
+    <script type="text/javascript">
+        function activatePlacesSearch () {
+            var input_origen = document.getElementById('search_term_ruta');
+            var autocomplete = new google.maps.places.Autocomplete(input_origen);
+            var input_destino = document.getElementById('search_term_ruta_2');
+            var autocomplete2 = new google.maps.places.Autocomplete(input_destino);
+        };
+    </script>
 
-
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=activatePlacesSearch"></script>
 @endsection
