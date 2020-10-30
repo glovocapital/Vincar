@@ -1116,6 +1116,8 @@ class ApiController extends Controller
 
                     $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->where('deleted_at', null)->first();
 
+                    $ubicPatioVieja = null;
+
                     $bloque_id = null;
 
                     // Guardar historial del cambio
@@ -1124,6 +1126,7 @@ class ApiController extends Controller
                             $bloque_id = $ubic_patio->bloque_id;
 
                             // Liberar la posición ocupada del patio.
+                            $ubicPatioVieja = $ubic_patio;
                             $ubic_patio->ubic_patio_ocupada = false;
                             $ubic_patio->vin_id = null;
                             $ubic_patio->update();
@@ -1134,7 +1137,7 @@ class ApiController extends Controller
 
                     if($bloque_id != null){
                         $bloqueOrigen = Bloque::find($bloque_id);
-                        $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->get();
+                        // $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->get();
 
                         DB::insert('INSERT INTO historico_vins
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
@@ -1149,8 +1152,8 @@ class ApiController extends Controller
                                 $bloque_id,
                                 $user->belongsToEmpresa->empresa_id,
                                 "VIN Entregado.",
-                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
-                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatioVieja->ubic_patio_fila. Columna: $ubicPatioVieja->ubic_patio_columna.",
+                                "VIN: " . $Vin->vin_codigo . "entregado.",
                             ]
                         );
                     } else {
