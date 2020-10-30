@@ -257,6 +257,8 @@ class VinController extends Controller
                         
                         if(Auth::user()->rol_id == 4) {
                             $validate = DB::table('vins')
+                                ->join('users','users.user_id','=','vins.user_id')
+                                ->join('empresas','users.empresa_id','=','empresas.empresa_id')
                                 ->where('empresas.empresa_id', $user_empresa_id)
                                 ->where(function ($query) use ($v) {
                                     $query->where('vin_codigo', $v)
