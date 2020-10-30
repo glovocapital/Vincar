@@ -1462,7 +1462,8 @@ class CampaniaController extends Controller
             $user = User::find(Auth::id());
             $vin = Vin::findOrfail($campania->vin_id);
             $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-            if(isset($ubicPatio)){
+
+            if($ubicPatio){
                 $bloque_id = $ubicPatio->bloque_id;
             } else {
                 $bloque_id = null;
@@ -1548,7 +1549,8 @@ class CampaniaController extends Controller
             $user = User::find(Auth::id());
             $vin = Vin::findOrfail($tarea->vin_id);
             $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-            if(isset($ubicPatio)){
+
+            if($ubicPatio){
                 $bloque_id = $ubicPatio->bloque_id;
             } else {
                 $bloque_id = null;
@@ -1638,7 +1640,8 @@ class CampaniaController extends Controller
                 $user = User::find(Auth::id());
                 $vin = Vin::findOrfail($tarea->vin_id);
                 $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                if(isset($ubicPatio)){
+
+                if($ubicPatio){
                     $bloque_id = $ubicPatio->bloque_id;
                 } else {
                     $bloque_id = null;
@@ -1778,7 +1781,8 @@ class CampaniaController extends Controller
                 $user = User::find(Auth::id());
                 $vin = Vin::findOrfail($campania->vin_id);
                 $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                if(isset($ubicPatio)){
+
+                if($ubicPatio){
                     $bloque_id = $ubicPatio->bloque_id;
                 } else {
                     $bloque_id = null;
@@ -1919,7 +1923,8 @@ class CampaniaController extends Controller
                     $user = User::find(Auth::id());
                     $vin = Vin::findOrfail($campania->vin_id);
                     $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                    if(isset($ubicPatio)){
+                    
+                    if($ubicPatio){
                         $bloque_id = $ubicPatio->bloque_id;
                     } else {
                         $bloque_id = null;
@@ -1994,7 +1999,8 @@ class CampaniaController extends Controller
                     $user = User::find(Auth::id());
                     $vin = Vin::findOrfail($campania->vin_id);
                     $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                    if(isset($ubicPatio)){
+
+                    if($ubicPatio){
                         $bloque_id = $ubicPatio->bloque_id;
                     } else {
                         $bloque_id = null;
@@ -2144,7 +2150,8 @@ class CampaniaController extends Controller
                 $user = User::find(Auth::id());
                 $vin = Vin::findOrfail($tarea->vin_id);
                 $ubicPatio = UbicPatio::where('vin_id', $vin->vin_id)->first();
-                if(isset($ubicPatio)){
+                
+                if($ubicPatio){
                     $bloque_id = $ubicPatio->bloque_id;
                 } else {
                     $bloque_id = null;
