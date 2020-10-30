@@ -257,7 +257,7 @@ class VinController extends Controller
                         
                         if(Auth::user()->rol_id == 4) {
                             $validate = DB::table('vins')
-                                ->where('user_id', Auth::user()->user_id)
+                                ->where('empresas.empresa_id', $user_empresa_id)
                                 ->where(function ($query) use ($v) {
                                     $query->where('vin_codigo', $v)
                                         ->orWhere('vin_patente', $v);
