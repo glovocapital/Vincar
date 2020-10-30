@@ -230,11 +230,6 @@
                 }else{
                     $("#comuna_id").html("<option value=''>Seleccionar Comuna</option>");
                 }
-
-
-
-                /**/
-
             });
         });
     </script>

@@ -415,12 +415,11 @@ class PatioController extends Controller
         return Storage::response("PlanillasDescargas/CargaPatios.xlsx");
     }
 
-    public function Todosbloques(Request $request){
-
+    public function Todosbloques(Request $request)
+    {
         $rol_desc=Auth::user()->oneRol->rol_desc;
         $empresa_id=Auth::user()->empresa_id;
         $user_id=Auth::user()->user_id;
-
 
         $id_patio =   $request->get("patio_id");
 
@@ -449,19 +448,20 @@ class PatioController extends Controller
             }
 
 
-             $ubicados = DB::table('ubic_patios')
-                 ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
-                 ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
-                 ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
-                 ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloque_id","vin_estado_inventario_desc")
-                 ->whereIn('bloque_id', $grupo_bloques);
+            $ubicados = DB::table('ubic_patios')
+                ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+                ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
+                ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
+                ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloque_id","vin_estado_inventario_desc")
+                ->whereIn('bloque_id', $grupo_bloques);
 
-                 if($rol_desc=='Customer')
-                     $ubicados = $ubicados->where('vins.user_id',"=",$user_id);
+            if($rol_desc=='Customer') {
+                $ubicados->join('users','users.user_id','=','vins.user_id')
+                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                    ->where('empresas.empresa_id', $empresa_id);
+            }
 
-                    $ubicados= $ubicados->get();
-
-
+            $ubicados= $ubicados->get();
 
             return response()->json([
                 'success' => true,
