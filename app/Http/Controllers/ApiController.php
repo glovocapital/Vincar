@@ -129,7 +129,6 @@ class ApiController extends Controller
             $UbicPatio_ = UbicPatio::where('bloque_id','=', $bloque)
                 ->where('ubic_patio_fila','=', $posicion[0])
                 ->where('ubic_patio_columna','=', $posicion[1])
-                ->where('deleted_at', null)
                 ->get();
 
             if(count($UbicPatio_)>0){
@@ -138,14 +137,14 @@ class ApiController extends Controller
                 }else{
                     try {
                         DB::beginTransaction();
-                        $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->get();
+                        $UbicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->first();
                         $ubicPatioOrigen = null;
 
-                        if(count($UbicPatio)>0){
-                            $ubicPatioOrigen = UbicPatio::findOrFail($UbicPatio[0]->ubic_patio_id);
-                            $ubicPatioOrigen->ubic_patio_ocupada = false;
-                            $ubicPatioOrigen->vin_id = null;
-                            $ubicPatioOrigen->update();
+                        if($UbicPatio){
+                            $ubicPatioOrigen = $UbicPatio;
+                            $UbicPatio->ubic_patio_ocupada = false;
+                            $UbicPatio->vin_id = null;
+                            $UbicPatio->update();
                         }
 
                         $UbicPatios = UbicPatio::findOrFail($UbicPatio_[0]->ubic_patio_id);
@@ -160,8 +159,9 @@ class ApiController extends Controller
                         // Guardar histórico de la asignación de la campaña
                         $fecha = date('Y-m-d');
                         $user = User::find($request->user_id);
-                        if(count($UbicPatio)>0){
-                            $bloque_origen = $UbicPatio[0]->bloque_id;
+
+                        if($ubicPatioOrigen){
+                            $bloque_origen = $ubicPatioOrigen->bloque_id;
                         } else {
                             $bloque_origen = null;
                         }
@@ -465,17 +465,17 @@ class ApiController extends Controller
         if($Tarea){
             try {
                 DB::beginTransaction();
-                $Tareas= Tarea::findOrFail($Tarea->tarea_id);
+                $Tareas = Tarea::findOrFail($Tarea->tarea_id);
                 $Tareas->tarea_finalizada = true;
                 $Tareas->update();
 
-                $Vin =DB::table('vins')->select('*')->where('vin_id','=',$Tareas->vin_id)->get();
+                $Vin = Vin::where('vin_id','=',$Tareas->vin_id)->first();
 
-                $vins=$Vin[0]->vin_codigo;
+                $vins = $Vin->vin_codigo;
 
                 $request->user_id = $Tarea->user_id;
 
-                $itemlist =self::Lists($request);
+                $itemlist = self::Lists($request);
 
                 $itemlistData = json_decode($itemlist->content(),true);
 
@@ -483,9 +483,9 @@ class ApiController extends Controller
                 $fecha = date('Y-m-d');
                 $user = User::find($request->user_id);
 
-                $ubicPatio = UbicPatio::where('vin_id', $Vin[0]->vin_id)->first();
+                $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
 
-                if(isset($ubicPatio)){
+                if($ubicPatio){
                     $bloque_id = $ubicPatio->bloque_id;
                 } else {
                     $bloque_id = null;
@@ -727,9 +727,7 @@ class ApiController extends Controller
 
         $vins_id = $request->vin;
 
-        $Vin =DB::table('vins')
-            ->select('vins.*')
-            ->where('vin_codigo','=', $vins_id)
+        $Vin =Vin::where('vin_codigo','=', $vins_id)
             ->first();
 
         $estado_previo = $Vin->vin_estado_inventario_id;
@@ -846,9 +844,7 @@ class ApiController extends Controller
         $pieza_sub_area_id = $request->input('pieza_sub_area_id');
         $dano_pieza_observaciones = $request->input('dano_pieza_observaciones');
 
-        $Vin =DB::table('vins')
-            ->select('vins.*')
-            ->where('vin_codigo','=', $vins)
+        $Vin =Vin::where('vin_codigo','=', $vins)
             ->first();
 
         $estado_previo = $Vin->vin_estado_inventario_id;
@@ -858,7 +854,7 @@ class ApiController extends Controller
             //try {
                 DB::beginTransaction();
 
-                $cliente_id = $request->input('user_id');
+                $cliente_id = $user_id;
 
                 $inspeccion = new Inspeccion();
                 $inspeccion->inspeccion_fecha = date('Y-m-d');
@@ -894,8 +890,6 @@ class ApiController extends Controller
                     $foto->foto_coord_lon = 0;
                     $foto->dano_pieza_id = $danoPieza->dano_pieza_id;
                     $foto->save();
-
-
 
                     $fotoArchivo = $request->file('file');
                     $extensionFoto = $fotoArchivo->extension();
@@ -937,7 +931,7 @@ class ApiController extends Controller
 
                     // Guardar historial del cambio
                     if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
-                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->where('deleted_at', null)->first();
+                        $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
                         if($ubic_patio != null){
                             $bloque_id = $ubic_patio->bloque_id;
                         } else {
@@ -951,7 +945,7 @@ class ApiController extends Controller
 
                     if($bloque_id != null){
                         $bloqueOrigen = Bloque::find($bloque_id);
-                        $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->get();
+                        $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
 
                         DB::insert('INSERT INTO historico_vins
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
@@ -1114,7 +1108,7 @@ class ApiController extends Controller
 
                     $itemlistData = json_decode($itemlist->content(),true);
 
-                    $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->where('deleted_at', null)->first();
+                    $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
 
                     $ubicPatioVieja = null;
 
