@@ -68,7 +68,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                 $user->user_id,
                                 null,
                                 null,
-                                $user->belongsToEmpresa->empresa_id,
+                                $user->empresa_id,
                                 "Anuncio de llegada del VIN.",
                                 "Origen: Puerto",
                                 "Patio: Bloque y Ubicación por asignar."
@@ -109,7 +109,7 @@ class VinsCollectionImport implements ToCollection, WithHeadingRow
                                     $user->user_id,
                                     null,
                                     null,
-                                    $user->belongsToEmpresa->empresa_id,
+                                    $user->empresa_id,
                                     "VIN reingresando al sistema. " . $comentario,
                                     "Origen: Reingreso de VIN al sistema",
                                     "Patio: Bloque y Ubicación por asignar."

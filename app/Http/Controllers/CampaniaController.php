@@ -1483,7 +1483,7 @@ class CampaniaController extends Controller
                         $user->user_id,
                         $bloque_id,
                         $bloque_id,
-                        $user->belongsToEmpresa->empresa_id,
+                        $user->empresa_id,
                         "Campañas asignadas:" . $desc_campanias,
                         "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                         "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",

@@ -574,7 +574,7 @@ class VinController extends Controller
                     $user->user_id,
                     null,
                     null,
-                    $user->belongsToEmpresa->empresa_id,
+                    $user->empresa_id,
                     "VIN Creado.",
                     "Origen Externo.",
                     "Patio: Bloque y Ubicación por asignar."
@@ -688,7 +688,7 @@ class VinController extends Controller
                             $user->user_id,
                             null,
                             null,
-                            $user->belongsToEmpresa->empresa_id,
+                            $user->empresa_id,
                             "VIN Arribado.",
                             "Origen Externo: Puerto.",
                             "Patio: Bloque y Ubicación por asignar."
@@ -726,7 +726,7 @@ class VinController extends Controller
                                     $user->user_id,
                                     $bloque,
                                     null,
-                                    $user->belongsToEmpresa->empresa_id,
+                                    $user->empresa_id,
                                     "VIN Entregado.",
                                     "Destino externo. VIN entregado."
                                 ]
@@ -743,7 +743,7 @@ class VinController extends Controller
                                     $user->user_id,
                                     null,
                                     null,
-                                    $user->belongsToEmpresa->empresa_id,
+                                    $user->empresa_id,
                                     "VIN Entregado.",
                                     "Sin ubicación en bloque para la entrega.",
                                     "Destino externo. VIN entregado."
@@ -763,7 +763,7 @@ class VinController extends Controller
                                     $user->user_id,
                                     $bloque,
                                     null,
-                                    $user->belongsToEmpresa->empresa_id,
+                                    $user->empresa_id,
                                     "VIN Suprimido.",
                                     "VIN Suprimido. Sin disponibilidad ni ubicación física."
                                 ]
@@ -780,7 +780,7 @@ class VinController extends Controller
                                     $user->user_id,
                                     null,
                                     null,
-                                    $user->belongsToEmpresa->empresa_id,
+                                    $user->empresa_id,
                                     "VIN Suprimido.",
                                     "Sin ubicación previa en bloque.",
                                     "VIN Suprimido. Sin disponibilidad ni ubicación física."
@@ -810,7 +810,7 @@ class VinController extends Controller
                             $user->user_id,
                             null,
                             null,
-                            $user->belongsToEmpresa->empresa_id,
+                            $user->empresa_id,
                             "VIN nuevamente Anunciado (reingresado al sistema) luego de haber sido entregado anteriormente.",
                             "Sin ubicación previa en bloque. Reingreso de VIN.",
                             "Patio: Bloque y Ubicación por asignar."
@@ -987,7 +987,7 @@ class VinController extends Controller
                         $user->user_id,
                         null,
                         null,
-                        $user->belongsToEmpresa->empresa_id,
+                        $user->empresa_id,
                         "VIN Arribado.",
                         "Origen Externo: Puerto.",
                         "Patio: Bloque y Ubicación por asignar."
@@ -1025,7 +1025,7 @@ class VinController extends Controller
                                 $user->user_id,
                                 $bloque,
                                 null,
-                                $user->belongsToEmpresa->empresa_id,
+                                $user->empresa_id,
                                 "VIN Entregado.",
                                 "Destino externo. VIN entregado."
                             ]
@@ -1042,7 +1042,7 @@ class VinController extends Controller
                                 $user->user_id,
                                 null,
                                 null,
-                                $user->belongsToEmpresa->empresa_id,
+                                $user->empresa_id,
                                 "VIN Entregado.",
                                 "Sin ubicación en bloque para la entrega.",
                                 "Destino externo. VIN entregado."
@@ -1062,7 +1062,7 @@ class VinController extends Controller
                                 $user->user_id,
                                 $bloque,
                                 null,
-                                $user->belongsToEmpresa->empresa_id,
+                                $user->empresa_id,
                                 "VIN Suprimido.",
                                 "Destino externo. VIN entregado."
                             ]
@@ -1079,7 +1079,7 @@ class VinController extends Controller
                                 $user->user_id,
                                 $bloque,
                                 null,
-                                $user->belongsToEmpresa->empresa_id,
+                                $user->empresa_id,
                                 "VIN Suprimido.",
                                 "Sin ubicación previa en bloque.",
                                 "Destino externo. VIN entregado."
@@ -1109,7 +1109,7 @@ class VinController extends Controller
                         $user->user_id,
                         null,
                         null,
-                        $user->belongsToEmpresa->empresa_id,
+                        $user->empresa_id,
                         "VIN nuevamente Anunciado (reingresado al sistema) luego de haber sido entregado anteriormente.",
                         "Sin ubicación previa en bloque. Reingreso de VIN.",
                         "Patio: Bloque y Ubicación por asignar."
@@ -1314,7 +1314,7 @@ class VinController extends Controller
                             $user->user_id,
                             null,
                             null,
-                            $user->belongsToEmpresa->empresa_id,
+                            $user->empresa_id,
                             "VIN Arribado.",
                             "Origen Externo: Puerto.",
                             "Patio: Bloque y Ubicación por asignar."
@@ -1353,7 +1353,7 @@ class VinController extends Controller
                                     $user->user_id,
                                     $bloque,
                                     null,
-                                    $user->belongsToEmpresa->empresa_id,
+                                    $user->empresa_id,
                                     "VIN Entregado.",
                                     "Destino externo. VIN entregado."
                                 ]
@@ -1370,7 +1370,7 @@ class VinController extends Controller
                                     $user->user_id,
                                     null,
                                     null,
-                                    $user->belongsToEmpresa->empresa_id,
+                                    $user->empresa_id,
                                     "VIN Entregado.",
                                     "Sin ubicación en bloque para la entrega.",
                                     "Destino externo. VIN entregado."
@@ -1390,7 +1390,7 @@ class VinController extends Controller
                                     $user->user_id,
                                     $bloque,
                                     null,
-                                    $user->belongsToEmpresa->empresa_id,
+                                    $user->empresa_id,
                                     "VIN Suprimido.",
                                     "Destino externo. VIN entregado."
                                 ]
@@ -1407,7 +1407,7 @@ class VinController extends Controller
                                     $user->user_id,
                                     $bloque,
                                     null,
-                                    $user->belongsToEmpresa->empresa_id,
+                                    $user->empresa_id,
                                     "VIN Suprimido.",
                                     "Sin ubicación previa en bloque.",
                                     "Destino externo. VIN entregado."
@@ -1436,7 +1436,7 @@ class VinController extends Controller
                             $user->user_id,
                             null,
                             null,
-                            $user->belongsToEmpresa->empresa_id,
+                            $user->empresa_id,
                             "VIN nuevamente Anunciado (reingresado al sistema) luego de haber sido entregado anteriormente.",
                             "Sin ubicación previa en bloque. Reingreso de VIN.",
                             "Patio: Bloque y Ubicación por asignar."
@@ -1703,7 +1703,7 @@ class VinController extends Controller
                             $user->user_id,
                             null,
                             null,
-                            $user->belongsToEmpresa->empresa_id,
+                            $user->empresa_id,
                             "Cambio de cliente del VIN. ",
                             "Cambio de cliente del VIN. ",
                             "Cambio de cliente del VIN. "
@@ -1822,7 +1822,7 @@ class VinController extends Controller
                             $user->user_id,
                             null,
                             null,
-                            $user->belongsToEmpresa->empresa_id,
+                            $user->empresa_id,
                             "Cambio de cliente del VIN. ",
                             "Cambio de cliente del VIN. ",
                             "Cambio de cliente del VIN. "
