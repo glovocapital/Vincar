@@ -1621,6 +1621,12 @@ class VinController extends Controller
     {
         //$fecha = Carbon::now();
         $fecha = date('Y-m-d');
+        $fechaPredespacho = new Carbon($request->vin_fecha_despacho);
+
+        if ($fechaPredespacho <= Carbon::yesterday()){
+            flash('Error: Fecha incorrecta. La fecha de agendamiento no puede ser anterior a la fecha actual.')->error();
+            return back()->withInput();
+        }
 
         $user = User::find(Auth::id());
         
@@ -1659,11 +1665,16 @@ class VinController extends Controller
                 }
             }
             
-            $guardados=0;
+            $guardados = 0;
             foreach($request->vin_ids as $vin_id){
                 $vin = Vin::findOrfail($vin_id);
 
                 $estado_estado_inventario = $vin->vin_estado_inventario_id;
+
+                if ($estado_estado_inventario != 4 && $estado_estado_inventario != 5 && $estado_estado_inventario != 6){
+                    flash('Error. Estado de Inventario inválido para agendar al VIN: ' . $vin->vin_codigo . '. El estado debe ser \'En Patio\', \'Disponible para la venta\' o \'No disponible para la venta\'.')->error();
+                    return back();
+                }
 
                 $predespacho= new Predespacho();
 
@@ -1676,11 +1687,21 @@ class VinController extends Controller
                 }
     
                 $predespacho->responsable_id = Auth::id();
+                
                 if($transportista){
                     $predespacho->user_id = $transportista->user_id;
                 }
+                
                 $predespacho->vin_id = $vin->vin_id;
                 $predespacho->tipo_agendamiento_id = $request->tipo_agendamiento_id;
+
+                if ($predespacho->tipo_agendamiento_id == 1){
+                    $tipoAgendamiento = "Retiro"; 
+                    $cadena = "Retira: " . $transportista->user_nombre . " " . $transportista->user_apellido . ", RUT: " . $transportista->user_rut;
+                } else {
+                    $tipoAgendamiento = "Traslado"; 
+                    $cadena = "Traslado. Desde: " . $predespacho->predespacho_origen . ". Hasta: " . $predespacho->predespacho_origen . ".";
+                }
                 
                 $predespacho->save();
 
@@ -1704,9 +1725,9 @@ class VinController extends Controller
                             null,
                             null,
                             $user->empresa_id,
-                            "Cambio de cliente del VIN. ",
-                            "Cambio de cliente del VIN. ",
-                            "Cambio de cliente del VIN. "
+                            "VIN Agendado por: " . $user->user_nombre . " " . $user->user_apellido . ".",
+                            "VIN Agendado para " . $tipoAgendamiento,
+                            $cadena, 
                         ]
                     );
                 }

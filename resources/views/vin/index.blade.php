@@ -979,6 +979,7 @@
 
             });
 
+            // Agendamiento (pre-despacho) de VINs
             $("#agendamiento_tipo_1").on('change', function (e) {
                 e.preventDefault();
 
@@ -1066,26 +1067,29 @@
             $('#btn-pre-despacho').on('click',function(e){
                 e.preventDefault();
 
-                $("#error_0").hide();
-                $("#error_1").hide();
+                $("#error_0_predespacho").hide();
+                $("#error_1_predespacho").hide();
 
                 $.post("{{route('vin.predespacho')}}", $("#PredespachoVins").serialize(), function (res) {
-
                     $dat = res;
-                 //  console.log($dat);
 
-                    if($dat.error==0) $("#error0_predespacho").show();
-                    else {$("#error1_predespacho").show();  $("#error1").html($dat.mensaje); }
-
-
-
+                    if($dat.error == 0) {
+                        $("#error0_predespacho").show();
+                        $("#PredespachoVins")[0].reset();
+                    } else {
+                        $("#error1_predespacho").show();  
+                        $("#error1_predespacho").html($dat.mensaje); 
+                    }
                 }).fail(function () {
                     alert('Error: ');
                 });
-                $('#btn-guardar-campania-lotes').attr("disabled", true);
-
             });
 
+            $('#btn-cerrar-pre-despacho').click(function (e) {
+                e.preventDefault();
+
+                $("#PredespachoVins")[0].reset();
+            });
 
             //Modal Solicitar Tarea
             $('.btn-tarea').click(function (e) {

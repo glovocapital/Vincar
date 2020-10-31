@@ -108,7 +108,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar Modal</button>
+                <button type="button" class="btn btn-danger" id="btn-cerrar-pre-despacho" data-dismiss="modal">Cerrar Modal</button>
 
                 <button id="btn-pre-despacho" type="button" class="btn btn-primary block full-width m-b">Asignar Entrega</button>
 
