@@ -119,9 +119,7 @@ class ApiController extends Controller
             exit;
         }
 
-        $Vin =DB::table('vins')
-            ->select('vins.*')
-            ->where('vin_codigo','=',$vins)
+        $Vin = Vin::where('vin_codigo','=',$vins)
             ->first();
 
         if($Vin){
@@ -129,10 +127,10 @@ class ApiController extends Controller
             $UbicPatio_ = UbicPatio::where('bloque_id','=', $bloque)
                 ->where('ubic_patio_fila','=', $posicion[0])
                 ->where('ubic_patio_columna','=', $posicion[1])
-                ->get();
+                ->first();
 
-            if(count($UbicPatio_)>0){
-                if($UbicPatio_[0]->ubic_patio_ocupada){
+            if ($UbicPatio_){
+                if($UbicPatio_->ubic_patio_ocupada){
                     $usersf = Array("Err" => 1, "Msg" => "Esta posición esta ocupada");
                 }else{
                     try {
@@ -147,7 +145,7 @@ class ApiController extends Controller
                             $UbicPatio->update();
                         }
 
-                        $UbicPatios = UbicPatio::findOrFail($UbicPatio_[0]->ubic_patio_id);
+                        $UbicPatios = UbicPatio::findOrFail($UbicPatio_->ubic_patio_id);
                         $UbicPatios->ubic_patio_ocupada = true;
                         $UbicPatios->vin_id = $Vin->vin_id;
                         $UbicPatios->update();
@@ -484,7 +482,7 @@ class ApiController extends Controller
                 $user = User::find($request->user_id);
 
                 $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
-
+                
                 if($ubicPatio){
                     $bloque_id = $ubicPatio->bloque_id;
                 } else {
@@ -499,15 +497,15 @@ class ApiController extends Controller
 
                 if($bloque_id != null){
                     $bloqueOrigen = Bloque::find($bloque_id);
-                    $ubicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->get();
+                    $ubicPatio = UbicPatio::where('vin_id','=', $Vin->vin_id)->first();
 
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                         origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
-                            $Vin[0]->vin_id,
-                            $Vin[0]->vin_estado_inventario_id,
+                            $Vin->vin_id,
+                            $Vin->vin_estado_inventario_id,
                             $fecha,
                             $user->user_id,
                             $bloque_id,
@@ -524,8 +522,8 @@ class ApiController extends Controller
                         origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
-                            $Vin[0]->vin_id,
-                            $Vin[0]->vin_estado_inventario_id,
+                            $Vin->vin_id,
+                            $Vin->vin_estado_inventario_id,
                             $fecha,
                             $user->user_id,
                             $bloque_id,
@@ -774,7 +772,7 @@ class ApiController extends Controller
 
                     if($bloque_id != null){
                         $bloqueOrigen = Bloque::find($bloque_id);
-                        $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->get();
+                        $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
 
                         DB::insert('INSERT INTO historico_vins
                             (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
