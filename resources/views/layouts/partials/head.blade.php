@@ -43,6 +43,17 @@
         content: none !important;
     }
 
+    .fa-info-circle{
+        font-family:none !important;
+        width: 30px;
+        height: 30px;
+        content: url({{ asset('base/img/svg/info_icon.svg') }}) !important;
+        margin-right: 5px;
+    }
+    .fa-info-circle::before{
+        content: none !important;
+    }
+
     .fa-trash-alt{
         font-family:none !important;
         width: 30px;

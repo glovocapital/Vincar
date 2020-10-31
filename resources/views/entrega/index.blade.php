@@ -67,7 +67,7 @@
                                                     <th>Patio</th>
                                                     <th>Ubicación</th>
                                                     <th>Bloquear <br/> Entrega</th>
-                                                    <th>Eliminar</th>
+                                                    <th>Acciones</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -97,7 +97,7 @@
 
                                                             <td>
                                                                 <small>
-                                                                    <a href = "{{ route('entrega.infoPredespacho', Crypt::encrypt($vin_agendado->vin_id)) }}" class="btn-info btn-sm" title="Ver info predespacho"><i class="fas fa-info-circle"></i></a>
+                                                                    <a href = "{{ route('entrega.infoPredespacho', Crypt::encrypt($vin_agendado->vin_id)) }}" class="btn-bloque btn-sm" title="Ver info predespacho"><i class="fas fa-info-circle"></i></a>
                                                                 </small>
 
                                                                 <small>
