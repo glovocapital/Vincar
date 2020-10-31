@@ -182,7 +182,7 @@ class ApiController extends Controller
                                     $user->user_id,
                                     $bloque_origen,
                                     $bloque,
-                                    $user->belongsToEmpresa->empresa_id,
+                                    $user->empresa_id,
                                     "Cambio de ubicación en patio",
                                     "Patio: $patioOrigenNombre. Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatioOrigen->ubic_patio_fila. Columna: $ubicPatioOrigen->ubic_patio_columna.",
                                     "Patio: $patioDestinoNombre. Bloque: $bloqueDestino->bloque_nombre. Fila: $UbicPatios->ubic_patio_fila. Columna: $UbicPatios->ubic_patio_columna.",
@@ -203,7 +203,7 @@ class ApiController extends Controller
                                     $user->user_id,
                                     $bloque_origen,
                                     $bloque,
-                                    $user->belongsToEmpresa->empresa_id,
+                                    $user->empresa_id,
                                     "Primera asignación de ubicación del VIN en el patio.",
                                     "VIN recién ingresado a patio.",
                                     "Patio: $patioDestinoNombre. Bloque: $bloqueDestino->bloque_nombre. Fila: $UbicPatios->ubic_patio_fila. Columna: $UbicPatios->ubic_patio_columna.",
@@ -510,7 +510,7 @@ class ApiController extends Controller
                             $user->user_id,
                             $bloque_id,
                             $bloque_id,
-                            $user->belongsToEmpresa->empresa_id,
+                            $user->empresa_id,
                             "Tarea finalizada: " . $desc_tarea,
                             "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                             "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
@@ -528,7 +528,7 @@ class ApiController extends Controller
                             $user->user_id,
                             $bloque_id,
                             $bloque_id,
-                            $user->belongsToEmpresa->empresa_id,
+                            $user->empresa_id,
                             "Tarea finalizada: " . $desc_tarea,
                             "Ubicación fuera de bloque para realización de la tarea.",
                             "Preparado para ser asignado a nuevo estado."
@@ -564,6 +564,10 @@ class ApiController extends Controller
             $Vin->where('vins.vin_codigo', '=', $vins_codigo);
         }
 
+        // David: Acá tenemos que cambiar el resultado de esta búsqueda.
+        // O sea, no podemos arrojar un solo resultado.
+        // Si resulta que hay más de una coincidencia vas a tener que mostrar
+        // todos los VINs  que encuentre y que el operador seleccione cuál VIN es.
         $Vin = $Vin->first();
 
         if($Vin){
@@ -591,7 +595,7 @@ class ApiController extends Controller
                         $user->user_id,
                         null,
                         null,
-                        $user->belongsToEmpresa->empresa_id,
+                        $user->empresa_id,
                         "VIN Arribado.",
                         "Origen Externo: Llegada a patio.",
                         "Patio: BLoque y Ubicación por asignar."
@@ -725,8 +729,7 @@ class ApiController extends Controller
 
         $vins_id = $request->vin;
 
-        $Vin =Vin::where('vin_codigo','=', $vins_id)
-            ->first();
+        $Vin = Vin::where('vin_codigo', $vins_id)->first();
 
         $estado_previo = $Vin->vin_estado_inventario_id;
         $estado_nuevo = 4; // Estado En Patio
@@ -759,7 +762,7 @@ class ApiController extends Controller
                     // Guardar historial del cambio
                     if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
                         $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
-                        if($ubic_patio != null){
+                        if($ubic_patio){
                             $bloque_id = $ubic_patio->bloque_id;
                         } else {
                             $bloque_id = null;
@@ -785,7 +788,7 @@ class ApiController extends Controller
                                 $user->user_id,
                                 $bloque_id,
                                 $bloque_id,
-                                $user->belongsToEmpresa->empresa_id,
+                                $user->empresa_id,
                                 "VIN Inspeccionado Sin Daño.",
                                 "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                                 "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
@@ -803,7 +806,7 @@ class ApiController extends Controller
                                 $user->user_id,
                                 $bloque_id,
                                 $bloque_id,
-                                $user->belongsToEmpresa->empresa_id,
+                                $user->empresa_id,
                                 "VIN Inspeccionado Sin Daño.",
                                 "Vin sin ubicación (fuera de bloque) para realizar inspección.",
                                 "Inspeccionado y preparado para ser asignado a nueva ubicación y estado."
@@ -869,7 +872,7 @@ class ApiController extends Controller
                     $Vin_->vin_estado_inventario_id = 6;
                     $Vin_->update();
 
-                    $datosDanoPieza = $request->input('dano_pieza');
+                    $datosDanoPieza = $request->input('dano_pieza'); // David ¿Esto es de qué? No se está utilizando.
                     $danoPieza = new DanoPieza();
                     $danoPieza->pieza_id = $pieza_id;
                     $danoPieza->tipo_dano_id = $tipo_dano_id;
@@ -917,20 +920,17 @@ class ApiController extends Controller
                     $thumbnail->save();
 
                     $foto1 = Foto::find($foto->foto_id);
-
                     $foto1->foto_ubic_archivo = $path;
 
                     $foto1->save();
 
-
-                    $itemlist =self::ListVIN($request);
-
+                    $itemlist = self::ListVIN($request);
                     $itemlistData = json_decode($itemlist->content(),true);
 
                     // Guardar historial del cambio
                     if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
                         $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
-                        if($ubic_patio != null){
+                        if($ubic_patio){
                             $bloque_id = $ubic_patio->bloque_id;
                         } else {
                             $bloque_id = null;
@@ -956,7 +956,7 @@ class ApiController extends Controller
                                 $user->user_id,
                                 $bloque_id,
                                 $bloque_id,
-                                $user->belongsToEmpresa->empresa_id,
+                                $user->empresa_id,
                                 "VIN Inspeccionado Con Daño.",
                                 "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
                                 "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatio->ubic_patio_fila. Columna: $ubicPatio->ubic_patio_columna.",
@@ -974,7 +974,7 @@ class ApiController extends Controller
                                 $user->user_id,
                                 $bloque_id,
                                 $bloque_id,
-                                $user->belongsToEmpresa->empresa_id,
+                                $user->empresa_id,
                                 "VIN Inspeccionado Con Daño.",
                                 "Vin sin ubicación (fuera de bloque) para realizar inspección.",
                                 "Inspeccionado y preparado para ser asignado a nueva ubicación y estado."
@@ -1031,38 +1031,38 @@ class ApiController extends Controller
             $estado_previo = $Vin->vin_estado_inventario_id;
             $estado_nuevo = 8; // Entregado
 
-                DB::beginTransaction();
+            DB::beginTransaction();
 
-                $Trans =DB::table('users')
-                    ->select('users.*')
-                    ->where('user_rut','=', $rut)
-                    ->first();
+            $Trans =DB::table('users')
+                ->select('users.*')
+                ->where('user_rut','=', $rut)
+                ->first();
 
-                if($Trans){
-                    $transportista= User::findOrFail($Trans->user_id);
-                }else{
-                    $emailExists = DB::table('users')
-                        ->where('email', $request->correo)
-                        ->exists();
+            if($Trans){
+                $transportista= User::findOrFail($Trans->user_id);
+            }else{
+                $emailExists = DB::table('users')
+                    ->where('email', $request->correo)
+                    ->exists();
 
-                    if($emailExists){
-                        $usersf = Array("Err" => 1, "Msg" => "Email ya existente. Por favor introducir otro.");
-                        return response()->json($usersf);
-                    } else {
-                        $transportista = new User();
-                        $transportista->user_nombre = $nombres;
-                        $transportista->user_apellido = $apellidos;
-                        $transportista->user_rut = $rut;
-                        $transportista->user_cargo = "";
-                        $transportista->user_estado = 1;
-                        $transportista->email = $request->correo;
-                        $transportista->password = "";
-                        $transportista->rol_id = 7;
-                        $transportista->user_telefono = "";
-                        $transportista->empresa_id = $user->empresa_id;
-                        $transportista->save();
-                    }
+                if($emailExists){
+                    $usersf = Array("Err" => 1, "Msg" => "Email ya existente. Por favor introducir otro.");
+                    return response()->json($usersf);
+                } else {
+                    $transportista = new User();
+                    $transportista->user_nombre = $nombres;
+                    $transportista->user_apellido = $apellidos;
+                    $transportista->user_rut = $rut;
+                    $transportista->user_cargo = "";
+                    $transportista->user_estado = 1;
+                    $transportista->email = $request->correo;
+                    $transportista->password = "";
+                    $transportista->rol_id = 7;
+                    $transportista->user_telefono = "";
+                    $transportista->empresa_id = $user->empresa_id;
+                    $transportista->save();
                 }
+            }
 
             $entregar = new Entrega();
             $entregar->entrega_fecha = date('Y-m-d');
@@ -1071,8 +1071,8 @@ class ApiController extends Controller
             $entregar->tipo_id = $tipo_id;
             $entregar->user_id = $transportista->user_id;
             $entregar->foto_rut="";
-            $entregar->foto_patente=$patente;
-            $entregar->observaciones=$obs;
+            $entregar->foto_patente = $patente;
+            $entregar->observaciones = $obs;
 
             if(!empty($file_rut)) {
 
@@ -1096,92 +1096,83 @@ class ApiController extends Controller
             }
 
 
-                if($entregar->save()){
+            if($entregar->save()){
+                $Vin_= Vin::findOrFail($Vin->vin_id);
+                $Vin_->vin_estado_inventario_id = $estado_nuevo;
+                $Vin_->update();
 
-                    $Vin_= Vin::findOrFail($Vin->vin_id);
-                    $Vin_->vin_estado_inventario_id = $estado_nuevo;
-                    $Vin_->update();
+                $itemlist = self::ListVIN($request);
 
-                    $itemlist =self::ListVIN($request);
+                $itemlistData = json_decode($itemlist->content(),true);
 
-                    $itemlistData = json_decode($itemlist->content(),true);
+                $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
 
-                    $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
+                $ubicPatioVieja = null;
 
-                    $ubicPatioVieja = null;
+                $bloque_id = null;
 
-                    $bloque_id = null;
+                // Guardar historial del cambio
+                if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
+                    if($ubic_patio){
+                        $bloque_id = $ubic_patio->bloque_id;
 
-                    // Guardar historial del cambio
-                    if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
-                        if($ubic_patio != null){
-                            $bloque_id = $ubic_patio->bloque_id;
-
-                            // Liberar la posición ocupada del patio.
-                            $ubicPatioVieja = $ubic_patio;
-                            $ubic_patio->ubic_patio_ocupada = false;
-                            $ubic_patio->vin_id = null;
-                            $ubic_patio->update();
-                        } else {
-                            $bloque_id = null;
-                        }
-                    }
-
-                    if($bloque_id != null){
-                        $bloqueOrigen = Bloque::find($bloque_id);
-                        // $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->get();
-
-                        DB::insert('INSERT INTO historico_vins
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                            [
-                                $Vin->vin_id,
-                                $estado_nuevo,
-                                $entregar->entrega_fecha,
-                                $user->user_id,
-                                $bloque_id,
-                                $bloque_id,
-                                $user->belongsToEmpresa->empresa_id,
-                                "VIN Entregado.",
-                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatioVieja->ubic_patio_fila. Columna: $ubicPatioVieja->ubic_patio_columna.",
-                                "VIN: " . $Vin->vin_codigo . "entregado.",
-                            ]
-                        );
+                        // Liberar la posición ocupada del patio.
+                        $ubicPatioVieja = $ubic_patio;
+                        $ubic_patio->ubic_patio_ocupada = false;
+                        $ubic_patio->vin_id = null;
+                        $ubic_patio->update();
                     } else {
-                        DB::insert('INSERT INTO historico_vins
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                            [
-                                $Vin->vin_id,
-                                $estado_nuevo,
-                                $entregar->entrega_fecha,
-                                $user->user_id,
-                                $bloque_id,
-                                $bloque_id,
-                                $user->belongsToEmpresa->empresa_id,
-                                "VIN Entregado.",
-                                "VIN sin ubicación (fuera de bloque) para realizar Entrega.",
-                                "VIN Entregado."
-                            ]
-                        );
+                        $bloque_id = null;
                     }
-
-                    DB::commit();
-
-                    $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items']);
-
-
-                }else{
-                    DB::rollBack();
-                    $usersf = Array("Err" => 1, "Msg" => "Error al registrar");
                 }
-           /* } catch (\Throwable $th) {
-                DB::rollBack();
-                $usersf = Array("Err" => 1, "Msg" => "Error inesperado al registrar datos");
-            }*/
 
+                if($bloque_id != null){
+                    $bloqueOrigen = Bloque::find($bloque_id);
+
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $Vin->vin_id,
+                            $estado_nuevo,
+                            $entregar->entrega_fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->empresa_id,
+                            "VIN Entregado.",
+                            "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatioVieja->ubic_patio_fila. Columna: $ubicPatioVieja->ubic_patio_columna.",
+                            "VIN: " . $Vin->vin_codigo . "entregado.",
+                        ]
+                    );
+                } else {
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $Vin->vin_id,
+                            $estado_nuevo,
+                            $entregar->entrega_fecha,
+                            $user->user_id,
+                            $bloque_id,
+                            $bloque_id,
+                            $user->empresa_id,
+                            "VIN Entregado.",
+                            "VIN sin ubicación (fuera de bloque) para realizar Entrega.",
+                            "VIN Entregado."
+                        ]
+                    );
+                }
+
+                DB::commit();
+
+                $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items']);
+            }else{
+                DB::rollBack();
+                $usersf = Array("Err" => 1, "Msg" => "Error al registrar");
+            }
         }else{
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
         }
