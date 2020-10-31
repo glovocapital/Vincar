@@ -1624,8 +1624,12 @@ class VinController extends Controller
         $fechaPredespacho = new Carbon($request->vin_fecha_despacho);
 
         if ($fechaPredespacho <= Carbon::yesterday()){
-            flash('Error: Fecha incorrecta. La fecha de agendamiento no puede ser anterior a la fecha actual.')->error();
-            return back()->withInput();
+            return response()->json(
+                [
+                    "error" => 1, 
+                    "mensaje" => 'Fecha incorrecta. La fecha de agendamiento no puede ser anterior a la fecha actual.'
+                ]
+            );
         }
 
         $user = User::find(Auth::id());
@@ -1646,8 +1650,12 @@ class VinController extends Controller
                         ->exists();
 
                     if($emailExists){
-                        flash('Error. Email ya existente. Por favor intente con otra dirección de Email.')->error();
-                        return back()->withInput();
+                        return response()->json(
+                            [
+                                "error" => 1,
+                                "mensaje" => 'Email ya existente. Por favor intente con otra dirección de Email.'
+                            ]
+                        );
                     } else {
                         $transportista = new User();
                         $transportista->user_nombre = $request->usuario_nombre;
@@ -1671,9 +1679,22 @@ class VinController extends Controller
 
                 $estado_estado_inventario = $vin->vin_estado_inventario_id;
 
-                if ($estado_estado_inventario != 4 && $estado_estado_inventario != 5 && $estado_estado_inventario != 6){
-                    flash('Error. Estado de Inventario inválido para agendar al VIN: ' . $vin->vin_codigo . '. El estado debe ser \'En Patio\', \'Disponible para la venta\' o \'No disponible para la venta\'.')->error();
-                    return back();
+                if (!$vin->vin_predespacho){
+                    if ($estado_estado_inventario != 4 && $estado_estado_inventario != 5 && $estado_estado_inventario != 6){
+                        return response()->json(
+                            [
+                                "error" => 1,
+                                "mensaje" => 'Estado de Inventario inválido para agendar al VIN: ' . $vin->vin_codigo . '. El estado debe ser \'En Patio\', \'Disponible para la venta\' o \'No disponible para la venta\'.'
+                            ]
+                        );
+                    }
+                } else {
+                    return response()->json(
+                        [
+                            "error" => 1,
+                            "mensaje" => 'VIN: ' . $vin->vin_codigo . ' previamente agendado para predespacho.'
+                        ]
+                    );
                 }
 
                 $predespacho= new Predespacho();
@@ -1682,8 +1703,12 @@ class VinController extends Controller
                     $predespacho->predespacho_origen = $request->ruta_origen;
                     $predespacho->predespacho_destino = $request->ruta_destino;
                 } elseif (($request->tipo_agendamiento_id != 1) && ($request->tipo_agendamiento_id != 2)) {
-                    flash('Error. Tipo de Agendamiento Inválido.')->error();
-                    return back()->withInput();
+                    return response()->json(
+                        [
+                            "error" => 1,
+                            "mensaje" => 'Tipo de Agendamiento Inválido.'
+                        ]
+                    );
                 }
     
                 $predespacho->responsable_id = Auth::id();
@@ -1739,11 +1764,17 @@ class VinController extends Controller
             if($request->ajax()){
                 if($guardados>0){
                     return response()->json(
-                        Array("error"=>0,"mensaje"=>"Guardado con Èxito")
+                        [
+                            "error" => 0,
+                            "mensaje" => "Guardado con Èxito"
+                        ]
                     );
                 } else {
                    return response()->json(
-                       Array("error"=>1,"mensaje"=>"Guardado Incompleto")
+                       [
+                           "error" => 1,
+                           "mensaje" => "Guardado Incompleto"
+                       ]
                    );
                 }
             } else {
@@ -1755,7 +1786,10 @@ class VinController extends Controller
 
             if($request->ajax()){
                 return response()->json(
-                    Array("error"=>1,"mensaje"=>"Error al cambiar estado")
+                    [
+                        "error" => 1,
+                        "mensaje" => "Error al cambiar estado"
+                    ]
                 );
             } else {
                 flash('Error al cambiar estados.')->error();

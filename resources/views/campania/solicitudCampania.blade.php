@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title','Solicitud de Campaña index')
 @section('content')
-
+@include('flash::message')
 <div class="row">
 <div class="col-lg-12">
         <div class="ibox float-e-margins text-center">
@@ -394,6 +394,8 @@
                         $("#vin_codigo_predespacho").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
                         $("#vin_codigo_predespacho").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
                     }
+                    $("#error0_predespacho").hide();
+                    $("#error1_predespacho").hide();
                     $("#predespachoModal").modal('show');
                 }).fail(function () {
                     alert('Error: Debe seleccionar al menos un vin de la lista');
@@ -428,8 +430,8 @@
             $('#btn-pre-despacho').on('click',function(e){
                 e.preventDefault();
 
-                $("#error_0_predespacho").hide();
-                $("#error_1_predespacho").hide();
+                $("#error0_predespacho").hide();
+                $("#error1_predespacho").hide();
 
                 $.post("{{route('vin.predespacho')}}", $("#PredespachoVins").serialize(), function (res) {
                     $dat = res;
