@@ -866,6 +866,8 @@
                         $("#vin_codigo_predespacho").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
                         $("#vin_codigo_predespacho").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
                     }
+                    $("#error0_predespacho").hide();
+                    $("#error1_predespacho").hide();
                     $("#predespachoModal").modal('show');
                 }).fail(function () {
                     alert('Error: Debe seleccionar al menos un vin de la lista');
@@ -1067,8 +1069,8 @@
             $('#btn-pre-despacho').on('click',function(e){
                 e.preventDefault();
 
-                $("#error_0_predespacho").hide();
-                $("#error_1_predespacho").hide();
+                $("#error0_predespacho").hide();
+                $("#error1_predespacho").hide();
 
                 $.post("{{route('vin.predespacho')}}", $("#PredespachoVins").serialize(), function (res) {
                     $dat = res;
@@ -1087,8 +1089,10 @@
 
             $('#btn-cerrar-pre-despacho').click(function (e) {
                 e.preventDefault();
-
+                
                 $("#PredespachoVins")[0].reset();
+                $("#error0_predespacho").empty();
+                $("#error1_predespacho").empty();
             });
 
             //Modal Solicitar Tarea
@@ -1124,14 +1128,4 @@
             });
         });
     </script>
-    <script type="text/javascript">
-        function activatePlacesSearch () {
-            var input_origen = document.getElementById('search_term_ruta');
-            var autocomplete = new google.maps.places.Autocomplete(input_origen);
-            var input_destino = document.getElementById('search_term_ruta_2');
-            var autocomplete2 = new google.maps.places.Autocomplete(input_destino);
-        };
-    </script>
-
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=activatePlacesSearch"></script>
 @endsection
