@@ -67,6 +67,9 @@
                                                     <th>Patio</th>
                                                     <th>Ubicación</th>
                                                     <th>Bloquear <br/> Entrega</th>
+                                                    <th>Tipo Agendamiento</th>
+                                                    <th>Desde</th>
+                                                    <th>Hacia</th>
                                                     <th>Acciones</th>
                                                 </tr>
                                                 </thead>
@@ -94,6 +97,15 @@
                                                                 {!! Form::close() !!}
                                                                 </div>
                                                             </td>
+
+                                                            @if($vin_agendado->tipo_agendamiento_id == 1)
+                                                                <td><small>Retiro</small></td>
+                                                            @else
+                                                                <td><small>Traslado</small></td>
+                                                            @endif
+
+                                                            <td><small>{{ $vin_agendado->predespacho_origen }}</small></td>
+                                                            <td><small>{{ $vin_agendado->predespacho_destino }}</small></td>
 
                                                             <td>
                                                                 <small>

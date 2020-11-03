@@ -28,6 +28,7 @@ class EntregaController extends Controller
     {
         /** Tareas creadas para mostrarse */
         $queryAgendados = Vin::where('vin_predespacho', true)
+            ->join('predespachos', 'predespachos.vin_id', '=', 'vins.vin_id')
             ->join('users','vins.user_id','=','users.user_id')
             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
             ->join('ubic_patios', 'vins.vin_id', '=', 'ubic_patios.vin_id')
