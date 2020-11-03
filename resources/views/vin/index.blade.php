@@ -317,10 +317,6 @@
                             </div>
 
                             <div class="text-right pb-5" id="botones">
-                                    {!! Form::open(['route'=> 'vin.exportMasivoResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_masivo_busqueda_vins_form']) !!}
-                                            <input type="hidden" name="vin_ids" value="" id="resultado_busqueda_vins" />
-                                            {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Todos', ['id' => 'btn-listado-masivo', 'type' => 'submit', 'class' => 'btn btn-success block full-width m-b btn-listado-masivo-vins', 'disabled', 'style' => 'display:none'] )  }}
-                                    {!! Form::close() !!}
 
                                     <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol12" style="display:none">Asignar para entrega</button>
 
@@ -380,10 +376,7 @@
                             </div>
 
                             <div class="text-right pb-5">
-                                    {!! Form::open(['route'=> 'vin.exportMasivoResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_masivo_busqueda_vins_form']) !!}
-                                            <input type="hidden" name="vin_ids" value="" id="resultado_busqueda_vins" />
-                                            {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Todos', ['id' => 'btn-listado-masivo', 'type' => 'submit', 'class' => 'btn btn-success block full-width m-b btn-listado-masivo-vins', 'disabled', 'style' => 'display:none'] )  }}
-                                    {!! Form::close() !!}
+                                    
                                     <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol4" style="display:none">Asignar para entrega</button>
 
                                     <button type="button" style="display:none" class="btn btn-success btn-lote-vins btn-rol">Carga de guías por lotes</button>
@@ -409,6 +402,10 @@
                 <div class="card card-default">
                     <div class="card-header">
                         <h3 class="card-title">Listado de Vins</h3>
+                        {!! Form::open(['route'=> 'vin.exportMasivoResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_masivo_busqueda_vins_form']) !!}
+                            <input type="hidden" name="vin_ids" value="" id="resultado_busqueda_vins" />
+                            {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Todos', ['id' => 'btn-listado-masivo', 'type' => 'submit', 'class' => 'btn btn-success block full-width m-b btn-listado-masivo-vins', 'disabled', 'style' => 'display:none'] )  }}
+                        {!! Form::close() !!}
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                             <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
