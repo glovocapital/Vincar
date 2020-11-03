@@ -317,6 +317,10 @@
                             </div>
 
                             <div class="text-right pb-5" id="botones">
+                                    {!! Form::open(['route'=> 'vin.exportMasivoResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_masivo_busqueda_vins_form']) !!}
+                                            <input type="hidden" name="vin_ids" value="" id="resultado_busqueda_vins" />
+                                            {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Todos', ['id' => 'btn-listado-masivo', 'type' => 'submit', 'class' => 'btn btn-success block full-width m-b btn-listado-masivo-vins', 'disabled', 'style' => 'display:none'] )  }}
+                                    {!! Form::close() !!}
 
                                     <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol12" style="display:none">Asignar para entrega</button>
 
@@ -376,6 +380,10 @@
                             </div>
 
                             <div class="text-right pb-5">
+                                    {!! Form::open(['route'=> 'vin.exportMasivoResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_masivo_busqueda_vins_form']) !!}
+                                            <input type="hidden" name="vin_ids" value="" id="resultado_busqueda_vins" />
+                                            {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Todos', ['id' => 'btn-listado-masivo', 'type' => 'submit', 'class' => 'btn btn-success block full-width m-b btn-listado-masivo-vins', 'disabled', 'style' => 'display:none'] )  }}
+                                    {!! Form::close() !!}
                                     <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol4" style="display:none">Asignar para entrega</button>
 
                                     <button type="button" style="display:none" class="btn btn-success btn-lote-vins btn-rol">Carga de guías por lotes</button>
@@ -411,14 +419,8 @@
                             <table class="table table-hover" id="TablaVins" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
-                                    <!-- <th><input type="checkbox" class="check-all" />Seleccionar Todos</th> -->
-                                    <th>
-                                        {!! Form::open(['route'=> 'vin.exportMasivoResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_masivo_busqueda_vins_form']) !!}
-                                            Descargar Todos <br/>
-                                            <input type="hidden" name="vin_ids" value="" id="resultado_busqueda_vins" />
-                                            {{ Form::button('<i class="fa fa-file-excel"></i> Excel', ['id' => 'btn-listado-masivo', 'type' => 'submit', 'class' => 'btn btn-sm btn-success block full-width m-b btn-listado-masivo-vins', 'disabled'] )  }}
-                                        {!! Form::close() !!}
-                                    </th>
+                                    <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
+                                    
                                     <th>Vin</th>
                                     <th>Patente</th>
 
@@ -721,6 +723,8 @@
 
                         if(var_roles==0){
                             $(".btn-expor").attr("disabled", false);
+                            $(".btn-listado-masivo-vins").attr("disabled", false);
+                            $(".btn-listado-masivo-vins").show();
                             $(".btn-rol").show();
                             if(value.rol_id == 1 ||  value.rol_id == 3){
                                 $(".btn-rol13").show();
