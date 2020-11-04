@@ -81,16 +81,14 @@ class CampaniaController extends Controller
             ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
-        $marcas = DB::table('marcas')
+        $marcas = Marca::orderBy('marca_nombre')
             ->select('marca_id', 'marca_nombre')
-            ->where('deleted_at', null)
             ->pluck('marca_nombre', 'marca_id');
 
         $tipo_campanias_array = TipoCampania::select('tipo_campania_id', 'tipo_campania_descripcion')
-            ->where('deleted_at', null)
             ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
 
-        $patios = DB::table('patios')
+        $patios = Patio::orderBy('patio_nombre')
             ->select('patio_id', 'patio_nombre')
             ->pluck('patio_nombre', 'patio_id');
 
@@ -334,22 +332,19 @@ class CampaniaController extends Controller
         $vins = Vin::all();
 
         $tipo_campanias_array = TipoCampania::select('tipo_campania_id', 'tipo_campania_descripcion')
-            ->where('deleted_at', null)
             ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
 
-        $patios = DB::table('patios')
+        $patios = Patio::orderBy('patio_nombre')
             ->select('patio_id', 'patio_nombre')
             ->pluck('patio_nombre', 'patio_id');
 
         $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
             ->orderBy('user_id')
-            ->where('deleted_at', null)
             ->pluck('user_nombres', 'user_id')
             ->all();
 
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
-            ->orderBy('empresa_id')
-            ->where('deleted_at', null)
+            ->orderBy('empresa_razon_social')
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 
@@ -361,9 +356,8 @@ class CampaniaController extends Controller
             ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
-        $marcas = DB::table('marcas')
+        $marcas = Marca::orderBy('marca_nombre')
             ->select('marca_id', 'marca_nombre')
-            ->where('deleted_at', null)
             ->pluck('marca_nombre', 'marca_id');
 
         $tabla_vins = [];
@@ -618,17 +612,14 @@ class CampaniaController extends Controller
             ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
-        $marcas = DB::table('marcas')
+        $marcas = Marca::orderBy('marca_nombre')
             ->select('marca_id', 'marca_nombre')
-            ->where('deleted_at', null)
-            ->orderBy('marca_nombre')
             ->pluck('marca_nombre', 'marca_id');
 
         $tipo_campanias_array = TipoCampania::select('tipo_campania_id', 'tipo_campania_descripcion')
-            ->where('deleted_at', null)
             ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
 
-        $patios = DB::table('patios')
+        $patios = Patio::orderBy('patio_nombre')
             ->select('patio_id', 'patio_nombre')
             ->pluck('patio_nombre', 'patio_id');
 

@@ -41,8 +41,13 @@
                                 {!! Form::select('patio_id', $patios, null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                             <div class="form-group">
-                                <label for="marca_nombre" >Seleccionar Marca <strong>*</strong></label>
-                                {!! Form::select('marca_id', $marcas, null,['id' => 'marca', 'placeholder'=>'Marca', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                <label for="marca_id" >Seleccionar Marca <strong>*</strong></label>
+                                <select name="marca_id" id="marca" class="form-control col-sm-9 select-cliente" placeholder="Marca">
+                                    <option value="">Marca</option>
+                                    @foreach ($marcas as $marca_id => $marca_nombre)
+                                    <option value="{{ $marca_id }}">{{ ucwords($marca_nombre) }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>

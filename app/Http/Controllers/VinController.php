@@ -15,6 +15,7 @@ use App\Exports\VinEntregadosExport;
 Use App\Guia;
 Use App\GuiaVin;
 use App\Marca;
+use App\Patio;
 use App\Predespacho;
 use App\UbicPatio;
 use Auth;
@@ -83,10 +84,9 @@ class VinController extends Controller
         $vins = Vin::all();
 
         $tipo_campanias_array = TipoCampania::select('tipo_campania_id', 'tipo_campania_descripcion')
-            ->where('deleted_at', null)
             ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
 
-        $patios = DB::table('patios')
+        $patios = Patio::orderBy('patio_nombre')
             ->select('patio_id', 'patio_nombre')
             ->pluck('patio_nombre', 'patio_id');
 
@@ -109,9 +109,8 @@ class VinController extends Controller
             ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
             ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
 
-        $marcas = DB::table('marcas')
-            ->select('marca_id', 'marca_nombre')
-            ->where('deleted_at', null)
+        $marcas = Marca::select('marca_id', 'marca_nombre')
+            ->orderBy('marca_nombre')
             ->pluck('marca_nombre', 'marca_id');
 
         $tabla_vins = [];
