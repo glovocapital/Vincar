@@ -1617,6 +1617,7 @@ class VinController extends Controller
         return redirect()->route('vin.index');
     }
 
+    // Agendamiento de VINs para entrega
     public function predespacho(Request $request)
     {
         //$fecha = Carbon::now();
@@ -1650,6 +1651,8 @@ class VinController extends Controller
                         ->exists();
 
                     if($emailExists){
+                        DB::rollBack();
+
                         return response()->json(
                             [
                                 "error" => 1,
@@ -1681,6 +1684,8 @@ class VinController extends Controller
 
                 if (!$vin->vin_predespacho){
                     if ($estado_estado_inventario != 4 && $estado_estado_inventario != 5 && $estado_estado_inventario != 6){
+                        DB::rollBack();
+
                         return response()->json(
                             [
                                 "error" => 1,
@@ -1689,6 +1694,8 @@ class VinController extends Controller
                         );
                     }
                 } else {
+                    DB::rollBack();
+
                     return response()->json(
                         [
                             "error" => 1,
@@ -1703,6 +1710,8 @@ class VinController extends Controller
                     $predespacho->predespacho_origen = $request->ruta_origen;
                     $predespacho->predespacho_destino = $request->ruta_destino;
                 } elseif (($request->tipo_agendamiento_id != 1) && ($request->tipo_agendamiento_id != 2)) {
+                    DB::rollBack();
+
                     return response()->json(
                         [
                             "error" => 1,
@@ -1770,12 +1779,14 @@ class VinController extends Controller
                         ]
                     );
                 } else {
-                   return response()->json(
-                       [
-                           "error" => 1,
-                           "mensaje" => "Guardado Incompleto"
-                       ]
-                   );
+                    DB::rollBack();
+                    
+                    return response()->json(
+                        [
+                            "error" => 1,
+                            "mensaje" => "Guardado Incompleto"
+                        ]
+                    );
                 }
             } else {
                 flash('Estados cambiados con éxito.')->success();
