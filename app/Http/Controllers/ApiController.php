@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Bloque;
+use App\Conductor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,8 +18,10 @@ use App\Foto;
 use App\Empresa;
 use App\Transportista;
 use App\Entrega;
+use App\Predespacho;
+use App\Ruta;
 use App\Thumbnail;
-
+use App\Tour;
 
 class ApiController extends Controller
 {
@@ -627,7 +630,7 @@ class ApiController extends Controller
 
         $vins_codigo = $request->vin;
 
-        $Vin =DB::table('vins')->join('users','users.user_id','vins.user_id')->select('vins.*','empresa_id');
+        $Vin = Vin::join('users','users.user_id','vins.user_id')->select('vins.*','empresa_id');
 
         if(strlen($vins_codigo)==6){
             $Vin->where('vins.vin_codigo', 'like', '%'.$vins_codigo);
@@ -635,9 +638,7 @@ class ApiController extends Controller
             $Vin->where('vins.vin_codigo', '=', $vins_codigo);
         }
 
-        $Vin=$Vin->first();
-
-
+        $Vin = $Vin->first();
 
         if($Vin){
 
@@ -679,13 +680,11 @@ class ApiController extends Controller
 
             $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
                 ->orderBy('user_id')
-                ->where('deleted_at', null)
                 ->pluck('user_nombres', 'user_id')
                 ->all();
 
             $empresa = Empresa::select(DB::raw("CONCAT(empresa_razon_social,' ') AS empresa"), 'empresa_id')
                 ->orderBy('empresa_id')
-                ->where('deleted_at', null)
                 ->pluck('empresa', 'empresa_id')
                 ->all();
 
@@ -1097,9 +1096,21 @@ class ApiController extends Controller
 
 
             if($entregar->save()){
+                // Actualizar estado de inventario del VIN a entregar
                 $Vin_= Vin::findOrFail($Vin->vin_id);
+                // $Vin_->vin_predespacho = false; // Nota: No descomentar. Esto se controla en otras funciones.
                 $Vin_->vin_estado_inventario_id = $estado_nuevo;
-                $Vin_->update();
+                if (!$Vin_->update()) {
+                    DB::rollBack();
+                    $usersf = Array("Err" => 1, "Msg" => "Error al cambiando estado de VIN.");
+                }
+
+                // Anular el registro de Predespacho.
+                $predespacho = Predespacho::findOrFail($Vin->vin_id);
+                if (!$predespacho->delete()) {
+                    DB::rollBack();
+                    $usersf = Array("Err" => 1, "Msg" => "Error cerrando predespacho.");
+                }
 
                 $itemlist = self::ListVIN($request);
 
@@ -1223,5 +1234,43 @@ class ApiController extends Controller
             ])->get();
 
         echo json_encode(Array("Err"=>0,"badgeData"=>Array("list"=>count($Vin), "car"=>0, "boat"=>0)));
+    }
+
+    public function ListarRutas(Request $request){
+        $this->cors();
+    
+        $user_rut = $request->user_rut; // ¿Qué es esto? ¿De dónde envías el RUT? El RUT no lo usamos para hacer
+                                        // búsquedas en la tabla conductors
+                                        // El código tiene que ser fácil de entender. Si lo que estás enviando es un
+                                        // user_id, entonces cambia los nombres de las variables.
+    
+        if(empty($user_rut)) {
+            $usersf = Array("Err" => 1, "Msg" => "Users obligatorio");
+        } else {
+            $Conductors = Conductor::where('user_id', /*¿*/$user_rut/*?*/)->first(); // Aclara esto
+                                                                                     // Acostúmbrate a usar Eloquent
+    
+            if($Conductors) {
+                $Tour = Tour::where('conductor_id', '=', $Conductors->conductor_id)->first(); // Por cierto, en el estilo de código no es correcto usar
+                                                                                              // variables con la inicial en mayúscula.
+                if($Tour) {
+                    $rutas = Ruta::join('tours', 'tours.tour_id', '=', 'rutas.tour_id')
+                        ->join("ruta_guias", "ruta_guias.ruta_id","=","rutas.ruta_id")
+                        ->join("guias", "guias.guia_id","=","ruta_guias.guia_id")
+                        ->join("guia_vins", "guia_vins.guia_id","=","guias.guia_id")
+                        ->join("vins", "vins.vin_id","=","guia_vins.vin_id")
+                        ->select('rutas.ruta_id as ruta_id', 'guia_numero', 'vin_codigo')
+                        ->where('tour_id', $Tour->tour_id)
+                        ->get();
+    
+                    return response()->json(Array("Err" => 0, "Msg" => "Exitoso", "List"=>$rutas));
+    
+                } else {
+                    return response()->json(Array("Err" => 1, "Msg" => "No se encuentra el Tour"));
+                }
+            } else{
+                return response()->json(Array("Err" => 1, "Msg" => "No se encuentra el Conductor"));
+            }
+        }
     }
 }

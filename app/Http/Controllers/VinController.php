@@ -1623,6 +1623,7 @@ class VinController extends Controller
         $fecha = date('Y-m-d');
         $fechaPredespacho = new Carbon($request->vin_fecha_despacho);
 
+        // Validar que la fecha sea correcta.
         if ($fechaPredespacho <= Carbon::yesterday()){
             return response()->json(
                 [
@@ -1630,6 +1631,21 @@ class VinController extends Controller
                     "mensaje" => 'Fecha incorrecta. La fecha de agendamiento no puede ser anterior a la fecha actual.'
                 ]
             );
+        }
+
+        // Validar que el VIN no ha sido previamente agendado. Si en la lista hay algún VIN
+        // previamente agendado, impedirá avanzar hasta tanto no se elimine de la lista de VINs.
+        foreach($request->vin_ids as $vin_id){
+            $vin = Vin::findOrfail($vin_id);
+
+            if ($vin->vin_predespacho){
+                return response()->json(
+                    [
+                        "error" => 1,
+                        "mensaje" => 'VIN: ' . $vin->vin_codigo . ' previamente agendado para predespacho. Elimínelo de la lista y vuelva a enviar.'
+                    ]
+                );
+            }
         }
 
         $user = User::find(Auth::id());
@@ -1676,13 +1692,15 @@ class VinController extends Controller
             }
             
             $guardados = 0;
+            // Verificación de VINs.
             foreach($request->vin_ids as $vin_id){
                 $vin = Vin::findOrfail($vin_id);
 
-                $estado_estado_inventario = $vin->vin_estado_inventario_id;
+                $estado_inventario = $vin->vin_estado_inventario_id;
 
+                // Nueva validación de VINs. Ahora por estado y luego, de nuevo, verificar que ninguno esté agendado previamente.
                 if (!$vin->vin_predespacho){
-                    if ($estado_estado_inventario != 4 && $estado_estado_inventario != 5 && $estado_estado_inventario != 6){
+                    if ($estado_inventario != 4 && $estado_inventario != 5 && $estado_inventario != 6){
                         DB::rollBack();
 
                         return response()->json(
@@ -1752,7 +1770,7 @@ class VinController extends Controller
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
-                            $estado_estado_inventario,
+                            $estado_inventario,
                             $fecha,
                             $user->user_id,
                             null,
@@ -1865,7 +1883,7 @@ class VinController extends Controller
             $guardados=0;
             foreach($request->vin_ids as $vin_id){
                 $vin = Vin::findOrfail($vin_id);
-                $estado_estado_inventario = $vin->vin_estado_inventario_id;
+                $estado_inventario = $vin->vin_estado_inventario_id;
 
                 // Colocar el check para predespacho del VIN
 
@@ -1882,7 +1900,7 @@ class VinController extends Controller
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
-                            $estado_estado_inventario,
+                            $estado_inventario,
                             $fecha,
                             $user->user_id,
                             null,
