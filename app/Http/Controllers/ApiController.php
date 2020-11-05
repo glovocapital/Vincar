@@ -1018,9 +1018,7 @@ class ApiController extends Controller
         $obs = $request->input('observaciones');
 
 
-        $Vin =DB::table('vins')
-            ->select('vins.*')
-            ->where('vin_codigo','=', $vins)
+        $Vin =Vin::where('vin_codigo','=', $vins)
             ->first();
 
         $user = User::find($user_id);
@@ -1032,16 +1030,12 @@ class ApiController extends Controller
 
             DB::beginTransaction();
 
-            $Trans =DB::table('users')
-                ->select('users.*')
-                ->where('user_rut','=', $rut)
-                ->first();
+            $trans = User::where('user_rut','=', $rut)->first();
 
-            if($Trans){
-                $transportista= User::findOrFail($Trans->user_id);
+            if($trans){
+                $transportista= User::findOrFail($trans->user_id);
             }else{
-                $emailExists = DB::table('users')
-                    ->where('email', $request->correo)
+                $emailExists = User::where('email', $request->correo)
                     ->exists();
 
                 if($emailExists){
@@ -1106,7 +1100,7 @@ class ApiController extends Controller
                 }
 
                 // Anular el registro de Predespacho.
-                $predespacho = Predespacho::findOrFail($Vin->vin_id);
+                $predespacho = Predespacho::where('vin_id', $Vin->vin_id)->first();
                 if (!$predespacho->delete()) {
                     DB::rollBack();
                     $usersf = Array("Err" => 1, "Msg" => "Error cerrando predespacho.");
