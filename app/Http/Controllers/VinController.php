@@ -1699,24 +1699,13 @@ class VinController extends Controller
                 $estado_inventario = $vin->vin_estado_inventario_id;
 
                 // Nueva validación de VINs. Ahora por estado y luego, de nuevo, verificar que ninguno esté agendado previamente.
-                if (!$vin->vin_predespacho){
-                    if ($estado_inventario != 4 && $estado_inventario != 5 && $estado_inventario != 6){
-                        DB::rollBack();
-
-                        return response()->json(
-                            [
-                                "error" => 1,
-                                "mensaje" => 'Estado de Inventario inválido para agendar al VIN: ' . $vin->vin_codigo . '. El estado debe ser \'En Patio\', \'Disponible para la venta\' o \'No disponible para la venta\'.'
-                            ]
-                        );
-                    }
-                } else {
+                if ($vin->vin_predespacho || ($estado_inventario != 4 && $estado_inventario != 5 && $estado_inventario != 6)){
                     DB::rollBack();
 
                     return response()->json(
                         [
                             "error" => 1,
-                            "mensaje" => 'VIN: ' . $vin->vin_codigo . ' previamente agendado para predespacho.'
+                            "mensaje" => 'VIN: ' . $vin->vin_codigo . ' previamente agendado o no cumple condiciones de estado de inventario para predespacho.'
                         ]
                     );
                 }
