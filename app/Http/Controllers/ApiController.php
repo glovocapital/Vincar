@@ -1101,10 +1101,14 @@ class ApiController extends Controller
 
                 // Anular el registro de Predespacho.
                 $predespacho = Predespacho::where('vin_id', $Vin->vin_id)->first();
-                if (!$predespacho->delete()) {
-                    DB::rollBack();
-                    $usersf = Array("Err" => 1, "Msg" => "Error cerrando predespacho.");
+
+                if($predespacho){
+                    if (!$predespacho->delete()) {
+                        DB::rollBack();
+                        $usersf = Array("Err" => 1, "Msg" => "Error cerrando predespacho.");
+                    }
                 }
+                
 
                 $itemlist = self::ListVIN($request);
 
