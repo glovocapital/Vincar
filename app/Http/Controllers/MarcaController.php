@@ -75,7 +75,12 @@ class MarcaController extends Controller
                 $path = __DIR__."/../../../public/".$ruta;
 
                 $sourcePath = $_FILES['logo_marca']['tmp_name'];
-                move_uploaded_file($sourcePath, $path);
+
+                if (file_exists($path)){
+                    flash('Logo para la marca '.$request->marca_nombre.' ya existe, no se reemplazó.')->warning();
+                } else {
+                    move_uploaded_file($sourcePath, $path);
+                }
             }
         }
 
