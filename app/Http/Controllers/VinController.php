@@ -1637,8 +1637,9 @@ class VinController extends Controller
         // previamente agendado, impedirá avanzar hasta tanto no se elimine de la lista de VINs.
         foreach($request->vin_ids as $vin_id){
             $vin = Vin::findOrfail($vin_id);
+            $predespacho = Predespacho::where('vin_id', $vin_id)->exists();
 
-            if ($vin->vin_predespacho){
+            if ($vin->vin_predespacho || $predespacho){
                 return response()->json(
                     [
                         "error" => 1,
@@ -1711,6 +1712,18 @@ class VinController extends Controller
                 }
 
                 $predespacho= new Predespacho();
+
+                $existePredespacho = Predespacho::where('vin_id', $vin_id)->exists();
+
+                if ($existePredespacho){
+                    DB::rollBack();
+                    return response()->json(
+                        [
+                            "error" => 1,
+                            "mensaje" => 'VIN: ' . $vin->vin_codigo . ' previamente agendado para predespacho. Elimínelo de la lista y vuelva a enviar.'
+                        ]
+                    );
+                }
 
                 if ($request->tipo_agendamiento_id == 2) {
                     $predespacho->predespacho_origen = $request->ruta_origen;
