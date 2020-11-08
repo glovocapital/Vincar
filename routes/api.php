@@ -25,6 +25,8 @@ Route::get('badge','ApiController@Badge')->name('api.badge');
 
 Route::get('list','ApiController@Lists')->name('api.list');
 
+Route::get('listmarcas','ApiController@ListMarcas')->name('api.listmarcas');
+
 Route::get('tareafinalizada/{tarea_id}','ApiController@TareaFinalizada')->name('api.Tarea_Finalizada');
 
 
@@ -50,6 +52,9 @@ Route::post('entrega','ApiController@Entregar')->name('api.entrega');
 
 Route::get('buscartransportista/{user_rut}','ApiController@BuscarTransportista')->name('api.buscartransportista');
 
+Route::get('listarrutas/{user_id}','ApiController@ListarRutas')->name('api.listarrutas');
 
+Route::post('registrarvehiculoNN','ApiController@RegistrarVehiculoNN')->name('api.registrarvehiculoNN');
 
+Route::post('registrarimagenNN','ApiController@RegistrarImagenNN')->name('api.registrarimagenNN');
 

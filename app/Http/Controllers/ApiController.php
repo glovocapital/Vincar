@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Bloque;
-use App\Conductor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,12 +15,13 @@ use App\DanoPieza;
 use App\Tarea;
 use App\Foto;
 use App\Empresa;
-use App\Transportista;
 use App\Entrega;
 use App\Predespacho;
 use App\Ruta;
 use App\Thumbnail;
 use App\Tour;
+use App\VehiculoNN;
+use App\FotoNN;
 
 class ApiController extends Controller
 {
@@ -173,7 +173,7 @@ class ApiController extends Controller
 
                             $patioOrigenNombre = $bloqueOrigen->onePatio->patio_nombre;
                             $patioDestinoNombre = $bloqueDestino->onePatio->patio_nombre;
-                            
+
                             DB::insert('INSERT INTO historico_vins
                                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                                 origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
@@ -194,7 +194,7 @@ class ApiController extends Controller
                         } else {
                             $bloqueDestino = Bloque::find($bloque);
                             $patioDestinoNombre = $bloqueDestino->onePatio->patio_nombre;
-                            
+
                             DB::insert('INSERT INTO historico_vins
                                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                                 origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
@@ -433,12 +433,12 @@ class ApiController extends Controller
                     $vin[0]->HabilitadoArribo = false;
                 }
 
-                if(($vin[0]->vin_predespacho == true) && ($vin[0]->vin_bloqueado_entrega == false)) {    
+                if(($vin[0]->vin_predespacho == true) && ($vin[0]->vin_bloqueado_entrega == false)) {
                     $vin[0]->HabilitadoEntregarVeh = true;
                 } else {
                     $vin[0]->HabilitadoEntregarVeh = false;
                 }
-                
+
                 if($vin[0]->estado=="Entregado") {
                      $vin[0]->HabilitadoInspeccion = false;
                      $vin[0]->HabilitadoCambio = false;
@@ -485,7 +485,7 @@ class ApiController extends Controller
                 $user = User::find($request->user_id);
 
                 $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
-                
+
                 if($ubicPatio){
                     $bloque_id = $ubicPatio->bloque_id;
                 } else {
@@ -680,11 +680,13 @@ class ApiController extends Controller
 
             $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
                 ->orderBy('user_id')
+                ->where('deleted_at', null)
                 ->pluck('user_nombres', 'user_id')
                 ->all();
 
             $empresa = Empresa::select(DB::raw("CONCAT(empresa_razon_social,' ') AS empresa"), 'empresa_id')
                 ->orderBy('empresa_id')
+                ->where('deleted_at', null)
                 ->pluck('empresa', 'empresa_id')
                 ->all();
 
@@ -1108,7 +1110,7 @@ class ApiController extends Controller
                         $usersf = Array("Err" => 1, "Msg" => "Error cerrando predespacho.");
                     }
                 }
-                
+
 
                 $itemlist = self::ListVIN($request);
 
@@ -1234,41 +1236,178 @@ class ApiController extends Controller
         echo json_encode(Array("Err"=>0,"badgeData"=>Array("list"=>count($Vin), "car"=>0, "boat"=>0)));
     }
 
-    public function ListarRutas(Request $request){
+
+    public function ListMarcas(Request $request) {
         $this->cors();
-    
-        $user_rut = $request->user_rut; // ¿Qué es esto? ¿De dónde envías el RUT? El RUT no lo usamos para hacer
-                                        // búsquedas en la tabla conductors
-                                        // El código tiene que ser fácil de entender. Si lo que estás enviando es un
-                                        // user_id, entonces cambia los nombres de las variables.
-    
-        if(empty($user_rut)) {
+
+        $Marcas =DB::table('marcas')
+            ->select('marca_id','marca_nombre', 'marca_codigo')
+            ->get();
+
+        echo json_encode(Array("Err"=>0,"marcas"=>$Marcas));
+    }
+
+    public function ListarRutas(Request $request)
+    {
+        $this->cors();
+
+        $user_id = $request->user_id;
+
+        if (empty($user_id)) {
             $usersf = Array("Err" => 1, "Msg" => "Users obligatorio");
         } else {
-            $Conductors = Conductor::where('user_id', /*¿*/$user_rut/*?*/)->first(); // Aclara esto
-                                                                                     // Acostúmbrate a usar Eloquent
-    
-            if($Conductors) {
-                $Tour = Tour::where('conductor_id', '=', $Conductors->conductor_id)->first(); // Por cierto, en el estilo de código no es correcto usar
-                                                                                              // variables con la inicial en mayúscula.
-                if($Tour) {
-                    $rutas = Ruta::join('tours', 'tours.tour_id', '=', 'rutas.tour_id')
-                        ->join("ruta_guias", "ruta_guias.ruta_id","=","rutas.ruta_id")
-                        ->join("guias", "guias.guia_id","=","ruta_guias.guia_id")
-                        ->join("guia_vins", "guia_vins.guia_id","=","guias.guia_id")
-                        ->join("vins", "vins.vin_id","=","guia_vins.vin_id")
+            $Conductors = DB::table('conductors')->select('conductor_id','user_id');
+            $Conductors->where('user_id', '=', $user_id);
+            $Conductors = $Conductors->first();
+
+            if ($Conductors) {
+                $Tour = DB::table('tours')->select('tour_id');
+                $Tour->where('conductor_id',  $Conductors->user_id);
+                $Tour = $Tour->first();
+
+                if ($Tour) {
+                    $rutas = DB::table('rutas')
                         ->select('rutas.ruta_id as ruta_id', 'guia_numero', 'vin_codigo')
+                        ->join("ruta_guias", "ruta_guias.ruta_id", "=", "rutas.ruta_id")
+                        ->join("guias", "guias.guia_id", "=", "ruta_guias.guia_id")
+                        ->join("guia_vins", "guia_vins.guia_id", "=", "guias.guia_id")
+                        ->join("vins", "vins.vin_id", "=", "guia_vins.vin_id")
                         ->where('tour_id', $Tour->tour_id)
                         ->get();
-    
-                    return response()->json(Array("Err" => 0, "Msg" => "Exitoso", "List"=>$rutas));
-    
+
+                    if(count($rutas)>0)
+
+                    return response()->json(Array("Err" => 0, "Msg" => "Exitoso", "List" => $rutas));
+
+                    else
+
+                    return response()->json(Array("Err" => 1, "Msg" => "No existen Rutas asociada al conductor"));
+
                 } else {
-                    return response()->json(Array("Err" => 1, "Msg" => "No se encuentra el Tour"));
+                    return response()->json(Array("Err" => 1, "Msg" => "No existen Viajes asociado al conductor"));
                 }
-            } else{
-                return response()->json(Array("Err" => 1, "Msg" => "No se encuentra el Conductor"));
+            } else {
+                return response()->json(Array("Err" => 1, "Msg" => "El usuario no esta registrado como Conductor"));
+            }
+
+        }
+
+
+
+
+    }
+
+    public function RegistrarVehiculoNN(Request $request)
+    {
+        $this->cors();
+
+        $vin_codigo = $request->input('vin');
+        $user_id = $request->input('user_id');
+        $patente = $request->input('patente');
+        $modelo = $request->input('modelo');
+        $color = $request->input('color');
+        $marca = $request->input('marca');
+        $motor = $request->input('motor');
+
+        if(empty($vin_codigo) || $vin_codigo=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Código VIN Obligatorio"));
+        }
+        if(empty($user_id) || $user_id=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "User Obligatorio"));
+        }
+        if(empty($patente) || $patente=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Patente Obligatorio"));
+        }
+        if(empty($modelo) || $modelo=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Módelo Obligatorio"));
+        }
+        if(empty($color) || $color=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Color Obligatorio"));
+        }
+        if(empty($marca) || $marca=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Marca Obligatorio"));
+        }
+        if(empty($motor) || $motor=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Marca Obligatorio"));
+        }
+
+        if (VehiculoNN::where('vin_codigo', $vin_codigo)->exists()){
+            return response()->json(Array("Err" => 1, "Msg" => "Código VIN Ya esta registrado"));
+         } else {
+            $vinNN = new VehiculoNN();
+            $vinNN->vin_codigo = $vin_codigo;
+            $vinNN->vin_patente = $patente;
+            $vinNN->vin_modelo = $modelo;
+            $vinNN->vin_marca = $marca;
+            $vinNN->vin_color = $color;
+            $vinNN->vin_motor = $motor;
+            $vinNN->vin_fec_ingreso = date('Y-m-d', now()->timestamp);
+            $vinNN->user_id = $user_id;
+
+            if ($vinNN->save()) {
+                return response()->json(Array("Err" => 0, "Msg" => "Registro Satisfactorio", "vin_id"=>$vinNN->vin_id));
+            }else{
+                return response()->json(Array("Err" => 1, "Msg" => "Error al registrar"));
             }
         }
+
+
+
+    }
+
+
+    public function RegistrarImagenNN(Request $request)
+    {
+        $this->cors();
+
+        $vin_codigo = $request->input('vin');
+        $user_id = $request->input('user_id');
+        $observaciones = $request->input('observaciones');
+
+
+        if(empty($vin_codigo) || $vin_codigo=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Código VIN Obligatorio"));
+        }
+        if(empty($user_id) || $user_id=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "User Obligatorio"));
+        }
+
+        if(empty($observaciones) || $observaciones=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Descripcion Obligatoria"));
+        }
+
+        if (VehiculoNN::where('vin_codigo', $vin_codigo)->exists()){
+
+            $fotoArchivo = $request->file('file');
+            $extensionFoto = $fotoArchivo->extension();
+            $path = $fotoArchivo->storeAs(
+                'fotos',
+                "foto_nn_".'_'.$user_id.'_'.$vin_codigo."_".date('Y-m-d').'_'.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+            );
+           // $image = \Image::make($fotoArchivo);
+
+            $foto = new FotoNN();
+            $foto->foto_fecha = date('Y-m-d');
+            $foto->foto_descripcion = $observaciones;
+            $foto->foto_ubic_archivo = "fotos/";
+            $foto->foto_coord_lat = 0;
+            $foto->foto_coord_lon = 0;
+            $foto->foto_ubic_archivo = $path;
+            $foto->vin_codigo = $vin_codigo;
+            $foto->save();
+
+            if ($foto->save()) {
+                return response()->json(Array("Err" => 0, "Msg" => "Foto Registrada"));
+            }else{
+                return response()->json(Array("Err" => 1, "Msg" => "Error al registrar"));
+            }
+        }  else {
+
+            return response()->json(Array("Err" => 1, "Msg" => "Código VIN No se encuentra"));
+
+        }
+
+
+
     }
 }
