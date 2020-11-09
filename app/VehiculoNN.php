@@ -11,6 +11,11 @@ class VehiculoNN extends Model
     protected $primaryKey = 'vin_id';
     protected $table = 'nn_vehiculos';
 
+    protected $fillable = [
+        'vin_codigo', 'vin_patente', 'vin_modelo', 'vin_marca',
+        'vin_color', 'vin_motor', 'vin_fec_ingreso', 'user_id'
+    ];
+
     public function user(){
         return $this->hasOne(User::class, 'user_id', 'user_id'); 
     }

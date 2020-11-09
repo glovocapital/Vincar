@@ -50,6 +50,8 @@ Route::post('entrega','ApiController@Entregar')->name('api.entrega');
 
 Route::get('buscartransportista/{user_rut}','ApiController@BuscarTransportista')->name('api.buscartransportista');
 
+Route::get('listarrutas/{user_rut}','ApiController@ListarRutas')->name('api.listarrutas');
 
+Route::post('registrarvehiculoNN','ApiController@RegistrarVehiculoNN')->name('api.registrarvehiculoNN');
 
-
+Route::post('registrarimagenNN','ApiController@RegistrarImagenNN')->name('api.registrarimagenNN');

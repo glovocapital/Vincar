@@ -18,10 +18,12 @@ use App\Foto;
 use App\Empresa;
 use App\Transportista;
 use App\Entrega;
+use App\FotoNN;
 use App\Predespacho;
 use App\Ruta;
 use App\Thumbnail;
 use App\Tour;
+use App\VehiculoNN;
 
 class ApiController extends Controller
 {
@@ -1269,6 +1271,114 @@ class ApiController extends Controller
             } else{
                 return response()->json(Array("Err" => 1, "Msg" => "No se encuentra el Conductor"));
             }
+        }
+    }
+
+    public function RegistrarVehiculoNN(Request $request)
+    {
+        $this->cors();
+
+        $vin_codigo = $request->input('vin');
+        $user_id = $request->input('user_id');
+        $patente = $request->input('patente');
+        $modelo = $request->input('modelo');
+        $color = $request->input('color');
+        $marca = $request->input('marca');
+        $motor = $request->input('motor');
+
+        if(empty($vin_codigo) || $vin_codigo=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Código VIN Obligatorio"));
+        }
+        if(empty($user_id) || $user_id=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "User Obligatorio"));
+        }
+        if(empty($patente) || $patente=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Patente Obligatorio"));
+        }
+        if(empty($modelo) || $modelo=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Módelo Obligatorio"));
+        }
+        if(empty($color) || $color=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Color Obligatorio"));
+        }
+        if(empty($marca) || $marca=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Marca Obligatorio"));
+        }
+        if(empty($motor) || $motor=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Marca Obligatorio"));
+        }
+
+        if (VehiculoNN::where('vin_codigo', $vin_codigo)->exists()){
+            return response()->json(Array("Err" => 1, "Msg" => "Código VIN Ya esta registrado"));
+         } else {
+            $vinNN = new VehiculoNN();
+            $vinNN->vin_codigo = $vin_codigo;
+            $vinNN->vin_patente = $patente;
+            $vinNN->vin_modelo = $modelo;
+            $vinNN->vin_marca = $marca;
+            $vinNN->vin_color = $color;
+            $vinNN->vin_motor = $motor;
+            $vinNN->vin_fec_ingreso = date('Y-m-d', now()->timestamp);
+            $vinNN->user_id = $user_id;
+
+            if ($vinNN->save()) {
+                return response()->json(Array("Err" => 0, "Msg" => "Registro Satisfactorio", "vin_id"=>$vinNN->vin_id));
+            }else{
+                return response()->json(Array("Err" => 1, "Msg" => "Error al registrar"));
+            }
+        }
+    }
+
+
+    public function RegistrarImagenNN(Request $request)
+    {
+        $this->cors();
+
+        $vin_codigo = $request->input('vin');
+        $user_id = $request->input('user_id');
+        $observaciones = $request->input('observaciones');
+
+
+        if(empty($vin_codigo) || $vin_codigo=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Código VIN Obligatorio"));
+        }
+        if(empty($user_id) || $user_id=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "User Obligatorio"));
+        }
+
+        if(empty($observaciones) || $observaciones=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Descripcion Obligatoria"));
+        }
+
+        if (VehiculoNN::where('vin_codigo', $vin_codigo)->exists()){
+
+            $fotoArchivo = $request->file('file');
+            $extensionFoto = $fotoArchivo->extension();
+            $path = $fotoArchivo->storeAs(
+                'fotos',
+                "foto_nn_".'_'.$user_id.'_'.$vin_codigo."_".date('Y-m-d').'_'.\Carbon\Carbon::now()->timestamp.'.'.$extensionFoto
+            );
+           // $image = \Image::make($fotoArchivo);
+
+            $foto = new FotoNN();
+            $foto->foto_fecha = date('Y-m-d');
+            $foto->foto_descripcion = $observaciones;
+            $foto->foto_ubic_archivo = "fotos/";
+            $foto->foto_coord_lat = 0;
+            $foto->foto_coord_lon = 0;
+            $foto->foto_ubic_archivo = $path;
+            $foto->vin_codigo = $vin_codigo;
+            $foto->save();
+
+            if ($foto->save()) {
+                return response()->json(Array("Err" => 0, "Msg" => "Foto Registrada"));
+            }else{
+                return response()->json(Array("Err" => 1, "Msg" => "Error al registrar"));
+            }
+        }  else {
+
+            return response()->json(Array("Err" => 1, "Msg" => "Código VIN No se encuentra"));
+
         }
     }
 }
