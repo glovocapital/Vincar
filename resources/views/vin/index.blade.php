@@ -761,7 +761,7 @@
                             value.vin_fecha_agendado,
                             value.vin_fecha_entrega,
                             '<small>'+
-                                '<a href="#" type="button" class="btn-historico"  value="'+value.vin_encrypt+'" title="Ver Historico"><i class="fas fa fa-lightbulb"></i></a>'+
+                                '<a href="#" type="button" class="btn-historico"  value="'+value.vin_encrypt+'" title="Ver Historico"><i class="fas fa-history"></i></a>'+
                             '</small>'+
                             ((value.rol_id == 1 || value.rol_id == 2  || value.rol_id == 3)?(
 

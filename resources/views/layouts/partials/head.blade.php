@@ -116,6 +116,17 @@
         content: none !important;
     }
 
+    .fa-history{
+        font-family:none !important;
+        width: 30px;
+        height: 30px;
+        content:  url({{ asset('base/img/svg/historial_.svg') }}) !important;
+        margin-right: 5px;
+    }
+    .fa-lightbulb::before{
+        content: none !important;
+    }
+
 
 
 
