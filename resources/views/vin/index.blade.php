@@ -591,7 +591,8 @@
                 var sel = $(this).val();
 
                 if($.isNumeric(sel)) {
-                    
+                    $('#fotos_nn').empty(); 
+
                     var url = "vehiculo_nn/" + sel +"/data_vin_nn";                                    
 
                     $.get(url, function (res) {
