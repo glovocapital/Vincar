@@ -49,7 +49,7 @@
           <li class="sidebar-item @if(request()->route()->getName()=='patio.vins_patio') active @endif"><a class="sidebar-link" href="{{ route('patio.vins_patio') }}">{{trans('menu.Patios')}}</a></li>
           <li class="sidebar-item @if(request()->route()->getName()=='vin.index') active @endif"><a class="sidebar-link" href="{{ route('vin.index') }}">{{trans('menu.Vins')}}</a></li>
 
-          @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 3)
+          @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 3 || auth()->user()->rol_id == 4)
           <li class="sidebar-item">
             <a href="#projects" data-toggle="collapse" class="sidebar-link collapsed">
               {{trans('menu.Planificacion')}}
@@ -60,7 +60,9 @@
                 </li>
             </ul>
           </li>
+          @if(auth()->user()->rol_id != 4)
           <li class="sidebar-item @if(request()->route()->getName()=='vin.traspasovin') active @endif"><a class="sidebar-link" href="{{ route('vin.traspasovin') }}">Traspaso de VIN</a></li>
+          @endif
           <li class="sidebar-item @if(request()->route()->getName()=='entrega.index') active @endif"><a class="sidebar-link" href="{{ route('entrega.index') }}">Entrega de VIN</a></li>
           @endif
         </ul>

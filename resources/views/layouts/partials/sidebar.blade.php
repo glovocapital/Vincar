@@ -7,44 +7,43 @@
   <div class="navbar-collapse collapse">
     <ul class="navbar-nav ml-auto">
       @if(request()->route()->getName()=='home')
-
-
-
-      <li class="nav-item dropdown">
-        <a class="nav-icon dropdown-toggle" href="#" id="messagesDropdown" data-toggle="dropdown">
-          <div class="position-relative">
-            <i class="align-middle" data-feather="message-circle"></i>
-            <span class="indicator">{{$cantidad}}</span>
-          </div>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0" aria-labelledby="messagesDropdown">
-
-          <div class="list-group">
-
-            @foreach($lasthomework as $tar)
-
-            <a href="#" class="list-group-item">
-              <div class="row no-gutters align-items-center">
-                <div class="col-2">
-                  <img src="{{ asset('base/img/avatars/usuario.png') }}" class="avatar img-fluid rounded-circle" alt="{{$tar->user_nombre}} {{$tar->user_apellido}}">
-                </div>
-                <div class="col-10 pl-2">
-                  <div class="text-dark">{{$tar->user_nombre}} {{$tar->user_apellido}}</div>
-                  <div class="text-muted small mt-1">{{$tar->tipo_tarea_descripcion}} [{{$tar->vin_codigo}}]</div>
-                  <div class="text-muted small mt-1">{{$tar->tarea_fecha_finalizacion}}</div>
-                </div>
+        @if(auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2 || auth()->user()->rol_id == 3 || auth()->user()->rol_id == 4)
+          <li class="nav-item dropdown">
+            <a class="nav-icon dropdown-toggle" href="#" id="messagesDropdown" data-toggle="dropdown">
+              <div class="position-relative">
+                <i class="align-middle" data-feather="message-circle"></i>
+                <span class="indicator">{{$cantidad}}</span>
               </div>
             </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0" aria-labelledby="messagesDropdown">
 
-            @endforeach
+              <div class="list-group">
+
+                @foreach($lastTasks as $task)
+
+                <a href="#" class="list-group-item">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col-2">
+                      <img src="{{ asset('base/img/avatars/usuario.png') }}" class="avatar img-fluid rounded-circle" alt="{{$tar->user_nombre}} {{$tar->user_apellido}}">
+                    </div>
+                    <div class="col-10 pl-2">
+                      <div class="text-dark">{{$task->user_nombre}} {{$task->user_apellido}}</div>
+                      <div class="text-muted small mt-1">{{$task->tipo_tarea_descripcion}} [{{$task->vin_codigo}}]</div>
+                      <div class="text-muted small mt-1">{{$task->tarea_fecha_finalizacion}}</div>
+                    </div>
+                  </div>
+                </a>
+
+                @endforeach
 
 
-          </div>
-          <div class="dropdown-menu-footer">
-            <a href="#" class="text-muted">Mostrar todos los mensajes</a>
-          </div>
-        </div>
-      </li>
+              </div>
+              <div class="dropdown-menu-footer">
+                <a href="#" class="text-muted">Mostrar todos los mensajes</a>
+              </div>
+            </div>
+          </li>
+        @endif
       @endif
 
 

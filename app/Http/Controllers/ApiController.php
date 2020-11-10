@@ -1154,7 +1154,7 @@ class ApiController extends Controller
                             $user->empresa_id,
                             "VIN Entregado.",
                             "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatioVieja->ubic_patio_fila. Columna: $ubicPatioVieja->ubic_patio_columna.",
-                            "VIN: " . $Vin->vin_codigo . "entregado.",
+                            "VIN: " . $Vin->vin_codigo . " entregado.",
                         ]
                     );
                 } else {

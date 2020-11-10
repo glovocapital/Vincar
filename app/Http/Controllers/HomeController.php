@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Tarea;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -25,23 +27,27 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $rol_desc=Auth::user()->oneRol->rol_desc;
+        $date = Carbon::now();
+        $rol_id = Auth::user()->rol_id;
+        $empresa_id = Auth::user()->empresa_id;
 
-        $empresa_id=Auth::user()->empresa_id;
-
-        $lasthomework =DB::table('tareas')
-            ->join('vins', 'vins.vin_id','=', 'tareas.vin_id')
+        $lastTasks = Tarea::join('vins', 'vins.vin_id','=', 'tareas.vin_id')
             ->join('tipo_tareas', 'tipo_tareas.tipo_tarea_id','=', 'tareas.tipo_tarea_id')
             ->join('users', 'users.user_id','=', 'tareas.user_id')
+            ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
             ->select('tarea_fecha_finalizacion','tipo_tarea_descripcion', 'user_nombre', 'user_apellido', 'vin_codigo')
             ->where('tarea_finalizada',true)
-            ->orderBy('tarea_fecha_finalizacion','desc');
+            ->whereDate('tarea_fecha_finalizacion', '>=', $date->subWeek());
 
-        $lasthomework = $lasthomework->get();
+        if ($rol_id == 4) {
+            $lastTasks->where('empresas.empresa_id', $empresa_id);
+        }
 
-        $cantidad = $lasthomework->count();
+        $lastTasks = $lastTasks->orderBy('tarea_fecha_finalizacion','desc')->get();
 
-        return view('home',compact('lasthomework','cantidad'));
+        $cantidad = $lastTasks->count();
+
+        return view('home',compact('lastTasks','cantidad'));
     }
 
     public function dashboard()

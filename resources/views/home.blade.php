@@ -344,7 +344,7 @@
     </script>
 
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-aWrwgr64q4b3TEZwQ0lkHI4lZK-moM4&callback=initMap">
+            src="https://maps.googleapis.com/maps/api/js?key={{config('googlemaps.GOOGLE_MAPS_API_KEY')}}">
     </script>
 
 

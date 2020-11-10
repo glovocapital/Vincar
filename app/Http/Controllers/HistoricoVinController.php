@@ -69,16 +69,19 @@ class HistoricoVinController extends Controller
                 $historico_vin[$i]['historico_estado'] = $registro->oneVinEstadoInventario();
                 $historico_vin[$i]['historico_fecha'] = $registro->historico_vin_fecha;
                 $historico_vin[$i]['responsable'] = $registro->oneResponsable->user_nombre . " " . $registro->oneResponsable->user_apellido;
-                if(isset($registro->origen_id)){
-                    $historico_vin[$i]['origen'] = $registro->oneOrigen->bloque_nombre;
-                }else{
-                    $historico_vin[$i]['origen'] = "";
+
+                if($registro->origen_texto == null){
+                    $historico_vin[$i]['origen'] = '';     
+                } else {
+                    $historico_vin[$i]['origen'] = $registro->origen_texto;
                 }
-                if(isset($registro->destino_id)){
-                    $historico_vin[$i]['destino'] = $registro->oneDestino->bloque_nombre;
-                }else{
-                    $historico_vin[$i]['destino'] = ""; 
+
+                if($registro->destino_texto == null){
+                    $historico_vin[$i]['destino'] = '';     
+                } else {
+                    $historico_vin[$i]['destino'] = $registro->destino_texto;
                 }
+
                 $historico_vin[$i]['empresa'] = $registro->oneEmpresa->empresa_razon_social;
                 $historico_vin[$i]['descripcion'] = $registro->historico_vin_descripcion;
                 $i++;
@@ -110,7 +113,7 @@ class HistoricoVinController extends Controller
             $vin_codigo = Vin::where('vin_id',$vin_id)->select('vin_codigo')->value('vin_codigo');
             array_push($array_historicos, [$vin_codigo, $elemento]);
         }
-        
+
         $array_historico_vins = [];
         $i = 0;
     
@@ -123,26 +126,8 @@ class HistoricoVinController extends Controller
                 $array_historico_vins[$i]['cliente'] = $item->oneEmpresa->empresa_razon_social;
                 $array_historico_vins[$i]['estado'] = $item->oneVinEstadoInventario();
                 $array_historico_vins[$i]['responsable'] = $item->oneResponsable->user_nombre . " " . $item->oneResponsable->user_apellido;
-                
-                if($item->origen_id != null){
-                    $bloqueOrigen = $item->oneOrigen;
-                    $patioOrigen = $bloqueOrigen->onePatio;
-                    $ubicPatioOrigen = UbicPatio::where('vin_id', $item->vin_id)->where('bloque_id', $bloqueOrigen->bloque_id);
-                    $array_historico_vins[$i]['origen'] = "Patio: " . $patioOrigen->patio_nombre . ", Bloque: " . $bloqueOrigen->bloque_nombre . 
-                                                        ", Fila: " . $ubicPatioOrigen->ubic_patio_fila . ", Columna: " . $ubicPatioOrigen->ubic_patio_columna;
-                } else {
-                    $array_historico_vins[$i]['origen'] = $item->origen_texto;
-                }
-
-                if($item->destino_id != null){
-                    $bloqueDestino = $item->oneDestino;
-                    $patioDestino = $bloqueDestino->onePatio;
-                    $ubicPatioDestino = UbicPatio::where('vin_id', $item->vin_id)->where('bloque_id', $bloqueDestino->bloque_id);
-                    $array_historico_vins[$i]['origen'] = "Patio: " . $patioDestino->patio_nombre . ", Bloque: " . $bloqueDestino->bloque_nombre . 
-                                                        ", Fila: " . $ubicPatioDestino->ubic_patio_fila . ", Columna: " . $ubicPatioDestino->ubic_patio_columna;
-                } else {
-                    $array_historico_vins[$i]['destino'] = $item->destino_texto;
-                }
+                $array_historico_vins[$i]['origen'] = $item->origen_texto;
+                $array_historico_vins[$i]['destino'] = $item->destino_texto;
                 
                 $array_historico_vins[$i]['descripcion'] = $item->historico_vin_descripcion;     
                 $i++;

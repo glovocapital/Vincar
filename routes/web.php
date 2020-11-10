@@ -266,6 +266,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
     // Entregas
     Route::get('entrega', 'EntregaController@index')->name('entrega.index');
+    Route::post('entrega/agendadosExport', 'EntregaController@agendadosExport')->name('entrega.agendadosExport');
 
     // Predespachos
     Route::get('entrega/{id}/info_predespacho', 'EntregaController@infoPredespacho')->name('entrega.infoPredespacho');

@@ -7,7 +7,7 @@
 @include('flash::message')
 
     <!--SUPER ADMINISTRADOR y ADMINISTRADOR -->
-    @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 2)
+    @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 2 || Auth::user()->rol_id == 4)
         <div class="row">
             <div class="col-lg-12">
                 <div class="mx-auto col-sm-12 main-section" id="myTab" role="tablist">
@@ -36,6 +36,13 @@
                                     </div>
 
                                     <div class="card-body">
+                                        <div class="col-lg-12">
+                                            {!! Form::open(['route'=> 'entrega.agendadosExport', 'method'=>'POST']) !!}
+                                                <div class="text pb-3">
+                                                    {{ Form::button('<i class="fa fa-file-excel"></i> Exportar VINs Agendados ', ['type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-expor'] )  }}
+                                                </div>
+                                            {!! Form::close() !!}
+                                        </div>
                                         <form method="get" action="{{ url('entrega') }}">
                                             <div class="row row-filters">
                                                 <div class="col-md-6 text-right">
@@ -66,11 +73,17 @@
                                                     <th>Empresa</th>
                                                     <th>Patio</th>
                                                     <th>Ubicación</th>
-                                                    <th>Bloquear <br/> Entrega</th>
+                                                    
+                                                    @if(Auth::user()->rol_id != 4)
+                                                        <th>Bloquear <br/> Entrega</th>
+                                                    @endif
+
                                                     <th>Tipo Agendamiento</th>
                                                     <th>Desde</th>
                                                     <th>Hacia</th>
-                                                    <th>Acciones</th>
+                                                    @if(Auth::user()->rol_id != 4)
+                                                        <th>Acciones</th>
+                                                    @endif
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -89,14 +102,17 @@
                                                             <td><small>{{ $vin_agendado->empresa_razon_social }}</small></td>
                                                             <td><small>{{ strtoupper($vin_agendado->patio_nombre) }}</small></td>
                                                             <td><small>BLOQUE: {{ $vin_agendado->bloque_nombre }} <br/> FILA: {{ $vin_agendado->ubic_patio_fila }} <br/> COLUMNA: {{ $vin_agendado->ubic_patio_columna }}</small></td>
-                                                            <td>
-                                                                <div class="switch-button">
-                                                                {!! Form::open(['route' => 'vin.bloquea_entrega', 'method'=>'POST']) !!}
-                                                                    <input type="checkbox" name="switch-button" id="switch-label-{{$item}}" class="switch-button__checkbox" value="{{$vin_agendado->vin_id}}"{{$vin_agendado->vin_bloqueado_entrega ?' checked':''}}/>
-                                                                    <label for="switch-label-{{$item}}" class="switch-button__label"></label>
-                                                                {!! Form::close() !!}
-                                                                </div>
-                                                            </td>
+                                                            
+                                                            @if(Auth::user()->rol_id != 4)
+                                                                <td>
+                                                                    <div class="switch-button">
+                                                                    {!! Form::open(['route' => 'vin.bloquea_entrega', 'method'=>'POST']) !!}
+                                                                        <input type="checkbox" name="switch-button" id="switch-label-{{$item}}" class="switch-button__checkbox" value="{{$vin_agendado->vin_id}}"{{$vin_agendado->vin_bloqueado_entrega ?' checked':''}}/>
+                                                                        <label for="switch-label-{{$item}}" class="switch-button__label"></label>
+                                                                    {!! Form::close() !!}
+                                                                    </div>
+                                                                </td>
+                                                            @endif
 
                                                             @if($vin_agendado->tipo_agendamiento_id == 1)
                                                                 <td><small>Retiro</small></td>
@@ -107,15 +123,17 @@
                                                             <td><small>{{ $vin_agendado->predespacho_origen }}</small></td>
                                                             <td><small>{{ $vin_agendado->predespacho_destino }}</small></td>
 
-                                                            <td>
-                                                                <small>
-                                                                    <a href = "{{ route('entrega.infoPredespacho', Crypt::encrypt($vin_agendado->vin_id)) }}" class="btn-bloque btn-sm" title="Ver info predespacho"><i class="fas fa-info-circle"></i></a>
-                                                                </small>
+                                                            @if(Auth::user()->rol_id != 4)
+                                                                <td>
+                                                                    <small>
+                                                                        <a href = "{{ route('entrega.infoPredespacho', Crypt::encrypt($vin_agendado->vin_id)) }}" class="btn-bloque btn-sm" title="Ver info predespacho"><i class="fas fa-info-circle"></i></a>
+                                                                    </small>
 
-                                                                <small>
-                                                                    <a href = "{{ route('vin.desagendado', Crypt::encrypt($vin_agendado->vin_id)) }}" onclick="return confirm('¿Esta seguro que desea quitar el agendamiento del VIN?')" class="btn-bloque btn-sm" title="Eliminar Agendamiento"><i class="far fa-trash-alt"></i></a>
-                                                                </small>
-                                                            </td>
+                                                                    <small>
+                                                                        <a href = "{{ route('vin.desagendado', Crypt::encrypt($vin_agendado->vin_id)) }}" onclick="return confirm('¿Esta seguro que desea quitar el agendamiento del VIN?')" class="btn-bloque btn-sm" title="Eliminar Agendamiento"><i class="far fa-trash-alt"></i></a>
+                                                                    </small>
+                                                                </td>
+                                                            @endif
                                                             
                                                         </tr>
                                                     @endif
@@ -175,6 +193,7 @@
                                                     <th>Vin Color</th>
                                                     <th>Fecha Agendamiento</th>
                                                     <th>Fecha Retiro</th>
+                                                    <th>Días Transcurridos</th>
                                                     <th>Empresa</th>
 
                                                 </tr>
@@ -188,6 +207,9 @@
                                                             <td><small>{{ $entregados->vin_color }}</small></td>
                                                             <td><small>{{ $entregados->vin_fecha_agendado }}</small></td>
                                                             <td><small>{{ $entregados->entrega_fecha }}</small></td>
+                                                            @php($agendado = \Carbon\Carbon::createFromFormat('Y-m-d', $entregados->vin_fecha_agendado))
+                                                            @php($entregado = \Carbon\Carbon::createFromFormat('Y-m-d', $entregados->entrega_fecha))
+                                                            <td><small>{{ $agendado->diff($entregado)->days }}</small></td>
                                                             <td><small>{{ $entregados->empresa_razon_social }}</small></td>
 
                                                         </tr>
