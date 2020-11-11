@@ -1236,6 +1236,16 @@ class ApiController extends Controller
         echo json_encode(Array("Err"=>0,"badgeData"=>Array("list"=>count($Vin), "car"=>0, "boat"=>0)));
     }
 
+    public function ListMarcas(Request $request) {
+        $this->cors();
+
+        $Marcas =DB::table('marcas')
+            ->select('marca_id','marca_nombre', 'marca_codigo')
+            ->get();
+
+        echo json_encode(Array("Err"=>0,"marcas"=>$Marcas));
+    }
+
     public function ListarRutas(Request $request){
         $this->cors();
     
