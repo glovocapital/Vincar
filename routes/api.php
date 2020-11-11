@@ -25,6 +25,8 @@ Route::get('badge','ApiController@Badge')->name('api.badge');
 
 Route::get('list','ApiController@Lists')->name('api.list');
 
+Route::get('listmarcas','ApiController@ListMarcas')->name('api.listmarcas');
+
 Route::get('tareafinalizada/{tarea_id}','ApiController@TareaFinalizada')->name('api.Tarea_Finalizada');
 
 
