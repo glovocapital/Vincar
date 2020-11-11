@@ -1241,7 +1241,7 @@ class ApiController extends Controller
 
         $Marcas =DB::table('marcas')
             ->select('marca_id','marca_nombre', 'marca_codigo')
-            ->ordeBy('marca_nombre')
+            ->orderBy('marca_nombre')
             ->get();
 
         echo json_encode(Array("Err"=>0,"marcas"=>$Marcas));
