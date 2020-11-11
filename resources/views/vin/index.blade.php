@@ -694,6 +694,18 @@
                 }   
             });
 
+            $('#btn-cerrar-vehiculos-nn').click(function (e) {
+                e.preventDefault();
+                
+                $("#form-vehiculo-nn")[0].reset();
+                $("#fotos_nn").empty();
+                $("#vin_codigo_n_n").val('');
+                $("#vin_patente_n_n").val('');
+                $("#vin_modelo_n_n").val('');
+                $("#vin_color_n_n").val('');
+                $("#vin_motor_n_n").val('');
+            });
+
             // Búsqueda global de VINs
             $('.btn-busqueda-vin-lote').click(function (e){
                 e.preventDefault();
