@@ -1153,7 +1153,7 @@ class ApiController extends Controller
                             $bloque_id,
                             $bloque_id,
                             $user->empresa_id,
-                            "VIN Entregado.",
+                            "VIN Entregado: " . $obs,
                             "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatioVieja->ubic_patio_fila. Columna: $ubicPatioVieja->ubic_patio_columna.",
                             "VIN: " . $Vin->vin_codigo . " entregado.",
                         ]
@@ -1171,7 +1171,7 @@ class ApiController extends Controller
                             $bloque_id,
                             $bloque_id,
                             $user->empresa_id,
-                            "VIN Entregado.",
+                            "VIN Entregado: " . $obs,
                             "VIN sin ubicación (fuera de bloque) para realizar Entrega.",
                             "VIN Entregado."
                         ]
