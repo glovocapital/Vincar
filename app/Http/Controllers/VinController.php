@@ -164,8 +164,7 @@ class VinController extends Controller
 
             // Primer caso: Consulta general sin ningún criterio de filtro. 
             if(empty($request->empresa_id) && empty($request->vin_numero) && empty($request->estadoinventario_id) && empty($request->patio_id) && empty($request->marca_id) && empty($request->vin_numero)){                
-                $query = DB::table('vins')
-                    ->join('users','users.user_id','=','vins.user_id')
+                $query = Vin::join('users','users.user_id','=','vins.user_id')
                     ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                     ->join('empresas','users.empresa_id','=','empresas.empresa_id')
                     ->join('marcas','vins.vin_marca','=','marcas.marca_id')
@@ -323,8 +322,7 @@ class VinController extends Controller
                         }
                     }
                 } else {
-                    $query = DB::table('vins')
-                        ->join('users','users.user_id','=','vins.user_id')
+                    $query = Vin::join('users','users.user_id','=','vins.user_id')
                         ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
                         ->join('empresas','users.empresa_id','=','empresas.empresa_id')
                         ->join('marcas','vins.vin_marca','=','marcas.marca_id')
@@ -1601,9 +1599,22 @@ class VinController extends Controller
         $vin = Vin::findOrfail($vin_id);
 
         try{
+            DB::beginTransaction();
+
             $vin->vin_predespacho = false;
             $vin->vin_fecha_agendado  = null;
-            $vin->save();
+            if($vin->save()){
+                $predespacho = Predespacho::where('vin_id', $vin->vin_id)->first();
+                if(!$predespacho->delete()) {
+                    DB::rollBack();
+                    flash('Error eliminando predespacho existente del VIN.')->error();
+                    return redirect()->route('vin.index');
+                }
+            } else {
+                DB::rollBack();
+                flash('Error desagendando el VIN.')->error();
+                return redirect()->route('vin.index');
+            }
 
            DB::commit();
 

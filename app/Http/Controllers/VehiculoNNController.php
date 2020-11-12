@@ -90,12 +90,13 @@ class VehiculoNNController extends Controller
             $vin->vin_modelo = $request->vin_modelo;
             $vin->vin_marca = $request->vin_marca;
             $vin->vin_color = $request->vin_color;
+            $vin->vin_procedencia = $request->vin_procedencia_nn;
             $vin->vin_segmento = '';
             $vin->vin_fec_ingreso = date('Y-m-d', now()->timestamp);
             $vin->user_id = $request->user_id;
             $vin->vin_estado_inventario_id = 1;
             $vin->vin_predespacho = false;
-            
+                       
             if ($vin->save()) {
                 if ($this->guardarHistorialVin($vin)){
                     if (VehiculoNN::find($request->vin_id)->delete()){

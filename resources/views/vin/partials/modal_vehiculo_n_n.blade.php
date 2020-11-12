@@ -69,6 +69,18 @@
                             {!! Form::text('vin_motor', '', ['class' => 'form-control', 'id' => 'vin_motor_n_n', 'readonly', 'required']) !!}
                         </div>
                     </div>
+                    <div class="form-inline mt-3">
+                        <label for="vin_procedencia_nn">Procedencia del VIN </label>&nbsp;
+                        <div class="input-group">
+                            {!! Form::text('vin_procedencia_nn', '', ['class' => 'form-control', 'id' => 'vin_procedencia_n_n', 'readonly', 'required']) !!}
+                        </div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label for="vin_destino_nn">Destino del VIN </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="input-group">
+                            {!! Form::text('vin_destino_nn', '', ['class' => 'form-control', 'id' => 'vin_destino_n_n', 'readonly', 'required']) !!}
+                        </div>
+                        &nbsp;&nbsp;&nbsp;
+                    </div>
                 </div>
 
             </div>

@@ -633,6 +633,8 @@
                         $("#vin_marca_nombre_n_n").val(res.marca);
                         $("#vin_color_n_n").attr('value', res.vin.vin_color).val(res.vin.vin_color);
                         $("#vin_motor_n_n").attr('value', res.vin.vin_motor).val(res.vin.vin_motor);
+                        $("#vin_procedencia_n_n").attr('value', res.vin.vin_procedencia).val(res.vin.vin_procedencia);
+                        $("#vin_destino_n_n").attr('value', res.vin.vin_destino).val(res.vin.vin_destino);
                     }).fail(function () {
                         alert('Error: ');
                     });
