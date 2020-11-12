@@ -1061,7 +1061,8 @@ class ApiController extends Controller
 
             $entregar = new Entrega();
             $entregar->entrega_fecha = date('Y-m-d');
-            $entregar->responsable_id = (int)$user_id;
+            //$entregar->responsable_id = (int)$user_id;
+            $entregar->responsable_id = Auth::user()->user_id;
             $entregar->vin_id = $Vin->vin_id;
             $entregar->tipo_id = $tipo_id;
             $entregar->user_id = $transportista->user_id;

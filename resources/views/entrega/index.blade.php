@@ -194,23 +194,37 @@
                                                     <th>Fecha Agendamiento</th>
                                                     <th>Fecha Retiro</th>
                                                     <th>Días Transcurridos</th>
+                                                    <th>Última Ubicación</th>
+                                                    <th>Responsable</th>
                                                     <th>Empresa</th>
 
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                @foreach($vin_entregados as $entregados)
-                                                    @if(isset($entregados))
+                                                @foreach($vin_entregados as $entregado)
+                                                    @if(isset($entregado))
                                                         <tr>
-                                                            <td><small>{{ $entregados->vin_codigo }}</small></td>
-                                                            <td><small>{{ $entregados->vin_patente }}</small></td>
-                                                            <td><small>{{ $entregados->vin_color }}</small></td>
-                                                            <td><small>{{ $entregados->vin_fecha_agendado }}</small></td>
-                                                            <td><small>{{ $entregados->entrega_fecha }}</small></td>
-                                                            @php($agendado = \Carbon\Carbon::createFromFormat('Y-m-d', $entregados->vin_fecha_agendado))
-                                                            @php($entregado = \Carbon\Carbon::createFromFormat('Y-m-d', $entregados->entrega_fecha))
-                                                            <td><small>{{ $agendado->diff($entregado)->days }}</small></td>
-                                                            <td><small>{{ $entregados->empresa_razon_social }}</small></td>
+                                                            <td><small>{{ $entregado->vin_codigo }}</small></td>
+                                                            <td><small>{{ $entregado->vin_patente }}</small></td>
+                                                            <td><small>{{ $entregado->vin_color }}</small></td>
+                                                            <td><small>{{ $entregado->vin_fecha_agendado }}</small></td>
+                                                            <td><small>{{ $entregado->entrega_fecha }}</small></td>
+                                                            
+                                                            @php($agendado = \Carbon\Carbon::createFromFormat('Y-m-d', $entregado->vin_fecha_agendado))
+                                                            @php($fechaEntregado = \Carbon\Carbon::createFromFormat('Y-m-d', $entregado->entrega_fecha))
+                                                            <td><small>{{ $agendado->diff($fechaEntregado)->days }}</small></td>
+                                                            
+                                                            @if($entregado->origen_texto)
+                                                                <td><small>{{ $entregado->origen_texto }}</small></td>
+                                                            @else
+                                                                <td><small></small></td>
+                                                            @endif
+
+                                                            @php($responsable = \App\User::find($entregado->responsable_id))
+
+                                                            <td><small>{{ $responsable->user_nombre . " " . $responsable->user_apellido }}</small></td>
+
+                                                            <td><small>{{ $entregado->empresa_razon_social }}</small></td>
 
                                                         </tr>
                                                     @endif

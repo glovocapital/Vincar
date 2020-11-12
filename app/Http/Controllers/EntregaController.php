@@ -78,10 +78,12 @@ class EntregaController extends Controller
         
         $vin_entregados_dia = $queryEntregadosDia->orderBy('vin_fecha_entrega')->get();
 
-        $queryEntregados = Vin::where('vin_estado_inventario_id', 8)
+        $queryEntregados = Vin::where('vins.vin_estado_inventario_id', 8)
+            ->where('historico_vins.vin_estado_inventario_id', 8)
             ->join('users','vins.user_id','=','users.user_id')
             ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-            ->join('entregas','entregas.vin_id','=','vins.vin_id');
+            ->join('entregas','entregas.vin_id','=','vins.vin_id')
+            ->join('historico_vins', 'historico_vins.vin_id', 'vins.vin_id');
 
         // Si el rol del usuario es de cliente, entonces la consulta se filtra por la empresa del usuario.
         if($userRolId == 4){
