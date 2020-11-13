@@ -40,6 +40,7 @@ class EntregaController extends Controller
             ->join('bloques', 'ubic_patios.bloque_id', '=', 'bloques.bloque_id')
             ->join('patios', 'bloques.patio_id', '=', 'patios.patio_id')
             ->leftjoin('predespachos', 'predespachos.vin_id', '=', 'vins.vin_id')
+            ->where('predespachos.deleted_at', null )
             ->where('vin_estado_inventario_id','!=', 8);
 
 

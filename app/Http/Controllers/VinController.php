@@ -1630,6 +1630,14 @@ class VinController extends Controller
     // Agendamiento de VINs para entrega
     public function predespacho(Request $request)
     {
+        if ($request->predespacho != 1) {
+            return response()->json(
+                [
+                    "error" => 1, 
+                    "mensaje" => 'Debe seleccionar "Autorizar Entrega" para poder continuar.'
+                ]
+            );
+        }
         //$fecha = Carbon::now();
         $fecha = date('Y-m-d');
         $fechaPredespacho = new Carbon($request->vin_fecha_despacho);

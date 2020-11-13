@@ -23,7 +23,7 @@
                         <div class="form-group">
 
                             <label for="vin_estado_inventario_id" >Autorizar Entrega </label>
-                            {!! Form::select('predespacho', ['1' => 'Preparar para entrega'], null,['placeholder'=>'Seleccione la Opción','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
+                            {!! Form::select('predespacho', ['1' => 'Preparar para entrega'], null,['placeholder'=>'Seleccione la Opción','class'=>'form-control col-sm-9', 'required']) !!}
 
                         </div>
                     </div>
