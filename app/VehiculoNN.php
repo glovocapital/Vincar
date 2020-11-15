@@ -13,7 +13,7 @@ class VehiculoNN extends Model
 
     protected $fillable = [
         'vin_codigo', 'vin_patente', 'vin_modelo', 'vin_marca',
-        'vin_color', 'vin_motor', 'vin_fec_ingreso', 'user_id'
+        'vin_color', 'vin_motor', 'vin_fec_ingreso', 'user_id, 'vin_procedencia', 'vin_destino'
     ];
 
     public function user(){
