@@ -24,7 +24,7 @@
                 <a href="#" class="list-group-item">
                   <div class="row no-gutters align-items-center">
                     <div class="col-2">
-                      <img src="{{ asset('base/img/avatars/usuario.png') }}" class="avatar img-fluid rounded-circle" alt="{{$tar->user_nombre}} {{$tar->user_apellido}}">
+                      <img src="{{ asset('base/img/avatars/usuario.png') }}" class="avatar img-fluid rounded-circle" alt="{{$task->user_nombre}} {{$task->user_apellido}}">
                     </div>
                     <div class="col-10 pl-2">
                       <div class="text-dark">{{$task->user_nombre}} {{$task->user_apellido}}</div>
