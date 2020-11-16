@@ -175,7 +175,7 @@ class ApiController extends Controller
 
                             $patioOrigenNombre = $bloqueOrigen->onePatio->patio_nombre;
                             $patioDestinoNombre = $bloqueDestino->onePatio->patio_nombre;
-                            
+
                             DB::insert('INSERT INTO historico_vins
                                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                                 origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
@@ -196,7 +196,7 @@ class ApiController extends Controller
                         } else {
                             $bloqueDestino = Bloque::find($bloque);
                             $patioDestinoNombre = $bloqueDestino->onePatio->patio_nombre;
-                            
+
                             DB::insert('INSERT INTO historico_vins
                                 (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                                 origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
@@ -435,12 +435,12 @@ class ApiController extends Controller
                     $vin[0]->HabilitadoArribo = false;
                 }
 
-                if(($vin[0]->vin_predespacho == true) && ($vin[0]->vin_bloqueado_entrega == false)) {    
+                if(($vin[0]->vin_predespacho == true) && ($vin[0]->vin_bloqueado_entrega == false)) {
                     $vin[0]->HabilitadoEntregarVeh = true;
                 } else {
                     $vin[0]->HabilitadoEntregarVeh = false;
                 }
-                
+
                 if($vin[0]->estado=="Entregado") {
                      $vin[0]->HabilitadoInspeccion = false;
                      $vin[0]->HabilitadoCambio = false;
@@ -487,7 +487,7 @@ class ApiController extends Controller
                 $user = User::find($request->user_id);
 
                 $ubicPatio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
-                
+
                 if($ubicPatio){
                     $bloque_id = $ubicPatio->bloque_id;
                 } else {
@@ -1111,7 +1111,7 @@ class ApiController extends Controller
                         $usersf = Array("Err" => 1, "Msg" => "Error cerrando predespacho.");
                     }
                 }
-                
+
 
                 $itemlist = self::ListVIN($request);
 
@@ -1245,44 +1245,55 @@ class ApiController extends Controller
             ->orderBy('marca_nombre')
             ->get();
 
+        foreach ($Marcas as $marca){
+            $marca->marca_nombre = strtoupper($marca->marca_nombre);
+        }
+
         echo json_encode(Array("Err"=>0,"marcas"=>$Marcas));
     }
 
     public function ListarRutas(Request $request){
         $this->cors();
-    
-        $user_rut = $request->user_rut; // ¿Qué es esto? ¿De dónde envías el RUT? El RUT no lo usamos para hacer
-                                        // búsquedas en la tabla conductors
-                                        // El código tiene que ser fácil de entender. Si lo que estás enviando es un
-                                        // user_id, entonces cambia los nombres de las variables.
-    
-        if(empty($user_rut)) {
+
+        $user_id = $request->user_id;
+
+        if (empty($user_id)) {
             $usersf = Array("Err" => 1, "Msg" => "Users obligatorio");
         } else {
-            $Conductors = Conductor::where('user_id', /*¿*/$user_rut/*?*/)->first(); // Aclara esto
-                                                                                     // Acostúmbrate a usar Eloquent
-    
-            if($Conductors) {
-                $Tour = Tour::where('conductor_id', '=', $Conductors->conductor_id)->first(); // Por cierto, en el estilo de código no es correcto usar
-                                                                                              // variables con la inicial en mayúscula.
-                if($Tour) {
-                    $rutas = Ruta::join('tours', 'tours.tour_id', '=', 'rutas.tour_id')
-                        ->join("ruta_guias", "ruta_guias.ruta_id","=","rutas.ruta_id")
-                        ->join("guias", "guias.guia_id","=","ruta_guias.guia_id")
-                        ->join("guia_vins", "guia_vins.guia_id","=","guias.guia_id")
-                        ->join("vins", "vins.vin_id","=","guia_vins.vin_id")
+            $Conductors = DB::table('conductors')->select('conductor_id','user_id');
+            $Conductors->where('user_id', '=', $user_id);
+            $Conductors = $Conductors->first();
+
+            if ($Conductors) {
+                $Tour = DB::table('tours')->select('tour_id');
+                $Tour->where('conductor_id',  $Conductors->user_id);
+                $Tour = $Tour->first();
+
+                if ($Tour) {
+                    $rutas = DB::table('rutas')
                         ->select('rutas.ruta_id as ruta_id', 'guia_numero', 'vin_codigo')
+                        ->join("ruta_guias", "ruta_guias.ruta_id", "=", "rutas.ruta_id")
+                        ->join("guias", "guias.guia_id", "=", "ruta_guias.guia_id")
+                        ->join("guia_vins", "guia_vins.guia_id", "=", "guias.guia_id")
+                        ->join("vins", "vins.vin_id", "=", "guia_vins.vin_id")
                         ->where('tour_id', $Tour->tour_id)
                         ->get();
-    
-                    return response()->json(Array("Err" => 0, "Msg" => "Exitoso", "List"=>$rutas));
-    
+
+                    if(count($rutas)>0)
+
+                        return response()->json(Array("Err" => 0, "Msg" => "Exitoso", "List" => $rutas));
+
+                    else
+
+                        return response()->json(Array("Err" => 1, "Msg" => "No existen Rutas asociada al conductor"));
+
                 } else {
-                    return response()->json(Array("Err" => 1, "Msg" => "No se encuentra el Tour"));
+                    return response()->json(Array("Err" => 1, "Msg" => "No existen Viajes asociado al conductor"));
                 }
-            } else{
-                return response()->json(Array("Err" => 1, "Msg" => "No se encuentra el Conductor"));
+            } else {
+                return response()->json(Array("Err" => 1, "Msg" => "El usuario no esta registrado como Conductor"));
             }
+
         }
     }
 
@@ -1297,6 +1308,8 @@ class ApiController extends Controller
         $color = $request->input('color');
         $marca = $request->input('marca');
         $motor = $request->input('motor');
+        $procedencia = $request->input('procedencia');
+        $destino = $request->input('destino');
 
         if(empty($vin_codigo) || $vin_codigo=="undefined"){
             return response()->json(Array("Err" => 1, "Msg" => "Código VIN Obligatorio"));
@@ -1319,6 +1332,12 @@ class ApiController extends Controller
         if(empty($motor) || $motor=="undefined"){
             return response()->json(Array("Err" => 1, "Msg" => "Marca Obligatorio"));
         }
+        if(empty($procedencia) || $procedencia=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Procedencia Obligatorio"));
+        }
+        if(empty($destino) || $destino=="undefined"){
+            return response()->json(Array("Err" => 1, "Msg" => "Destino Obligatorio"));
+        }
 
         if (VehiculoNN::where('vin_codigo', $vin_codigo)->exists()){
             return response()->json(Array("Err" => 1, "Msg" => "Código VIN Ya esta registrado"));
@@ -1330,6 +1349,8 @@ class ApiController extends Controller
             $vinNN->vin_marca = $marca;
             $vinNN->vin_color = $color;
             $vinNN->vin_motor = $motor;
+            $vinNN->vin_procedencia = $procedencia;
+            $vinNN->vin_destino = $destino;
             $vinNN->vin_fec_ingreso = date('Y-m-d', now()->timestamp);
             $vinNN->user_id = $user_id;
 
