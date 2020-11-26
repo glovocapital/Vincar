@@ -345,6 +345,8 @@ class ApiController extends Controller
 
             if(count($vin)>0){
 
+               foreach ($vin as $vins) {  //para la vista de seleccion de VINS con numeros similares
+
                 $tarea =DB::table('tareas')
                     ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id','=', 'tareas.tipo_destino_id')
                     ->select('tipo_destino_descripcion as destino')
@@ -447,6 +449,8 @@ class ApiController extends Controller
                      $vin[0]->HabilitadoArribo = false;
                      $vin[0]->HabilitadoEntregarVeh = false;
                 }
+           
+            }   
 
                 $usersf = Array("Err"=>0,"items"=>$vin[0], "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
             } else {
@@ -569,10 +573,7 @@ class ApiController extends Controller
             $Vin->where('vins.vin_codigo', '=', $vins_codigo);
         }
 
-        // David: Acá tenemos que cambiar el resultado de esta búsqueda.
-        // O sea, no podemos arrojar un solo resultado.
-        // Si resulta que hay más de una coincidencia vas a tener que mostrar
-        // todos los VINs  que encuentre y que el operador seleccione cuál VIN es.
+
         $Vin = $Vin->first();
 
         if($Vin){
@@ -873,7 +874,7 @@ class ApiController extends Controller
                     $Vin_->vin_estado_inventario_id = 6;
                     $Vin_->update();
 
-                    $datosDanoPieza = $request->input('dano_pieza'); // David ¿Esto es de qué? No se está utilizando.
+                    $datosDanoPieza = $request->input('dano_pieza'); 
                     $danoPieza = new DanoPieza();
                     $danoPieza->pieza_id = $pieza_id;
                     $danoPieza->tipo_dano_id = $tipo_dano_id;
