@@ -326,9 +326,7 @@ class ApiController extends Controller
                 ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
                 ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
                 ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
-                ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.created_at as fecha'
-                    ,'vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id',
-                    'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id','vin_predespacho','vin_bloqueado_entrega');
+                ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.created_at as fecha','vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id', 'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id','vin_predespacho','vin_bloqueado_entrega');
 
             if(strlen($vins_id)==6){
                 $Vin->where('vins.vin_codigo', 'like', '%'.$vins_id);
@@ -353,10 +351,10 @@ class ApiController extends Controller
                 $vin[0]->destino = (count($tarea)>0)?$tarea[0]->destino:'';
 
                 $_patio =DB::table('bloques')
-                   ->join('patios', 'patios.patio_id','=','bloques.patio_id')
+                    ->join('patios', 'patios.patio_id','=','bloques.patio_id')
                     ->select('bloques.patio_id', 'bloque_nombre','patio_nombre')
                     ->where('bloque_id','=',$vin[0]->bloque_id)
-                   ->where('bloques.deleted_at','=',null)
+                    ->where('bloques.deleted_at','=',null)
                     ->get();
 
                 $ubicados = DB::table('ubic_patios')
@@ -441,12 +439,11 @@ class ApiController extends Controller
                 }
 
                 if($vin[0]->estado=="Entregado") {
-                     $vin[0]->HabilitadoInspeccion = false;
-                     $vin[0]->HabilitadoCambio = false;
-                     $vin[0]->HabilitadoArribo = false;
-                     $vin[0]->HabilitadoEntregarVeh = false;
+                    $vin[0]->HabilitadoInspeccion = false;
+                    $vin[0]->HabilitadoCambio = false;
+                    $vin[0]->HabilitadoArribo = false;
+                    $vin[0]->HabilitadoEntregarVeh = false;
                 }
-           
             }   
 
                 $usersf = Array("Err"=>0,"items"=>$vin[0], "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
