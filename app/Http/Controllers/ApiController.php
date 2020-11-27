@@ -314,6 +314,8 @@ class ApiController extends Controller
 
         $vins_id = $request->vin;
 
+
+
         if(empty($vins_id)){
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
         } else {
@@ -324,7 +326,9 @@ class ApiController extends Controller
                 ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
                 ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
                 ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
-                ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.created_at as fecha','vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id', 'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id','vin_predespacho','vin_bloqueado_entrega');
+                ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.created_at as fecha'
+                    ,'vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id',
+                    'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id','vin_predespacho','vin_bloqueado_entrega');
 
             if(strlen($vins_id)==6){
                 $Vin->where('vins.vin_codigo', 'like', '%'.$vins_id);
@@ -338,113 +342,114 @@ class ApiController extends Controller
 
             if(count($vin)>0){
 
-            //foreach ($vin as $vins) {  //para la vista de seleccion de VINS con numeros similares
+                foreach ($vin as $vins) {
 
-                $tarea =DB::table('tareas')
-                    ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id','=', 'tareas.tipo_destino_id')
-                    ->select('tipo_destino_descripcion as destino')
-                    ->where('tareas.vin_id',$vin[0]->vin_id)
-                    ->get();
+                    $tarea = DB::table('tareas')
+                        ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id', '=', 'tareas.tipo_destino_id')
+                        ->select('tipo_destino_descripcion as destino')
+                        ->where('tareas.vin_id', $vins->vin_id)
+                        ->get();
 
-                $vin[0]->destino = (count($tarea)>0)?$tarea[0]->destino:'';
+                    $vins->destino = (count($tarea) > 0) ? $tarea[0]->destino : '';
 
-                $_patio =DB::table('bloques')
-                    ->join('patios', 'patios.patio_id','=','bloques.patio_id')
-                    ->select('bloques.patio_id', 'bloque_nombre','patio_nombre')
-                    ->where('bloque_id','=',$vin[0]->bloque_id)
-                    ->where('bloques.deleted_at','=',null)
-                    ->get();
-
-                $ubicados = DB::table('ubic_patios')
-                    ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
-                    ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
-                    ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
-                    ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
-                    ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc", 'patio_id')
-                    ->get();
-
-                if(count($_patio)==0){
-                    $vin[0]->patio_id=null;
-                } else {
-                    $vin[0]->bloque_nombre=$_patio[0]->bloque_nombre;
-                    $vin[0]->patio_id=$_patio[0]->patio_id;
-                    $vin[0]->patio_nombre=$_patio[0]->patio_nombre;
-                    $vin[0]->posicion=$_patio[0]->bloque_nombre." Fil:".$vin[0]->ubic_patio_fila." Col:".$vin[0]->ubic_patio_columna;
-
-                    $bloques =DB::table('bloques')
-                        ->select('bloque_id', 'bloque_nombre', 'bloque_filas', 'bloque_columnas')
-                        ->where('patio_id','=',$_patio[0]->patio_id)
-                        ->where('bloques.deleted_at','=',null)
-                        ->orderBy('bloque_nombre', 'asc')
+                    $_patio = DB::table('bloques')
+                        ->join('patios', 'patios.patio_id', '=', 'bloques.patio_id')
+                        ->select('bloques.patio_id', 'bloque_nombre', 'patio_nombre')
+                        ->where('bloque_id', '=', $vins->bloque_id)
+                        ->where('bloques.deleted_at', '=', null)
                         ->get();
 
                     $ubicados = DB::table('ubic_patios')
-                        ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
-                        ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
-                        ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
-                        ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
-                        ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloques.bloque_id as bloque_id","vin_estado_inventario_desc","vins.vin_predespacho as vin_predespacho")
-                        ->where('patio_id','=',$_patio[0]->patio_id)
+                        ->join("vins", "ubic_patios.vin_id", "=", "vins.vin_id")
+                        ->join("marcas", "marcas.marca_id", "=", "vins.vin_marca")
+                        ->join("bloques", "bloques.bloque_id", "=", "ubic_patios.bloque_id")
+                        ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id", "=", "vins.vin_estado_inventario_id")
+                        ->select('vins.vin_id as vin_id', 'ubic_patio_columna', 'ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca", "ubic_patios.updated_at as vin_fec_ingreso", "vins.vin_estado_inventario_id as vin_estado_inventario_id", "bloques.bloque_id as bloque_id", "vin_estado_inventario_desc", 'patio_id')
                         ->get();
 
+                    if (count($_patio) == 0) {
+                        $vins->patio_id = null;
+                    } else {
+                        $vins->bloque_nombre = $_patio[0]->bloque_nombre;
+                        $vins->patio_id = $_patio[0]->patio_id;
+                        $vins->patio_nombre = $_patio[0]->patio_nombre;
+                        $vins->posicion = $_patio[0]->bloque_nombre . " Fil:" . $vins->ubic_patio_fila . " Col:" . $vins->ubic_patio_columna;
+
+                        $bloques = DB::table('bloques')
+                            ->select('bloque_id', 'bloque_nombre', 'bloque_filas', 'bloque_columnas')
+                            ->where('patio_id', '=', $_patio[0]->patio_id)
+                            ->where('bloques.deleted_at', '=', null)
+                            ->orderBy('bloque_nombre', 'asc')
+                            ->get();
+
+                        $ubicados = DB::table('ubic_patios')
+                            ->join("vins", "ubic_patios.vin_id", "=", "vins.vin_id")
+                            ->join("marcas", "marcas.marca_id", "=", "vins.vin_marca")
+                            ->join("bloques", "bloques.bloque_id", "=", "ubic_patios.bloque_id")
+                            ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id", "=", "vins.vin_estado_inventario_id")
+                            ->select('vins.vin_id as vin_id', 'ubic_patio_columna', 'ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca", "ubic_patios.updated_at as vin_fec_ingreso", "vins.vin_estado_inventario_id as vin_estado_inventario_id", "bloques.bloque_id as bloque_id", "vin_estado_inventario_desc", "vins.vin_predespacho as vin_predespacho")
+                            ->where('patio_id', '=', $_patio[0]->patio_id)
+                            ->get();
+
+                    }
+
+                    $vins->HabilitadoInspeccion = true;
+                    $vins->HabilitadoCambio = true;
+                    $vins->HabilitadoArribo = true;
+                    $vins->HabilitadoEntregarVeh = false;
+
+                    if ($vins->estado == "Anunciado") {
+                        $vins->HabilitadoInspeccion = false;
+                        $vins->HabilitadoCambio = false;
+                    }
+
+                    if ($vins->estado == "Arribado") {
+                        $vins->HabilitadoArribo = false;
+                        $vins->HabilitadoCambio = false;
+                    }
+
+                    if ($vins->estado == "Tránsito") {
+                        $vins->HabilitadoInspeccion = false;
+                        $vins->HabilitadoCambio = false;
+                        $vins->HabilitadoArribo = false;
+                    }
+
+                    if ($vins->estado == "En Patio" || $vins->estado == "Disponible para la venta") {
+                        $vins->HabilitadoArribo = false;
+                    }
+
+                    if ($vins->estado == "Agendado para entrega") {
+                        $vins->HabilitadoInspeccion = false;
+                        $vins->HabilitadoCambio = false;
+                        $vins->HabilitadoArribo = false;
+                    }
+
+                    if ($vins->estado == "No disponible para la venta") {
+                        $vins->HabilitadoArribo = false;
+                    }
+
+                    if ($vins->estado == "Suprimido") {
+                        $vins->HabilitadoInspeccion = false;
+                        $vins->HabilitadoCambio = false;
+                        $vins->HabilitadoArribo = false;
+                    }
+
+                    if (($vins->vin_predespacho == true) && ($vins->vin_bloqueado_entrega == false)) {
+                        $vins->HabilitadoEntregarVeh = true;
+                    } else {
+                        $vins->HabilitadoEntregarVeh = false;
+                    }
+
+                    if ($vins->estado == "Entregado") {
+                        $vins->HabilitadoInspeccion = false;
+                        $vins->HabilitadoCambio = false;
+                        $vins->HabilitadoArribo = false;
+                        $vins->HabilitadoEntregarVeh = false;
+                    }
+
                 }
 
-                $vin[0]->HabilitadoInspeccion = true;
-                $vin[0]->HabilitadoCambio = true;
-                $vin[0]->HabilitadoArribo = true;
-                $vin[0]->HabilitadoEntregarVeh = false;
-
-                if($vin[0]->estado=="Anunciado") {
-                    $vin[0]->HabilitadoInspeccion = false;
-                    $vin[0]->HabilitadoCambio = false;
-                }
-
-                if($vin[0]->estado=="Arribado") {
-                    $vin[0]->HabilitadoArribo = false;
-                    $vin[0]->HabilitadoCambio = false;
-                }
-
-                if($vin[0]->estado=="Tránsito") {
-                    $vin[0]->HabilitadoInspeccion = false;
-                    $vin[0]->HabilitadoCambio = false;
-                    $vin[0]->HabilitadoArribo = false;
-                }
-
-                if($vin[0]->estado=="En Patio" || $vin[0]->estado=="Disponible para la venta") {
-                    $vin[0]->HabilitadoArribo = false;
-                }
-
-                if($vin[0]->estado=="Agendado para entrega") {
-                    $vin[0]->HabilitadoInspeccion = false;
-                    $vin[0]->HabilitadoCambio = false;
-                    $vin[0]->HabilitadoArribo = false;
-                }
-
-                if($vin[0]->estado=="No disponible para la venta") {
-                    $vin[0]->HabilitadoArribo = false;
-                }
-
-                if($vin[0]->estado=="Suprimido") {
-                    $vin[0]->HabilitadoInspeccion = false;
-                    $vin[0]->HabilitadoCambio = false;
-                    $vin[0]->HabilitadoArribo = false;
-                }
-
-                if(($vin[0]->vin_predespacho == true) && ($vin[0]->vin_bloqueado_entrega == false)) {
-                    $vin[0]->HabilitadoEntregarVeh = true;
-                } else {
-                    $vin[0]->HabilitadoEntregarVeh = false;
-                }
-
-                if($vin[0]->estado=="Entregado") {
-                    $vin[0]->HabilitadoInspeccion = false;
-                    $vin[0]->HabilitadoCambio = false;
-                    $vin[0]->HabilitadoArribo = false;
-                    $vin[0]->HabilitadoEntregarVeh = false;
-                }
-            //}   
-
-                $usersf = Array("Err"=>0,"items"=>$vin[0], "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
+                $usersf = Array("Err"=>0,"items"=>$vin, "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
             } else {
                 $usersf = Array("Err" => 1, "Msg" => "No se encuentra el Vin");
             }
