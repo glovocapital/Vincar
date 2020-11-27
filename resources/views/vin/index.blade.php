@@ -90,14 +90,14 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lotes</button>
+                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lote</button>
 
                                         {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
                                         {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Histórico ', ['id' => 'btn-descargar-historico', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
                                         {!! Form::close() !!}
                                     </div>
                                     <div class="text  pb-3">
-                                    Selecciona los VINs y haz click para exportar histórico por lotes
+                                    Selecciona los VINs y haz click para exportar histórico por lote
                                     </div>
                                 </div>
                             </div>
@@ -170,7 +170,7 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lotes</button>
+                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lote</button>
                                         <hr />
                                         <br />
                                         {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
@@ -178,7 +178,7 @@
                                         {!! Form::close() !!}
                                     </div>
                                     <div class="text  pb-3">
-                                    Selecciona los VINs y haz click para exportar histórico por lotes
+                                    Selecciona los VINs y haz click para exportar histórico por lote
                                     </div>
                                 </div>
                             </div>
@@ -252,7 +252,7 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lotes</button>
+                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lote</button>
                                         <hr />
                                         <br />
                                         {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
@@ -260,7 +260,7 @@
                                         {!! Form::close() !!}
                                     </div>
                                     <div class="text  pb-3">
-                                    Selecciona los VINs y haz click para exportar histórico por lotes
+                                    Selecciona los VINs y haz click para exportar histórico por lote
                                     </div>
                                 </div>
                             </div>
@@ -326,9 +326,9 @@
 
                                     <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol12" style="display:none">Asignar para entrega</button>
 
-                                    <button type="button" class="btn btn-success btn-lote-vins btn-rol" style="display:none">Carga de guías por lotes</button>
+                                    <button type="button" class="btn btn-success btn-lote-vins btn-rol" style="display:none">Cargar guía por lote</button>
 
-                                    <button type="button" class="btn btn-warning btn-edo-vins btn-rol13" style="display:none">Cambiar estado por lotes</button>
+                                    <button type="button" class="btn btn-warning btn-edo-vins btn-rol13" style="display:none">Cambiar estado por lote</button>
 
                                     <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
 
@@ -390,7 +390,7 @@
                                     
                                     <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol4" style="display:none">Asignar para entrega</button>
 
-                                    <button type="button" style="display:none" class="btn btn-success btn-lote-vins btn-rol">Carga de guías por lotes</button>
+                                    <button type="button" style="display:none" class="btn btn-success btn-lote-vins btn-rol">Cargar guía por lote</button>
 
                                     <button id="btn-src" type="button" class="btn btn-primary block full-width m-b">Buscar vins</button>
 
