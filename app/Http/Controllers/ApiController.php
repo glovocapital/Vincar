@@ -314,8 +314,6 @@ class ApiController extends Controller
 
         $vins_id = $request->vin;
 
-
-
         if(empty($vins_id)){
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
         } else {
@@ -340,7 +338,7 @@ class ApiController extends Controller
 
             if(count($vin)>0){
 
-               foreach ($vin as $vins) {  //para la vista de seleccion de VINS con numeros similares
+            //foreach ($vin as $vins) {  //para la vista de seleccion de VINS con numeros similares
 
                 $tarea =DB::table('tareas')
                     ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id','=', 'tareas.tipo_destino_id')
@@ -444,7 +442,7 @@ class ApiController extends Controller
                     $vin[0]->HabilitadoArribo = false;
                     $vin[0]->HabilitadoEntregarVeh = false;
                 }
-            }   
+            //}   
 
                 $usersf = Array("Err"=>0,"items"=>$vin[0], "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
             } else {
