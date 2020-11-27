@@ -526,7 +526,7 @@
     </div>
 
 
-    @include('vin.partials.modal_asignar_tarea_lotes')
+    @include('vin.partials.modal_asignar_guia_lote')
     @include('vin.partials.modal_cambia_estado')
     @include('vin.partials.modal_historico_vin')
     @include('vin.partials.modal_predespacho')
@@ -864,7 +864,7 @@
 
 
              //modal predespacho
-             $('.btn-predespacho-vins').click(function (e){
+            $('.btn-predespacho-vins').click(function (e){
                 e.preventDefault();
                 var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
@@ -954,6 +954,7 @@
                 }
             });
 
+            // Carga de guías por lotes
             $('.btn-lote-vins').click(function (e){
                 e.preventDefault();
                 var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
@@ -977,16 +978,34 @@
                     var arr_codigos = $.map(res.codigos, function (e1) {
                         return e1;
                     });
+                    $("#form-carga-guia-lote")[0].reset();
+
                     $("#vin_codigo_lote").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
                     $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
                     for (var i = 1; i < arr_codigos.length; i++){
                         $("#vin_codigo_lote").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
                         $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
                     }
-                    $("#asignarTareaModalLote").modal('show');
+
+                    $("#empresa_id").val('');
+                    $("#guia_fecha").val('');
+                    $("#guia_numero").val('');
+                    $("#guia_vin").val('');
+                    $("#asignarGuiaModalLote").modal('show');
                 }).fail(function () {
                     alert('Error: Debe seleccionar al menos un vin de la lista');
                 });
+            });
+
+            $('#btn-cancelar-carga-guia-lote').click(function (e) {
+                e.preventDefault();
+                
+                $("#form-carga-guia-lote")[0].reset();
+                $("#vin_codigo_lote").empty();
+                $("#empresa_id").val('');
+                $("#guia_fecha").val('');
+                $("#guia_numero").val('');
+                $("#guia_vin").val('');
             });
 
             $('#btn-guardar-estados-lotes').on('click',function(e){

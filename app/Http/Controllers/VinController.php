@@ -1145,34 +1145,71 @@ class VinController extends Controller
         $vin_id =  Crypt::decrypt($id);
         $vin = Vin::findOrfail($vin_id);
 
-        $fecha = date('Y-m-d');
+        $date = Carbon::now();
 
-        $empresa = DB::table('empresas')
-            ->join('users', 'users.empresa_id','=','empresas.empresa_id')
-            ->where('users.user_id',$vin->user_id)
-            ->select('empresas.empresa_id')
+        $fecha = $date->toDateString();
+        $hora = $date->toTimeString();
+
+        $empresa = Empresa::join('users', 'users.empresa_id','=','empresas.empresa_id')
+            ->where('users.user_id', $vin->user_id)
+            ->select('empresas.empresa_id', 'empresas.empresa_razon_social')
             ->first();
 
-        $guiaVin = $request->file('guia_vin');
-        $extensionGuia = $guiaVin->extension();
-        $path = $guiaVin->storeAs(
-            'GuiaVin',
-            "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
-        );
-
         try {
+            DB::beginTransaction();
+            
+            $guiaVin = $request->file('guia_vin');
+            $extensionGuia = $guiaVin->extension();
+            $path = $guiaVin->storeAs(
+                'GuiaVin',
+                "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
+            );
+        
             $guia = new Guia();
             $guia->guia_ruta = $path;
-            $guia->guia_fecha = $fecha;
+            $guia->guia_numero = trim($request->guia_numero);
+            $guia->guia_fecha = $request->guia_fecha;
             $guia->empresa_id = $empresa->empresa_id;
+            
+            if ($guia->save()) {
+                $guia_vin = new GuiaVin();
+                $guia_vin->vin_id = $vin_id;
+                $guia_vin->guia_id = $guia->guia_id;
+                
+                if ($guia_vin->save()) {
+                    // Guardar historial del cambio
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $vin->vin_id,
+                            $vin->vin_estado_inventario_id,
+                            $fecha,
+                            Auth::user()->user_id,
+                            null,
+                            null,
+                            $empresa->empresa_id,
+                            "Carga de nueva Guía al VIN. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
+                            "Guía Nro: " . $guia->guia_numero .", Empresa: " . $empresa->empresa_razon_social . ".",
+                            "VIN " . $vin->vin_codigo . "."
+                        ]
+                    );
+                } else {
+                    DB::rollback();
 
-            $guia->save();
+                    flash('Error relacionando guia con el VIN.')->error();
+                    return redirect('vin');
+                }
+            } else {
+                DB::rollback();
 
-            $guia_vin = new GuiaVin();
-            $guia_vin->vin_id = $vin_id;
-            $guia_vin->guia_id = $guia->guia_id;
-            $guia_vin->save();
+                flash('Error guardando la guia.')->error();
+                return redirect('vin');
+            }
 
+            DB::commit();
+            
             flash('La guia fue almacenada correctamente.')->success();
             return redirect('vin');
 
@@ -1186,57 +1223,105 @@ class VinController extends Controller
     public function downloadGuia($id)
     {
         $vin_id =  Crypt::decrypt($id);
-        $vin = Vin::findOrfail($vin_id);
 
-        $guia = DB::table('vins')
-            ->join('guia_vins','guia_vins.vin_id','vins.vin_id')
+        $guia = Vin::join('guia_vins','guia_vins.vin_id','vins.vin_id')
             ->join('guias','guia_vins.guia_id','guias.guia_id')
             ->select('guias.guia_ruta')
             ->where('guia_vins.vin_id', $vin_id)
-            ->get();
+            ->first();
 
-        if(!empty($guia[0]->guia_ruta))
+        if($guia)
         {
-            return Storage::download($guia[0]->guia_ruta);
+            return Storage::download($guia->guia_ruta);
         } else {
             flash('El vin no tiene guia asociada.')->error();
             return redirect('vin');
-
         }
-
-
     }
 
     // Función para cargar una guía de empresa y relacionarla con los VINs seleccionados de una búsqueda.
-    public function storeModalTareaLotes(Request $request)
+    public function storeModalGuiaLote(Request $request)
     {
-        // Validar que los VINs pertenecen a la empresa que emite la guía
-        foreach( $request->vin_ids as $vinid){
-            $empresa = Vin::join('users', 'vins.user_id','=','users.user_id')
-                ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                ->where('vins.vin_id',$vinid)
-                ->select('empresas.empresa_id')
-                ->first();
+        $date = Carbon::now();
 
-            $vinCodigo = Vin::find($vinid)->value('vin_codigo');
+        $fecha = $date->toDateString();
+        $hora = $date->toTimeString();
 
-            if($request->empresa_guia_id != $empresa->empresa_id){
-                flash('Error. El VIN seleccionado: ' . $vinCodigo . ' no pertenece a la empresa que emitió la guía.')->error();
-                return back()->withInput();
-            }
-        }
-
-        // Almacenar imagen o PDF de la guía en la base de datos.
-        $guiaVin = $request->file('guia_vin');
-        $extensionGuia = $guiaVin->extension();
-        $path = $guiaVin->storeAs(
-            'GuiaVin',
-            "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
-        );
-        
-        // Crear la guía y su relación respectiva con los VINs
         try {
             DB::beginTransaction();
+
+            // Validar que los VINs pertenecen a la empresa que emite la guía
+            foreach( $request->vin_ids as $vin_id){
+                $empresa = Vin::join('users', 'vins.user_id','=','users.user_id')
+                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                    ->where('vins.vin_id', $vin_id)
+                    ->select('empresas.empresa_id')
+                    ->first();
+
+                $vinCodigo = Vin::find($vin_id)->value('vin_codigo');
+
+                if($request->empresa_guia_id != $empresa->empresa_id){
+                    DB::rollback();
+
+                    flash('Error. El VIN seleccionado: ' . $vinCodigo . ' no pertenece a la empresa que emitió la guía.')->error();
+                    return back()->withInput();
+                }
+
+                $guiaAnterior = GuiaVin::where('vin_id', $vin_id)->first();
+
+                if ($guiaAnterior){
+                    $guiaEliminar = Guia::find($guiaAnterior->guia_id);
+                    $guiaVinsEliminar = GuiaVin::where('guia_id', $guiaEliminar->guia_id)->get();
+
+                    foreach ($guiaVinsEliminar as $guiaVinDel) {
+                        $vin = Vin::find($guiaVinDel->vin_id);
+
+                        $emp = Vin::join('users', 'vins.user_id','=','users.user_id')
+                            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                            ->where('vins.vin_id', $vin->vin_id)
+                            ->select('empresas.empresa_id', 'empresas.empresa_razon_social')
+                            ->first();
+
+                        // Guardar historial del cambio
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $vin->vin_id,
+                                $vin->vin_estado_inventario_id,
+                                $fecha,
+                                Auth::user()->user_id,
+                                null,
+                                null,
+                                $emp->empresa_id,
+                                "Eliminada Guía anterior del VIN. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
+                                "Guía Nro: " . $guiaEliminar->guia_numero .", Empresa: " . $emp->empresa_razon_social . ".",
+                                "VIN " . $vin->vin_codigo . "."
+                            ]
+                        );
+                    }
+
+                    if (!$guiaEliminar->delete()){
+                        DB::rollback();
+
+                        flash('Error eliminando guía anterior para el VIN seleccionado: ' . $vinCodigo . ' y demás VINs de dicha guía. Informar al administrador antes de continuar.')->error();
+                        return back()->withInput();
+                    } else {
+                        flash('Guías anteriores desasociadas con éxito.')->success();
+                    }
+                }
+            }
+
+            // Crear la guía y su relación respectiva con los VINs
+            
+            // Almacenar imagen o PDF de la guía en la base de datos.
+            $guiaVin = $request->file('guia_vin');
+            $extensionGuia = $guiaVin->extension();
+            $path = $guiaVin->storeAs(
+                'GuiaVin',
+                "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
+            );
 
             $guia = new Guia();
             $guia->guia_ruta = $path;
@@ -1254,6 +1339,40 @@ class VinController extends Controller
                         DB::rollBack();
 
                         flash('Error guardando relación de VIN con guía en la base de datos.')->error();
+                        return back()->withInput();
+                    }
+
+                    $vin = Vin::find($vin_id);
+
+                    if ($vin) {
+                        $emp = Vin::join('users', 'vins.user_id','=','users.user_id')
+                            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                            ->where('vins.vin_id', $vin->vin_id)
+                            ->select('empresas.empresa_id', 'empresas.empresa_razon_social')
+                            ->first();
+
+                        // Guardar historial del cambio
+                        DB::insert('INSERT INTO historico_vins
+                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $vin->vin_id,
+                                $vin->vin_estado_inventario_id,
+                                $fecha,
+                                Auth::user()->user_id,
+                                null,
+                                null,
+                                $emp->empresa_id,
+                                "VIN en asignación masiva de nueva Guía. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
+                                "Guía Nro: " . $guia->guia_numero .", Empresa: " . $emp->empresa_razon_social . ".",
+                                "VIN " . $vin->vin_codigo . "."
+                            ]
+                        );
+                    } else {
+                        DB::rollBack();
+
+                        flash('Error: VIN con ID: ' . $vin_id . ' no encontrado. Informe al administrador.')->error();
                         return back()->withInput();
                     }
                 }

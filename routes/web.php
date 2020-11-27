@@ -244,7 +244,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('vin/{id}/guia','VinController@guia')->name('vin.guia');
     Route::patch('vin/{id}/addguia','VinController@addguia')->name('vin.addguia');
     Route::get('vin/{id}/downloadGuia','VinController@downloadGuia')->name('vin.downloadGuia');
-    Route::post('vin/modal_tarea_lotes','VinController@storeModalTareaLotes')->name('vin.storeModalTareaLotes');
+    Route::post('vin/modal_guia_lote','VinController@storeModalGuiaLote')->name('vin.storeModalGuiaLote');
 
     Route::post('vin/export', 'VinController@exportResultadoBusquedaVins')->name('vin.exportResultadoBusquedaVins');
     Route::post('vin/export_masivo', 'VinController@exportMasivoResultadoBusquedaVins')->name('vin.exportMasivoResultadoBusquedaVins');
