@@ -77,12 +77,12 @@
     }
 
     .fa-barcode{
-         font-family:none !important;
-         width: 30px;
-         height: 30px;
-         content: url({{ asset('base/img/svg/guia_1.svg') }})  !important;
-         margin-right: 5px;
-     }
+        font-family:none !important;
+        width: 30px;
+        height: 30px;
+        content: url({{ asset('base/img/svg/guia_1.svg') }})  !important;
+        margin-right: 5px;
+    }
     .fa-barcode2{
         font-family:none !important;
         width: 30px;

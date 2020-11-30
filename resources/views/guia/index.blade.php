@@ -55,7 +55,7 @@
                                 <th>Empresa</th>
                                 <th>¿Carga entregada?</th>
                                 <th>Estado</th>
-                                <!-- <th>Acci&oacute;n</th> -->
+                                <th>Acci&oacute;n</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -78,15 +78,12 @@
                                     <td><small><button class="btn btn-success btn-sm rounded">Activa</button></small></td>
                                 @endif
                                 
-                                <!-- <td>
+                                <td>
                                     <small>
-                                        <a href="" class="btn-guia"  title="Editar"><i class="far fa-edit"></i></a>
+                                        <a href="{{ route('guia.downloadGuia', Crypt::encrypt($guia->guia_id)) }}" type="button" class="btn-guia"  title="Descargar Guía"><i class="fas fa fa-barcode2"></i></a>
                                     </small>
-                                    <small>
-                                            <a href = "" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-guia"><i class="far fa-trash-alt"></i>
-                                            </a>
-                                    </small>
-                                </td> -->
+                                    
+                                </td>
                             </tr>
 
                         @endforeach

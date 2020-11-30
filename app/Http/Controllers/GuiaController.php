@@ -7,6 +7,8 @@ use App\Guia;
 use App\Http\Middleware\CheckSession;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 
 class GuiaController extends Controller
 {
@@ -125,5 +127,20 @@ class GuiaController extends Controller
     public function destroy(Guia $guia)
     {
         //
+    }
+
+    public function downloadGuia($id)
+    {
+        $guia_id =  Crypt::decrypt($id);
+
+        $guia = Guia::find($guia_id);
+
+        if($guia)
+        {
+            return Storage::download($guia->guia_ruta);
+        } else {
+            flash('Error: Archivo no encontrado.')->error();
+            return redirect('guia');
+        }
     }
 }

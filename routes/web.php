@@ -266,6 +266,7 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
     //Rutas mantenedor guías
     Route::get('guia', 'GuiaController@index')->name('guia.index');
+    Route::get('guia/{id}/downloadGuia','GuiaController@downloadGuia')->name('guia.downloadGuia');
 
     // Entregas
     Route::get('entrega', 'EntregaController@index')->name('entrega.index');
