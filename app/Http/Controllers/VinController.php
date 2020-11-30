@@ -1247,19 +1247,22 @@ class VinController extends Controller
         $fecha = $date->toDateString();
         $hora = $date->toTimeString();
 
+        $arrayGuiasEliminar = [];
+
         try {
             DB::beginTransaction();
 
-            // Validar que los VINs pertenecen a la empresa que emite la guía
-            foreach( $request->vin_ids as $vin_id){
+            // Conseguir si hay guías anteriores para alguno de los VINs enviados
+            foreach($request->vin_ids as $vin_id){
                 $empresa = Vin::join('users', 'vins.user_id','=','users.user_id')
                     ->join('empresas','users.empresa_id','=','empresas.empresa_id')
                     ->where('vins.vin_id', $vin_id)
                     ->select('empresas.empresa_id')
                     ->first();
 
-                $vinCodigo = Vin::find($vin_id)->value('vin_codigo');
+                $vinCodigo = Vin::find($vin_id)->vin_codigo;
 
+                // Validar que los VINs pertenecen a la empresa que emite la guía
                 if($request->empresa_guia_id != $empresa->empresa_id){
                     DB::rollback();
 
@@ -1267,54 +1270,65 @@ class VinController extends Controller
                     return back()->withInput();
                 }
 
+                // Buscar si existe la asociación del VIN con alguna guía preexistente
                 $guiaAnterior = GuiaVin::where('vin_id', $vin_id)->first();
 
                 if ($guiaAnterior){
-                    $guiaEliminar = Guia::find($guiaAnterior->guia_id);
-                    $guiaVinsEliminar = GuiaVin::where('guia_id', $guiaEliminar->guia_id)->get();
-
-                    foreach ($guiaVinsEliminar as $guiaVinDel) {
-                        $vin = Vin::find($guiaVinDel->vin_id);
-
-                        $emp = Vin::join('users', 'vins.user_id','=','users.user_id')
-                            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                            ->where('vins.vin_id', $vin->vin_id)
-                            ->select('empresas.empresa_id', 'empresas.empresa_razon_social')
-                            ->first();
-
-                        // Guardar historial del cambio
-                        DB::insert('INSERT INTO historico_vins
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                            [
-                                $vin->vin_id,
-                                $vin->vin_estado_inventario_id,
-                                $fecha,
-                                Auth::user()->user_id,
-                                null,
-                                null,
-                                $emp->empresa_id,
-                                "Eliminada Guía anterior del VIN. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
-                                "Guía Nro: " . $guiaEliminar->guia_numero .", Empresa: " . $emp->empresa_razon_social . ".",
-                                "VIN " . $vin->vin_codigo . "."
-                            ]
-                        );
-                    }
-
-                    if (!$guiaEliminar->delete()){
-                        DB::rollback();
-
-                        flash('Error eliminando guía anterior para el VIN seleccionado: ' . $vinCodigo . ' y demás VINs de dicha guía. Informar al administrador antes de continuar.')->error();
-                        return back()->withInput();
-                    } else {
-                        flash('Guías anteriores desasociadas con éxito.')->success();
+                    if(!in_array($guiaAnterior->guia_id, $arrayGuiasEliminar)){
+                        array_push($arrayGuiasEliminar, $guiaAnterior->guia_id);
                     }
                 }
             }
 
+            // Por cada guía anterior encontrada, se debe eliminar la guía (softdelete) y todas
+            // las relaciones Guia-Vin dejando constancia en el histórico.
+            foreach ($arrayGuiasEliminar as $guiaEliminarId){
+                $guiaEliminar = Guia::find($guiaEliminarId);
+                $guiaVinsEliminar = GuiaVin::where('guia_id', $guiaEliminar->guia_id)->get();
+
+                foreach ($guiaVinsEliminar as $guiaVinDel) {
+                    $vin = Vin::find($guiaVinDel->vin_id);
+
+                    $emp = Vin::join('users', 'vins.user_id','=','users.user_id')
+                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                        ->where('vins.vin_id', $vin->vin_id)
+                        ->select('empresas.empresa_id', 'empresas.empresa_razon_social')
+                        ->first();
+                    
+                    // Guardar historial del cambio
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $vin->vin_id,
+                            $vin->vin_estado_inventario_id,
+                            $fecha,
+                            Auth::user()->user_id,
+                            null,
+                            null,
+                            $emp->empresa_id,
+                            "Eliminada Guía anterior del VIN. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
+                            "Guía Nro: " . $guiaEliminar->guia_numero .", Empresa: " . $emp->empresa_razon_social . ".",
+                            "VIN " . $vin->vin_codigo . "."
+                        ]
+                    );
+
+                    $guiaVinDel->delete();
+                }
+
+                if (!$guiaEliminar->delete()){
+                    DB::rollback();
+
+                    flash('Error eliminando guía anterior para el VIN seleccionado: ' . $vin->vin_codigo . ' y demás VINs de dicha guía. Informar al administrador antes de continuar.')->error();
+                    return back()->withInput();
+                } else {
+                    flash('Guías anteriores desasociadas con éxito.')->success();
+                }
+            }
+
             // Crear la guía y su relación respectiva con los VINs
-            
+
             // Almacenar imagen o PDF de la guía en la base de datos.
             $guiaVin = $request->file('guia_vin');
             $extensionGuia = $guiaVin->extension();
