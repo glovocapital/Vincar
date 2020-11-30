@@ -344,7 +344,7 @@ class ApiController extends Controller
 
             if(count($vin)>0){
 
-             //   foreach ($vin as $vins) {
+                foreach ($vin as $vins) {
 
                     $tarea = DB::table('tareas')
                         ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id', '=', 'tareas.tipo_destino_id')
@@ -449,7 +449,7 @@ class ApiController extends Controller
                         $vins->HabilitadoEntregarVeh = false;
                     }
 
-               // }
+                }
 
                 $usersf = Array("Err"=>0,"items"=>$vin, "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
             } else {
