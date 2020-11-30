@@ -64,6 +64,9 @@
           <li class="sidebar-item @if(request()->route()->getName()=='vin.traspasovin') active @endif"><a class="sidebar-link" href="{{ route('vin.traspasovin') }}">Traspaso de VIN</a></li>
           @endif
           <li class="sidebar-item @if(request()->route()->getName()=='entrega.index') active @endif"><a class="sidebar-link" href="{{ route('entrega.index') }}">Entrega de VIN</a></li>
+          @if(auth()->user()->rol_id != 4)
+          <li class="sidebar-item @if(request()->route()->getName()=='guia.index') active @endif"><a class="sidebar-link" href="{{ route('guia.index') }}">Guías</a></li>
+          @endif
           @endif
         </ul>
       </li>

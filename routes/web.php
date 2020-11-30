@@ -264,6 +264,9 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post ('vin/index_json', 'VinController@index_json')->name('vin.index_json');
     Route::get('vin/{id}/desagendado','VinController@desagendado')->name('vin.desagendado');
 
+    //Rutas mantenedor guías
+    Route::get('guia', 'GuiaController@index')->name('guia.index');
+
     // Entregas
     Route::get('entrega', 'EntregaController@index')->name('entrega.index');
     Route::post('entrega/agendadosExport', 'EntregaController@agendadosExport')->name('entrega.agendadosExport');
@@ -281,15 +284,15 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('historico_vin/historicoVin/{id_vin}','HistoricoVinController@historicoVin')->name('historico_vin.historicoVin');
     Route::post('historico_vin/exportHistoricoLote', 'HistoricoVinController@exportHistoricoVinLote')->name('historico_vin.exportHistoricoVinLote');
 
-     //Jc
-     Route::get('patio/vins_patio','PatioController@indexVinsPatio')->name('patio.vins_patio');
-     Route::get('patioDashboard', 'PatioController@dashboard')->name('patio.dashboard');
-     Route::get('patioBloques', 'PatioController@bloques')->name('patio.bloques');
-     Route::get('TodospatioBloques', 'PatioController@Todosbloques')->name('patio.todos_bloques');
-     Route::get('VaciarBloques', 'PatioController@Vaciarbloques')->name('patio.vaciar_bloques');
+    //Jc
+    Route::get('patio/vins_patio','PatioController@indexVinsPatio')->name('patio.vins_patio');
+    Route::get('patioDashboard', 'PatioController@dashboard')->name('patio.dashboard');
+    Route::get('patioBloques', 'PatioController@bloques')->name('patio.bloques');
+    Route::get('TodospatioBloques', 'PatioController@Todosbloques')->name('patio.todos_bloques');
+    Route::get('VaciarBloques', 'PatioController@Vaciarbloques')->name('patio.vaciar_bloques');
 
-     Route::post('planificacion/obtener_codigos_vins', ['as' => 'planificacion.codigos_vins', 'uses' => 'CampaniaController@vinCodigos']);
-     Route::get('campania', 'CampaniaController@index')->name('campania.index');
+    Route::post('planificacion/obtener_codigos_vins', ['as' => 'planificacion.codigos_vins', 'uses' => 'CampaniaController@vinCodigos']);
+    Route::get('campania', 'CampaniaController@index')->name('campania.index');
 
      //ruta mantenedor tipo de campaña
     Route::get('tipo_campania', 'TipoCampaniaController@index')->name('tipo_campania.index');
