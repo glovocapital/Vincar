@@ -244,7 +244,10 @@ class ApiController extends Controller
             ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
             ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
             ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id')
-            ->select('vins.vin_estado_inventario_id as vin_estado_inventario_id','tarea_prioridad','tarea_id','tipo_tarea_descripcion as ico','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.created_at as fecha','vin_estado_inventario_desc as estado','tipo_destino_descripcion as destino','vins.vin_color as color','ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id')
+
+            ->select('vins.vin_estado_inventario_id as vin_estado_inventario_id','tarea_prioridad','tarea_id','tipo_tarea_descripcion as ico','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.created_at as fecha'
+                ,'vin_estado_inventario_desc as estado','tipo_destino_descripcion as destino','vins.vin_color as color','ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id'
+                 )
             ->where('tareas.user_id',$request->user_id)
             ->where('tareas.tarea_finalizada',false)
             ->where('tareas.deleted_at',null)
@@ -315,7 +318,6 @@ class ApiController extends Controller
         $vins_id = $request->vin;
 
 
-
         if(empty($vins_id)){
             $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
         } else {
@@ -326,7 +328,9 @@ class ApiController extends Controller
                 ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
                 ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
                 ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
-                ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.created_at as fecha','vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id','ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id','vin_predespacho','vin_bloqueado_entrega');
+                ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.created_at as fecha'
+                    ,'vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id',
+                    'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id','vin_predespacho','vin_bloqueado_entrega');
 
             if(strlen($vins_id)==6){
                 $Vin->where('vins.vin_codigo', 'like', '%'.$vins_id);
@@ -568,7 +572,10 @@ class ApiController extends Controller
             $Vin->where('vins.vin_codigo', '=', $vins_codigo);
         }
 
-
+        // David: Acá tenemos que cambiar el resultado de esta búsqueda.
+        // O sea, no podemos arrojar un solo resultado.
+        // Si resulta que hay más de una coincidencia vas a tener que mostrar
+        // todos los VINs  que encuentre y que el operador seleccione cuál VIN es.
         $Vin = $Vin->first();
 
         if($Vin){
@@ -869,7 +876,7 @@ class ApiController extends Controller
                     $Vin_->vin_estado_inventario_id = 6;
                     $Vin_->update();
 
-                    $datosDanoPieza = $request->input('dano_pieza'); 
+                    $datosDanoPieza = $request->input('dano_pieza'); // David ¿Esto es de qué? No se está utilizando.
                     $danoPieza = new DanoPieza();
                     $danoPieza->pieza_id = $pieza_id;
                     $danoPieza->tipo_dano_id = $tipo_dano_id;
