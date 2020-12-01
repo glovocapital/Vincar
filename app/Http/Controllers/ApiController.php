@@ -19,11 +19,14 @@ use App\Empresa;
 use App\Transportista;
 use App\Entrega;
 use App\FotoNN;
+use App\Guia;
+use App\GuiaVin;
 use App\Predespacho;
 use App\Ruta;
 use App\Thumbnail;
 use App\Tour;
 use App\VehiculoNN;
+use Carbon\Carbon;
 
 class ApiController extends Controller
 {
@@ -1115,6 +1118,55 @@ class ApiController extends Controller
                     }
                 }
 
+                // Buscar si existe la asociación del VIN con alguna guía
+                $guiaVin = GuiaVin::where('vin_id', $Vin->vin_id)->first();
+
+                if ($guiaVin){
+                    $guiaAnteriorVin = Guia::find($guiaVin->guia_id);
+
+                    if ($guiaAnteriorVin) {
+                        $guiaNumero = $guiaAnteriorVin->guia_numero;
+                    } else {
+                        $guiaNumero = "N/A";
+                    }
+
+
+                    $emp = Vin::join('users', 'vins.user_id','=','users.user_id')
+                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                        ->where('vins.vin_id', $Vin->vin_id)
+                        ->select('empresas.empresa_id', 'empresas.empresa_razon_social')
+                        ->first();
+
+                    $date = Carbon::now();
+                    $fecha = $date->toDateString();
+                    $hora = $date->toTimeString();
+                    
+                    // Guardar historial del cambio
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $Vin->vin_id,
+                            $Vin->vin_estado_inventario_id,
+                            $fecha,
+                            Auth::user()->user_id,
+                            null,
+                            null,
+                            $emp->empresa_id,
+                            "Eliminada relación en base de datos del VIN a entregar con la Guía. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
+                            "Guía Nro: " . $guiaNumero .", Empresa: " . $emp->empresa_razon_social . ".",
+                            "VIN " . $Vin->vin_codigo . "."
+                        ]
+                    );
+
+                    if (!$guiaVin->delete()) {
+                        DB::rollback();
+                        $usersf = Array("Err" => 1, "Msg" => 'Error eliminando relación con su guía para el VIN seleccionado: ' . $vin->vin_codigo . '. Por favor informe al administrador antes de continuar.');
+                    } else {
+                        $usersf = Array("Err" => 0, "Msg" => "Relación VIN-Guía desasociada con éxito.",  "itemlistData"=>$itemlistData['items']);
+                    }
+                }
 
                 $itemlist = self::ListVIN($request);
 
