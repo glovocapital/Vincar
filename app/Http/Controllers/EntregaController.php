@@ -92,7 +92,7 @@ class EntregaController extends Controller
         }
 
         if (!$request->from_entregado && !$request->to_entregado) {
-            $queryEntregados->where('entregas.entrega_fecha',  '>', Carbon::now()->subDays(1)->toDateTimeString());
+            $queryEntregados->where('entregas.entrega_fecha',  '>', Carbon::now()->subDays(2)->toDateTimeString());
         } else {
             // Filtro de búsqueda por fecha desde
             if($request->from_entregado){
