@@ -1169,7 +1169,7 @@ class ApiController extends Controller
                         DB::rollback();
                         $usersf = Array("Err" => 1, "Msg" => 'Error eliminando relación con su guía para el VIN seleccionado: ' . $vin->vin_codigo . '. Por favor informe al administrador antes de continuar.');
                     } else {
-                        $usersf = Array("Err" => 0, "Msg" => "Relación VIN-Guía desasociada con éxito.",  "itemlistData"=>$itemlistData['items']);
+                        $usersf = Array("Err" => 0, "Msg" => "Relación VIN-Guía desasociada con éxito.");
                     }
                 }
 
