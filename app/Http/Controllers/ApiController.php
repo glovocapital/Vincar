@@ -1155,7 +1155,7 @@ class ApiController extends Controller
                             $Vin->vin_estado_inventario_id,
                             $fecha,
                             // Auth::user()->user_id,
-                            $user->user_id,,
+                            $user->user_id,
                             null,
                             null,
                             $emp->empresa_id,
