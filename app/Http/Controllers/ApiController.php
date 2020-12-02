@@ -696,16 +696,20 @@ class ApiController extends Controller
                 ->pluck('empresa', 'empresa_id')
                 ->all();
 
-            if(array_key_exists($Vin->empresa_id, $empresa))
-            $inspecciones->cliente = $empresa[$Vin->empresa_id];
-            else
-                $inspecciones->cliente="";
+
 
 
             if($inspecciones) {
                 $inspecciones->responsable = $users[$inspecciones->responsable_id];
 
                 $inspecciones->inspeccion_fecha = date('d/m/Y', strtotime($inspecciones->inspeccion_fecha));
+           
+               if(array_key_exists($Vin->empresa_id, $empresa)){   //cambio de posicion del condicional
+                     $inspecciones->cliente = $empresa[$Vin->empresa_id];
+                    }else
+                    $inspecciones->cliente="";
+           
+           
             }else{
                 $inspecciones = Array();
             }
