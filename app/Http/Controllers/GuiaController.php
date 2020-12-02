@@ -29,6 +29,10 @@ class GuiaController extends Controller
         /** Consultar todas las Guias (borradas con softdelete o no) */
         $query = Guia::withTrashed();
 
+        if (!$request->from && !$request->to) {
+            $query->where('guia_fecha',  '>', Carbon::now()->subDays(7)->toDateTimeString());
+        }
+
         // Filtro de búsqueda por fecha desde
         if($request->from){
             $date = Carbon::createFromFormat('Y-m-d', $request->from);

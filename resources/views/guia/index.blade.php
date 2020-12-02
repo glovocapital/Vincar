@@ -8,7 +8,7 @@
     <div class="ibox float-e-margins">
         <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">Listado de guías</h3>
+                <h3 class="card-title">Listado de guías - Mostrando: Última semana</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -18,6 +18,7 @@
                 <form method="get" action="{{ url('guia') }}">
                     <div class="row row-filters">
                         <div>
+                            <h6 class="pb-2">Buscar en histórico de guías</h6>
                             <div class="form-inline form-dates pb-3">
                                 <label for="from" class="form-label-sm">Desde</label>&nbsp;
                                 <div class="input-group">
