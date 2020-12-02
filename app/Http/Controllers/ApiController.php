@@ -1159,7 +1159,7 @@ class ApiController extends Controller
                             null,
                             null,
                             $emp->empresa_id,
-                            "Eliminada relación en base de datos del VIN a entregar con la Guía. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
+                            "Eliminada relación en base de datos del VIN a entregar con la Guía. Responsable: " . $user->user_nombre . " " . $user->user_apellido . ". Hora: " . $hora,
                             "Guía Nro: " . $guiaNumero .", Empresa: " . $emp->empresa_razon_social . ".",
                             "VIN " . $Vin->vin_codigo . "."
                         ]
