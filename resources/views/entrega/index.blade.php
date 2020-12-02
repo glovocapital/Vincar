@@ -212,7 +212,7 @@
                                                             
                                                             @php($agendado = \Carbon\Carbon::createFromFormat('Y-m-d', $entregado->vin_fecha_agendado))
                                                             @php($fechaEntregado = \Carbon\Carbon::createFromFormat('Y-m-d', $entregado->entrega_fecha))
-                                                            <td><small>{{ $agendado->diff($fechaEntregado)->days }}</small></td>
+                                                            <td><small>{{ $agendado->diff($fechaEntregado)->days + 1 }}</small></td>
                                                             
                                                             @if($entregado->origen_texto)
                                                                 <td><small>{{ $entregado->origen_texto }}</small></td>
