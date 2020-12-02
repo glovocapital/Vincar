@@ -91,19 +91,25 @@ class EntregaController extends Controller
             $queryEntregados->where('empresas.empresa_id',$empresa_id);
         }
 
-        // Filtro de búsqueda por fecha desde
-        if($request->from_entregado){
-            $date = Carbon::createFromFormat('Y-m-d', $request->from_entregado);
+        if (!$request->from_entregado && !$request->to_entregado) {
+            $queryEntregados->where('entregas.entrega_fecha',  '>', Carbon::now()->subDays(1)->toDateTimeString());
+        } else {
+            // Filtro de búsqueda por fecha desde
+            if($request->from_entregado){
+                $date = Carbon::createFromFormat('Y-m-d', $request->from_entregado);
 
-            $queryEntregados->whereDate('entrega_fecha', '>=', $date);
-        }
-        
-        // Filtro de búsqueda por fecha hasta
-        if($request->to_entregado){
-            $date = Carbon::createFromFormat('Y-m-d', $request->to_entregado);
+                $queryEntregados->whereDate('entrega_fecha', '>=', $date);
+            }
             
-            $queryEntregados->whereDate('entrega_fecha', '<=', $date);
+            // Filtro de búsqueda por fecha hasta
+            if($request->to_entregado){
+                $date = Carbon::createFromFormat('Y-m-d', $request->to_entregado);
+                
+                $queryEntregados->whereDate('entrega_fecha', '<=', $date);
+            }
         }
+
+        
 
         $vin_entregados = $queryEntregados->orderBy('vin_fecha_entrega')->get();
 
