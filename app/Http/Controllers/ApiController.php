@@ -575,10 +575,6 @@ class ApiController extends Controller
             $Vin->where('vins.vin_codigo', '=', $vins_codigo);
         }
 
-        // David: Acá tenemos que cambiar el resultado de esta búsqueda.
-        // O sea, no podemos arrojar un solo resultado.
-        // Si resulta que hay más de una coincidencia vas a tener que mostrar
-        // todos los VINs  que encuentre y que el operador seleccione cuál VIN es.
         $Vin = $Vin->first();
 
         if($Vin){
@@ -586,6 +582,13 @@ class ApiController extends Controller
                 DB::beginTransaction();
 
                 $Vin_= Vin::findOrFail($Vin->vin_id);
+
+                // El VIN debe estar en estado anunciado para poder darle arribo, de lo contrario, lo impedirá.
+                if ($Vin_->vin_estado_inventario_id != 1){
+                    DB::rollBack();
+                    $usersf = Array("Err" => 1, "Msg" => "Error: Estado incorrecto. El VIN debe estar en estado 'Anunciado'");
+                }
+
                 $Vin_->vin_estado_inventario_id = 2;
                 $Vin_->vin_fec_ingreso = date('Y-m-d');
                 $Vin_->update();
