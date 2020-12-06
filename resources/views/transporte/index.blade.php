@@ -65,7 +65,12 @@
                                     width="100%"
                                     height="600"
                                     frameborder="0" style="border:0"
-                                    src="https://www.google.com/maps/embed/v1/directions?origin=undefined&destination=undefined&key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}" allowfullscreen>
+                                    @if (count($rutas) == 0)
+                                        src="https://www.google.com/maps/embed/v1/directions?origin=undefined&destination=undefined&key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}"
+                                    @else
+                                        src="https://www.google.com/maps/embed/v1/directions?origin={{ $rutas[0]->ruta_origen }}&destination={{ $rutas[0]->ruta_destino }}&key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}"
+                                    @endif
+                                    allowfullscreen>
                                 </iframe>
                             </div>
                         </div>

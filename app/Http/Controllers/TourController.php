@@ -15,6 +15,7 @@ use App\Remolque;
 use App\Tour;
 use App\Ruta;
 use App\RutaGuia;
+use App\TipoLicencia;
 use App\Vin;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +47,7 @@ class TourController extends Controller
 
         foreach ($tours as $tour){
             $tourRutas = Ruta::where('tour_id', $tour->tour_id)->get();
-            
+
             foreach ($tourRutas as $tourRuta){
                 array_push($rutas, $tourRuta);
             }
@@ -63,12 +64,12 @@ class TourController extends Controller
     public function tour()
     {
         $toursIniciales = Tour::all();
-        
+
         $tours = [];
 
         foreach ($toursIniciales as $tour){
             $fecha_inicio = new Carbon($tour->tour_fec_inicio);
-            
+
             if (($fecha_inicio < Carbon::today()) && (!$tour->tour_iniciado) && (!$tour->tour_finalizado)){
                 $this->finalizarTourNoIniciado($tour->tour_id);
             } else {
@@ -128,22 +129,31 @@ class TourController extends Controller
         }
 
         $conductor = Conductor::where('user_id',$request->conductor_id)->first();
-
-        if (!$this->validarData($conductor, 'conductor', $fechaViaje)){
-            return back()->withInput();
-        }
-
+        $tipoLicenciaId = $conductor->tipo_licencia_id;
         $camion = Camion::where('camion_id', $request->camion_id)->first();
-
-        if (!$this->validarData($camion, 'camion', $fechaViaje)){
-            return back()->withInput();
-        }
-
         $remolque = Remolque::where('remolque_id', $request->remolque_id)->first();
+        $capacidad = $remolque->remolque_capacidad;
+        $licencia = TipoLicencia::find($tipoLicenciaId)->tipo_licencia_nombre;
 
-        if (!$this->validarData($remolque, 'remolque', $fechaViaje)){
-            return back()->withInput();
+
+        if (!($capacidad <= 4 && $tipoLicenciaId == 4) && !($capacidad > 0 && $tipoLicenciaId == 5) && !($capacidad > 0 && $tipoLicenciaId == 10)) {
+                flash('Error: Capacidad del Remolque (' . $capacidad . ' vehículos), no corresponde con el tipo de Licencia (' . $licencia . ') de conducir.')->error();
+                return back()->withInput();
         }
+
+        // if (!$this->validarData($conductor, 'conductor', $fechaViaje)){
+        //     return back()->withInput();
+        // }
+
+
+        // if (!$this->validarData($camion, 'camion', $fechaViaje)){
+        //     return back()->withInput();
+        // }
+
+
+        // if (!$this->validarData($remolque, 'remolque', $fechaViaje)){
+        //     return back()->withInput();
+        // }
 
         $licenciaValida = new Carbon($conductor->conductor_fecha_vencimiento);
 
@@ -160,7 +170,7 @@ class TourController extends Controller
         $diferenciaRevisionRemolque = $fechaViaje->diffInDays($revisionRemolque);
         $diferenciaPermisoRemolque = $fechaViaje->diffInDays($permisoRemolque);
 
-        // La licencia debe tener al menos 16 días de vigencia al momento del viaje. 
+        // La licencia debe tener al menos 16 días de vigencia al momento del viaje.
         // La fecha del viaje no puede ser posterior al vencimiento de la licencia
         if($diferenciaLicencia <= 15 || $fechaViaje > $licenciaValida )
         {
@@ -200,7 +210,7 @@ class TourController extends Controller
             flash('El Tour se creó correctamente. Ahora puede añadir las rutas.')->success();
             return redirect()->action('TourController@tour');
 
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             flash('Error al crear el Tour.')->error();
            //flash($e->getMessage())->error();
             return redirect()->action('TourController@tour')->withInput();
@@ -216,51 +226,51 @@ class TourController extends Controller
     * fechaViaje: fecha del nuevo viaje a realizarse
     * tour_id: ID del tour si se está modificando.
     */
-    protected function validarData($data, $modelo, $fechaViaje, $tour_id=null)
-    {
-        $cadenaConsulta = $modelo . '_id';
+    // protected function validarData($data, $modelo, $fechaViaje, $tour_id=null)
+    // {
+    //     $cadenaConsulta = $modelo . '_id';
 
-        if ($modelo === 'conductor') {
-            $id_modelo = $data->user_id;
-        } else {
-            $id_modelo = $data->$cadenaConsulta;
-        }
+    //     if ($modelo === 'conductor') {
+    //         $id_modelo = $data->user_id;
+    //     } else {
+    //         $id_modelo = $data->$cadenaConsulta;
+    //     }
 
-        
-        $noDisponible = Tour::where('tour_id', '!=', $tour_id)
-            ->where($cadenaConsulta, $id_modelo)
-            ->where('tour_iniciado', true)
-            ->where('tour_finalizado', false)
-            ->exists();    
 
-        if($noDisponible){
-            flash('Error: Conductor no disponible.')->error();
-            return false;
-        }
+    //     $noDisponible = Tour::where('tour_id', '!=', $tour_id)
+    //         ->where($cadenaConsulta, $id_modelo)
+    //         ->where('tour_iniciado', true)
+    //         ->where('tour_finalizado', false)
+    //         ->exists();
 
-        // $otroTour = 
-        
-        $fechaOtroTour = Tour::where('tour_id', '!=', $tour_id)
-            ->where($cadenaConsulta, $id_modelo)
-            ->where('tour_iniciado', false)
-            ->where('tour_finalizado', false)
-            ->orderByDesc('tour_fec_inicio')
-            ->limit(1)
-            ->value('tour_fec_inicio');
-            
-        if ($fechaOtroTour !== null){
-            $fechaInicioOtroTour = new Carbon($fechaOtroTour);
-        
-            $diferenciaFechaNuevoTour = $fechaViaje->diffInDays($fechaInicioOtroTour);
+    //     if($noDisponible){
+    //         flash('Error: Conductor no disponible.')->error();
+    //         return false;
+    //     }
 
-            if($diferenciaFechaNuevoTour <= 7){
-                flash('Error: ' . ucfirst($modelo) . ' con otro viaje agendado en menos de una semana.')->error();
-                return false;
-            }
-        }
-        
-        return true;
-    }
+    //     // $otroTour =
+
+    //     $fechaOtroTour = Tour::where('tour_id', '!=', $tour_id)
+    //         ->where($cadenaConsulta, $id_modelo)
+    //         ->where('tour_iniciado', false)
+    //         ->where('tour_finalizado', false)
+    //         ->orderByDesc('tour_fec_inicio')
+    //         ->limit(1)
+    //         ->value('tour_fec_inicio');
+
+    //     if ($fechaOtroTour !== null){
+    //         $fechaInicioOtroTour = new Carbon($fechaOtroTour);
+
+    //         $diferenciaFechaNuevoTour = $fechaViaje->diffInDays($fechaInicioOtroTour);
+
+    //         if($diferenciaFechaNuevoTour <= 7){
+    //             flash('Error: ' . ucfirst($modelo) . ' con otro viaje agendado en menos de una semana.')->error();
+    //             return false;
+    //         }
+    //     }
+
+    //     return true;
+    // }
 
     /**
      * Display the specified resource.
@@ -323,7 +333,7 @@ class TourController extends Controller
         $id_tour = Crypt::decrypt($id);
 
         $tour = Tour::findOrFail($id_tour);
-        
+
         // No se puede modificar un tour que ya haya arrancado, o que ya haya iniciado y finalizado correctamente.
         // Sólo se permitirá en el caso de tours cancelados o que estén pendientes por arrancar.
         if ($tour->tour_iniciado && !$tour->finalizado) {
@@ -343,22 +353,31 @@ class TourController extends Controller
         }
 
         $conductor = Conductor::where('user_id', $request->conductor_id)->first();
-
-        if (!$this->validarData($conductor, 'conductor', $fechaViaje, $id_tour)){
-            return back()->withInput();
-        }
-
         $camion = Camion::where('camion_id', $request->camion_id)->first();
-
-        if (!$this->validarData($camion, 'camion', $fechaViaje, $id_tour)){
-            return back()->withInput();
-        }
-
         $remolque = Remolque::where('remolque_id', $request->remolque_id)->first();
+        $tipoLicenciaId = $conductor->tipo_licencia_id;
+        $capacidad = $remolque->remolque_capacidad;
+        $licencia = TipoLicencia::find($tipoLicenciaId)->tipo_licencia_nombre;
 
-        if (!$this->validarData($remolque, 'remolque', $fechaViaje, $id_tour)){
-            return back()->withInput();
+
+        if (!($capacidad <= 4 && $tipoLicenciaId == 4) && !($capacidad > 0 && $tipoLicenciaId == 5) && !($capacidad > 0 && $tipoLicenciaId == 10)) {
+                flash('Error: Capacidad del Remolque (' . $capacidad . ' vehículos), no corresponde con el tipo de Licencia (' . $licencia . ') de conducir.')->error();
+                return back()->withInput();
         }
+
+        // if (!$this->validarData($conductor, 'conductor', $fechaViaje, $id_tour)){
+        //     return back()->withInput();
+        // }
+
+
+        // if (!$this->validarData($camion, 'camion', $fechaViaje, $id_tour)){
+        //     return back()->withInput();
+        // }
+
+
+        // if (!$this->validarData($remolque, 'remolque', $fechaViaje, $id_tour)){
+        //     return back()->withInput();
+        // }
 
         $licenciaValida = new Carbon($conductor->conductor_fecha_vencimiento);
 
@@ -375,7 +394,7 @@ class TourController extends Controller
         $diferenciaRevisionRemolque = $fechaViaje->diffInDays($revisionRemolque);
         $diferenciaPermisoRemolque = $fechaViaje->diffInDays($permisoRemolque);
 
-        // La licencia debe tener al menos 16 días de vigencia al momento del viaje. 
+        // La licencia debe tener al menos 16 días de vigencia al momento del viaje.
         // La fecha del viaje no puede ser posterior al vencimiento de la licencia
         if($diferenciaLicencia <= 15 || $fechaViaje > $licenciaValida )
         {
@@ -404,14 +423,14 @@ class TourController extends Controller
                 || ($tour->conductor_id != $request->conductor_id) || ($tour->tour_fec_inicio != $request->tour_fecha_inicio)){
                     $tour->tour_comentarios = "Tour actualizado. Información modificada.";
                 }
-            
+
             $tour->camion_id = $request->camion_id;
             $tour->remolque_id = $request->remolque_id;
             $tour->proveedor_id = $request->transporte_id;
             $tour->conductor_id = $request->conductor_id;
             $tour->tour_fec_inicio = $request->tour_fecha_inicio;
             $tour->tour_finalizado = false;
-            
+
             if ($tour->save()) {
                 flash('El Tour se actualizó correctamente.')->success();
                 return redirect()->action('TourController@tour');
@@ -439,7 +458,7 @@ class TourController extends Controller
             if ($guias) {
                 foreach ($guias as $guia) {
                     $guiaBorrar = Guia::findOrFail($guia->guia_id);
-    
+
                     $guiaBorrar->delete();
                 }
             }
@@ -447,7 +466,7 @@ class TourController extends Controller
             // Eliminar luego el tour.
             $tour = Tour::findOrfail($id_tour);
             $tour->delete();
-                
+
             flash('Los todos los datos del Tour han sido eliminados satisfactoriamente.')->success();
             return redirect()->route('tour.tour');
         }catch (\Exception $e) {
@@ -465,7 +484,7 @@ class TourController extends Controller
 
         return redirect()->route('tour.tour');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *

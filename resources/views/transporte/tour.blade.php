@@ -36,14 +36,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="conductor_id" ><strong> Conductor *</strong></label>
-                                    {!! Form::select('conductor_id', $conductor, null,['id' => 'camion', 'placeholder'=>'Conductor', 'class'=>'form-control col-sm-9 select-cliente', 'required']) !!}
+                                    {!! Form::select('conductor_id', $conductor, null,['id' => 'conductor', 'placeholder'=>'Conductor', 'class'=>'form-control col-sm-9 select-cliente', 'required']) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-4" id="wrapper_2">
                                 <div class="form-group">
                                     <label for="tour_fecha_inicio" >Fecha de Inicio <strong>*</strong></label>
-                                     {!! Form::date('tour_fecha_inicio', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
+                                    {!! Form::date('tour_fecha_inicio', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
                                 </div>
                             </div>
 
@@ -70,8 +70,8 @@
         <div class="ibox float-e-margins">
                 <div class="card card-default">
                         <div class="card-header">
-                          <h3 class="card-title">Listado de Tours</h3>
-                          <div class="card-tools">
+                            <h3 class="card-title">Listado de Tours</h3>
+                            <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                 <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                             </div>
@@ -105,14 +105,14 @@
                                                 <td><small>{{ $tour->belongsToRemolque->remolque_patente }}</small></td>
                                                 <td><small>{{ $tour->oneConductor->user_nombre }} {{ $tour->oneConductor->user_apellido }}</small></td>
                                                 <td><small>{{ $tour->tour_fec_inicio}}</small></td>
-                                                
+
                                                 @if($tour->tour_iniciado)
                                                     @if(!$tour->tour_finalizado)
                                                         <td><small><button class="btn btn-info btn-sm rounded">En Tránsito</button></small></td>
                                                     @else
                                                         <td><small><button class="btn btn-success btn-sm rounded">Finalizado</button></small></td>
                                                     @endif
-                                                @else 
+                                                @else
                                                     @if($tour->tour_finalizado)
                                                         <td><small><button class="btn btn-danger btn-sm rounded">Cancelado</button></small></td>
                                                     @else
@@ -129,23 +129,23 @@
                                                                 <a href="{{ route('tour.editrutas', Crypt::encrypt($tour->tour_id)) }}" class=" btn-vin"  title="Rutas"><i class="fas fa fa-barcode"></i></a>
                                                             </small>
                                                         @endif
-                                                    @else 
+                                                    @else
                                                         @if($tour->tour_finalizado)
                                                             <small>
-                                                                <a href="{{ route('tour.edit', Crypt::encrypt($tour->tour_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
+                                                                <a href="{{ route('tour.edit', Crypt::encrypt($tour->tour_id)) }}" class="btn-empresa" title="Editar Tour"><i class="far fa-edit"></i></a>
                                                             </small>
                                                             <small>
-                                                                <a href = "{{ route('tour.delete', Crypt::encrypt($tour->tour_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i></a>
+                                                                <a href = "{{ route('tour.delete', Crypt::encrypt($tour->tour_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa" title="Eliminar Tour"><i class="far fa-trash-alt"></i></a>
                                                             </small>
                                                         @else
                                                             <small>
-                                                                <a href="{{ route('tour.edit', Crypt::encrypt($tour->tour_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
+                                                                <a href="{{ route('tour.edit', Crypt::encrypt($tour->tour_id)) }}" class="btn-empresa"  title="Editar Tour"><i class="far fa-edit"></i></a>
                                                             </small>
                                                             <small>
-                                                                <a href = "{{ route('tour.delete', Crypt::encrypt($tour->tour_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i></a>
+                                                                <a href="{{ route('tour.editrutas', Crypt::encrypt($tour->tour_id)) }}" class=" btn-vin"  title="Gestión de Rutas"><i class="fas fa fa-barcode"></i></a>
                                                             </small>
                                                             <small>
-                                                                <a href="{{ route('tour.editrutas', Crypt::encrypt($tour->tour_id)) }}" class=" btn-vin"  title="Rutas"><i class="fas fa fa-barcode"></i></a>
+                                                                <a href = "{{ route('tour.delete', Crypt::encrypt($tour->tour_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa" title="Eliminar Tour"><i class="far fa-trash-alt"></i></a>
                                                             </small>
                                                         @endif
                                                     @endif
