@@ -1065,7 +1065,7 @@ class ApiController extends Controller
                     $transportista->user_estado = 1;
                     $transportista->email = $request->correo;
                     $transportista->password = "";
-                    $transportista->rol_id = 6;
+                    $transportista->rol_id = 7;
                     $transportista->user_telefono = "";
                     $transportista->empresa_id = $user->empresa_id;
                     $transportista->save();
