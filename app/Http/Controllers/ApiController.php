@@ -706,13 +706,13 @@ class ApiController extends Controller
                 $inspecciones->responsable = $users[$inspecciones->responsable_id];
 
                 $inspecciones->inspeccion_fecha = date('d/m/Y', strtotime($inspecciones->inspeccion_fecha));
-           
+
                if(array_key_exists($Vin->empresa_id, $empresa)){   //cambio de posicion del condicional
                      $inspecciones->cliente = $empresa[$Vin->empresa_id];
                     }else
                     $inspecciones->cliente="";
-           
-           
+
+
             }else{
                 $inspecciones = Array();
             }
@@ -1065,7 +1065,7 @@ class ApiController extends Controller
                     $transportista->user_estado = 1;
                     $transportista->email = $request->correo;
                     $transportista->password = "";
-                    $transportista->rol_id = 7;
+                    $transportista->rol_id = 6;
                     $transportista->user_telefono = "";
                     $transportista->empresa_id = $user->empresa_id;
                     $transportista->save();
@@ -1147,7 +1147,7 @@ class ApiController extends Controller
                     $date = Carbon::now();
                     $fecha = $date->toDateString();
                     $hora = $date->toTimeString();
-                    
+
                     // Guardar historial del cambio
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
