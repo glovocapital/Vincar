@@ -23,10 +23,11 @@ class ConductorController extends Controller
         $conductor = Conductor::all();
 
 
-        $usuario = User::select(DB::raw("CONCAT(user_nombre,' ',user_apellido) AS nombre"),'user_id')
+        $usuario = User::select(DB::raw("CONCAT(user_nombre,' ',user_apellido) AS nombre"),'users.user_id', 'conductors.created_at')
+            ->leftJoin('conductors', 'conductors.user_id', 'users.user_id')
             ->where('rol_id', 5)
+            ->where('conductors.created_at', null)
             ->pluck('nombre', 'user_id');
-
 
         $tipo_licencia = DB::table('tipo_licencias')
         ->select('tipo_licencia_id','tipo_licencia_nombre')
