@@ -126,6 +126,26 @@
     .fa-lightbulb::before{
         content: none !important;
     }
+    /* Agregado por Kamal
+      la funcionalidad es que cada objeto que tenga el class blink parpadee
+    */
+    @-webkit-keyframes blinker {
+      from {opacity: 1.0;}
+      to {opacity: 0.0;}
+    }
+    .blink{
+    	text-decoration: blink;
+    	-webkit-animation-name: blinker;
+    	-webkit-animation-duration: 0.6s;
+    	-webkit-animation-iteration-count:infinite;
+    	-webkit-animation-timing-function:ease-in-out;
+    	-webkit-animation-direction: alternate;
+    }
+    .lineas td {
+            border-top: 1px solid #dddddd;
+            border-bottom: 1px solid #dddddd;
+            border-right: 1px solid #dddddd;
+          }
 
 
 

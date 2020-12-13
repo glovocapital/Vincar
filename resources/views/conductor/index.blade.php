@@ -13,7 +13,7 @@
                             <a href="{{ route('conductores.create_conductor') }}" type="button" class="btn btn-success">Crear Conductor</a>
                         </p>
                     </div>
-        
+
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -67,6 +67,9 @@
                 <div class="card card-default">
                     <div class="card-header">
                         <h3 class="card-title">Listado de Conductores</h3>
+                        <button class="btn float-right" onclick="mostrarAlertas();" id="btnAlertas">
+                          Alertas&nbsp;<span id="nroAlertas" class="label label-default">0</span>
+                        </button>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                             <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -86,8 +89,37 @@
                                 </tr>
                             </thead>
                             <tbody>
-
+                              @php
+                                $alertas = 0;
+                                $alerta = new stdClass();
+                                $arregloAlertas = [];
+                              @endphp
                             @foreach($conductor as $p)
+                            @php
+                              $f1 = date_create(date('Y-m-d'));
+                              $f2 = date_create($p->conductor_fecha_vencimiento);
+                              $interval = date_diff($f1, $f2);
+                              $signo = $interval->format('%R');
+                              $dias = $interval->format('%a');
+                              if ($signo == '-' || $dias <= 30){
+                                $color = 'text-danger';
+                                $alertas ++;
+                                $alerta = new stdClass();
+                                $alerta->nombre = $p->belongstoUser->user_nombre ." ". $p->belongstoUser->user_apellido;
+                                if($signo == '+'){
+                                  $texto = "faltan";
+                                }
+                                else{
+                                  $texto = "atrasado";
+                                }
+                                $alerta->descripcion = "Licencia de Conducir (".$texto." ".$dias." días)";
+                                array_push($arregloAlertas, $alerta);
+                              }
+                              else{
+                                $color = '';
+                              }
+
+                            @endphp
                             <tr>
                                 <td><small>{{ $p->belongstoUser->user_nombre }} {{ $p->belongstoUser->user_apellido }}</small></td>
                                 <td><small>{{ $p->oneLicencia->tipo_licencia_nombre }}</small></td>
@@ -114,10 +146,61 @@
             </div>
         </div>
         </div>
+        <!--modal alertas -->
+        <div class="modal fade" id="modalAlertas" >
+            <div class="modal-dialog modal-lg" >
+                <div class="modal-content">
+                    <div class="modal-header bg-warning"> <h4 class="modal-title text-white" id="myModalLabel">Alertas Actuales</h4></div>
+                    <div class="modal-body">
+                        <table id="tblayudantes" class="table-hover nowrap lineas" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Patente</th>
+                                    <th>Tipo Alerta</th>
+                                </tr>
+                            </thead>
+                            @foreach($arregloAlertas as $a)
+                              <tr>
+                                <td><small>{{ $a->nombre }}</small></td>
+                                <td><small>{{ $a->descripcion }}</small></td>
+                              </tr>
+                            @endforeach
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close" aria-hidden="true"></i>&nbsp;Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 @stop
-
+@section("local-scripts")
 <script>
        $(document).ready(function() {
     $('#dataTableCamion').DataTable();
+    cargaAlertas();
 } );
+function cargaAlertas(){
+  if(@php echo $alertas @endphp > 0){
+    $("#nroAlertas").html(@php echo $alertas @endphp);
+    $("#btnAlertas").addClass("btn-warning");
+    $("#nroAlertas").addClass("blink");
+  }
+  else{
+    $("#nroAlertas").html(0);
+    $("#btnAlertas").removeClass("btn-warning");
+    $("#btnAlertas").addClass("btn-success");
+    $("#nroAlertas").removeClass("blink");
+  }
+}
+
+function mostrarAlertas(){
+  if(@php echo $alertas @endphp > 0){
+    $("#modalAlertas").modal("show");
+  }
+  else{
+    alert("Actualmente no hay alertas");
+  }
+}
 </script>
+@endsection
