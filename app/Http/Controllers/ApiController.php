@@ -859,6 +859,9 @@ class ApiController extends Controller
         $pieza_sub_area_id = $request->input('pieza_sub_area_id');
         $dano_pieza_observaciones = $request->input('dano_pieza_observaciones');
 
+        $foto_coord_lon = $request->input('foto_coord_lon');
+        $foto_coord_lat = $request->input('foto_coord_lat');
+        
         $Vin =Vin::where('vin_codigo','=', $vins)
             ->first();
 
@@ -886,7 +889,7 @@ class ApiController extends Controller
                     $Vin_->vin_estado_inventario_id = 6;
                     $Vin_->update();
 
-                    $datosDanoPieza = $request->input('dano_pieza'); // David ¿Esto es de qué? No se está utilizando.
+                    $datosDanoPieza = $request->input('dano_pieza'); 
                     $danoPieza = new DanoPieza();
                     $danoPieza->pieza_id = $pieza_id;
                     $danoPieza->tipo_dano_id = $tipo_dano_id;
@@ -901,8 +904,8 @@ class ApiController extends Controller
                     $foto->foto_fecha = date('Y-m-d');
                     $foto->foto_descripcion = "Inspección con daño";
                     $foto->foto_ubic_archivo = "fotos/";
-                    $foto->foto_coord_lat = 0;
-                    $foto->foto_coord_lon = 0;
+                    $foto->foto_coord_lat = $foto_coord_lat;
+                    $foto->foto_coord_lon = $foto_coord_lon;
                     $foto->dano_pieza_id = $danoPieza->dano_pieza_id;
                     $foto->save();
 
@@ -1433,6 +1436,9 @@ class ApiController extends Controller
         $vin_codigo = $request->input('vin');
         $user_id = $request->input('user_id');
         $observaciones = $request->input('observaciones');
+        $foto_coord_lon = $request->input('foto_coord_lon');
+        $foto_coord_lat = $request->input('foto_coord_lat');
+
 
 
         if(empty($vin_codigo) || $vin_codigo=="undefined"){
@@ -1460,8 +1466,8 @@ class ApiController extends Controller
             $foto->foto_fecha = date('Y-m-d');
             $foto->foto_descripcion = $observaciones;
             $foto->foto_ubic_archivo = "fotos/";
-            $foto->foto_coord_lat = 0;
-            $foto->foto_coord_lon = 0;
+            $foto->foto_coord_lat = $foto_coord_lat;
+            $foto->foto_coord_lon = $foto_coord_lon;
             $foto->foto_ubic_archivo = $path;
             $foto->vin_codigo = $vin_codigo;
             $foto->save();
