@@ -155,7 +155,7 @@
                         <table id="tblayudantes" class="table-hover nowrap lineas" style="width: 100%;">
                             <thead>
                                 <tr>
-                                    <th>Patente</th>
+                                    <th>Nombre</th>
                                     <th>Tipo Alerta</th>
                                 </tr>
                             </thead>
