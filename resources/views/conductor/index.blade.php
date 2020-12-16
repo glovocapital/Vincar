@@ -185,6 +185,7 @@ function cargaAlertas(){
     $("#nroAlertas").html(@php echo $alertas @endphp);
     $("#btnAlertas").addClass("btn-warning");
     $("#nroAlertas").addClass("blink");
+    $("#modalAlertas").modal("show");
   }
   else{
     $("#nroAlertas").html(0);
