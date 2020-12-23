@@ -48,6 +48,7 @@ return [
     'Disponibilidad'=>'Availability',
 
     'Facturacion'=>'Billing',
+    'PreFacturacion'=>'Pre Billing',
     'Ventas'=>'Sales',
     'Ventas_Electronicas'=>'Electronic Sales',
     'Notificaciones_SII'=>'SII Notifications',

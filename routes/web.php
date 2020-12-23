@@ -350,8 +350,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('tour/{id}/edit','TourController@editTour')->name('tour.edit');
     Route::patch('tour/{id}/update','TourController@updateTour')->name('tour.update');
     Route::get('tour/{id}/delete','TourController@trash')->name('tour.delete');
-    
-    
+
+
     // Rutas del tour
     Route::get('tour/addrutas', 'RutaController@addRutas')->name('tour.addrutas');
     Route::post('tour/crearutas', 'RutaController@creaRutas')->name('tour.crearutas');
@@ -365,7 +365,10 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('vehiculo_nn','VehiculoNNController@index')->name('vehiculo_nn');
     Route::get('vehiculo_nn/{vin_id}/data_vin_nn','VehiculoNNController@dataVinNN')->name('vehiculo_nn.dataVinNn');
     Route::post('vehiculo_nn/registrar_vin','VehiculoNNController@registrarVin')->name('vehiculo_nn.registrarVin');
+
+    // Rutas para Facturación
+    Route::get('facturacion/prefactura', 'FacturacionController@prefactura')->name('facturacion.prefactura');
+    Route::post('facturacion/generarPrefactura','FacturacionController@generarPrefactura')->name('prefacturacion.generar');
+
+
 });
-
-
-
