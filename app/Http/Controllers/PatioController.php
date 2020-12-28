@@ -1,5 +1,7 @@
 <?php
 namespace App\Http\Controllers;
+
+use App\Bloque;
 use Illuminate\Http\Request;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\CheckSession;
@@ -246,18 +248,13 @@ class PatioController extends Controller
     {
         $patio = (isset($request->id_patio))?intval($request->id_patio):0;
 
-
-
-
-        $capacidad = DB::table('patios')
-            ->join('bloques','patios.patio_id','bloques.patio_id')
+        $capacidad = Patio::join('bloques','patios.patio_id','bloques.patio_id')
             ->select('patio_nombre','bloque_nombre','bloque_filas','bloque_columnas', 'patios.patio_id as patio_id');
         if($patio>0)
             $capacidad->where("patios.patio_id","=",$patio);
         $capacidad=$capacidad->get();
 
-        $vehiculos_patio = DB::table('patios')
-            ->join('bloques','patios.patio_id','bloques.patio_id')
+        $vehiculos_patio = Patio::join('bloques','patios.patio_id','bloques.patio_id')
             ->join('ubic_patios','ubic_patios.bloque_id','bloques.bloque_id')
             ->select(DB::raw("count(patio_nombre) AS can_vin"), "patio_nombre")
             ->where('ubic_patio_ocupada',true)
@@ -268,8 +265,7 @@ class PatioController extends Controller
 
         $vehiculos_patio = $vehiculos_patio->get();
 
-        $vehiculos30 = DB::table('vins')
-            ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
+        $vehiculos30 = Vin::join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
             ->select(DB::raw("count(vins.vin_id) AS can_vin"))
             ->where('vins.vin_estado_inventario_id','<>',1)
             ->where('vins.vin_estado_inventario_id','<>',8)
@@ -284,8 +280,7 @@ class PatioController extends Controller
 
         $vehiculos30 = $vehiculos30->get();
 
-        $vehiculosTotal = DB::table('vins')
-            ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
+        $vehiculosTotal = Vin::join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
             ->select(DB::raw("count(vins.vin_id) AS can_vin"))
             ->where('vins.vin_estado_inventario_id','<>',1)
             ->where('vins.vin_estado_inventario_id','<>',8);
@@ -298,8 +293,7 @@ class PatioController extends Controller
         }
         $vehiculosTotal = $vehiculosTotal->get();
 
-        $Unidades_Danadas = DB::table('vins')
-            ->select(DB::raw("count(vins.vin_id) AS can_vin"))
+        $Unidades_Danadas = Vin::select(DB::raw("count(vins.vin_id) AS can_vin"))
             ->where('vin_estado_inventario_id',"=",6)
             ->where('vin_estado_inventario_id',"=",7);
 
@@ -363,11 +357,7 @@ class PatioController extends Controller
 
         }
 
-
-
-
         $datos = Array(
-
             'Capacidad_Total'=>$Capacidad_Total,
             'Espacios_Disponibles'=>$Espacios_Disponibles,
             'Porc_vehiculo'=>$Porc_vehiculo,
@@ -380,7 +370,6 @@ class PatioController extends Controller
                 Array("Vehiculos"=>"Dañados", "Data"=>$Unidades_Danadas[0]->can_vin, "backgroundColor"=>"#ff0000"),
                 Array("Vehiculos"=>"Optimos", "Data"=>($vehiculosTotal[0]->can_vin-$Unidades_Danadas[0]->can_vin), "backgroundColor"=>"#26dbdb")
             )
-
         );
         return response()->json($datos);
     }
@@ -390,15 +379,14 @@ class PatioController extends Controller
         $id_patio =   $request->get("patio_id");
 
         if ($request->ajax()){
-            $bloques = DB::table('bloques')
-                ->select('bloque_nombre','patio_id', 'bloque_id')
+            $bloques = Bloque::select('bloque_nombre','patio_id', 'bloque_id')
                 ->where('patio_id', '=', $id_patio)
                 ->where('bloques.deleted_at','=',null)
                 ->orderBy('bloque_nombre')
                 ->get();
 
-            $request->id_patio=$id_patio;
-            $dashboard_ =self::dashboard($request);
+            $request->id_patio = $id_patio;
+            $dashboard_ = self::dashboard($request);
             $dashboard = json_decode($dashboard_->content(),true);
 
 
@@ -429,15 +417,13 @@ class PatioController extends Controller
             $bloques = Array();
 
             if($id_bloque!='')
-                $bloques = DB::table('bloques')
-                    ->where('patio_id', '=', $id_patio)
+                $bloques = Bloque::where('patio_id', '=', $id_patio)
                     ->where('bloque_id', '=', $id_bloque)
                     ->select('patio_id','bloque_nombre','bloque_filas', 'bloque_columnas')
                     ->orderBy('bloque_nombre')
                     ->get();
             else
-                $bloques = DB::table('bloques')
-                    ->where('patio_id', '=', $id_patio)
+                $bloques = Bloque::where('patio_id', '=', $id_patio)
                     ->select('patio_id','bloque_nombre','bloque_filas', 'bloque_columnas', 'bloque_id')
                     ->orderBy('bloque_nombre')
                     ->get();
@@ -448,8 +434,7 @@ class PatioController extends Controller
             }
 
 
-            $ubicados = DB::table('ubic_patios')
-                ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+            $ubicados = UbicPatio::join("vins", "ubic_patios.vin_id","=","vins.vin_id")
                 ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
                 ->join("vin_estado_inventarios", "vin_estado_inventarios.vin_estado_inventario_id","=","vins.vin_estado_inventario_id")
                 ->select('vins.vin_id as vin_id','ubic_patio_columna','ubic_patio_fila', "vin_codigo", "marca_nombre as vin_marca","ubic_patios.updated_at as vin_fec_ingreso","vins.vin_estado_inventario_id as vin_estado_inventario_id","bloque_id","vin_estado_inventario_desc")
@@ -469,9 +454,6 @@ class PatioController extends Controller
                 'ubicados' => $ubicados
             ]);
         }
-
-
-
     }
 
 
@@ -496,16 +478,14 @@ class PatioController extends Controller
             $partes =  explode('_', $id_bloque);
 
             if(count($partes)==1){
-                $ubicados = DB::table('ubic_patios')
-                    ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+                $ubicados = UbicPatio::join("vins", "ubic_patios.vin_id","=","vins.vin_id")
                     ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
                     ->select('vins.vin_id as vin_id')
                     ->where('patio_id', '=', $id_patio)
                     ->where('ubic_patios.bloque_id', '=', $partes[0])
                     ->get();
             }else {
-                $ubicados = DB::table('ubic_patios')
-                    ->join("vins", "ubic_patios.vin_id","=","vins.vin_id")
+                $ubicados = UbicPatio::join("vins", "ubic_patios.vin_id","=","vins.vin_id")
                     ->join("bloques", "bloques.bloque_id","=","ubic_patios.bloque_id")
                     ->select('vins.vin_id as vin_id')
                     ->where('patio_id', '=', $id_patio)
