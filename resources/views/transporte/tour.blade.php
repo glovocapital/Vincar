@@ -139,7 +139,7 @@
 
                                                 <td>
                                                     <div class="switch-button2">
-                                                    @if (($tour->tour_fec_inicio != \Carbon\Carbon::today()->toDateString()) && (!$tour->tour_iniciado))
+                                                    @if (($tour->tour_fec_inicio >= \Carbon\Carbon::today()->toDateString()) && (!$tour->tour_iniciado))
                                                     <p title="Modificar tour">N/A</p>
                                                     @else
                                                     {!! Form::open(['route' => 'tour.finalizar_tour', 'method'=>'POST']) !!}
