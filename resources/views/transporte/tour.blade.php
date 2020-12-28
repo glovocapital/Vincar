@@ -130,7 +130,7 @@
                                                     <p title="Modificar tour">N/A</p>
                                                     @else
                                                     {!! Form::open(['route' => 'tour.iniciar_tour', 'method'=>'POST']) !!}
-                                                        <input type="checkbox" name="switch-button1" id="switch-label-iniciar-{{$tour->tour_id}}" class="switch-button1__checkbox" value="{{$tour->tour_iniciado}}"{{$tour->tour_iniciado ?' checked':''}}/>
+                                                        <input type="checkbox" name="switch-button1" id="switch-label-iniciar-{{$tour->tour_id}}" class="switch-button1__checkbox" value="{{$tour->tour_iniciado}}"{{$tour->tour_iniciado ?' checked disabled':''}}/>
                                                         <label for="switch-label-iniciar-{{$tour->tour_id}}" class="switch-button1__label"></label>
                                                     {!! Form::close() !!}
                                                     @endif
@@ -143,7 +143,7 @@
                                                     <p title="Modificar tour">N/A</p>
                                                     @else
                                                     {!! Form::open(['route' => 'tour.finalizar_tour', 'method'=>'POST']) !!}
-                                                        <input type="checkbox" name="switch-button2" id="switch-label-finalizar-{{$tour->tour_id}}" class="switch-button2__checkbox" value="{{$tour->tour_finalizado}}"{{$tour->tour_finalizado ?' checked':''}}/>
+                                                        <input type="checkbox" name="switch-button2" id="switch-label-finalizar-{{$tour->tour_id}}" class="switch-button2__checkbox" value="{{$tour->tour_finalizado}}"{{$tour->tour_finalizado ?' checked disabled':''}}/>
                                                         <label for="switch-label-finalizar-{{$tour->tour_id}}" class="switch-button2__label"></label>
                                                     {!! Form::close() !!}
                                                     @endif
