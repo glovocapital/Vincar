@@ -565,20 +565,29 @@ class TourController extends Controller
         $tour = Tour::findOrfail($tour_id);
 
         try{
-            if ($request->finalizado){
-                $tour->tour_finalizado = $request->finalizado;
-                $tour->tour_fec_fin = Carbon::now()->toDateTimeString();
-            } else {
-                $tour->tour_finalizado = $request->finalizado;
-                $tour->tour_fec_fin = null;
-            }
-
-            if($tour->save()){
-                if($request->finalizado){
-                    $mensaje = "Tour finalizado correctamente.";
+            if ($tour->tour_iniciado) {
+                if ($request->finalizado){
+                    $tour->tour_finalizado = $request->finalizado;
+                    $tour->tour_fec_fin = Carbon::now()->toDateTimeString();
                 } else {
-                    $mensaje = "Tour de nuevo en estado no finalizado.";
+                    $tour->tour_finalizado = $request->finalizado;
+                    $tour->tour_fec_fin = null;
                 }
+
+                if($tour->save()){
+                    if($request->finalizado){
+                        $mensaje = "Tour finalizado correctamente.";
+                    } else {
+                        $mensaje = "Tour de nuevo en estado no finalizado.";
+                    }
+                }
+            } else {
+                flash('Error de finalización del tour: El tour no está iniciado.')->error();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => "Error finalizando el tour: Tour no iniciado previamente.",
+                ]);
             }
         }  catch (\Throwable $th) {
             flash('Error cambiando estado de finalización del tour.')->error();
