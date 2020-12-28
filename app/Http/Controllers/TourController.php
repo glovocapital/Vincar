@@ -507,8 +507,92 @@ class TourController extends Controller
         $tour = Tour::findOrFail($tour_id);
 
         $tour->tour_finalizado = true;
-        $tour->tour_comentarios = "Tour cancelado o no iniciado.";
+        $tour->tour_comentarios = "Tour cancelado o no iniciado en fecha correspondiente.";
 
         $tour->save();
+    }
+
+    /**
+     * Iniciar un tour manualmente a nivel administrativo.
+     */
+
+    public function iniciarTour(Request $request)
+    {
+        $tour_id =  $request->tour_id;
+        $tour = Tour::findOrfail($tour_id);
+
+        try{
+            if ($request->iniciado){
+                $tour->tour_iniciado = $request->iniciado;
+                $tour->tour_fec_hora_iniciado = Carbon::now()->toDateTimeString();
+                $tour->tour_comentarios = 'Tour iniciado.';
+            } else {
+                $tour->tour_iniciado = $request->iniciado;
+                $tour->tour_fec_hora_iniciado = null;
+                $tour->tour_comentarios = 'Tour restablecido a estado no iniciado.';
+            }
+
+            if($tour->save()){
+                if($request->iniciado){
+                    $mensaje = "Tour iniciado correctamente.";
+                } else {
+                    $mensaje = "Tour de nuevo en estado no iniciado.";
+                }
+            }
+        }  catch (\Throwable $th) {
+            flash('Error cambiando estado de inicio del tour.')->error();
+
+            return response()->json([
+                'success' => false,
+                'message' => "Error iniciando el tour",
+            ]);
+        }
+        flash('Cambiado correctamente estado de inicio del tour.')->success();
+
+        return response()->json([
+            'success' => true,
+            'message' => $mensaje,
+        ]);
+    }
+
+    /**
+     * Finalizar un tour manualmente a nivel administrativo.
+     */
+
+    public function finalizarTour(Request $request)
+    {
+        $tour_id =  $request->tour_id;
+        $tour = Tour::findOrfail($tour_id);
+
+        try{
+            if ($request->finalizado){
+                $tour->tour_finalizado = $request->finalizado;
+                $tour->tour_fec_fin = Carbon::now()->toDateTimeString();
+            } else {
+                $tour->tour_finalizado = $request->finalizado;
+                $tour->tour_fec_fin = null;
+            }
+
+            if($tour->save()){
+                if($request->finalizado){
+                    $mensaje = "Tour finalizado correctamente.";
+                } else {
+                    $mensaje = "Tour de nuevo en estado no finalizado.";
+                }
+            }
+        }  catch (\Throwable $th) {
+            flash('Error cambiando estado de finalización del tour.')->error();
+
+            return response()->json([
+                'success' => false,
+                'message' => "Error finalizando el tour",
+            ]);
+        }
+        flash('Cambiado correctamente estado de finalización del tour.')->success();
+
+        return response()->json([
+            'success' => true,
+            'message' => $mensaje,
+        ]);
     }
 }

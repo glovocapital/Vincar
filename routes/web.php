@@ -350,8 +350,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('tour/{id}/edit','TourController@editTour')->name('tour.edit');
     Route::patch('tour/{id}/update','TourController@updateTour')->name('tour.update');
     Route::get('tour/{id}/delete','TourController@trash')->name('tour.delete');
-    
-    
+
+
     // Rutas del tour
     Route::get('tour/addrutas', 'RutaController@addRutas')->name('tour.addrutas');
     Route::post('tour/crearutas', 'RutaController@creaRutas')->name('tour.crearutas');
@@ -359,6 +359,9 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::patch('tour/{id}/update_rutas','RutaController@updateRutas')->name('tour.update_rutas');
     Route::get('tour/admin_rutas', 'RutaController@adminRutas')->name('tour.admin_rutas');
     // Route::post('tour/crearutas2', 'TourController@crearutas2')->name('tour.crearutas2');
+
+    Route::post('tour/tour/iniciarTour', 'TourController@iniciarTour')->name('tour.iniciar_tour');
+    Route::post('tour/tour/finalizarTour', 'TourController@finalizarTour')->name('tour.finalizar_tour');
 
 
     // Vehículos N/N
