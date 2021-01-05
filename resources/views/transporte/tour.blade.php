@@ -110,19 +110,19 @@
 
                                                 @if($tour->tour_iniciado)
                                                     @if(!$tour->tour_finalizado)
-                                                        <td><small><button class="btn btn-info btn-sm rounded">En Tránsito</button></small></td>
+                                                        <td id="estatus-{{$tour->tour_id}}"><small><button class="btn btn-info btn-sm rounded">En Tránsito</button></small></td>
                                                     @else
-                                                        <td><small><button class="btn btn-success btn-sm rounded">Finalizado</button></small></td>
+                                                        <td id="estatus-{{$tour->tour_id}}"><small><button class="btn btn-success btn-sm rounded">Finalizado</button></small></td>
                                                     @endif
                                                 @else
                                                     @if($tour->tour_finalizado)
-                                                        <td><small><button class="btn btn-danger btn-sm rounded">Cancelado</button></small></td>
+                                                        <td id="estatus-{{$tour->tour_id}}"><small><button class="btn btn-danger btn-sm rounded">Cancelado</button></small></td>
                                                     @else
-                                                        <td><small><button class="btn btn-warning btn-sm rounded">Pendiente</button></small></td>
+                                                        <td id="estatus-{{$tour->tour_id}}"><small><button class="btn btn-warning btn-sm rounded">Pendiente</button></small></td>
                                                     @endif
                                                 @endif
 
-                                                <td><small>{{ $tour->tour_comentarios}}</small></td>
+                                                <td id="comentario-{{$tour->tour_id}}"><small>{{ $tour->tour_comentarios}}</small></td>
 
                                                 <td>
                                                     <div class="switch-button1">
@@ -138,7 +138,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <div class="switch-button2">
+                                                    <div class="switch-button2" id="switch-button2-{{$tour->tour_id}}">
                                                     @if (($tour->tour_fec_inicio >= \Carbon\Carbon::today()->toDateString()) && (!$tour->tour_iniciado))
                                                     <p title="Modificar tour">N/A</p>
                                                     @else
@@ -211,6 +211,8 @@
                     tour_id
                 };
 
+                var token = $("input[name='_token']").attr("value");
+
                 var url = 'tour/iniciarTour';
 
                 $.post(url, request, function (res) {
@@ -223,6 +225,10 @@
                         return;  // Finaliza el intento
                     }
                     $("#switch-label-iniciar-" + tour_id).attr('disabled', 'disabled');
+                    // $("#comentario-" + tour_id).html("<small>" + res.comentario + "</small>");
+                    // $("#estatus-" + tour_id).html('<small><button class="btn btn-info btn-sm rounded">En Tránsito</button></small>');
+                    // $("#switch-button2-" + tour_id).html('<form method="POST" action="tour/tour/finalizarTour" accept-charset="UTF-8"><input name="_token" type="hidden" value="' + token + '"><input type="checkbox" name="switch-button2" id="switch-label-finalizar-' + tour_id + '" class="switch-button2__checkbox" value="0"><label for="switch-label-finalizar-' + tour_id + '" class="switch-button2__label"></label></form>');
+                    location.reload();
                 }).fail(function () {
                     alert('Error: Fallo al intentar iniciar el tour.');
                 });
@@ -260,6 +266,8 @@
                         return;  // Finaliza el intento
                     }
                     $("#switch-label-finalizar-" + tour_id).attr('disabled', 'disabled');
+                    // $("#comentario-" + tour_id).html("<small>" + res.comentario + "</small>");
+                    location.reload();
                 }).fail(function () {
                     alert('Error: Fallo al intentar finalizar el tour.');
                 });

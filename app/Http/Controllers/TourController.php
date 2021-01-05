@@ -552,6 +552,7 @@ class TourController extends Controller
         return response()->json([
             'success' => true,
             'message' => $mensaje,
+            'comentario' => $tour->tour_comentarios,
         ]);
     }
 
@@ -569,6 +570,7 @@ class TourController extends Controller
                 if ($request->finalizado){
                     $tour->tour_finalizado = $request->finalizado;
                     $tour->tour_fec_fin = Carbon::now()->toDateTimeString();
+                    $tour->tour_comentarios = 'Tour finalizado correctamente.';
                 } else {
                     $tour->tour_finalizado = $request->finalizado;
                     $tour->tour_fec_fin = null;
@@ -602,6 +604,7 @@ class TourController extends Controller
         return response()->json([
             'success' => true,
             'message' => $mensaje,
+            'comentario' => $tour->tour_comentarios,
         ]);
     }
 }
