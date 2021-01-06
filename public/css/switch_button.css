@@ -9,12 +9,46 @@
     display: inline-block;
 }
 
+.switch-button1 {
+    display: inline-block;
+}
+
+.switch-button2 {
+    display: inline-block;
+}
+
 .switch-button .switch-button__checkbox {
+    display: none;
+}
+
+.switch-button1 .switch-button1__checkbox {
+    display: none;
+}
+
+.switch-button2 .switch-button2__checkbox {
     display: none;
 }
 
 .switch-button .switch-button__label {
     background-color: var(--color-green);
+    width: 2rem;
+    height: 1rem;
+    border-radius: 2rem;
+    display: inline-block;
+    position: relative;
+}
+
+.switch-button1 .switch-button1__label {
+    background-color: var(--color-red);
+    width: 2rem;
+    height: 1rem;
+    border-radius: 2rem;
+    display: inline-block;
+    position: relative;
+}
+
+.switch-button2 .switch-button2__label {
+    background-color: var(--color-red);
     width: 2rem;
     height: 1rem;
     border-radius: 2rem;
@@ -34,10 +68,49 @@
     box-shadow: inset 0px 0px 0px 1px var(--color-black);
 }
 
+.switch-button1 .switch-button1__label:before {
+    transition: .2s;
+    display: block;
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--color-button);
+    content: '';
+    border-radius: 50%;
+    box-shadow: inset 0px 0px 0px 1px var(--color-black);
+}
+
+.switch-button2 .switch-button2__label:before {
+    transition: .2s;
+    display: block;
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--color-button);
+    content: '';
+    border-radius: 50%;
+    box-shadow: inset 0px 0px 0px 1px var(--color-black);
+}
+
 .switch-button .switch-button__checkbox:checked+.switch-button__label {
     background-color: var(--color-red);
 }
 
+.switch-button1 .switch-button1__checkbox:checked+.switch-button1__label {
+    background-color: var(--color-green);
+}
+
+.switch-button2 .switch-button2__checkbox:checked+.switch-button2__label {
+    background-color: var(--color-green);
+}
+
 .switch-button .switch-button__checkbox:checked+.switch-button__label:before {
+    transform: translateX(1rem);
+}
+
+.switch-button1 .switch-button1__checkbox:checked+.switch-button1__label:before {
+    transform: translateX(1rem);
+}
+.switch-button2 .switch-button2__checkbox:checked+.switch-button2__label:before {
     transform: translateX(1rem);
 }

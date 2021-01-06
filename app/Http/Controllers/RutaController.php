@@ -47,10 +47,10 @@ class RutaController extends Controller
 
             // Obtener cuántos VINs están previamente asignados a otras rutas del Tour.
             $cantidadVinsTour = Tour::join('rutas', 'rutas.tour_id', '=', 'tours.tour_id')
-            ->join('ruta_guias','ruta_guias.ruta_id', '=', 'rutas.ruta_id')
-            ->join('guia_vins', 'guia_vins.guia_id', '=', 'ruta_guias.guia_id')
-            ->where('tours.tour_id', $id_tour)
-            ->count();
+                ->join('ruta_guias','ruta_guias.ruta_id', '=', 'rutas.ruta_id')
+                ->join('guia_vins', 'guia_vins.guia_id', '=', 'ruta_guias.guia_id')
+                ->where('tours.tour_id', $id_tour)
+                ->count();
         } else {
             flash('Error: Tour no encontrado. Informar al administrador.')->error();
             return back()->withInput();
@@ -91,27 +91,38 @@ class RutaController extends Controller
             DB::beginTransaction();
 
             // Verificar si la ruta enviada existe o no.
-            $ruta_existe = Ruta::where('tour_id', $id_tour)
-                ->where('ruta_origen', $request->ruta_origen)
-                ->where('ruta_destino', $request->ruta_destino)
-                ->exists();
+            // $ruta_existe = Ruta::where('tour_id', $id_tour)
+            //     ->join('ruta_guias','ruta_guias.ruta_id', '=', 'rutas.ruta_id')
+            //     ->join('guias','guias.guia_id', '=', 'ruta_guias.guia_id')
+            //     ->where('ruta_origen', $request->ruta_origen)
+            //     ->where('ruta_destino', $request->ruta_destino)
+            //     ->where('guia_numero', $request->guia_numero)
+            //     ->where('empresa_id', $request->empresa_id)
+            //     ->exists();
 
             $cuenta = 0;
 
             $ruta = null;
 
             // Si no existe la ruta se crea la ruta en la base de datos asociada al tour
-            if(!$ruta_existe){
+            // if(!$ruta_existe){
                 $ruta = new Ruta();
                 $ruta->ruta_origen = $request->ruta_origen;
                 $ruta->ruta_destino = $request->ruta_destino;
                 $ruta->tour_id = $id_tour;
 
                 $ruta->save();
-            } else{
-                // Existe la ruta, entonces se consulta el registro para usar más adelante.
-                $ruta = Ruta::where('tour_id', $id_tour)->first();
-            }
+            // } else{
+            //     // Existe la ruta, entonces se consulta el registro para usar más adelante.
+            //     $ruta = Ruta::where('tour_id', $id_tour)
+            //     ->join('ruta_guias','ruta_guias.ruta_id', '=', 'rutas.ruta_id')
+            //     ->join('guias','guias.guia_id', '=', 'ruta_guias.guia_id')
+            //     ->where('ruta_origen', $request->ruta_origen)
+            //     ->where('ruta_destino', $request->ruta_destino)
+            //     ->where('guia_numero', $request->guia_numero)
+            //     ->where('empresa_id', $request->empresa_id)
+            //     ->get();
+            // }
 
             $guia = new Guia();
             $guia->guia_fecha = $request->guia_fecha;
@@ -164,6 +175,7 @@ class RutaController extends Controller
 
                         if($guia->empresa_id != $empresaVin->empresa_id){
                             flash('Error. El VIN ingresado como: ' . $vin->vin_codigo . ' no pertenece a la empresa que emitió la guía.')->error();
+                            DB::rollBack();
                             return back()->withInput();
                         }
 

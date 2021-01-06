@@ -367,9 +367,6 @@
 
     <script>
         $(function(){
-
-
-
             $("#Patios").change(function(){
             $("#Bloques").html("");
             $("#Bloques").append("<option value='' selected>{{trans('vins_patio.Seleccione')}}</option>");

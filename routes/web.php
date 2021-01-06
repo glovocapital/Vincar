@@ -360,6 +360,9 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('tour/admin_rutas', 'RutaController@adminRutas')->name('tour.admin_rutas');
     // Route::post('tour/crearutas2', 'TourController@crearutas2')->name('tour.crearutas2');
 
+    Route::post('tour/tour/iniciarTour', 'TourController@iniciarTour')->name('tour.iniciar_tour');
+    Route::post('tour/tour/finalizarTour', 'TourController@finalizarTour')->name('tour.finalizar_tour');
+
 
     // Vehículos N/N
     Route::get('vehiculo_nn','VehiculoNNController@index')->name('vehiculo_nn');
