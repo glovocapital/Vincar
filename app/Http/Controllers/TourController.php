@@ -11,6 +11,7 @@ use App\User;
 use App\Empresa;
 use App\Guia;
 use App\GuiaVin;
+use App\HistoricoTour;
 use App\Remolque;
 use App\Tour;
 use App\Ruta;
@@ -195,6 +196,8 @@ class TourController extends Controller
         }
 
         try {
+            DB::beginTransaction();
+
             $tour = new Tour();
             $tour->camion_id = $request->camion_id;
             $tour->remolque_id = $request->remolque_id;
@@ -203,16 +206,38 @@ class TourController extends Controller
             $tour->tour_fec_inicio = $request->tour_fecha_inicio;
             $tour->tour_finalizado = false;
             $tour->tour_comentarios = "Tour agendado. Pendiente por iniciar";
-            $tour->save();
 
-            $id_tour = $tour->tour_id;
 
-            flash('El Tour se creó correctamente. Ahora puede añadir las rutas.')->success();
-            return redirect()->action('TourController@tour');
+            if ($tour->save()) {
+                $id_tour = $tour->tour_id;
 
+                $historicoTour = new HistoricoTour();
+                $historicoTour->tour_id = $id_tour;
+                $historicoTour->historico_tour_fecha_inicio = $request->tour_fecha_inicio;
+                $historicoTour->proveedor_id = $request->transporte_id;
+                $historicoTour->historico_tour_descripcion = 'Tour creado y agendado.';
+
+                if ($historicoTour->save()) {
+                    DB::commit();
+                    flash('El Tour se creó correctamente. Ahora puede añadir las rutas.')->success();
+
+                    return redirect()->action('TourController@tour');
+                } else {
+                    DB::rollback();
+                    flash('Error guardando histórico del Tour.')->error();
+                    //flash($e->getMessage())->error();
+                    return redirect()->action('TourController@tour')->withInput();
+                }
+            } else {
+                DB::rollback();
+                flash('Error guardando el nuevo Tour.')->error();
+                //flash($e->getMessage())->error();
+                return redirect()->action('TourController@tour')->withInput();
+            }
         } catch (\Exception $e) {
+            DB::rollback();
             flash('Error al crear el Tour.')->error();
-           //flash($e->getMessage())->error();
+            //flash($e->getMessage())->error();
             return redirect()->action('TourController@tour')->withInput();
         }
     }
@@ -419,6 +444,8 @@ class TourController extends Controller
         }
 
         try {
+            DB::beginTransaction();
+
             if(($tour->camion_id != $request->camion_id) || ($tour->remolque_id != $request->remolque_id) || ($tour->proveedor_id != $request->transporte_id)
                 || ($tour->conductor_id != $request->conductor_id) || ($tour->tour_fec_inicio != $request->tour_fecha_inicio)){
                     $tour->tour_comentarios = "Tour actualizado. Información modificada.";
@@ -432,13 +459,29 @@ class TourController extends Controller
             $tour->tour_finalizado = false;
 
             if ($tour->save()) {
-                flash('El Tour se actualizó correctamente.')->success();
-                return redirect()->action('TourController@tour');
+
+                $historicoTour = new HistoricoTour();
+                $historicoTour->tour_id = $id_tour;
+                $historicoTour->historico_tour_fecha_inicio = $request->tour_fecha_inicio;
+                $historicoTour->proveedor_id = $request->transporte_id;
+                $historicoTour->historico_tour_descripcion = 'Datos del tour modificados.';
+
+                if ($historicoTour->save()) {
+                    DB::commit();
+                    flash('El Tour se actualizó correctamente.')->success();
+                    return redirect()->action('TourController@tour');
+                } else {
+                    DB::rollback();
+                    flash('Error guardando histórico del Tour.')->error();
+                    return redirect()->action('TourController@tour')->withInput();
+                }
             } else {
+                DB::rollback();
                 flash('Error actualizando información del Tour.')->error();
                 return redirect()->action('TourController@tour')->withInput();
             }
         }catch (\Exception $e) {
+            DB::rollback();
             flash('Error al intentar actualizar el Tour.')->error();
            //flash($e->getMessage())->error();
             return redirect()->action('TourController@tour')->withInput();
@@ -449,6 +492,8 @@ class TourController extends Controller
         $id_tour =  Crypt::decrypt($id);
 
         try {
+            DB::beginTransaction();
+
             // Eliminar primero las guías asociadas
             $guias = Guia::join('ruta_guias','ruta_guias.guia_id','=', 'guias.guia_id')
                 ->join('rutas','rutas.ruta_id','=','ruta_guias.ruta_id')
@@ -463,13 +508,24 @@ class TourController extends Controller
                 }
             }
 
-            // Eliminar luego el tour.
             $tour = Tour::findOrfail($id_tour);
+
+            $historicoTour = new HistoricoTour();
+            $historicoTour->tour_id = $id_tour;
+            $historicoTour->historico_tour_fecha_inicio = $tour->tour_fec_inicio;
+            $historicoTour->proveedor_id = $tour->proveedor_id;
+            $historicoTour->historico_tour_descripcion = 'Tour Nro. ' . $id_tour .' eliminado.';
+
+            $historicoTour->save();
+
+            // Eliminar luego el tour.
             $tour->delete();
 
+            DB::commit();
             flash('Los todos los datos del Tour han sido eliminados satisfactoriamente.')->success();
             return redirect()->route('tour.tour');
         }catch (\Exception $e) {
+            DB::rollback();
             flash('Error al intentar eliminar los datos del Tour.')->error();
             return redirect()->route('tour.tour');
         }
@@ -504,12 +560,41 @@ class TourController extends Controller
 
     protected function finalizarTourNoIniciado($tour_id)
     {
-        $tour = Tour::findOrFail($tour_id);
+        try {
+            DB::beginTransaction();
 
-        $tour->tour_finalizado = true;
-        $tour->tour_comentarios = "Tour cancelado o no iniciado en fecha correspondiente.";
+            $tour = Tour::findOrFail($tour_id);
 
-        $tour->save();
+            $tour->tour_finalizado = true;
+            $tour->tour_comentarios = "Tour cancelado o no iniciado en fecha correspondiente.";
+
+            if ($tour->save()) {
+                $historicoTour = new HistoricoTour();
+                $historicoTour->tour_id = $tour_id;
+                $historicoTour->historico_tour_fecha_inicio = $tour->tour_fec_inicio;
+                $historicoTour->proveedor_id = $tour->proveedor_id;
+                $historicoTour->historico_tour_descripcion = 'Tour Nro. ' . $tour_id .' finalizado automáticamente por no iniciarse en la fecha establecida.';
+
+                if ($historicoTour->save()) {
+                    DB::commit();
+                    flash('El Tour se finalizó correctamente.')->success();
+                    return redirect()->action('TourController@tour');
+                } else {
+                    DB::rollback();
+                    flash('Error al guardar histórico del Tour.')->error();
+                    return redirect()->action('TourController@tour');
+                }
+            } else {
+                DB::rollback();
+                flash('Error almacenando finalización del Tour.')->error();
+                return redirect()->action('TourController@tour');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            flash('Error al intentar modificar datos del Tour para su finalización automática.')->error();
+            return redirect()->route('tour.tour');
+        }
+
     }
 
     /**
@@ -520,26 +605,57 @@ class TourController extends Controller
     {
         $tour_id =  $request->tour_id;
         $tour = Tour::findOrfail($tour_id);
+        $mensaje = '';
 
         try{
+            DB::beginTransaction();
+
             if ($request->iniciado){
                 $tour->tour_iniciado = $request->iniciado;
                 $tour->tour_fec_hora_iniciado = Carbon::now()->toDateTimeString();
-                $tour->tour_comentarios = 'Tour iniciado.';
+                $tour->tour_comentarios = 'Tour iniciado correctamente.';
             } else {
-                $tour->tour_iniciado = $request->iniciado;
-                $tour->tour_fec_hora_iniciado = null;
-                $tour->tour_comentarios = 'Tour restablecido a estado no iniciado.';
+                DB::rollback();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => "Error: Un tour no se puede cambiar manualmente de iniciado a no iniciado",
+                ]);
             }
 
+            $date = date_create($tour->tour_fec_hora_iniciado);
+
             if($tour->save()){
-                if($request->iniciado){
+                $historicoTour = new HistoricoTour();
+                $historicoTour->tour_id = $tour_id;
+                $historicoTour->historico_tour_fecha_inicio = $tour->tour_fec_inicio;
+                $historicoTour->proveedor_id = $tour->proveedor_id;
+                $historicoTour->historico_tour_descripcion = 'Tour Nro. ' . $tour_id .' iniciado correctamente el día ' . $date->format('d-m-Y') . ' a las ' . $date->format('H:i:s') . ' horas.';
+
+                if ($historicoTour->save()) {
+                    DB::commit();
                     $mensaje = "Tour iniciado correctamente.";
+                    flash('El Tour se inició correctamente.')->success();
                 } else {
-                    $mensaje = "Tour de nuevo en estado no iniciado.";
+                    DB::rollback();
+                    flash('Error al guardar histórico del Tour.')->error();
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Error al guardar histórico del Tour.",
+                    ]);
                 }
+            } else {
+                DB::rollback();
+                flash('Error almacenando inicio del Tour.')->error();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => "Error almacenando inicio del Tour.",
+                ]);
             }
         }  catch (\Throwable $th) {
+            DB::rollback();
             flash('Error cambiando estado de inicio del tour.')->error();
 
             return response()->json([
@@ -564,26 +680,56 @@ class TourController extends Controller
     {
         $tour_id =  $request->tour_id;
         $tour = Tour::findOrfail($tour_id);
+        $mensaje = '';
 
         try{
+            DB::beginTransaction();
+
             if ($tour->tour_iniciado) {
                 if ($request->finalizado){
                     $tour->tour_finalizado = $request->finalizado;
                     $tour->tour_fec_fin = Carbon::now()->toDateTimeString();
                     $tour->tour_comentarios = 'Tour finalizado correctamente.';
                 } else {
-                    $tour->tour_finalizado = $request->finalizado;
-                    $tour->tour_fec_fin = null;
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Error: Un tour no se puede cambiar de iniciado a no iniciando",
+                    ]);
                 }
 
+                $date = date_create($tour->tour_fec_fin);
+
                 if($tour->save()){
-                    if($request->finalizado){
+                    $historicoTour = new HistoricoTour();
+                    $historicoTour->tour_id = $tour_id;
+                    $historicoTour->historico_tour_fecha_inicio = $tour->tour_fec_inicio;
+                    $historicoTour->proveedor_id = $tour->proveedor_id;
+                    $historicoTour->historico_tour_descripcion = 'Tour Nro. ' . $tour_id .' finalizado correctamente el día ' . $date->format('d-m-Y') . ' a las ' . $date->format('H:i:s') . ' horas.';
+
+                    if ($historicoTour->save()) {
+                        DB::commit();
                         $mensaje = "Tour finalizado correctamente.";
+                        flash('El Tour se finalizó correctamente.')->success();
                     } else {
-                        $mensaje = "Tour de nuevo en estado no finalizado.";
+                        DB::rollback();
+                        flash('Error al guardar histórico del Tour.')->error();
+
+                        return response()->json([
+                            'success' => false,
+                            'message' => "Error al guardar histórico del Tour.",
+                        ]);
                     }
+                } else {
+                    DB::rollback();
+                    flash('Error almacenando finalización del Tour.')->error();
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Error almacenando finalización del Tour.",
+                    ]);
                 }
             } else {
+                DB::rollback();
                 flash('Error de finalización del tour: El tour no está iniciado.')->error();
 
                 return response()->json([
@@ -592,11 +738,12 @@ class TourController extends Controller
                 ]);
             }
         }  catch (\Throwable $th) {
+            DB::rollback();
             flash('Error cambiando estado de finalización del tour.')->error();
 
             return response()->json([
                 'success' => false,
-                'message' => "Error finalizando el tour",
+                'message' => "Error cambiando estado de finalización del tour.",
             ]);
         }
         flash('Cambiado correctamente estado de finalización del tour.')->success();
