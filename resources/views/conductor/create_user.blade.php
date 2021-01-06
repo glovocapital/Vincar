@@ -79,7 +79,7 @@
                         <div class="form-group">
                             <input type="hidden" name="crear_conductor" value="true" />
                             <input type="hidden" name="rol_id" value="5" id="rol_id" />
-                        </div>                            
+                        </div>
                     </div>
                 </div>
 
@@ -96,6 +96,38 @@
     </div>
 </div>
 @stop
+@section('local-scripts')
+    <script>
+        $(function(){
 
+            $('.rut').keyup(function(){
+                $("#validador").html('<span style="color:red;" aria-hidden="true">&times;</span>');
+
+
+                var Ts = $(this).val().split("-");
+                console.log(Ts);
+                var T = Ts[0];
+
+
+                var M=0,S=1;
+                for(;T;T=Math.floor(T/10))
+                    S=(S+T%10*(9-M++%6))%11;
+                //return S?S-1:'k';
+
+                if(Ts[0].length==7 || Ts[0].length==8){
+
+                    if(Ts.length ==2){
+                        if(S-1==Ts[1]){
+                            $("#validador").html('<i style="color:green"  class="fa fa-check"></i>');
+                        }
+                    }
+
+                }
+            });
+
+        });
+
+        </script>
+@endsection
 
 
