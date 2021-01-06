@@ -25,9 +25,15 @@
         }
 
     });
-
-
-
-
-
+    // modal "Cargando"
+    $(document).ajaxStop(function () {
+        $("#modalCargando").modal('hide');
+        $("body").css("cursor", "default");
+    });
+    $(document).ajaxSend(function () {
+        if (!($('#modalCargando').is(':visible'))) {
+            $("#modalCargando").modal('show');
+            $("body").css("cursor", "progress");
+        }
+    });
 </script>

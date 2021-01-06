@@ -17,3 +17,18 @@
         </div>
     </div>
 </footer>
+<!--Modal cargando-->
+<div class="modal" id="modalCargando" style="z-index: 1500;">
+    <div class="modal-dialog modal-lg modal-sm" style="width: 400px;">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h4 class="modal-title">Cargando...</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body text-center">
+              <img  src="{{asset('img/loading.gif')}}" class="img-fluid" />
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
