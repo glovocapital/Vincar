@@ -40,7 +40,7 @@ return [
     */
 
     'debug' => env('APP_DEBUG', false),
-    
+
 
     'debug_blacklist' => [
         '_ENV' => [
@@ -84,7 +84,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Santiago',
 
     /*
     |--------------------------------------------------------------------------
