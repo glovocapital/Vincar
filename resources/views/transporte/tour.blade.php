@@ -177,6 +177,9 @@
                                                             </small>
                                                         @endif
                                                     @endif
+                                                    <small>
+                                                        <a href="#" type="button" class="btn-historico"  value="{{ Crypt::encrypt($tour->tour_id) }}" title="Ver Historico"><i class="fas fa-history"></i></a>
+                                                    </small>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -188,6 +191,8 @@
         </div>
     </div>
 </div>
+
+@include('transporte.partials.modal_historico_tour')
 @stop
 @section('local-scripts')
     <script>
@@ -270,6 +275,47 @@
                     location.reload();
                 }).fail(function () {
                     alert('Error: Fallo al intentar finalizar el tour.');
+                });
+            });
+
+            //Modal Histórico del VIN
+            $('.btn-historico').on('click', function (e) {
+                e.preventDefault();
+
+                var id_tour = $(this).attr("value");
+                var url = "/historico_tour/historicoTour/" + id_tour;
+
+                $.get(url, function (res) {
+                    //Validar primero si algo salió mal
+                    if(!res.success){
+                        alert(
+                            "Error inesperado al solicitar la información.\n\n" +
+                            "MENSAJE DEL SISTEMA:\n" +
+                            res.message + "\n\n"
+                        );
+                        return;  // Finaliza el intento de obtener
+                    }
+                    var arr_eventos = $.map(res.historico_tour, function (e1) {
+                        return e1;
+                    });
+                    // Limpiar la tabla del modal antes de mostrar el historial del vin
+                    $("#eventos_tour").empty();
+                    for (var i = 0; i < arr_eventos.length; i++){
+                        $("#eventos_tour").append("<tr>");
+                        $("#eventos_tour").append("<td>" + arr_eventos[i]['tour'] + "</td>");
+                        $("#eventos_tour").append("<td>" + arr_eventos[i]['ruta'] + "</td>");
+                        $("#eventos_tour").append("<td>" + arr_eventos[i]['vin'] + "</td>");
+                        $("#eventos_tour").append("<td>" + arr_eventos[i]['cliente'] + "</td>");
+                        $("#eventos_tour").append("<td>" + arr_eventos[i]['fecha_inicio'] + "</td>");
+                        $("#eventos_tour").append("<td>" + arr_eventos[i]['proveedor'] + "</td>");
+                        $("#eventos_tour").append("<td>" + arr_eventos[i]['condicion_entrega'] + "</td>");
+                        $("#eventos_tour").append("<td>" + arr_eventos[i]['numero_guia'] + "</td>");
+                        $("#eventos_tour").append("<td>" + arr_eventos[i]['descripcion'] + "</td>");
+                        $("#eventos_tour").append("</tr>");
+                    }
+                    $("#historicoTour").modal('show');
+                }).fail(function () {
+                    alert('Error: Datos no encontrados o incorrectos');
                 });
             });
         });
