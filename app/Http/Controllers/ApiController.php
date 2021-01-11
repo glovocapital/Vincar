@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Bloque;
 use App\Conductor;
-use App\Ubicacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -1322,28 +1321,27 @@ class ApiController extends Controller
     public function ListarRutas(Request $request){
         $this->cors();
 
-        $user_id = $request->user_conductor;
+        $user_id = $request->user_id;
 
         if (empty($user_id)) {
-            return response()->json(Array("Err" => 1, "Msg" => "Users obligatorio"));
+            $usersf = Array("Err" => 1, "Msg" => "Users obligatorio");
         } else {
             $Conductors = DB::table('conductors')->select('conductor_id','user_id');
             $Conductors->where('user_id', '=', $user_id);
             $Conductors = $Conductors->first();
 
-
-
             if ($Conductors) {
                 $Tour = DB::table('tours')->select('tour_id');
-                $Tour->where('conductor_id',  $Conductors->user_id)
-                    ->where('tour_finalizado', false);
+                $Tour->where('conductor_id',  $Conductors->user_id);
                 $Tour = $Tour->first();
 
                 if ($Tour) {
                     $rutas = DB::table('rutas')
-                        ->select('rutas.ruta_id as ruta_id', 'guia_numero', 'ruta_origen', 'ruta_destino', 'ruta_iniciada', 'ruta_finalizada', 'ruta_fecha_en_origen as tiempo')
+                        ->select('rutas.ruta_id as ruta_id', 'guia_numero', 'vin_codigo')
                         ->join("ruta_guias", "ruta_guias.ruta_id", "=", "rutas.ruta_id")
                         ->join("guias", "guias.guia_id", "=", "ruta_guias.guia_id")
+                        ->join("guia_vins", "guia_vins.guia_id", "=", "guias.guia_id")
+                        ->join("vins", "vins.vin_id", "=", "guia_vins.vin_id")
                         ->where('tour_id', $Tour->tour_id)
                         ->get();
 
@@ -1363,107 +1361,6 @@ class ApiController extends Controller
             }
 
         }
-    }
-
-    public function DetallesListarRutas(Request $request){
-        $this->cors();
-
-        $ruta_id = $request->ruta_id;
-
-                    $rutas = DB::table('rutas')
-                        ->select('rutas.ruta_id as ruta_id', 'guia_numero', 'vin_codigo')
-                        ->join("ruta_guias", "ruta_guias.ruta_id", "=", "rutas.ruta_id")
-                        ->join("guias", "guias.guia_id", "=", "ruta_guias.guia_id")
-                        ->join("guia_vins", "guia_vins.guia_id", "=", "guias.guia_id")
-                        ->join("vins", "vins.vin_id", "=", "guia_vins.vin_id")
-                        ->where('rutas.ruta_id', $ruta_id)
-                        ->get();
-
-                    if(count($rutas)>0)
-
-                        return response()->json(Array("Err" => 0, "Msg" => "Exitoso", "List" => $rutas));
-
-                    else
-
-                        return response()->json(Array("Err" => 1, "Msg" => "No existen Rutas asociada al conductor"));
-
-
-
-
-    }
-
-
-
-    public function  InicioRutas(Request $request){
-        $this->cors();
-
-        $user_id = $request->input('user_id');
-        $ruta_id =  $request->ruta_id;
-        $origen = $request->input('origen');
-
-        $rutas = DB::table('rutas')
-            ->select('ruta_id')
-            ->where('ruta_id', $ruta_id)
-            ->get();
-
-        if(count($rutas)>0){
-            $Rutas= Ruta::findOrFail($ruta_id);
-            $Rutas->ruta_en_origen = $origen;
-            $Rutas->ruta_iniciada = true;
-            $Rutas->ruta_fecha_en_origen = date('Y-m-d H:i:s', now()->timestamp);
-            $Rutas->update();
-            return response()->json(Array("Err" => 0, "Msg" => "Actualización Satisfactoria"));
-        }else{
-            return response()->json(Array("Err" => 1, "Msg" => "No se encuentra id de la ruta"));
-        }
-    }
-
-    public function  FinRutas(Request $request){
-        $this->cors();
-
-        $user_id = $request->input('user_id');
-        $ruta_id =  $request->ruta_id;
-
-        $rutas = DB::table('rutas')
-            ->select('ruta_id')
-            ->where('ruta_id', $ruta_id)
-            ->get();
-
-        if(count($rutas)>0){
-            $Rutas= Ruta::findOrFail($ruta_id);
-            $Rutas->ruta_finalizada = true;
-            $Rutas->update();
-            return response()->json(Array("Err" => 0, "Msg" => "Actualización Satisfactoria"));
-        }else{
-            return response()->json(Array("Err" => 1, "Msg" => "No se encuentra id de la ruta"));
-        }
-    }
-
-    public function GuardarLocalizacion(Request $request){
-        $this->cors();
-
-        $user_id = $request->input('user_id');
-        $ruta_id =  $request->ruta_id;
-        $coord_lon = $request->input('coord_lon');
-        $coord_lat = $request->input('coord_lat');
-
-        $rutas = DB::table('rutas')
-            ->select('ruta_id')
-            ->where('ruta_id', $ruta_id)
-            ->get();
-
-        if(count($rutas)>0){
-            $ub = new Ubicacion();
-            $ub->ubicacion_latitud = $coord_lat;
-            $ub->ubicacion_longitud = $coord_lon;
-            $ub->ruta_id = $ruta_id;
-            $ub->fecha_ubicacion_actual = date('Y-m-d H:i:s', now()->timestamp);
-            $ub->save();
-            return response()->json(Array("Err" => 0, "Msg" => "Ubicacion Guardada"));
-        }else{
-            return response()->json(Array("Err" => 1, "Msg" => "No se encuentra id de la ruta"));
-        }
-
     }
 
     public function RegistrarVehiculoNN(Request $request)

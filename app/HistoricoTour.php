@@ -17,12 +17,24 @@ class HistoricoTour extends Model
         'tour_id', 'ruta_id', 'vin_id', 'cliente_id', 'historico_tour_fecha_inicio', 'historico_tour_fecha_fin', 'proveedor_id', 'historico_tour_condicion_entrega', 'historico_tour_numero_guia_ruta', 'historico_tour_descripcion'
     ];
 
-    public function oneResponsable(){
-        return $this->hasOne(User::class, 'user_id', 'user_id');
+    public function oneTour(){
+        return $this->hasOne(Tour::class, 'tour_id', 'tour_id');
+    }
+
+    public function oneRuta(){
+        return $this->hasOne(Ruta::class, 'ruta_id', 'ruta_id');
     }
 
     public function oneVin(){
         return $this->hasOne(Vin::class, 'vin_id', 'vin_id');
+    }
+
+    public function oneCliente(){
+        return $this->hasOne(Empresa::class, 'empresa_id', 'cliente_id');
+    }
+
+    public function oneProveedor(){
+        return $this->hasOne(Empresa::class, 'empresa_id', 'proveedor_id');
     }
 
     public function oneVinEstadoInventario(){

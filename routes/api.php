@@ -52,18 +52,8 @@ Route::post('entrega','ApiController@Entregar')->name('api.entrega');
 
 Route::get('buscartransportista/{user_rut}','ApiController@BuscarTransportista')->name('api.buscartransportista');
 
-Route::get('listarrutas/{user_conductor}','ApiController@ListarRutas')->name('api.listarrutas');
+Route::get('listarrutas/{user_rut}','ApiController@ListarRutas')->name('api.listarrutas');
 
 Route::post('registrarvehiculoNN','ApiController@RegistrarVehiculoNN')->name('api.registrarvehiculoNN');
 
 Route::post('registrarimagenNN','ApiController@RegistrarImagenNN')->name('api.registrarimagenNN');
-
-Route::get('finruta/{ruta_id}','ApiController@FinRutas')->name('api.finrutas');
-
-Route::get('inicioruta/{ruta_id}','ApiController@InicioRutas')->name('api.iniciorutas');
-
-Route::get('guardaubicacion/{ruta_id}','ApiController@GuardarLocalizacion')->name('api.guardaubicacion');
-
-Route::get('detalleslistrutas/{ruta_id}','ApiController@DetallesListarRutas')->name('api.detalleslistrutas');
-
-
