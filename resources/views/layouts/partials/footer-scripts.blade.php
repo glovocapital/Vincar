@@ -1,5 +1,7 @@
 <script src="{{ asset('base/js/app.js') }}"></script>
+<script src="sweetalert2/sweetalert2.all.min.js"></script>
 <script>
+    
     $(function () {
 
         if ($(".card-tools").length > 0)
