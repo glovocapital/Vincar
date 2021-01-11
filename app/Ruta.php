@@ -13,12 +13,16 @@ class Ruta extends Model
     protected $primaryKey = 'ruta_id';
 
     protected $fillable = [
-        'ruta_origen', 'ruta_destino', 
+        'ruta_origen', 'ruta_destino',
     ];
 
     // protected $fillable = ['code', 'from', 'to', 'load_pc', 'load_lbs', 'dims', 'at_origin', 'at_origin_date', 'current_location', 'current_location_date', 'delivered', 'status', 'pod'];
 
     protected $dates = ['created_at', 'updated_at'];
+
+    public function rutaGuia(){
+        return $this->hasOne(RutaGuia::class, 'ruta_id', 'ruta_id');
+    }
 
     /**
      * Check, is now user must update track (user must update track every two hours).

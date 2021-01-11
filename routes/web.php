@@ -363,6 +363,16 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::post('tour/tour/iniciarTour', 'TourController@iniciarTour')->name('tour.iniciar_tour');
     Route::post('tour/tour/finalizarTour', 'TourController@finalizarTour')->name('tour.finalizar_tour');
 
+    //Rutas mantenedor Histórico de Tours
+    // Route::get('historico_tour', 'HistoricoTourController@index')->name('historico_tour.index');
+    // Route::get('historico_tour/create','HistoricoTourController@create')->name('historico_tour.create');
+    // Route::get('historico_tour/{id}/edit','HistoricoTourController@edit')->name('historico_tour.edit');
+    // Route::post('historico_tour','HistoricoTourController@store')->name('historico_tour.store');
+    // Route::patch('historico_tour/{id}/update','HistoricoTourController@update')->name('historico_tour.update');
+    // Route::get('historico_tour/{id}/delete','HistoricoTourController@destroy')->name('historico_tour.destroy');
+    Route::get('historico_tour/historicoTour/{id_tour}','HistoricoTourController@historicoTour')->name('historico_tour.historicoTour');
+    // Route::post('historico_tour/exportHistoricoLote', 'HistoricoTourController@exportHistoricoTourLote')->name('historico_tour.exportHistoricoTourLote');
+
 
     // Vehículos N/N
     Route::get('vehiculo_nn','VehiculoNNController@index')->name('vehiculo_nn');
