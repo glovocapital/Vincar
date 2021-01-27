@@ -70,7 +70,7 @@ class HistoricoTourController extends Controller
                     } else {
                         $historicoTour[$i]['vin'] = '';
                     }
-                    $historicoTour[$i]['cliente'] = $registro->oneCliente->empresa_id;
+                    $historicoTour[$i]['cliente'] = $registro->oneCliente->empresa_razon_social;
                     $historicoTour[$i]['numero_guia'] = $registro->oneRuta->rutaGuia->oneGuia->guia_numero;
 
                     if ($registro->oneRuta->ruta_finalizada){
