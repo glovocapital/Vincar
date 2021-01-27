@@ -169,5 +169,5 @@
 <script  src="{{ asset('base/js/settings.js') }}"></script>
 
 <link href="{{ asset('base/css/classic.css') }}" type="text/css" rel="stylesheet">
-
+<link href="{{ asset('css/buttons.dataTables.min.css') }}" type="text/css" rel="stylesheet">
 @yield('custom_styles')

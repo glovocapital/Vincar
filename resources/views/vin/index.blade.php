@@ -311,7 +311,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="marca_id" >Seleccionar Marca <strong>*</strong></label>
-                                        
+
                                         <select name="marca_id" id="marca" class="form-control col-sm-9 select-cliente">
                                             <option value="" >Marca</option>
                                             @foreach ($marcas as $marca_id => $marca_nombre)
@@ -387,7 +387,7 @@
                             </div>
 
                             <div class="text-right pb-5">
-                                    
+
                                     <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol4" style="display:none">Asignar para entrega</button>
 
                                     <button type="button" style="display:none" class="btn btn-success btn-lote-vins btn-rol">Cargar guía por lote</button>
@@ -428,7 +428,7 @@
                                 <thead>
                                 <tr>
                                     <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
-                                    
+
                                     <th>Vin</th>
                                     <th>Patente</th>
 
@@ -577,7 +577,7 @@
                     for (var i = 0; i < arr_vins.length; i++){
                         $("#vin_id_nn").append("<option value=" + arr_vin_ids[i] + ">" + arr_vins[i] + "</option>");
                     }
-                    
+
                     $("#vehiculoN_NModal").modal('show');
                 }).fail(function () {
                     alert('Error: ');
@@ -591,9 +591,9 @@
                 var sel = $(this).val();
 
                 if($.isNumeric(sel)) {
-                    $('#fotos_nn').empty(); 
+                    $('#fotos_nn').empty();
 
-                    var url = "vehiculo_nn/" + sel +"/data_vin_nn";                                    
+                    var url = "vehiculo_nn/" + sel +"/data_vin_nn";
 
                     $.get(url, function (res) {
                         if(!res.success){
@@ -610,12 +610,12 @@
 
                         var arr_fotos = $.map(res.fotos, function (e1) {
                             return e1;
-                        }); 
+                        });
 
                         if(arr_fotos.length > 0){
-                            $('#fotos_nn').append('<h4 id="titulo_fotos_nn">Fotos Pre-inspección</h4>'); 
-                            $('#fotos_nn').append('<h5 id="nota_fotos_nn">Serán añadidas al realizar la inspección del VIN</h5>'); 
-                            $('#fotos_nn').append('<table class="table table-borderless table-hover" id="thumbnail_nn"></table>'); 
+                            $('#fotos_nn').append('<h4 id="titulo_fotos_nn">Fotos Pre-inspección</h4>');
+                            $('#fotos_nn').append('<h5 id="nota_fotos_nn">Serán añadidas al realizar la inspección del VIN</h5>');
+                            $('#fotos_nn').append('<table class="table table-borderless table-hover" id="thumbnail_nn"></table>');
                         }
 
                         for (var i = 0; i < arr_fotos.length; i++){
@@ -623,7 +623,7 @@
                                 $("#thumbnail_nn").empty();
                             }
 
-                            $("#thumbnail_nn").append("<td><img src='/" + arr_fotos[i].foto_ubic_archivo + "' alt='/" + arr_fotos[i].foto_ubic_archivo + "' width='100' height='100'></td>");                            
+                            $("#thumbnail_nn").append("<td><img src='/" + arr_fotos[i].foto_ubic_archivo + "' alt='/" + arr_fotos[i].foto_ubic_archivo + "' width='100' height='100'></td>");
                         }
 
                         $("#vin_codigo_n_n").attr('value', res.vin.vin_codigo).val(res.vin.vin_codigo);
@@ -641,7 +641,7 @@
                 } else {
                     $("#user_id_nn").val('');
                     $("#usuario_responsable_nn").val('');
-                    $('#fotos_nn').empty(); 
+                    $('#fotos_nn').empty();
                     $("#thumbnail_nn").empty();
                     $("#vin_codigo_n_n").attr('value', '').val('');
                     $("#vin_patente_n_n").attr('value', '').val('');
@@ -650,7 +650,7 @@
                     $("#vin_marca_nombre_n_n").attr('value', '').val('');
                     $("#vin_color_n_n").attr('value', '').val('');
                     $("#vin_motor_n_n").attr('value', '').val('');
-                }       
+                }
             });
 
             $('#btn-send-vehiculo-n-n').click(function (e) {
@@ -669,7 +669,7 @@
 
                         $("#user_id_nn").val('');
                         $("#usuario_responsable_nn").val('');
-                        $('#fotos_nn').empty(); 
+                        $('#fotos_nn').empty();
                         $("#thumbnail_nn").empty();
                         $("#vin_codigo_n_n").attr('value', '').val('');
                         $("#vin_patente_n_n").attr('value', '').val('');
@@ -690,15 +690,15 @@
                         $("#messages_n_n").append('<p id="success-msg" class="bg-success" style="color: white;">' + res.message + '</p>').fadeOut(4500);
                     }).fail(function () {
                         alert('Error: ');
-                    });   
+                    });
                 } else {
                     alert("No se han enviado datos. Por favor seleccione un VIN.");
-                }   
+                }
             });
 
             $('#btn-cerrar-vehiculos-nn').click(function (e) {
                 e.preventDefault();
-                
+
                 $("#form-vehiculo-nn")[0].reset();
                 $("#fotos_nn").empty();
                 $("#vin_codigo_n_n").val('');
@@ -727,7 +727,7 @@
                     $("#btn-listado-vins").attr("disabled", "disabled");
                 }
             });
-            
+
             $('#btn-src').on('click',function(e){
                 e.preventDefault();
 
@@ -798,7 +798,7 @@
 
                     $("#resultado_busqueda_vins").attr('value', array_vin_ids);
                     $("#btn-listado-masivo").removeAttr('disabled')
-                    
+
                     datatablesButtons.columns.adjust().draw();
 
                 }).fail(function () {
@@ -999,7 +999,7 @@
 
             $('#btn-cancelar-carga-guia-lote').click(function (e) {
                 e.preventDefault();
-                
+
                 $("#form-carga-guia-lote")[0].reset();
                 $("#vin_codigo_lote").empty();
                 $("#empresa_id").val('');
@@ -1125,8 +1125,8 @@
                         $("#error0_predespacho").show();
                         $("#PredespachoVins")[0].reset();
                     } else {
-                        $("#error1_predespacho").show();  
-                        $("#error1_predespacho").html($dat.mensaje); 
+                        $("#error1_predespacho").show();
+                        $("#error1_predespacho").html($dat.mensaje);
                     }
                 }).fail(function () {
                     alert('Error: ');
@@ -1135,7 +1135,7 @@
 
             $('#btn-cerrar-pre-despacho').click(function (e) {
                 e.preventDefault();
-                
+
                 $("#PredespachoVins")[0].reset();
                 $("#error0_predespacho").empty();
                 $("#error1_predespacho").empty();

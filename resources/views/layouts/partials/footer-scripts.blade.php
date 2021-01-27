@@ -1,7 +1,10 @@
 <script src="{{ asset('base/js/app.js') }}"></script>
-<script src="sweetalert2/sweetalert2.all.min.js"></script>
+<script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
+<script src="{{ asset('js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('js/jszip.min.js') }}"></script>
 <script>
-    
+
     $(function () {
 
         if ($(".card-tools").length > 0)
