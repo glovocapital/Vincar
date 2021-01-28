@@ -123,39 +123,15 @@
 
     @if(auth()->user()->rol_id == 1)
         <li class="sidebar-item">
-            <a href="#Facturacion" data-toggle="collapse" class="sidebar-link collapsed">
-                <i class="align-middle" data-feather="book-open"></i> <span class="align-middle">{{trans('menu.Facturacion')}}</span>
+            <a href="#PreFacturacion" data-toggle="collapse" class="sidebar-link collapsed">
+                <i class="align-middle" data-feather="book-open"></i> <span class="align-middle">{{trans('menu.PreFacturacion')}}</span>
             </a>
-            <ul id="Facturacion" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
+            <ul id="PreFacturacion" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
                 <li class="sidebar-item">
-                    <a href="#Ventas" data-toggle="collapse" class="sidebar-link collapsed">
-                        {{trans('menu.Ventas')}}
-                    </a>
-                    <ul id="Ventas" class="sidebar-dropdown list-unstyled collapse">
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="">{{trans('menu.Ventas_Electronicas')}}</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="">{{trans('menu.Notificaciones_SII')}} </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Compras')}}</a></li>
-                <li class="sidebar-item">
-                    <a href="#Guía" data-toggle="collapse" class="sidebar-link collapsed">
-                        {{trans('menu.Guia_Despacho_SII')}}
-                    </a>
-                    <ul id="Guía" class="sidebar-dropdown list-unstyled collapse">
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="">{{trans('menu.Nuevo_Guia_Despacho')}}</a>
-                        </li>
 
-                    </ul>
-                </li>
                 <li class="sidebar-item">
                     <li class="sidebar-item"><a class="sidebar-link" href="{{ route('facturacion.prefactura') }}">{{trans('menu.PreFacturacion')}}</a></li>
                 </li>
-                <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Configuracion_Facturacion')}}</a></li>
             </ul>
         </li>
     @endif
