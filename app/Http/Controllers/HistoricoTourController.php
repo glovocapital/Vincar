@@ -108,44 +108,59 @@ class HistoricoTourController extends Controller
     }
 
     /**
-     * Histórico de Vins por lotes
+     * Histórico de Tours por lotes
     */
-    public function exportHistoricoVinLote(Request $request)
-    {
-        $array_historicos= [];
+    // public function exportHistoricoTourLote(Request $request)
+    // {
+    //     $array_historicos= [];
 
-        foreach($request->vin_ids as $vin_id){
-            $elemento = HistoricoVin::where('vin_id', $vin_id)->orderBy('historico_vin_id')->get();
-            $vin_codigo = Vin::where('vin_id',$vin_id)->select('vin_codigo')->value('vin_codigo');
-            array_push($array_historicos, [$vin_codigo, $elemento]);
-        }
+    //     foreach($request->tour_ids as $tour_id){
+    //         $elemento = HistoricoTour::where('tour_id', $tour_id)->orderBy('historico_tour_id')->get();
+    //         array_push($array_historicos, [$tour_id, $elemento]);
+    //     }
 
-        $array_historico_vins = [];
-        $i = 0;
+    //     $array_historico_tours = [];
+    //     $i = 0;
 
-        foreach($array_historicos as $historico_vin){
-            foreach($historico_vin[1] as $item){
-                $array_historico_vins[$i]['historico_vin_id'] = $item->historico_vin_id;
-                $array_historico_vins[$i]['historico_vin_fecha'] = $item->historico_vin_fecha;
-                $array_historico_vins[$i]['codigo'] = $historico_vin[0];
-                $array_historico_vins[$i]['vin_id'] = $item->vin_id;
-                $array_historico_vins[$i]['cliente'] = $item->oneEmpresa->empresa_razon_social;
-                $array_historico_vins[$i]['estado'] = $item->oneVinEstadoInventario();
-                $array_historico_vins[$i]['responsable'] = $item->oneResponsable->user_nombre . " " . $item->oneResponsable->user_apellido;
-                $array_historico_vins[$i]['origen'] = $item->origen_texto;
-                $array_historico_vins[$i]['destino'] = $item->destino_texto;
+    //     foreach($array_historicos as $historico_tour){
+    //         foreach($historico_tour[1] as $item){
+    //             $array_historico_tours[$i]['tour'] = $item->oneTour->tour_id;
 
-                $array_historico_vins[$i]['descripcion'] = $item->historico_vin_descripcion;
-                $i++;
-            }
-        }
+    //             if ($item->ruta_id) {
+    //                 $array_historico_tours[$i]['ruta'] = 'Origen: '. $item->oneRuta->ruta_origen . '. Destino: ' . $item->oneRuta->ruta_destino;
 
-        return Excel::download(new HistoricoVinLoteExport($array_historico_vins), 'hitorico_de_vins.xlsx');
-    }
+    //                 if ($item->vin_id) {
+    //                     $array_historico_tours[$i]['vin'] = $item->oneVin->vin_codigo;
+    //                 } else {
+    //                     $array_historico_tours[$i]['vin'] = '';
+    //                 }
+    //                 $array_historico_tours[$i]['cliente'] = $item->oneCliente->empresa_razon_social;
+    //                 $array_historico_tours[$i]['numero_guia'] = $item->oneRuta->rutaGuia->oneGuia->guia_numero;
+
+    //                 if ($item->oneRuta->ruta_finalizada){
+    //                     $array_historico_tours[$i]['condicion_entrega'] = $item->historico_tour_condicion_entrega;
+    //                 } else {
+    //                     $array_historico_tours[$i]['condicion_entrega'] =  '';
+    //                 }
+    //             } else {
+    //                 $array_historico_tours[$i]['ruta'] = '';
+    //                 $array_historico_tours[$i]['vin'] = '';
+    //                 $array_historico_tours[$i]['cliente'] = '';
+    //                 $array_historico_tours[$i]['condicion_entrega'] =  '';
+    //                 $array_historico_tours[$i]['numero_guia'] = '';
+    //             }
+
+    //             $i++;
+    //         }
+    //     }
+
+    //     return Excel::download(new HistoricoTourLoteExport($array_historico_tours), 'hitorico_de_tours.xlsx');
+    // }
 
     /**
-     * Show the form for creating a new resource.
+     * create a new resource in storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function create()
