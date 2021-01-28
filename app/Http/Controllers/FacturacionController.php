@@ -18,12 +18,7 @@ use App\TipoCampania;
 use App\Entrega;
 use App\Exports\BusquedaVinsExport;
 use App\Exports\VinEntregadosExport;
-Use App\Guia;
-Use App\GuiaVin;
-use App\Marca;
-use App\Patio;
-use App\Predespacho;
-use App\UbicPatio;
+
 use DB;
 use Illuminate\Support\Facades\Storage;
 use DateTime;
@@ -31,6 +26,8 @@ use DateInterval;
 use DatePeriod;
 use stdClass;
 use App\DivisaValor;
+use App\Divisa;
+use App\Servicio;
 
 
 class FacturacionController extends Controller
@@ -71,13 +68,15 @@ class FacturacionController extends Controller
       $arreglo_vins = [];
           foreach ($tabla_vins as $vin) {
             $dias = $this->diasEnPatio($request->fini, $request->ffin, $vin->vin_id);
-            if ($dias > 0){
+            if ($dias->dias > 0){
               $salida = new stdClass();
               $salida->vin = $vin->vin_codigo;
               $salida->marca_nombre = $vin->marca_nombre;
               $salida->vin_modelo = $vin->vin_modelo;
-
-              $salida->dias = $dias;
+              $salida->dias = $dias->dias;
+              $salida->tarifa = $this->valorDiarioVin($vin->vin_codigo, $request->empresa);
+              $salida->fini = $dias->fini;
+              $salida->ffin = $dias->ffin;
               array_push($arreglo_vins, $salida);
             }
           }
@@ -89,13 +88,16 @@ class FacturacionController extends Controller
       $arreglo_vins = [];
       foreach ($tabla_vins as $vin) {
         $dias = $this->diasTotalesEnPatio($request->fini, $request->ffin, $vin->vin_id);
-        if ($dias > 0){
+        if ($dias->dias > 0){
           $salida = new stdClass();
           $salida->vin = $vin->vin_codigo;
           $salida->marca_nombre = $vin->marca_nombre;
           $salida->vin_modelo = $vin->vin_modelo;
+          $salida->dias = $dias->dias;
+          $salida->fini = $dias->fini;
+          $salida->ffin = $dias->ffin;
+          $salida->tarifa = $this->valorDiarioVin($vin->vin_codigo, $request->empresa);
 
-          $salida->dias = $dias;
           array_push($arreglo_vins, $salida);
         }
       }
@@ -107,17 +109,35 @@ class FacturacionController extends Controller
 
   public function divisasDia(Request $request)
   {
-    $query = DivisaValor::leftJoin('divisas', 'divisas_valor.divisa_id', '=', 'divisas.divisa_id')->select('divisas.divisa_tipo', 'divisas_valor.divisa_valor_valor')->where('divisas_valor.divisa_valor_fecha', $request->fecha);
-    $tabla = $query->get();
-
     $arr = [];
-
+    $query = Divisa::all('divisa_id', 'divisa_tipo');
+    $tabla = $query;
     foreach ($tabla as $t) {
-        $salida = new stdClass();
-        $salida->tipo = $t->divisa_tipo;
-        $salida->valor = $t->divisa_valor_valor;
-        array_push($arr, $salida);
+      $salida = new stdClass();
+      $salida->tipo = $t->divisa_tipo;
+      $aux = DivisaValor::where('divisa_id', $t->divisa_id)->where('divisa_valor_fecha', $request->fecha)->select('divisa_valor_valor')->orderBy('divisa_valor_fecha', 'DESC')->take(1)->value('divisa_valor_valor');
+      $salida->valor =$aux;
+      if ($salida->valor == null)
+      {
+        $aux = DivisaValor::where('divisa_id', $t->divisa_id)->where('divisa_valor_fecha', '<', $request->fecha)->select('divisa_valor_valor')->orderBy('divisa_valor_fecha', 'DESC')->take(1)->value('divisa_valor_valor');
+        $salida->valor = $aux;
+        if($salida->valor==null){
+          $salida->valor = 0;
+        }
+      }
+      $salida->valor = number_format($salida->valor, 2, ',', '.');
+      $salida->fecha = DivisaValor::where('divisa_id', $t->divisa_id)->where('divisa_valor_fecha', $request->fecha)->select('divisa_valor_fecha')->orderBy('divisa_valor_fecha', 'DESC')->take(1)->value('divisa_valor_fecha');
+      if ($salida->fecha == null)
+      {
+        $salida->fecha = DivisaValor::where('divisa_id', $t->divisa_id)->where('divisa_valor_fecha', '<', $request->fecha)->select('divisa_valor_fecha')->orderBy('divisa_valor_fecha', 'DESC')->take(1)->value('divisa_valor_fecha');
+        if($salida->fecha == null){
+          $salida->fecha = '0000-00-00';
+        }
+      }
+      array_push($arr, $salida);
     }
+
+
     return response()->json($arr);
   }
 
@@ -126,24 +146,34 @@ class FacturacionController extends Controller
     $begin = new DateTime($fini);
     $end = new DateTime($ffin);
 
-    $interval = DateInterval::createFromDateString('1 day');
+    //$interval = DateInterval::createFromDateString('1 day');
+    $interval = new DateInterval('P1D');
     $period = new DatePeriod($begin, $interval, $end);
-
+    $primero = 0;
+    $ultimo = 0;
+    $salida = new stdClass();
     foreach ($period as $dt) {
       // Se ve cual es el último estado del VIN
-        $v = DB::table('historico_vins')->where([['vin_id', '=', $vin],['historico_vin_fecha', '<', '\''. $dt->format("Y-m-d") .'\'']])->orderBy('historico_vin_fecha', 'DESC')->orderBy('historico_vin_id', 'DESC')->limit(1)->get();
+        $v = DB::table('historico_vins')->where([['vin_id', '=', $vin],['historico_vin_fecha', '<',  $dt->format("Y-m-d") ]])->orderBy('historico_vin_fecha', 'DESC')->orderBy('historico_vin_id', 'DESC')->limit(1)->get();
         if(count($v) > 0){
           if (in_array($v[0]->vin_estado_inventario_id, array(2, 4))) { // sigue en patio según el último movimiento
-            $movimiento = DB::table('historico_vins')->where([['vin_id', '=', $vin],['historico_vin_fecha', '=', '\''. $dt->format("Y-m-d") .'\'']])->orderBy('historico_vin_fecha', 'DESC')->orderBy('historico_vin_id', 'DESC')->limit(1)->get();
+            if($primero == 0){
+              $primero++;
+              //$salida->fini = $v[0]->historico_vin_fecha;
+              $salida->fini = $fini;
+            }
+            //$movimiento = DB::table('historico_vins')->where([['vin_id', '=', $vin],['historico_vin_fecha', '=', '\''. $dt->format("Y-m-d") .'\'']])->orderBy('historico_vin_fecha', 'DESC')->orderBy('historico_vin_id', 'DESC')->limit(1)->get();
             $dias++;
           }
         }
-
+        $salida->ffin = $v[0]->historico_vin_fecha;
     }
-    return $dias;
+    $salida->dias = $dias;
+    return $salida;
   }
   function diasTotalesEnPatio($fini, $ffin, $vin)
   {
+    $salida = new stdClass();
     $dias = 0;
     // SE BUSCA LA ULTIMA FECHA DE ENTREGA
     $v = DB::table('historico_vins')
@@ -156,7 +186,10 @@ class FacturacionController extends Controller
       $end = $v[0]->historico_vin_fecha;
     }
     else{
-      return 0;
+      $salida->fini = '0000-00-00';
+      $salida->ffin = '0000-00-00';
+      $salida->dias = 0;
+      return $salida;
     }
     // SE BUSCA LA ÚLTIMA FECHA DE ARRIBO QUE SEA MENOR O IGUAL A LA FECHA DE ENTREGADO SELECCIONADA
     $v = DB::table('historico_vins')
@@ -168,7 +201,10 @@ class FacturacionController extends Controller
       $begin = $v[0]->historico_vin_fecha;
       $dias = $this->dateDiffInDays($begin, $end);
     }
-    return $dias;
+    $salida->fini = $begin;
+    $salida->ffin = $end;
+    $salida->dias = $dias;
+    return $salida;
   }
   function dateDiffInDays($f1, $f2)
   {
@@ -179,4 +215,52 @@ class FacturacionController extends Controller
     return $days+1;
 
   }
+
+  function valorDiarioVin($vin_codigo, $empresa){
+    $precio = 0;
+    $segmento = Vin::where('vin_codigo',$vin_codigo)->select('vin_segmento')->take(1)->value('vin_segmento');
+    switch (strtoupper($segmento)) {
+      case 'SMALL':
+        $precio = Servicio::where('cliente_id', $empresa)->where('producto_id', 2)->where('caracteristica_vin_id', 1)->take(1)->value('servicios_precio');
+        break;
+      case 'MEDIUM':
+        $precio = Servicio::where('cliente_id', $empresa)->where('producto_id', 2)->where('caracteristica_vin_id', 2)->take(1)->value('servicios_precio');
+        break;
+      case 'LARGE':
+        $precio = Servicio::where('cliente_id', $empresa)->where('producto_id', 2)->where('caracteristica_vin_id', 3)->take(1)->value('servicios_precio');
+        break;
+      case 'EXTRA LARGE':
+        $precio = Servicio::where('cliente_id', $empresa)->where('producto_id', 2)->where('caracteristica_vin_id', 4)->take(1)->value('servicios_precio');
+        break;
+      case 'S':
+        $precio = Servicio::where('cliente_id', $empresa)->where('producto_id', 2)->where('caracteristica_vin_id', 1)->take(1)->value('servicios_precio');
+        break;
+      case 'M':
+        $precio = Servicio::where('cliente_id', $empresa)->where('producto_id', 2)->where('caracteristica_vin_id', 2)->take(1)->value('servicios_precio');
+          break;
+      case 'L':
+        $precio = Servicio::where('cliente_id', $empresa)->where('producto_id', 2)->where('caracteristica_vin_id', 3)->take(1)->value('servicios_precio');
+          break;
+      case 'XL':
+        $precio = Servicio::where('cliente_id', $empresa)->where('producto_id', 2)->where('caracteristica_vin_id', 4)->take(1)->value('servicios_precio');
+          break;
+      case 'MINI BUS':
+        $precio = Servicio::where('cliente_id', $empresa)->where('producto_id', 2)->where('caracteristica_vin_id', 5)->take(1)->value('servicios_precio');
+          break;
+      case 'BUS':
+        $precio = Servicio::where('cliente_id', $empresa)->where('producto_id', 2)->where('caracteristica_vin_id', 6)->take(1)->value('servicios_precio');
+          break;
+      case 'CAMION':
+        $precio = Servicio::where('cliente_id', $empresa)->where('producto_id', 2)->where('caracteristica_vin_id', 7)->take(1)->value('servicios_precio');
+          break;
+      default:
+        $precio = 0;
+        break;
+    }
+    if ($precio == null){
+      return 0;
+    }
+    return $precio;
+  }
+
 }
