@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Bloque;
 use App\Conductor;
+use App\Ubicacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -1035,224 +1036,229 @@ class ApiController extends Controller
         $file_rut = $request->file('file_rut');
         $obs = $request->input('observaciones');
 
+        $vins = explode(",",$vins);
 
-        $Vin =Vin::where('vin_codigo','=', $vins)
-            ->first();
+        foreach ($vins as $vi) {
 
-        $user = User::find($user_id);
+            $Vin = Vin::where('vin_codigo', '=', $vi)
+                ->first();
 
-        if($Vin){
+            $user = User::find($user_id);
 
-            $estado_previo = $Vin->vin_estado_inventario_id;
-            $estado_nuevo = 8; // Entregado
+            if ($Vin) {
 
-            DB::beginTransaction();
+                $estado_previo = $Vin->vin_estado_inventario_id;
+                $estado_nuevo = 8; // Entregado
 
-            $trans = User::where('user_rut','=', $rut)->first();
+                DB::beginTransaction();
 
-            if($trans){
-                $transportista= User::findOrFail($trans->user_id);
-            }else{
-                $emailExists = User::where('email', $request->correo)
-                    ->exists();
+                $trans = User::where('user_rut', '=', $rut)->first();
 
-                if($emailExists){
-                    $usersf = Array("Err" => 1, "Msg" => "Email ya existente. Por favor introducir otro.");
-                    return response()->json($usersf);
+                if ($trans) {
+                    $transportista = User::findOrFail($trans->user_id);
                 } else {
-                    $transportista = new User();
-                    $transportista->user_nombre = $nombres;
-                    $transportista->user_apellido = $apellidos;
-                    $transportista->user_rut = $rut;
-                    $transportista->user_cargo = "";
-                    $transportista->user_estado = 1;
-                    $transportista->email = $request->correo;
-                    $transportista->password = "";
-                    $transportista->rol_id = 7;
-                    $transportista->user_telefono = "";
-                    $transportista->empresa_id = $user->empresa_id;
-                    $transportista->save();
-                }
-            }
+                    $emailExists = User::where('email', $request->correo)
+                        ->exists();
 
-            $entregar = new Entrega();
-            $entregar->entrega_fecha = date('Y-m-d');
-            $entregar->responsable_id = (int)$user_id;
-            //$entregar->responsable_id = Auth::user()->user_id;
-            $entregar->vin_id = $Vin->vin_id;
-            $entregar->tipo_id = $tipo_id;
-            $entregar->user_id = $transportista->user_id;
-            $entregar->foto_rut="";
-            $entregar->foto_patente = $patente;
-            $entregar->observaciones = $obs;
-
-            if(!empty($file_rut)) {
-
-                $fotoArchivo = $request->file('file_rut');
-                $extensionFoto = $fotoArchivo->extension();
-                $filename = "foto_de_rut" . '-' . $user_id . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto;
-                $path = storage_path().'/app/entrega_fotos/';
-                // $path = $fotoArchivo->storeAs(
-                //     'fotos_entrega',
-                //     "foto_de_rut" . '-' . $user_id . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto
-                // );
-
-                //Creamos una instancia de la libreria instalada
-                $image = \Image::make($fotoArchivo);
-                // Guardar
-                $image->save($path . $filename);
-                // $image->save($path);
-
-                $entregar->foto_rut = $path . $filename;
-
-            }
-
-
-            if($entregar->save()){
-                // Actualizar estado de inventario del VIN a entregar
-                $Vin_= Vin::findOrFail($Vin->vin_id);
-                // $Vin_->vin_predespacho = false; // Nota: No descomentar. Esto se controla en otras funciones.
-                $Vin_->vin_estado_inventario_id = $estado_nuevo;
-                if (!$Vin_->update()) {
-                    DB::rollBack();
-                    $usersf = Array("Err" => 1, "Msg" => "Error al cambiando estado de VIN.");
-                }
-
-                // Anular el registro de Predespacho.
-                $predespacho = Predespacho::where('vin_id', $Vin->vin_id)->first();
-
-                if($predespacho){
-                    if (!$predespacho->delete()) {
-                        DB::rollBack();
-                        $usersf = Array("Err" => 1, "Msg" => "Error cerrando predespacho.");
-                    }
-                }
-
-                // Buscar si existe la asociación del VIN con alguna guía
-                $guiaVin = GuiaVin::where('vin_id', $Vin->vin_id)->first();
-
-                if ($guiaVin){
-                    $guiaAnteriorVin = Guia::find($guiaVin->guia_id);
-
-                    if ($guiaAnteriorVin) {
-                        $guiaNumero = $guiaAnteriorVin->guia_numero;
+                    if ($emailExists) {
+                        $usersf = Array("Err" => 1, "Msg" => "Email ya existente. Por favor introducir otro.");
+                        return response()->json($usersf);
                     } else {
-                        $guiaNumero = "N/A";
+                        $transportista = new User();
+                        $transportista->user_nombre = $nombres;
+                        $transportista->user_apellido = $apellidos;
+                        $transportista->user_rut = $rut;
+                        $transportista->user_cargo = "";
+                        $transportista->user_estado = 1;
+                        $transportista->email = $request->correo;
+                        $transportista->password = "";
+                        $transportista->rol_id = 7;
+                        $transportista->user_telefono = "";
+                        $transportista->empresa_id = $user->empresa_id;
+                        $transportista->save();
+                    }
+                }
+
+                $entregar = new Entrega();
+                $entregar->entrega_fecha = date('Y-m-d');
+                $entregar->responsable_id = (int)$user_id;
+                //$entregar->responsable_id = Auth::user()->user_id;
+                $entregar->vin_id = $Vin->vin_id;
+                $entregar->tipo_id = $tipo_id;
+                $entregar->user_id = $transportista->user_id;
+                $entregar->foto_rut = "";
+                $entregar->foto_patente = $patente;
+                $entregar->observaciones = $obs;
+
+                if (!empty($file_rut)) {
+
+                    $fotoArchivo = $request->file('file_rut');
+                    $extensionFoto = $fotoArchivo->extension();
+                    $filename = "foto_de_rut" . '-' . $user_id . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto;
+                    $path = storage_path() . '/app/entrega_fotos/';
+                    // $path = $fotoArchivo->storeAs(
+                    //     'fotos_entrega',
+                    //     "foto_de_rut" . '-' . $user_id . '-' . date('Y-m-d') . '-' . \Carbon\Carbon::now()->timestamp . '.' . $extensionFoto
+                    // );
+
+                    //Creamos una instancia de la libreria instalada
+                    $image = \Image::make($fotoArchivo);
+                    // Guardar
+                    $image->save($path . $filename);
+                    // $image->save($path);
+
+                    $entregar->foto_rut = $path . $filename;
+
+                }
+
+
+                if ($entregar->save()) {
+                    // Actualizar estado de inventario del VIN a entregar
+                    $Vin_ = Vin::findOrFail($Vin->vin_id);
+                    // $Vin_->vin_predespacho = false; // Nota: No descomentar. Esto se controla en otras funciones.
+                    $Vin_->vin_estado_inventario_id = $estado_nuevo;
+                    if (!$Vin_->update()) {
+                        DB::rollBack();
+                        $usersf = Array("Err" => 1, "Msg" => "Error al cambiando estado de VIN.");
                     }
 
+                    // Anular el registro de Predespacho.
+                    $predespacho = Predespacho::where('vin_id', $Vin->vin_id)->first();
 
-                    $emp = Vin::join('users', 'vins.user_id','=','users.user_id')
-                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                        ->where('vins.vin_id', $Vin->vin_id)
-                        ->select('empresas.empresa_id', 'empresas.empresa_razon_social')
-                        ->first();
+                    if ($predespacho) {
+                        if (!$predespacho->delete()) {
+                            DB::rollBack();
+                            $usersf = Array("Err" => 1, "Msg" => "Error cerrando predespacho.");
+                        }
+                    }
 
-                    $date = Carbon::now();
-                    $fecha = $date->toDateString();
-                    $hora = $date->toTimeString();
+                    // Buscar si existe la asociación del VIN con alguna guía
+                    $guiaVin = GuiaVin::where('vin_id', $Vin->vin_id)->first();
+
+                    if ($guiaVin) {
+                        $guiaAnteriorVin = Guia::find($guiaVin->guia_id);
+
+                        if ($guiaAnteriorVin) {
+                            $guiaNumero = $guiaAnteriorVin->guia_numero;
+                        } else {
+                            $guiaNumero = "N/A";
+                        }
+
+
+                        $emp = Vin::join('users', 'vins.user_id', '=', 'users.user_id')
+                            ->join('empresas', 'users.empresa_id', '=', 'empresas.empresa_id')
+                            ->where('vins.vin_id', $Vin->vin_id)
+                            ->select('empresas.empresa_id', 'empresas.empresa_razon_social')
+                            ->first();
+
+                        $date = Carbon::now();
+                        $fecha = $date->toDateString();
+                        $hora = $date->toTimeString();
+
+                        // Guardar historial del cambio
+                        DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            [
+                                $Vin->vin_id,
+                                $Vin->vin_estado_inventario_id,
+                                $fecha,
+                                // Auth::user()->user_id,
+                                $user->user_id,
+                                null,
+                                null,
+                                $emp->empresa_id,
+                                "Eliminada relación en base de datos del VIN a entregar con la Guía. Responsable: " . $user->user_nombre . " " . $user->user_apellido . ". Hora: " . $hora,
+                                "Guía Nro: " . $guiaNumero . ", Empresa: " . $emp->empresa_razon_social . ".",
+                                "VIN " . $Vin->vin_codigo . "."
+                            ]
+                        );
+
+                        if (!$guiaVin->delete()) {
+                            DB::rollback();
+                            $usersf = Array("Err" => 1, "Msg" => 'Error eliminando relación con su guía para el VIN seleccionado: ' . $vin->vin_codigo . '. Por favor informe al administrador antes de continuar.');
+                        } else {
+                            $usersf = Array("Err" => 0, "Msg" => "Relación VIN-Guía desasociada con éxito.");
+                        }
+                    }
+
+                   // $itemlist = self::ListVIN($request);
+
+                   // $itemlistData = json_decode($itemlist->content(), true);
+
+                    $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
+
+                    $ubicPatioVieja = null;
+
+                    $bloque_id = null;
 
                     // Guardar historial del cambio
-                    DB::insert('INSERT INTO historico_vins
+                    if ($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6) {
+                        if ($ubic_patio) {
+                            $bloque_id = $ubic_patio->bloque_id;
+
+                            // Liberar la posición ocupada del patio.
+                            $ubicPatioVieja = $ubic_patio;
+                            $ubic_patio->ubic_patio_ocupada = false;
+                            $ubic_patio->vin_id = null;
+                            $ubic_patio->update();
+                        } else {
+                            $bloque_id = null;
+                        }
+                    }
+
+                    if ($bloque_id != null) {
+                        $bloqueOrigen = Bloque::find($bloque_id);
+
+                        DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                         origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                        [
-                            $Vin->vin_id,
-                            $Vin->vin_estado_inventario_id,
-                            $fecha,
-                            // Auth::user()->user_id,
-                            $user->user_id,
-                            null,
-                            null,
-                            $emp->empresa_id,
-                            "Eliminada relación en base de datos del VIN a entregar con la Guía. Responsable: " . $user->user_nombre . " " . $user->user_apellido . ". Hora: " . $hora,
-                            "Guía Nro: " . $guiaNumero .", Empresa: " . $emp->empresa_razon_social . ".",
-                            "VIN " . $Vin->vin_codigo . "."
-                        ]
-                    );
-
-                    if (!$guiaVin->delete()) {
-                        DB::rollback();
-                        $usersf = Array("Err" => 1, "Msg" => 'Error eliminando relación con su guía para el VIN seleccionado: ' . $vin->vin_codigo . '. Por favor informe al administrador antes de continuar.');
+                            [
+                                $Vin->vin_id,
+                                $estado_nuevo,
+                                $entregar->entrega_fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->empresa_id,
+                                "VIN Entregado: " . $obs,
+                                "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatioVieja->ubic_patio_fila. Columna: $ubicPatioVieja->ubic_patio_columna.",
+                                "VIN: " . $Vin->vin_codigo . " entregado.",
+                            ]
+                        );
                     } else {
-                        $usersf = Array("Err" => 0, "Msg" => "Relación VIN-Guía desasociada con éxito.");
-                    }
-                }
-
-                $itemlist = self::ListVIN($request);
-
-                $itemlistData = json_decode($itemlist->content(),true);
-
-                $ubic_patio = UbicPatio::where('vin_id', $Vin->vin_id)->first();
-
-                $ubicPatioVieja = null;
-
-                $bloque_id = null;
-
-                // Guardar historial del cambio
-                if($estado_previo == 4 || $estado_previo == 5 || $estado_previo == 6){
-                    if($ubic_patio){
-                        $bloque_id = $ubic_patio->bloque_id;
-
-                        // Liberar la posición ocupada del patio.
-                        $ubicPatioVieja = $ubic_patio;
-                        $ubic_patio->ubic_patio_ocupada = false;
-                        $ubic_patio->vin_id = null;
-                        $ubic_patio->update();
-                    } else {
-                        $bloque_id = null;
-                    }
-                }
-
-                if($bloque_id != null){
-                    $bloqueOrigen = Bloque::find($bloque_id);
-
-                    DB::insert('INSERT INTO historico_vins
+                        DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
                         origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                        [
-                            $Vin->vin_id,
-                            $estado_nuevo,
-                            $entregar->entrega_fecha,
-                            $user->user_id,
-                            $bloque_id,
-                            $bloque_id,
-                            $user->empresa_id,
-                            "VIN Entregado: " . $obs,
-                            "Patio: " . $bloqueOrigen->onePatio->patio_nombre . ". Bloque: $bloqueOrigen->bloque_nombre. Fila: $ubicPatioVieja->ubic_patio_fila. Columna: $ubicPatioVieja->ubic_patio_columna.",
-                            "VIN: " . $Vin->vin_codigo . " entregado.",
-                        ]
-                    );
+                            [
+                                $Vin->vin_id,
+                                $estado_nuevo,
+                                $entregar->entrega_fecha,
+                                $user->user_id,
+                                $bloque_id,
+                                $bloque_id,
+                                $user->empresa_id,
+                                "VIN Entregado: " . $obs,
+                                "VIN sin ubicación (fuera de bloque) para realizar Entrega.",
+                                "VIN Entregado."
+                            ]
+                        );
+                    }
+
+                    DB::commit();
+
+                    $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso");
                 } else {
-                    DB::insert('INSERT INTO historico_vins
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                        [
-                            $Vin->vin_id,
-                            $estado_nuevo,
-                            $entregar->entrega_fecha,
-                            $user->user_id,
-                            $bloque_id,
-                            $bloque_id,
-                            $user->empresa_id,
-                            "VIN Entregado: " . $obs,
-                            "VIN sin ubicación (fuera de bloque) para realizar Entrega.",
-                            "VIN Entregado."
-                        ]
-                    );
+                    DB::rollBack();
+                    $usersf = Array("Err" => 1, "Msg" => "Error al registrar");
                 }
-
-                DB::commit();
-
-                $usersf = Array("Err" => 0, "Msg" => "Registrado Exitoso",  "itemlistData"=>$itemlistData['items']);
-            }else{
-                DB::rollBack();
-                $usersf = Array("Err" => 1, "Msg" => "Error al registrar");
+            } else {
+                $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
             }
-        }else{
-            $usersf = Array("Err" => 1, "Msg" => "Vin obligatorio");
+
         }
 
         return response()->json($usersf);
@@ -1321,27 +1327,28 @@ class ApiController extends Controller
     public function ListarRutas(Request $request){
         $this->cors();
 
-        $user_id = $request->user_id;
+        $user_id = $request->user_conductor;
 
         if (empty($user_id)) {
-            $usersf = Array("Err" => 1, "Msg" => "Users obligatorio");
+            return response()->json(Array("Err" => 1, "Msg" => "Users obligatorio"));
         } else {
             $Conductors = DB::table('conductors')->select('conductor_id','user_id');
             $Conductors->where('user_id', '=', $user_id);
             $Conductors = $Conductors->first();
 
+
+
             if ($Conductors) {
                 $Tour = DB::table('tours')->select('tour_id');
-                $Tour->where('conductor_id',  $Conductors->user_id);
+                $Tour->where('conductor_id',  $Conductors->user_id)
+                    ->where('tour_finalizado', false);
                 $Tour = $Tour->first();
 
                 if ($Tour) {
                     $rutas = DB::table('rutas')
-                        ->select('rutas.ruta_id as ruta_id', 'guia_numero', 'vin_codigo')
+                        ->select('rutas.ruta_id as ruta_id', 'guia_numero', 'ruta_origen', 'ruta_destino', 'ruta_iniciada', 'ruta_finalizada', 'ruta_fecha_en_origen as tiempo')
                         ->join("ruta_guias", "ruta_guias.ruta_id", "=", "rutas.ruta_id")
                         ->join("guias", "guias.guia_id", "=", "ruta_guias.guia_id")
-                        ->join("guia_vins", "guia_vins.guia_id", "=", "guias.guia_id")
-                        ->join("vins", "vins.vin_id", "=", "guia_vins.vin_id")
                         ->where('tour_id', $Tour->tour_id)
                         ->get();
 
@@ -1361,6 +1368,107 @@ class ApiController extends Controller
             }
 
         }
+    }
+
+    public function DetallesListarRutas(Request $request){
+        $this->cors();
+
+        $ruta_id = $request->ruta_id;
+
+                    $rutas = DB::table('rutas')
+                        ->select('rutas.ruta_id as ruta_id', 'guia_numero', 'vin_codigo')
+                        ->join("ruta_guias", "ruta_guias.ruta_id", "=", "rutas.ruta_id")
+                        ->join("guias", "guias.guia_id", "=", "ruta_guias.guia_id")
+                        ->join("guia_vins", "guia_vins.guia_id", "=", "guias.guia_id")
+                        ->join("vins", "vins.vin_id", "=", "guia_vins.vin_id")
+                        ->where('rutas.ruta_id', $ruta_id)
+                        ->get();
+
+                    if(count($rutas)>0)
+
+                        return response()->json(Array("Err" => 0, "Msg" => "Exitoso", "List" => $rutas));
+
+                    else
+
+                        return response()->json(Array("Err" => 1, "Msg" => "No existen Rutas asociada al conductor"));
+
+
+
+
+    }
+
+
+
+    public function  InicioRutas(Request $request){
+        $this->cors();
+
+        $user_id = $request->input('user_id');
+        $ruta_id =  $request->ruta_id;
+        $origen = $request->input('origen');
+
+        $rutas = DB::table('rutas')
+            ->select('ruta_id')
+            ->where('ruta_id', $ruta_id)
+            ->get();
+
+        if(count($rutas)>0){
+            $Rutas= Ruta::findOrFail($ruta_id);
+            $Rutas->ruta_en_origen = $origen;
+            $Rutas->ruta_iniciada = true;
+            $Rutas->ruta_fecha_en_origen = date('Y-m-d H:i:s', now()->timestamp);
+            $Rutas->update();
+            return response()->json(Array("Err" => 0, "Msg" => "Actualización Satisfactoria"));
+        }else{
+            return response()->json(Array("Err" => 1, "Msg" => "No se encuentra id de la ruta"));
+        }
+    }
+
+    public function  FinRutas(Request $request){
+        $this->cors();
+
+        $user_id = $request->input('user_id');
+        $ruta_id =  $request->ruta_id;
+
+        $rutas = DB::table('rutas')
+            ->select('ruta_id')
+            ->where('ruta_id', $ruta_id)
+            ->get();
+
+        if(count($rutas)>0){
+            $Rutas= Ruta::findOrFail($ruta_id);
+            $Rutas->ruta_finalizada = true;
+            $Rutas->update();
+            return response()->json(Array("Err" => 0, "Msg" => "Actualización Satisfactoria"));
+        }else{
+            return response()->json(Array("Err" => 1, "Msg" => "No se encuentra id de la ruta"));
+        }
+    }
+
+    public function GuardarLocalizacion(Request $request){
+        $this->cors();
+
+        $user_id = $request->input('user_id');
+        $ruta_id =  $request->ruta_id;
+        $coord_lon = $request->input('coord_lon');
+        $coord_lat = $request->input('coord_lat');
+
+        $rutas = DB::table('rutas')
+            ->select('ruta_id')
+            ->where('ruta_id', $ruta_id)
+            ->get();
+
+        if(count($rutas)>0){
+            $ub = new Ubicacion();
+            $ub->ubicacion_latitud = $coord_lat;
+            $ub->ubicacion_longitud = $coord_lon;
+            $ub->ruta_id = $ruta_id;
+            $ub->fecha_ubicacion_actual = date('Y-m-d H:i:s', now()->timestamp);
+            $ub->save();
+            return response()->json(Array("Err" => 0, "Msg" => "Ubicacion Guardada"));
+        }else{
+            return response()->json(Array("Err" => 1, "Msg" => "No se encuentra id de la ruta"));
+        }
+
     }
 
     public function RegistrarVehiculoNN(Request $request)
