@@ -30,7 +30,7 @@ class GuiaController extends Controller
         $query = Guia::withTrashed();
 
         if (!$request->from && !$request->to) {
-            $query->where('guia_fecha',  '>', Carbon::now()->subDays(7)->toDateTimeString());
+            $query->where('guia_fecha',  '>', Carbon::now()->subDays(90)->toDateTimeString());
         }
 
         // Filtro de búsqueda por fecha desde
@@ -43,20 +43,20 @@ class GuiaController extends Controller
         // Filtro de búsqueda por fecha hasta
         if($request->to){
             $date = Carbon::createFromFormat('Y-m-d', $request->to);
-            
+
             $query->whereDate('guia_fecha', '<=', $date);
         }
 
         // Filtro de búsqueda por número de guía
-        if($request->guia_numero){            
+        if($request->guia_numero){
             $query->where('guia_numero', $request->guia_numero);
         }
 
         // Filtro de búsqueda por empresa
-        if($request->empresa_id){            
+        if($request->empresa_id){
             $query->where('empresa_id', $request->empresa_id);
         }
-        
+
         $guias = $query->orderBy('guia_fecha')
             ->get();
 
@@ -107,7 +107,7 @@ class GuiaController extends Controller
      */
     public function edit(Guia $guia)
     {
-        
+
     }
 
     /**

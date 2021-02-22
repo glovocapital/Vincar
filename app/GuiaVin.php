@@ -17,4 +17,14 @@ class GuiaVin extends Model
     protected $fillable = [
         'guia_id','vin_id'
     ];
+
+    public function vin()
+    {
+        return $this->hasOne(Vin::class, 'vin_id', 'vin_id');
+    }
+
+    public function guia()
+    {
+        return $this->hasOne(Guia::class, 'guia_id', 'guia_id');
+    }
 }

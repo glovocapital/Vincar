@@ -24,4 +24,17 @@ class Guia extends Model
     {
         return $this->belongsTo(Empresa::class, 'empresa_id', 'empresa_id');
     }
+
+    public function vins()
+    {
+        $guiaVins = GuiaVin::where('guia_id', $this->guia_id)->get();
+
+        $vins = [];
+
+        foreach ($guiaVins as $guiaVin) {
+            array_push($vins, $guiaVin->vin);
+        }
+
+        return $vins;
+    }
 }

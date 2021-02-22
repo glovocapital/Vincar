@@ -281,6 +281,7 @@
                             <h3 class="card-title">Buscar Vin</h3>
                         </div>
                         <div class="card-body">
+                            <div id="error-msg-busqueda"></div>
                             {!! Form::open(['route'=> 'vin.index3', 'method'=>'post', 'id' => 'VinForm']) !!}
                             <div class="row">
                                 <div class="col-md-4" id="wrapper_2">
@@ -352,6 +353,7 @@
                             <h3 class="card-title">Buscar Vin</h3>
                         </div>
                         <div class="card-body">
+                            <div id="error-msg-busqueda"></div>
                             {!! Form::open(['route'=> 'vin.index2', 'method'=>'post', 'id'=>'VinForm']) !!}
                             <div class="row">
                                 <div class="col-md-4" id="wrapper_2">
@@ -454,7 +456,7 @@
 
                                 </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="tableRows">
 
                                 @foreach($tabla_vins as $vin)
                                     @if(isset($vin))
@@ -731,6 +733,8 @@
             $('#btn-src').on('click',function(e){
                 e.preventDefault();
 
+                $('#error-msg-busqueda').empty();
+
                 datatablesButtons.rows().remove();
 
                 var_roles=0;
@@ -740,6 +744,14 @@
                 $.post("{{route('vin.index_json')}}", $("#VinForm").serialize(), function (res) {
 
                     var array_vin_ids = [];
+
+                    // $("#tableRows").empty();
+
+                    if (res.error == 1){
+                        $('#error-msg-busqueda').append('<font color="red">' + res.message + '</font>');
+
+                        return;
+                    }
 
                     $(res).each(function( index , value ) {
                         array_vin_ids.push(value.vin_id);
@@ -789,7 +801,7 @@
 
                             ):"")+
                             '<small>'+
-                            ((value.vin_downloadGuiaN == "Sin Guia")?'<a href="'+value.vin_guia+'" type="button" class="btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>':'<a href="'+value.vin_downloadGuia+'" type="button" class="btn-vin"  title="Descargar Guía"><i class="fas fa fa-barcode2"></i></a>')+
+                            ((value.vin_downloadGuiaN == "Sin Guia")?'<a href="'+value.vin_guia+'" type="button" class="btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>':'<a href="'+value.vin_downloadGuia+'" type="button" class="btn-vin btn-download-guias-vin"  title="Descargar Guías"><i class="fas fa fa-barcode2"></i></a>')+
 
                             '</small>',
                         ]).draw( false );
@@ -804,7 +816,6 @@
                 }).fail(function () {
                     alert('Error: ');
                 });
-
             });
 
             $('.check-all').on('click',function(){
@@ -850,6 +861,15 @@
                 }).fail(function () {
                     alert('Error: Debe seleccionar al menos un vin de la lista');
                 });
+            });
+
+            $('.btn-download-guias-vin').on('click', function(e){
+                e.preventDefault;
+                vin_id = $(this).val();
+
+                alert(vin_id);
+
+                // $.get("route('vin.downloadGuiasVin', Crypt::encrypt($vin->vin_id))", function (res) {
             });
 
             //Modal Solicitar Tarea

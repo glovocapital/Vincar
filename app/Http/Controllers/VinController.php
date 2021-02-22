@@ -120,73 +120,25 @@ class VinController extends Controller
 
     public function index_json(Request $request)
     {
+        set_time_limit (600);
         if($request->ajax())
         {
-            /** Búsqueda de vins para la cabecera de la vista de planificación */
-            $vins = Vin::all();
-
-            $tipo_campanias_array = TipoCampania::select('tipo_campania_id', 'tipo_campania_descripcion')
-                ->where('deleted_at', null)
-                ->pluck('tipo_campania_descripcion', 'tipo_campania_id');
-
-            $patios = DB::table('patios')
-                ->select('patio_id', 'patio_nombre')
-                ->pluck('patio_nombre', 'patio_id');
-
-            $users = User::select(DB::raw("CONCAT(user_nombre,' ', user_apellido) AS user_nombres"), 'user_id')
-                ->orderBy('user_id')
-                ->where('deleted_at', null)
-                ->pluck('user_nombres', 'user_id')
-                ->all();
-
-            $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
-                ->orderBy('empresa_razon_social')
-                ->pluck('empresa_razon_social', 'empresa_id')
-                ->all();
-
-            $estadosInventario = DB::table('vin_estado_inventarios')
-                ->select('vin_estado_inventario_id', 'vin_estado_inventario_desc')
-                ->pluck('vin_estado_inventario_desc', 'vin_estado_inventario_id');
-
-            $subEstadosInventario = DB::table('vin_sub_estado_inventarios')
-                ->select('vin_sub_estado_inventario_id', 'vin_sub_estado_inventario_desc')
-                ->pluck('vin_sub_estado_inventario_desc', 'vin_sub_estado_inventario_id');
-
-            $marcas = DB::table('marcas')
-                ->select('marca_id', 'marca_nombre')
-                ->where('deleted_at', null)
-                ->pluck('marca_nombre', 'marca_id');
-
             $tabla_vins = [];
 
-            /** A partir de aqui las consultas del cuadro de busqueda */
-
-
+            /** A partir de aquí las consultas del cuadro de búsqueda */
             // Primer caso: Consulta general sin ningún criterio de filtro.
-            if(empty($request->empresa_id) && empty($request->vin_numero) && empty($request->estadoinventario_id) && empty($request->patio_id) && empty($request->marca_id) && empty($request->vin_numero)){
-                $query = Vin::join('users','users.user_id','=','vins.user_id')
-                    ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                    ->join('marcas','vins.vin_marca','=','marcas.marca_id')
-                    ->leftjoin('guia_vins','guia_vins.vin_id','=','vins.vin_id')
-                    ->leftjoin('guias','guia_vins.guia_id','guias.guia_id')
-                    ->leftJoin('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
-                    ->leftJoin('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                    ->leftJoin('patios','bloques.patio_id','=','patios.patio_id')
-                    ->select('vins.vin_id','vin_codigo', 'vin_patente', 'marca_nombre', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
-                        'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_agendado', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
-                        'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila','ubic_patio_columna','guias.guia_ruta');
-
-                if(Auth::user()->rol_id == 4) {
-                    $user_empresa_id = Auth::user()->belongsToEmpresa->empresa_id;
-                    $query->where('empresas.empresa_id',$user_empresa_id);
-                }
-
-                $tabla_vins = $query->get();
-            } elseif($request->has('empresa_id') || $request->has('vin_numero') || $request->has('estadoinventario_id') || $request->has('patio_id') || $request->has('marca_id')){
+            if(empty($request->empresa_id) && empty($request->vin_numero) && empty($request->estadoinventario_id) && empty($request->patio_id) && empty($request->marca_id)){
+                // No está previsto enviar resultados globales.
+                // TO DO: Mejorar eficiencia de renderizado de resultados.
+                return response()->json([
+                    'success' => false,
+                    'message' => "Debe seleccionar al menos un criterio de búsqueda",
+                    'error' => 1
+                ]);
+            } elseif ($request->has('empresa_id') || $request->has('vin_numero') || $request->has('estadoinventario_id') || $request->has('patio_id') || $request->has('marca_id')){
                 // Segundo caso: Se seleccionó algún criterio de filtro para la búsqueda.
                 $estado = DB::table('vin_estado_inventarios')
-                    ->where('vin_estado_inventario_id',$request->estadoinventario_id)
+                    ->where('vin_estado_inventario_id', $request->estadoinventario_id)
                     ->get();
 
                 if(!empty($estado[0]->vin_estado_inventario_id)){
@@ -197,36 +149,33 @@ class VinController extends Controller
 
                 $marca = Marca::find($request->marca_id);
 
-                if($marca)
-                {
+                if($marca) {
                     $marca_nombre = $marca->marca_nombre;
                 }else{
                     $marca_nombre = 'Sin marca';
                 }
 
-                $user = DB::table('users')
-                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                    ->where('empresas.empresa_id',$request->empresa_id)
-                    ->get();
+                $users = User::where('empresa_id', $request->empresa_id)->get();
 
                 if(Auth::user()->rol_id == 4) {
                     $user_empresa_id = Auth::user()->belongsToEmpresa->empresa_id;
                 } else {
-                    if(!empty($user[0]->empresa_id))
-                    {
-                        $user_empresa_id = $user[0]->empresa_id;
-                    }else{
-                        $user_empresa_id = 0;
+                    if(count($users) > 0) {
+                        $user_empresa_id = $request->empresa_id;
+                    } else {
+                        if (!empty($request->empresa_id)) {
+                            $user_empresa_id = $request->empresa_id;
+                        } else {
+                            $user_empresa_id = 0;
+                        }
                     }
                 }
 
-                $patio = DB::table('patios')
-                    ->where('patio_id', $request->patio_id)
-                    ->get();
+                $patio = Patio::where('patio_id', $request->patio_id)
+                    ->first();
 
-                if(!empty($patio[0]->patio_nombre))
-                {
-                    $patio_id = $patio[0]->patio_id;
+                if($patio) {
+                    $patio_id = $patio->patio_id;
                 }else{
                     $patio_id = 0;
                 }
@@ -239,23 +188,10 @@ class VinController extends Controller
                     $message = [];
 
                     foreach($arreglo_vins as $v){
-                        $query = DB::table('vins')
-                            ->join('users','users.user_id','=','vins.user_id')
-                            ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-                            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                            ->join('marcas','vins.vin_marca','=','marcas.marca_id')
-                            ->leftjoin('guia_vins','guia_vins.vin_id','=','vins.vin_id')
-                            ->leftjoin('guias','guia_vins.guia_id','guias.guia_id')
-                            ->leftJoin('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
-                            ->leftJoin('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                            ->leftJoin('patios','bloques.patio_id','=','patios.patio_id')
-                            ->select('vins.vin_id','vin_codigo', 'vin_patente', 'marca_nombre', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
-                                'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_agendado', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
-                                'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila','ubic_patio_columna','guias.guia_ruta');
+                        $query = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas');
 
                         if(Auth::user()->rol_id == 4) {
-                            $validate = DB::table('vins')
-                                ->join('users','users.user_id','=','vins.user_id')
+                            $validate = Vin::join('users','users.user_id','=','vins.user_id')
                                 ->join('empresas','users.empresa_id','=','empresas.empresa_id')
                                 ->where('empresas.empresa_id', $user_empresa_id)
                                 ->where(function ($query) use ($v) {
@@ -264,34 +200,42 @@ class VinController extends Controller
                                 })
                                 ->exists();
                         } else {
-                            $validate = DB::table('vins')
-                                ->where('vin_codigo', $v)
+                            $validate = Vin::where('vin_codigo', $v)
                                 ->orWhere('vin_patente', $v)
                                 ->exists();
                         }
 
                         if($validate == true){
-                            $query->where('vin_codigo',$v)
-                                ->orWhere('vin_patente', $v);
+                            $query->where(function ($query) use ($v) {
+                                $query->where('vin_codigo', $v)
+                                    ->orWhere('vin_patente', $v);
+                            });
 
-                            if($user_empresa_id > 0){
-                                $query->where('empresas.empresa_id',$user_empresa_id);
+                            if (count($users) > 0) {
+                                $query->join('users', 'users.user_id', 'vins.user_id')
+                                    ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
+                                    ->where('empresas.empresa_id', $user_empresa_id);
                             }
 
                             if($marca_nombre != 'Sin marca'){
                                 $query->where('vin_marca', $marca->marca_id);
-                                //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
-                            }
-
-                            if($patio_id > 0){
-                                $query->where('patios.patio_id', $patio_id);
                             }
 
                             if($estado_id > 0) {
-                                $query->where('vins.vin_estado_inventario_id', $estado_id);
+                                $query->where('vin_estado_inventario_id', $estado_id);
                             }
 
-                            array_push($tabla_vins, $query->first());
+                            $result = $query->first();
+
+                            if ($patio_id > 0){
+                                if ($result->ubicPatio != null){
+                                    if ($patio_id == $result->ubicPatio->oneBloque->onePatio->patio_id){
+                                        array_push($tabla_vins, $result);
+                                    }
+                                }
+                            } else {
+                                array_push($tabla_vins, $result);
+                            }
                         } else {
                             if(count($arreglo_vins) >= 1){
                                 if(Auth::user()->rol_id == 4){
@@ -301,51 +245,51 @@ class VinController extends Controller
                                 }
                             } else {
                                 if($user_empresa_id > 0){
-                                    $query->where('empresas.empresa_id',$user_empresa_id);
+                                    if (count($users) > 0) {
+                                        $query->join('users', 'users.user_id', 'vins.user_id')
+                                            ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
+                                            ->where('empresas.empresa_id', $user_empresa_id);
+                                    }
                                 }
 
                                 if($marca_nombre != 'Sin marca'){
                                     $query->where('vin_marca', $marca->marca_id);
-                                    //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
-                                }
-
-                                if($patio_id > 0){
-                                    $query->where('patios.patio_id', $patio_id);
                                 }
 
                                 if($estado_id > 0) {
                                     $query->where('vins.vin_estado_inventario_id', $estado_id);
                                 }
 
-                                $tabla_vins = $query->get();
+                                $result = $query->get();
+
+                                foreach ($result as $vinResult){
+                                    if ($patio_id > 0){
+                                        if ($vinResult->ubicPatio != null){
+                                            if ($patio_id == $vinResult->ubicPatio->oneBloque->onePatio->patio_id){
+                                                array_push($tabla_vins, $result);
+                                            }
+                                        }
+                                    } else {
+                                        array_push($tabla_vins, $vinResult);
+                                    }
+
+                                }
                             }
                         }
                     }
                 } else {
-                    $query = Vin::join('users','users.user_id','=','vins.user_id')
-                        ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                        ->join('marcas','vins.vin_marca','=','marcas.marca_id')
-                        ->leftjoin('guia_vins','guia_vins.vin_id','=','vins.vin_id')
-                        ->leftjoin('guias','guia_vins.guia_id','guias.guia_id')
-                        ->leftJoin('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
-                        ->leftJoin('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                        ->leftJoin('patios','bloques.patio_id','=','patios.patio_id')
-                        ->select('vins.vin_id','vin_codigo', 'vin_patente', 'marca_nombre', 'vin_modelo', 'vin_color', 'vin_segmento', 'vin_motor',
-                            'empresas.empresa_razon_social', 'vin_fec_ingreso', 'vin_fecha_agendado', 'vin_fecha_entrega','vins.vin_estado_inventario_id', 'vin_estado_inventario_desc',
-                            'patio_nombre', 'bloque_nombre', 'ubic_patio_id', 'ubic_patio_fila','ubic_patio_columna','guias.guia_ruta');
+                    $query = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas');
 
                     if($user_empresa_id > 0){
-                        $query->where('empresas.empresa_id', $user_empresa_id);
+                        if (count($users) > 0) {
+                            $query->join('users', 'users.user_id', 'vins.user_id')
+                                ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
+                                ->where('empresas.empresa_id', $user_empresa_id);
+                        }
                     }
 
                     if($marca_nombre != 'Sin marca'){
                         $query->where('vin_marca', $marca->marca_id);
-                        //$query->WhereRaw('upper(vin_marca) like(?)',strtoupper($marca_nombre));
-                    }
-
-                    if($patio_id > 0){
-                        $query->where('patios.patio_id', $patio_id);
                     }
 
                     if($estado_id > 0) {
@@ -355,55 +299,76 @@ class VinController extends Controller
                     $resultados = $query->get();
 
                     foreach($resultados as $registro){
-                        array_push($tabla_vins, $registro);
+                        if ($patio_id > 0){
+                            if ($registro->ubicPatio != null){
+                                if ($patio_id == $registro->ubicPatio->oneBloque->onePatio->patio_id){
+                                    array_push($tabla_vins, $registro);
+                                }
+                            }
+                        } else {
+                            array_push($tabla_vins, $registro);
+                        }
                     }
                 }
             }
         }
 
-        foreach($tabla_vins as $vins){
+        $tabla_resultados = [];
 
-            if($vins->guia_ruta){
-                $vins->vin_downloadGuiaN =  "Guia Cargada";
-            }else{
-                $vins->vin_downloadGuiaN =  "Sin Guia";
-            }
+        foreach($tabla_vins as $vin){
+            if($vin){
+                if (count($vin->guias()) > 0){
+                    $vin->vin_downloadGuiaN =  "Guia Cargada";
+                } else {
+                    $vin->vin_downloadGuiaN =  "Sin Guia";
+                }
 
-            if(!$vins->marca_nombre){
-                $vins->marca_nombre = 'Sin Marca';
-            }
+                if($vin->oneMarca != null){
+                    $vin->marca_nombre = $vin->oneMarca->marca_nombre;
+                } else {
+                    $vin->marca_nombre = 'Sin Marca';
+                }
 
-            $vins->vin_downloadGuia =  route('vin.downloadGuia', Crypt::encrypt($vins->vin_id));
-            $vins->vin_encrypt =  Crypt::encrypt($vins->vin_id);
-            $vins->vin_guia =  route('vin.guia', Crypt::encrypt($vins->vin_id));
-            $vins->vin_editarestado =  route('vin.editarestado', Crypt::encrypt($vins->vin_id));
-            $vins->vin_edit =  route('vin.edit', Crypt::encrypt($vins->vin_id));
-            $vins->rol_id = auth()->user()->rol_id;
-            if($vins->vin_fec_ingreso != null){
-                $vins->vin_fec_ingreso = date("d-m-Y", strtotime($vins->vin_fec_ingreso));
-            }
-            if ($vins->vin_fecha_agendado != null){
-                $vins->vin_fecha_agendado = date("d-m-Y", strtotime($vins->vin_fecha_agendado));
-            }
-            if ($vins->vin_fecha_entrega != null){
-                $vins->vin_fecha_entrega = date("d-m-Y", strtotime($vins->vin_fecha_entrega));
-            }
+                $vin->vin_downloadGuia =  route('vin.downloadGuia', Crypt::encrypt($vin->vin_id));
+                $vin->vin_encrypt =  Crypt::encrypt($vin->vin_id);
+                $vin->vin_guia =  route('vin.guia', Crypt::encrypt($vin->vin_id));
+                $vin->vin_editarestado =  route('vin.editarestado', Crypt::encrypt($vin->vin_id));
+                $vin->vin_edit =  route('vin.edit', Crypt::encrypt($vin->vin_id));
+                $vin->rol_id = auth()->user()->rol_id;
 
-            if ($vins->vin_estado_inventario_id == 8){
-                $vinFechaEntrega = Entrega::where('vin_id', $vins->vin_id)
-                                    ->select('entrega_fecha')
-                                    ->orderBy('entrega_fecha', 'desc')
-                                    ->limit(1)
-                                    ->value('entrega_fecha');
+                if ($vin->ubicPatio != null){
+                    $vin->patio_nombre = $vin->ubicPatio->oneBloque->onePatio->patio_nombre;
+                    $vin->bloque_nombre = $vin->ubicPatio->oneBloque->bloque_nombre;
+                    $vin->ubic_patio_id = $vin->ubicPatio->ubic_patio_id;
+                    $vin->ubic_patio_fila = $vin->ubicPatio->ubic_patio_fila;
+                    $vin->ubic_patio_columna = $vin->ubicPatio->ubic_patio_columna;
+                }
 
-                $vins->vin_fecha_entrega = $vinFechaEntrega;
-            } else {
-                $vins->vin_fecha_entrega = "";
+                $vin->vin_estado_inventario_desc = $vin->estadoInventario->vin_estado_inventario_desc;
+                $vin->empresa_razon_social = $vin->oneUser->belongsToEmpresa->empresa_razon_social;
+
+                if($vin->vin_fec_ingreso != null){
+                    $vin->vin_fec_ingreso = date("d-m-Y", strtotime($vin->vin_fec_ingreso));
+                }
+                if ($vin->vin_fecha_agendado != null){
+                    $vin->vin_fecha_agendado = date("d-m-Y", strtotime($vin->vin_fecha_agendado));
+                }
+                if ($vin->vin_fecha_entrega != null){
+                    $vin->vin_fecha_entrega = date("d-m-Y", strtotime($vin->vin_fecha_entrega));
+                }
+
+                if(count($vin->entregas) > 0){
+                    $vin->vin_fecha_entrega = date("d-m-Y", strtotime($vin->entregas[0]->entrega_fecha));
+                } else {
+                    $vin->vin_fecha_entrega = '';
+                }
+
+                array_push($tabla_resultados, $vin);
             }
         }
 
         return response()->json(
-            $tabla_vins
+            $tabla_resultados
         );
     }
 
@@ -1150,10 +1115,7 @@ class VinController extends Controller
         $fecha = $date->toDateString();
         $hora = $date->toTimeString();
 
-        $empresa = Empresa::join('users', 'users.empresa_id','=','empresas.empresa_id')
-            ->where('users.user_id', $vin->user_id)
-            ->select('empresas.empresa_id', 'empresas.empresa_razon_social')
-            ->first();
+        $empresa = $vin->empresa();
 
         try {
             DB::beginTransaction();
@@ -1180,8 +1142,8 @@ class VinController extends Controller
                     // Guardar historial del cambio
                     DB::insert('INSERT INTO historico_vins
                         (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto, created_at, updated_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [
                             $vin->vin_id,
                             $vin->vin_estado_inventario_id,
@@ -1192,7 +1154,9 @@ class VinController extends Controller
                             $empresa->empresa_id,
                             "Carga de nueva Guía al VIN. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
                             "Guía Nro: " . $guia->guia_numero .", Empresa: " . $empresa->empresa_razon_social . ".",
-                            "VIN " . $vin->vin_codigo . "."
+                            "VIN " . $vin->vin_codigo . ".",
+                            $date->toDateTimeString(),
+                            $date->toDateTimeString()
                         ]
                     );
                 } else {
@@ -1224,19 +1188,24 @@ class VinController extends Controller
     {
         $vin_id =  Crypt::decrypt($id);
 
-        $guia = Vin::join('guia_vins','guia_vins.vin_id','vins.vin_id')
-            ->join('guias','guia_vins.guia_id','guias.guia_id')
-            ->select('guias.guia_ruta')
-            ->where('guia_vins.vin_id', $vin_id)
-            ->first();
+        $vin_codigo = Vin::find($vin_id)->vin_codigo;
 
-        if($guia)
-        {
-            return Storage::download($guia->guia_ruta);
+        $guias = Vin::find($vin_id)->guias();
+
+        if ($guias){
+            return view('vin.download_guias_vin', compact('vin_id', 'vin_codigo', 'guias'));
         } else {
-            flash('El vin no tiene guia asociada.')->error();
-            return redirect('vin');
+            return redirect()->back();
         }
+    }
+
+    public function descargarGuia($id)
+    {
+        $guia_id =  Crypt::decrypt($id);
+
+        $guia = Guia::find($guia_id);
+
+        return Storage::download($guia->guia_ruta);
     }
 
     // Función para cargar una guía de empresa y relacionarla con los VINs seleccionados de una búsqueda.
@@ -1247,87 +1216,32 @@ class VinController extends Controller
         $fecha = $date->toDateString();
         $hora = $date->toTimeString();
 
-        $arrayGuiasEliminar = [];
+        // $arrayGuiasEliminar = [];
 
         try {
             DB::beginTransaction();
 
-            // Conseguir si hay guías anteriores para alguno de los VINs enviados
+            // Comprobar que cada VIN enviado corresponda con la empresa emisora de la guía.
             foreach($request->vin_ids as $vin_id){
-                $empresa = Vin::join('users', 'vins.user_id','=','users.user_id')
-                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                    ->where('vins.vin_id', $vin_id)
-                    ->select('empresas.empresa_id')
-                    ->first();
+                $vinCheck = Vin::find($vin_id);
 
-                $vinCodigo = Vin::find($vin_id)->vin_codigo;
+                if($vinCheck){
+                    $empresa = $vinCheck->empresa();
 
-                // Validar que los VINs pertenecen a la empresa que emite la guía
-                if($request->empresa_guia_id != $empresa->empresa_id){
-                    DB::rollback();
+                    // Validar que los VINs pertenecen a la empresa que emite la guía
+                    if($request->empresa_guia_id != $empresa->empresa_id){
+                        DB::rollback();
 
-                    flash('Error. El VIN seleccionado: ' . $vinCodigo . ' no pertenece a la empresa que emitió la guía.')->error();
-                    return back()->withInput();
-                }
-
-                // Buscar si existe la asociación del VIN con alguna guía preexistente
-                $guiaAnterior = GuiaVin::where('vin_id', $vin_id)->first();
-
-                if ($guiaAnterior){
-                    if(!in_array($guiaAnterior->guia_id, $arrayGuiasEliminar)){
-                        array_push($arrayGuiasEliminar, $guiaAnterior->guia_id);
+                        flash('Error. El VIN seleccionado: ' . $vinCheck->vin_codigo . ' no pertenece a la empresa que emitió la guía.')->error();
+                        return back()->withInput();
                     }
-                }
-            }
-
-            // Por cada guía anterior encontrada, se debe eliminar la guía (softdelete) y todas
-            // las relaciones Guia-Vin dejando constancia en el histórico.
-            foreach ($arrayGuiasEliminar as $guiaEliminarId){
-                $guiaEliminar = Guia::find($guiaEliminarId);
-                $guiaVinsEliminar = GuiaVin::where('guia_id', $guiaEliminar->guia_id)->get();
-
-                foreach ($guiaVinsEliminar as $guiaVinDel) {
-                    $vin = Vin::find($guiaVinDel->vin_id);
-
-                    $emp = Vin::join('users', 'vins.user_id','=','users.user_id')
-                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                        ->where('vins.vin_id', $vin->vin_id)
-                        ->select('empresas.empresa_id', 'empresas.empresa_razon_social')
-                        ->first();
-
-                    // Guardar historial del cambio
-                    DB::insert('INSERT INTO historico_vins
-                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                        [
-                            $vin->vin_id,
-                            $vin->vin_estado_inventario_id,
-                            $fecha,
-                            Auth::user()->user_id,
-                            null,
-                            null,
-                            $emp->empresa_id,
-                            "Eliminada Guía anterior del VIN. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
-                            "Guía Nro: " . $guiaEliminar->guia_numero .", Empresa: " . $emp->empresa_razon_social . ".",
-                            "VIN " . $vin->vin_codigo . "."
-                        ]
-                    );
-
-                    $guiaVinDel->delete();
-                }
-
-                if (!$guiaEliminar->delete()){
-                    DB::rollback();
-
-                    flash('Error eliminando guía anterior para el VIN seleccionado: ' . $vin->vin_codigo . ' y demás VINs de dicha guía. Informar al administrador antes de continuar.')->error();
-                    return back()->withInput();
                 } else {
-                    flash('Guías anteriores desasociadas con éxito.')->success();
+                    DB::rollBack();
+
+                    flash('Error: VIN con ID: ' . $vin_id . ' no encontrado. Informe al administrador.')->error();
+                    return back()->withInput();
                 }
             }
-
-            // Crear la guía y su relación respectiva con los VINs
 
             // Almacenar imagen o PDF de la guía en la base de datos.
             $guiaVin = $request->file('guia_vin');
@@ -1337,6 +1251,7 @@ class VinController extends Controller
                 "foto de documento ".'- '.Auth::id().' - '.date('Y-m-d').' - '.\Carbon\Carbon::now()->timestamp.'.'.$extensionGuia
             );
 
+            // Crear la guía y su relación respectiva con los VINs
             $guia = new Guia();
             $guia->guia_ruta = $path;
             $guia->guia_fecha = $request->guia_fecha;
@@ -1358,37 +1273,28 @@ class VinController extends Controller
 
                     $vin = Vin::find($vin_id);
 
-                    if ($vin) {
-                        $emp = Vin::join('users', 'vins.user_id','=','users.user_id')
-                            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                            ->where('vins.vin_id', $vin->vin_id)
-                            ->select('empresas.empresa_id', 'empresas.empresa_razon_social')
-                            ->first();
+                    $emp = $vin->empresa();
 
-                        // Guardar historial del cambio
-                        DB::insert('INSERT INTO historico_vins
-                            (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
-                            origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                            [
-                                $vin->vin_id,
-                                $vin->vin_estado_inventario_id,
-                                $fecha,
-                                Auth::user()->user_id,
-                                null,
-                                null,
-                                $emp->empresa_id,
-                                "VIN en asignación masiva de nueva Guía. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
-                                "Guía Nro: " . $guia->guia_numero .", Empresa: " . $emp->empresa_razon_social . ".",
-                                "VIN " . $vin->vin_codigo . "."
-                            ]
-                        );
-                    } else {
-                        DB::rollBack();
-
-                        flash('Error: VIN con ID: ' . $vin_id . ' no encontrado. Informe al administrador.')->error();
-                        return back()->withInput();
-                    }
+                    // Guardar historial del cambio
+                    DB::insert('INSERT INTO historico_vins
+                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto, created_at, updated_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $vin->vin_id,
+                            $vin->vin_estado_inventario_id,
+                            $fecha,
+                            Auth::user()->user_id,
+                            null,
+                            null,
+                            $emp->empresa_id,
+                            "VIN en asignación masiva de nueva Guía. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
+                            "Guía Nro: " . $guia->guia_numero .", Empresa: " . $emp->empresa_razon_social . ".",
+                            "VIN " . $vin->vin_codigo . ".",
+                            $date->toDateTimeString(),
+                            $date->toDateTimeString()
+                        ]
+                    );
                 }
             } else {
                 DB::rollBack();
@@ -1583,9 +1489,9 @@ class VinController extends Controller
                         Array("error"=>0,"mensaje"=>"Guardado con Èxito")
                     );
                 } else {
-                   return response()->json(
-                       Array("error"=>1,"mensaje"=>"Guardado Incompleto")
-                   );
+                    return response()->json(
+                        Array("error"=>1,"mensaje"=>"Guardado Incompleto")
+                    );
                 }
             } else {
                 flash('Estados cambiados con éxito.')->success();
@@ -1749,7 +1655,7 @@ class VinController extends Controller
                 return redirect()->route('vin.index');
             }
 
-           DB::commit();
+            DB::commit();
 
         }  catch (\Throwable $th) {
             DB::rollBack();
@@ -2077,9 +1983,9 @@ class VinController extends Controller
                         Array("error"=>0,"mensaje"=>"Cambio de cliente realizado con Èxito")
                     );
                 } else {
-                   return response()->json(
-                       Array("error"=>1,"mensaje"=>"Guardado Incompleto")
-                   );
+                    return response()->json(
+                        Array("error"=>1,"mensaje"=>"Guardado Incompleto")
+                    );
                 }
             } else {
                 flash('Cambio de cliente realizado con éxito.')->success();

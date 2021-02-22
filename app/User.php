@@ -58,8 +58,9 @@ class User extends Authenticatable
         return $this->belongsTo(Empresa::class, 'empresa_id', 'empresa_id');
     }
 
-
-
+    public function vins() {
+        return Vin::where('user_id', $this->user_id)->get();
+    }
 
 /*
     public function sendPasswordResetNotification($token)

@@ -32,6 +32,19 @@ class Empresa extends Model
         return $this->hasMany(Camion::class);
     }
 
+    public function vins()
+    {
+        $users = $this->manyUsers();
+
+        $vins = [];
+
+        foreach ($users as $user) {
+            array_push($vins, $user->vins());
+        }
+
+        return $vins;
+    }
+
     public function oneTipoProveedor ($tipo_proveedor_id){
         $tipoProveedor = DB::table('tipo_proveedores')
             ->where('tipo_proveedor_id', $this->tipo_proveedor_id)

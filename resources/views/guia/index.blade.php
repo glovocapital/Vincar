@@ -8,7 +8,7 @@
     <div class="ibox float-e-margins">
         <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">Listado de guías - Mostrando: Última semana</h3>
+                <h3 class="card-title">Listado de guías - Mostrando: Últimos 3 meses</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
@@ -37,7 +37,7 @@
                                 </div>
                             </div>
                             <div class="form-inline pb-3">
-                                <label for="empresa" class="form-label-sm">Empresa</label> 
+                                <label for="empresa" class="form-label-sm">Empresa</label>
                                 &nbsp;
                                 <div class="input-group">
                                 {!! Form::select('empresa_id', $empresas, request('empresa_id'),['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control form-control-sm col-sm-9 select-cliente']) !!}
@@ -54,6 +54,7 @@
                                 <th>Número de Guía</th>
                                 <th>Fecha</th>
                                 <th>Empresa</th>
+                                <th>VINs</th>
                                 <th>¿Carga entregada?</th>
                                 <th>Estado</th>
                                 <th>Acci&oacute;n</th>
@@ -66,6 +67,11 @@
                                 <td><small>{{ $guia->guia_numero }}</small></td>
                                 <td><small>{{ $guia->guia_fecha }}</small></td>
                                 <td><small>{{ $guia->empresa->empresa_razon_social }}</small></td>
+                                <td><small>
+                                @foreach ($guia->vins() as $vin)
+                                {{ $vin->vin_codigo }},
+                                @endforeach
+                                </small></td>
 
                                 @if ($guia->guia_carga_entregada)
                                     <td><small><button class="btn btn-success btn-sm rounded">Sí</button></small></td>
@@ -74,16 +80,19 @@
                                 @endif
 
                                 @if ($guia->deleted_at != null)
-                                    <td><small><button class="btn btn-danger btn-sm rounded">Inactiva</button></small></td>
+                                    <td><small><button class="btn btn-danger btn-sm rounded">Anulada</button></small></td>
                                 @else
                                     <td><small><button class="btn btn-success btn-sm rounded">Activa</button></small></td>
                                 @endif
-                                
+
                                 <td>
                                     <small>
                                         <a href="{{ route('guia.downloadGuia', Crypt::encrypt($guia->guia_id)) }}" type="button" class="btn-guia"  title="Descargar Guía"><i class="fas fa fa-barcode2"></i></a>
                                     </small>
-                                    
+                                    <small>
+                                        <a href="{{ route('guia.delete', Crypt::encrypt($guia->guia_id)) }}" type="button" onclick="return confirm('¿Está seguro que desea anular esta guía?')" class="btn-guia"  title="Anular Guía"><i class="far fa-trash-alt"></i></a>
+                                    </small>
+
                                 </td>
                             </tr>
 

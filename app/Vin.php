@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Illuminate\Database\Eloquent\Collection;
 
 class Vin extends Model
 {
@@ -37,6 +38,11 @@ class Vin extends Model
         return $estadoInventario->vin_estado_inventario_desc;
     }
 
+    public function estadoInventario()
+    {
+        return $this->hasOne(EstadoInventario::class, 'vin_estado_inventario_id', 'vin_estado_inventario_id');
+    }
+
     public function oneVinSubEstadoInventario()
     {
         $subEstadoInventario = DB::table('vin_sub_estado_inventarios')
@@ -46,7 +52,40 @@ class Vin extends Model
         return $subEstadoInventario->vin_sub_estado_inventario_desc;
     }
 
+    public function guiaVins(){
+        return $this->hasMany(GuiaVin::class, 'vin_id', 'vin_id');
+    }
 
+    public function guias()
+    {
+        $arrayGuias = [];
 
+        foreach ($this->guiaVins as $guiaVin){
+            array_push($arrayGuias, $guiaVin->guia);
+        }
 
+        $guias = new Collection($arrayGuias);
+
+        return $guias;
+    }
+
+    public function ubicPatio(){
+        return $this->hasOne(UbicPatio::class, 'vin_id', 'vin_id');
+    }
+
+    public function empresa()
+    {
+        return $this->oneUser->belongsToEmpresa;
+    }
+
+    public function entregas()
+    {
+        return $this->hasMany(Entrega::class, 'vin_id', 'vin_id')->orderBy('created_at', 'DESC');
+    }
+
+    public function ultimaEntrega()
+    {
+        $entrega = new Collection($this->entregas->last());
+        return $entrega;
+    }
 }
