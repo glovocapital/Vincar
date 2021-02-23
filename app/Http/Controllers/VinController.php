@@ -24,6 +24,7 @@ use DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use League\Flysystem\FileNotFoundException;
 
 class VinController extends Controller
 {
@@ -1205,7 +1206,19 @@ class VinController extends Controller
 
         $guia = Guia::find($guia_id);
 
-        return Storage::download($guia->guia_ruta);
+        if($guia)
+        {
+            try
+            {
+                return Storage::download($guia->guia_ruta);
+            } catch (FileNotFoundException $e) {
+                flash('Error: Archivo no encontrado. Informar al administrador.')->error();
+                return redirect('guia');
+            }
+        } else {
+            flash('Error: Guía ID: ' . $guia_id . ' no encontrada. Informar al administrador.')->error();
+            return redirect('guia');
+        }
     }
 
     // Función para cargar una guía de empresa y relacionarla con los VINs seleccionados de una búsqueda.

@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
+use League\Flysystem\FileNotFoundException;
 
 class GuiaController extends Controller
 {
@@ -141,9 +142,15 @@ class GuiaController extends Controller
 
         if($guia)
         {
-            return Storage::download($guia->guia_ruta);
+            try
+            {
+                return Storage::download($guia->guia_ruta);
+            } catch (FileNotFoundException $e) {
+                flash('Error: Archivo no encontrado. Informar al administrador.')->error();
+                return redirect('guia');
+            }
         } else {
-            flash('Error: Archivo no encontrado.')->error();
+            flash('Error: Guía ID: ' . $guia_id . ' no encontrada. Informar al administrador.')->error();
             return redirect('guia');
         }
     }
