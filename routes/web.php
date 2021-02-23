@@ -381,7 +381,12 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
     // Rutas para Facturación
     Route::get('facturacion/prefactura', 'FacturacionController@prefactura')->name('facturacion.prefactura');
+    Route::get('facturacion/prefacturasPendientes', 'FacturacionController@prefacturasPendientes')->name('facturacion.prefacturasPendientes');
+
     Route::post('facturacion/generarPrefactura','FacturacionController@generarPrefactura')->name('prefacturacion.generar');
     Route::post('facturacion/divisasDia','FacturacionController@divisasDia')->name('prefacturacion.divisasDia');
+    Route::post('facturacion/grabarPrefactura','FacturacionController@grabarPrefactura')->name('prefacturacion.grabar');
+    Route::post('facturacion/traeUltimaPrefactura','FacturacionController@traeUltimaPrefactura')->name('prefacturacion.traeUltima');
+    Route::post('facturacion/traePrefacturas','FacturacionController@traePrefacturas')->name('prefacturacion.traePrefacturas');
 
 });

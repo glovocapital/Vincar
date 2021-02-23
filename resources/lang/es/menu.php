@@ -50,6 +50,7 @@ return [
 
     'Facturacion'=>'Facturación',
     'PreFacturacion'=>'Pre Facturación',
+    'prefacturasPendientes'=>'Pre Facturas Pendientes',
     'Ventas'=>'Ventas',
     'Ventas_Electronicas'=>'Ventas Electrónicas',
     'Notificaciones_SII'=>'Notificaciones SII',

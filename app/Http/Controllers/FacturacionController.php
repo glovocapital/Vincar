@@ -18,6 +18,9 @@ use App\TipoCampania;
 use App\Entrega;
 use App\Exports\BusquedaVinsExport;
 use App\Exports\VinEntregadosExport;
+use App\Prefactura;
+use App\PrefacturaDetalle;
+use App\PrefacturaDescuento;
 
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -46,6 +49,70 @@ class FacturacionController extends Controller
 
       return view('facturacion.prefactura', compact( 'empresas'));
   }
+  public function prefacturasPendientes()
+  {
+      $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
+        ->orderBy('empresa_razon_social')
+        ->pluck('empresa_razon_social', 'empresa_id');
+
+      return view('facturacion.prefacturasPendientes', compact( 'empresas'));
+  }
+  public function traePrefacturas(Request $request){
+    $pendientes = $request->pendientes;
+    $salida = [];
+    if ($request->empresa == ''){
+      // todas las empresas
+      if ($pendientes == 'SI'){
+        $prefactura = DB::table('prefacturas')->where('prefactura_numero_orden', 0)->select('prefactura_empresa_id', 'prefactura_id', 'prefactura_fecha_inicio', 'prefactura_fecha_final', 'prefactura_numero_orden')->orderBy('prefactura_id', 'desc')->get();
+      }
+      else{
+        $prefactura = DB::table('prefacturas')->select('prefactura_empresa_id', 'prefactura_id', 'prefactura_fecha_inicio', 'prefactura_fecha_final', 'prefactura_numero_orden')->orderBy('prefactura_id', 'desc')->get();
+      }
+    }
+    else{
+      // empresa específica
+      if ($pendientes == 'SI'){
+        $prefactura = DB::table('prefacturas')->where('prefactura_empresa_id', $request->empresa)->where('prefactura_numero_orden', 0)->select('prefactura_empresa_id', 'prefactura_id', 'prefactura_fecha_inicio', 'prefactura_fecha_final', 'prefactura_numero_orden')->orderBy('prefactura_id', 'desc')->get();
+      }
+      else{
+        $prefactura = DB::table('prefacturas')->where('prefactura_empresa_id', $request->empresa)->select('prefactura_empresa_id', 'prefactura_id', 'prefactura_fecha_inicio', 'prefactura_fecha_final', 'prefactura_numero_orden')->orderBy('prefactura_id', 'desc')->get();
+      }
+    }
+    foreach ($prefactura as $pf) {
+      // Recorremos las prefacturas seleccionadas para agregar los valores
+      $montos = DB::table('prefactura_detalles')->where('prefactura_detalle_prefactura_id', $pf->prefactura_id)->select('prefactura_detalle_cant_dias', 'prefactura_detalle_valor_dia')->get();
+      $total = 0;
+      foreach ($montos as $m) {
+        $total += $m->prefactura_detalle_cant_dias * $m->prefactura_detalle_valor_dia;
+      }
+      $emp = DB::table('empresas')->where('empresa_id', $pf->prefactura_empresa_id)->select('empresa_razon_social')->limit(1)->get();
+
+      $item = new stdClass();
+      $item->prefactura_id = $pf->prefactura_id;
+      $item->prefactura_fecha_inicio = $pf->prefactura_fecha_inicio;
+      $item->prefactura_fecha_final = $pf->prefactura_fecha_final;
+      $item->prefactura_numero_orden = $pf->prefactura_numero_orden;
+      $item->monto = $total;
+      $item->cant_vines = count($montos);
+      $item->empresa = $emp[0]->empresa_razon_social;
+      $item->descuento = 0;
+      $descuento = DB::table('prefactura_descuentos')->where('prefactura_descuento_prefactura_id', $pf->prefactura_id)->select('prefactura_descuento_tipo', 'prefactura_descuento_monto')->get();
+      if(count($descuento) == 1){
+        if($descuento[0]->prefactura_descuento_tipo == 'porcentaje'){
+          $item->descuento = ($total * $descuento[0]->prefactura_descuento_monto / 100);
+        }
+        else{
+          $item->descuento = $total - $descuento[0]->prefactura_descuento_monto;
+        }
+      }
+      array_push($salida, $item);
+    }
+    if (count($salida) >= 1){
+      return response()->json($salida);
+    }
+    return response()->json(array());
+  }
+
   public function generarPrefactura(Request $request)
   {
 
@@ -65,7 +132,7 @@ class FacturacionController extends Controller
     if($request->tipo == "inventario"){
 
           $tabla_vins = $query->get();
-      $arreglo_vins = [];
+          $arreglo_vins = [];
           foreach ($tabla_vins as $vin) {
             $dias = $this->diasEnPatio($request->fini, $request->ffin, $vin->vin_id);
             if ($dias->dias > 0){
@@ -77,16 +144,16 @@ class FacturacionController extends Controller
               $salida->tarifa = $this->valorDiarioVin($vin->vin_codigo, $request->empresa);
               $salida->fini = $dias->fini;
               $salida->ffin = $dias->ffin;
+              $salida->vin_id = $vin->vin_id;
               array_push($arreglo_vins, $salida);
             }
           }
           return response()->json($arreglo_vins);
     }
     if($request->tipo == "despachadas"){
-
-          $tabla_vins = $query->get();
-      $arreglo_vins = [];
-      foreach ($tabla_vins as $vin) {
+        $tabla_vins = $query->get();
+        $arreglo_vins = [];
+        foreach ($tabla_vins as $vin) {
         $dias = $this->diasTotalesEnPatio($request->fini, $request->ffin, $vin->vin_id);
         if ($dias->dias > 0){
           $salida = new stdClass();
@@ -97,13 +164,12 @@ class FacturacionController extends Controller
           $salida->fini = $dias->fini;
           $salida->ffin = $dias->ffin;
           $salida->tarifa = $this->valorDiarioVin($vin->vin_codigo, $request->empresa);
-
+          $salida->vin_id = $vin->vin_id;
           array_push($arreglo_vins, $salida);
         }
       }
       return response()->json($arreglo_vins);
     }
-
   }
 
 
@@ -152,6 +218,9 @@ class FacturacionController extends Controller
     $primero = 0;
     $ultimo = 0;
     $salida = new stdClass();
+    $salida->fini = $fini;
+    $salida->ffin = $ffin;
+    $salida->dias = 0;
     foreach ($period as $dt) {
       // Se ve cual es el último estado del VIN
         $v = DB::table('historico_vins')->where([['vin_id', '=', $vin],['historico_vin_fecha', '<',  $dt->format("Y-m-d") ]])->orderBy('historico_vin_fecha', 'DESC')->orderBy('historico_vin_id', 'DESC')->limit(1)->get();
@@ -165,10 +234,11 @@ class FacturacionController extends Controller
             //$movimiento = DB::table('historico_vins')->where([['vin_id', '=', $vin],['historico_vin_fecha', '=', '\''. $dt->format("Y-m-d") .'\'']])->orderBy('historico_vin_fecha', 'DESC')->orderBy('historico_vin_id', 'DESC')->limit(1)->get();
             $dias++;
           }
+          $salida->ffin = $v[0]->historico_vin_fecha;
+          $salida->dias = $dias;
         }
-        $salida->ffin = $v[0]->historico_vin_fecha;
     }
-    $salida->dias = $dias;
+
     return $salida;
   }
   function diasTotalesEnPatio($fini, $ffin, $vin)
@@ -262,5 +332,53 @@ class FacturacionController extends Controller
     }
     return $precio;
   }
+
+  public function grabarPrefactura(Request $request){
+    $prefactura = json_decode($request->prefactura);
+    $prefactura_detalle = json_decode($request->prefactura_detalle);
+    $prefactura_descuento = json_decode($request->prefactura_descuento);
+    // GRABAR ENCABEZADO DE LA PREFACTURA
+    $tabla_prefactura = new Prefactura;
+    $tabla_prefactura->prefactura_empresa_id = $prefactura->prefactura_empresa_id;
+    $tabla_prefactura->prefactura_fecha_inicio = $prefactura->prefactura_fecha_inicio;
+    $tabla_prefactura->prefactura_fecha_final = $prefactura->prefactura_fecha_final;
+    $tabla_prefactura->prefactura_user_id_creacion = $prefactura->prefactura_user_id_creacion;
+    $tabla_prefactura->prefactura_user_id_actualizacion = $prefactura->prefactura_user_id_actualizacion;
+    $tabla_prefactura->prefactura_numero_orden = 0;
+    $tabla_prefactura->save();
+    $id_prefactura = $tabla_prefactura->prefactura_id;
+
+    // GRABAR DETALLE DE LA PRE-FACTURA
+    foreach ($prefactura_detalle as $pd) {
+      $tabla_prefactura_detalle = new PrefacturaDetalle;
+      $tabla_prefactura_detalle->prefactura_detalle_prefactura_id = $id_prefactura;
+      $tabla_prefactura_detalle->prefactura_detalle_vin_id = $pd[7];
+      $tabla_prefactura_detalle->prefactura_detalle_fecha_inicio = $pd[5];
+      $tabla_prefactura_detalle->prefactura_detalle_fecha_final = $pd[6];
+      $tabla_prefactura_detalle->prefactura_detalle_cant_dias = $pd[3];
+      $tabla_prefactura_detalle->prefactura_detalle_valor_dia =  $pd[4];
+      $tabla_prefactura_detalle->save();
+    }
+    // GRABAR DESCUENTO DE LA PRE-Factura
+    if($prefactura_descuento->prefactura_descuento_tipo != ''){
+      $tabla_prefactura_descuento = new PrefacturaDescuento;
+      $tabla_prefactura_descuento->prefactura_descuento_prefactura_id = $id_prefactura;
+      $tabla_prefactura_descuento->prefactura_descuento_tipo = $prefactura_descuento->prefactura_descuento_tipo;
+      $tabla_prefactura_descuento->prefactura_descuento_monto = $prefactura_descuento->prefactura_descuento_monto;
+      $tabla_prefactura_descuento->prefactura_descuento_motivo = $prefactura_descuento->prefactura_descuento_motivo;
+      $tabla_prefactura_descuento->prefactura_descuento_user_id = $prefactura_descuento->prefactura_descuento_user_id;
+      $tabla_prefactura_descuento->save();
+    }
+    return json_encode(array("mensaje" => "OK", "detalle" => 0));
+  }
+
+  public function traeUltimaPrefactura(Request $request){
+    $prefactura = DB::table('prefacturas')->where('prefactura_empresa_id', $request->empresa)->select('prefactura_fecha_inicio', 'prefactura_fecha_final', 'prefactura_numero_orden')->orderBy('prefactura_id', 'desc')->limit(1)->get();
+    if (count($prefactura) == 1){
+      return response()->json($prefactura);
+    }
+    return response()->json(array());
+  }
+
 
 }

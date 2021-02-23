@@ -49,6 +49,7 @@ return [
 
     'Facturacion'=>'Billing',
     'PreFacturacion'=>'Pre Billing',
+    'prefacturasPendientes'=>'Pending Pre Billings',
     'Ventas'=>'Sales',
     'Ventas_Electronicas'=>'Electronic Sales',
     'Notificaciones_SII'=>'SII Notifications',

@@ -132,6 +132,9 @@
                 <li class="sidebar-item">
                     <li class="sidebar-item"><a class="sidebar-link" href="{{ route('facturacion.prefactura') }}">{{trans('menu.PreFacturacion')}}</a></li>
                 </li>
+                <li class="sidebar-item">
+                    <li class="sidebar-item"><a class="sidebar-link" href="{{ route('facturacion.prefacturasPendientes') }}">{{trans('menu.prefacturasPendientes')}}</a></li>
+                </li>
             </ul>
         </li>
     @endif
