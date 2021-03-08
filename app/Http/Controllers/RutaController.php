@@ -13,6 +13,7 @@ use App\Ruta;
 use App\RutaGuia;
 use App\Tour;
 use App\Vin;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 
@@ -169,7 +170,7 @@ class RutaController extends Controller
                             $val2 = GuiaVinRuta::where('vin_id', $vin->vin_id)->exists();
 
                             if(!$val2){
-                                // Si no existe la asociación, entonces se asocia el VIN a la guía $guia
+                                // Si no existe la asociación, entonces se asocia el VIN a la guía $guia y a la ruta $ruta
                                 $guiaVinRuta = new GuiaVinRuta();
                                 $guiaVinRuta->vin_id = $vin->vin_id;
                                 $guiaVinRuta->guia_id = $guia->guia_id;
@@ -195,10 +196,43 @@ class RutaController extends Controller
                                 }
                             }
 
+                            // Se crea la asociación entre la guía anexada a la ruta y el vin correspondiente.
                             $guiaVin = new GuiaVin();
                             $guiaVin->vin_id = $vin->vin_id;
                             $guiaVin->guia_id = $guia->guia_id;
-                            $guiaVin->save();
+
+                            if($guiaVin->save()) {
+                                // Una vez creada la relación del vin con la nueva guía, se hace el registro en el histórico del VIN
+                                $date = Carbon::now();
+                                $fecha = $date->toDateString();
+                                $hora = $date->toTimeString();
+
+                                // Guardar historial del cambio
+                                DB::insert('INSERT INTO historico_vins
+                                    (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                    origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto, created_at, updated_at)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                    [
+                                        $vin->vin_id,
+                                        $vin->vin_estado_inventario_id,
+                                        $fecha,
+                                        Auth::user()->user_id,
+                                        null,
+                                        null,
+                                        $guia->empresa_id,
+                                        "Carga de nueva Guía al VIN. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
+                                        "Guía Nro: " . $guia->guia_numero .", Empresa: " . $empresaVin->empresa_razon_social . ".",
+                                        "VIN " . $vin->vin_codigo . ".",
+                                        $date->toDateTimeString(),
+                                        $date->toDateTimeString()
+                                    ]
+                                );
+                            } else {
+                                DB::rollback();
+
+                                flash('Error guardando la guia.')->error();
+                                return redirect('vin');
+                            }
 
                             $historicoTour = new HistoricoTour();
                             $historicoTour->tour_id = $id_tour;
@@ -522,10 +556,42 @@ class RutaController extends Controller
                             }
 
                             if ($cambioGuia) {
+                                // Si hubo cambio de guía se crea la relación del vin con la nueva guía y se hace el registro en el histórico del VIN
                                 $guiaVin = new GuiaVin();
                                 $guiaVin->vin_id = $vin->vin_id;
                                 $guiaVin->guia_id = $guia->guia_id;
-                                $guiaVin->save();
+
+                                if($guiaVin->save()) {
+                                    $date = Carbon::now();
+                                    $fecha = $date->toDateString();
+                                    $hora = $date->toTimeString();
+
+                                    // Guardar historial del cambio
+                                    DB::insert('INSERT INTO historico_vins
+                                        (vin_id, vin_estado_inventario_id, historico_vin_fecha, user_id,
+                                        origen_id, destino_id, empresa_id, historico_vin_descripcion, origen_texto, destino_texto, created_at, updated_at)
+                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                        [
+                                            $vin->vin_id,
+                                            $vin->vin_estado_inventario_id,
+                                            $fecha,
+                                            Auth::user()->user_id,
+                                            null,
+                                            null,
+                                            $guia->empresa_id,
+                                            "Carga de nueva Guía al VIN. Responsable: " . Auth::user()->user_nombre . " " . Auth::user()->user_apellido . ". Hora: " . $hora,
+                                            "Guía Nro: " . $guia->guia_numero .", Empresa: " . $empresaVin->empresa_razon_social . ".",
+                                            "VIN " . $vin->vin_codigo . ".",
+                                            $date->toDateTimeString(),
+                                            $date->toDateTimeString()
+                                        ]
+                                    );
+                                } else {
+                                    DB::rollback();
+
+                                    flash('Error guardando la guia.')->error();
+                                    return redirect('vin');
+                                }
                             }
 
                             $historicoTour = new HistoricoTour();
