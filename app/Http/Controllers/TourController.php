@@ -17,10 +17,12 @@ use App\Tour;
 use App\Ruta;
 use App\RutaGuia;
 use App\TipoLicencia;
+use App\Ubicacion;
 use App\Vin;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use DB;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
 
 class TourController extends Controller
@@ -47,7 +49,10 @@ class TourController extends Controller
         $rutas = [];
 
         foreach ($tours as $tour){
-            $tourRutas = Ruta::where('tour_id', $tour->tour_id)->get();
+            $tourRutas = Ruta::where('tour_id', $tour->tour_id)
+                ->where('ruta_iniciada', true)
+                ->where('ruta_finalizada', false)
+                ->get();
 
             foreach ($tourRutas as $tourRuta){
                 array_push($rutas, $tourRuta);
@@ -55,6 +60,53 @@ class TourController extends Controller
         }
 
         return view('transporte.index', compact('rutas'));
+    }
+
+    public function datosUbicacionRuta($id_ruta)
+    {
+        try {
+            $ruta_id = Crypt::decrypt($id_ruta);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        $ruta = Ruta::findOrFail($ruta_id);
+
+        $ubicacion = Ubicacion::where('ruta_id', $ruta_id)
+            ->orderBy('created_at','DESC')
+            ->first();
+
+        $ultimaUbicacion = json_encode($ubicacion);
+
+        $origen = \GoogleMaps::load('textsearch')
+            ->setParam([
+                'input' => $ruta->ruta_origen,
+                'inputtype' => 'textquery'
+            ])
+            ->get();
+
+        $destino = \GoogleMaps::load('textsearch')
+            ->setParam([
+                'input' => $ruta->ruta_destino,
+                'inputtype' => 'textquery'
+            ])
+            ->get();
+
+        $centroMapa = \GoogleMaps::load('textsearch')
+            ->setParam([
+                'input' => 'Santiago de Chile',
+                'inputtype' => 'textquery'
+            ])
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Datos de ubicación obtenidos",
+            'ultimaUbicacion' => $ultimaUbicacion,
+            'origen' => $origen,
+            'destino' => $destino,
+            'centroMapa' => $centroMapa,
+        ]);
     }
 
     /**

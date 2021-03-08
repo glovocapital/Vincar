@@ -116,4 +116,54 @@ class Ruta extends Model
 
         return json_decode($output);
     }
+
+    // Cálculo de la distancia recorrida entre dos puntos.
+    public static function calcularDistancia($from, $to)
+    {
+        $link = 'https://maps.googleapis.com/maps/api/directions/json?origin='.$from.'&destination='.$to.'&key='.config('googlemaps.GOOGLE_MAPS_API_KEY');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, str_replace(' ', '%20', $link));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($output);
+    }
+
+    public static function calcularDistanciaTotal()
+    {
+        $link = 'https://maps.googleapis.com/maps/api/directions/json?origin='.$from.'&destination='.$to.'&key='.config('googlemaps.GOOGLE_MAPS_API_KEY');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, str_replace(' ', '%20', $link));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($output);
+    }
+
+    // Cálculo de la velocidad entre dos puntos.
+    public static function calcularVelocidad($from, $to)
+    {
+        $link = 'https://maps.googleapis.com/maps/api/directions/json?origin='.$from.'&destination='.$to.'&key='.config('googlemaps.GOOGLE_MAPS_API_KEY');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, str_replace(' ', '%20', $link));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($output);
+    }
+
+    public static function calcularVelocidadPromedio()
+    {
+        $link = 'https://maps.googleapis.com/maps/api/directions/json?origin='.$from.'&destination='.$to.'&key='.config('googlemaps.GOOGLE_MAPS_API_KEY');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, str_replace(' ', '%20', $link));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($output);
+    }
 }
