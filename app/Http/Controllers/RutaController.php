@@ -15,6 +15,7 @@ use App\Tour;
 use App\Vin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 
 class RutaController extends Controller
