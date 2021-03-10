@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\TourController;
 use Illuminate\Support\Facades\Storage;
 
 Auth::routes();
@@ -352,6 +353,8 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
     Route::get('tour/{id}/edit','TourController@editTour')->name('tour.edit');
     Route::patch('tour/{id}/update','TourController@updateTour')->name('tour.update');
     Route::get('tour/{id}/delete','TourController@trash')->name('tour.delete');
+    Route::get('tour/datos_ubicacion_ruta/{id}', 'TourController@datosUbicacionRuta')->name('tour.datosUbicacionRuta');
+    Route::get('tour/ubicacion_actual/{id}', 'TourController@ubicacionActual')->name('tour.ubicacion_actual');
 
 
     // Rutas del tour

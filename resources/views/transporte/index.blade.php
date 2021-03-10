@@ -58,20 +58,9 @@
             <div class="col-lg-12 col-xl-12 col-md-12">
                 <div class="row">
                     <div class="col-lg-8 col-xl-8 d-flex">
-                        <div class="card" style="width: 100%">
-                            <div class="card-body" style="padding: 0%" >
-                                <iframe
-                                    id="iframe-ruta"
-                                    width="100%"
-                                    height="600"
-                                    frameborder="0" style="border:0"
-                                    @if (count($rutas) == 0)
-                                        src="https://www.google.com/maps/embed/v1/directions?origin=undefined&destination=undefined&key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}"
-                                    @else
-                                        src="https://www.google.com/maps/embed/v1/directions?origin={{ $rutas[0]->ruta_origen }}&destination={{ $rutas[0]->ruta_destino }}&key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}"
-                                    @endif
-                                    allowfullscreen>
-                                </iframe>
+                        <div class="card map-card" style="width: 100%">
+                            <div class="card-body" style="padding: 0%">
+                                <div id="map"></div>
                             </div>
                         </div>
                     </div>
@@ -102,11 +91,15 @@
                                             </td>
                                         </tr>
                                         @else
+                                            <div id="datos-mapa"></div>
+                                            <div id="ubicacion-obtenida"></div>
                                             @foreach($rutas as $ruta)
                                             <tr class="mt-5 mb-5">
-                                                <td class="item-ruta" value="{{ $ruta->ruta_id }}">Ruta: {{ $ruta->ruta_origen }} - {{ $ruta->ruta_destino }}
+                                                <td class="item-ruta" id="ruta-{{ $ruta->ruta_id }}" value="{{ $ruta->ruta_id }}">Ruta: {{ $ruta->ruta_origen }} - {{ $ruta->ruta_destino }}
+                                                    <input type="hidden" name="ruta_id-crypt" id="ruta_id-crypt-{{ $ruta->ruta_id }}" value="{{ Crypt::encrypt($ruta->ruta_id) }}">
                                                     <input type="hidden" id="ruta_origen-{{ $ruta->ruta_id }}" value="{{ $ruta->ruta_origen }}" />
                                                     <input type="hidden" id="ruta_destino-{{ $ruta->ruta_id }}" value="{{ $ruta->ruta_destino }}" />
+
                                                     <div style=" position: relative;">
                                                         <div class="progress progress-sm shadow-sm mb-1" style="background: #ddd; position: relative;">
                                                         @if (!$ruta->ruta_finalizada)
@@ -131,7 +124,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
     </div>
@@ -163,14 +155,22 @@
         .stat-circle h5 {
             text-align: center;
         }
-    </style>
 
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map.
+         */
+
+        .map-card {
+            height: 600px;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
 
     <script>
         $(function(){
-
-
-
             $.ajax({
                 url: '{{ route('home.dashboard') }}',
                 type: 'GET',
@@ -201,27 +201,138 @@
                     $("#Unidades_Danadas_progress").width(res.Unidades_Danadas.Porcentaje+"%");
                 }
             });
-        
-        });
 
-        // Initialize and add the map
-        // function initMap() {
-        //     // The location of Uluru
-        //     var santiago = {lat:  -33.447487, lng: -70.673676};
-        //     // The map, centered at Uluru
-        //     var map = new google.maps.Map(
-        //         document.getElementById('base_map'), {zoom: 13, center: santiago});
-        //     // The marker, positioned at Uluru
-        //     var marker = new google.maps.Marker({position: santiago, map: map});
-        // }
+        });
     </script>
 
-    <!-- <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}&callback=initMap">
-    </script> -->
-
     <script>
-         $(document).ready(function () {
+        var ruta_id = null;
+        var ubicacion = null;
+        var coordenadas = null;
+        var ubicacionData = null;
+        var datosOrigen = null;
+        var datosDestino = null;
+        var coordenadasOrigen = null;
+        var coordenadasDestino = null;
+        var ultimaUbicacion = null;
+        var coordenadasUltimaUbicacion = null;
+
+        var marker = null;
+
+        let map;
+
+        function cargarValoresMapa(){
+            if ($('#ruta-a-cargar').val() != undefined) {
+                ruta_id = $('#ruta-a-cargar').val();
+
+                if ($('#centro-mapa').val() != undefined) {
+                    ubicacion = JSON.parse($('#centro-mapa').val());
+                    coordenadas = ubicacion.results[0].geometry.location;
+                    ubicacionData = {
+                        position:{lat:coordenadas.lat,lng:coordenadas.lng},
+                        name:ubicacion.results[0].formatted_address,
+                    };
+                }
+
+                if ($('#datos-origen').val() != undefined) {
+                    datosOrigen = JSON.parse($('#datos-origen').val());
+                    coordenadasOrigen = datosOrigen.results[0].geometry.location;
+                }
+
+                if ($('#datos-destino').val() != undefined) {
+                    datosDestino = JSON.parse($('#datos-destino').val());
+                    coordenadasDestino = datosDestino.results[0].geometry.location;
+                }
+
+                if ($('#ultima-ubicacion').val() != undefined) {
+                    ultimaUbicacion = JSON.parse($('#ultima-ubicacion').val());
+                    coordenadasUltimaUbicacion = ultimaUbicacion.results[0].geometry.location;
+                }
+            }
+        }
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                // center: { lat: ubicacionData.position.lat, lng: ubicacionData.position.lng },
+                center: {lat: -33.455105935358176, lng: -70.65376861595341}, // Santiago de Chile.
+                zoom: 10,
+            });
+        }
+
+        function calcRoute() {
+            var directionsService = new google.maps.DirectionsService();
+            var directionsRenderer = new google.maps.DirectionsRenderer();
+            // var start = document.getElementById('start').value;
+            var start = coordenadasOrigen;
+            // var end = document.getElementById('end').value;
+            var end = coordenadasDestino;
+            var request = {
+                origin: start,
+                destination: end,
+                travelMode: 'DRIVING',
+                provideRouteAlternatives: true
+            };
+            directionsRenderer.setMap(map);
+            directionsService.route(request, function(result, status) {
+                if (status == 'OK') {
+                    directionsRenderer.setDirections(result);
+                }
+            });
+        }
+
+        function update(){
+            var ruta_id_crypt = $('#id-ruta-crypt').val();
+            var url = "tour/ubicacion_actual/" + ruta_id_crypt;
+
+            if (ruta_id_crypt != undefined) {
+                $.get(url, function (res) {
+                    if(!res.success){
+                        alert(
+                            "Error inesperado al solicitar la información.\n\n" +
+                            "MENSAJE DEL SISTEMA:\n" +
+                            res.message + "\n\n"
+                        );
+                        return;  // Finaliza el intento de obtener
+                    }
+
+                    const ubicObtenida = {
+                        lat:  res.ubicacion.ubicacion_latitud,
+                        lng:  res.ubicacion.ubicacion_longitud,
+                    };
+
+                    $('#ubicacion-obtenida').empty();
+                    $('#ubicacion-obtenida').append("<input type='hidden' name='ubicacion-actual' id='ubicacion-actual' value='" + JSON.stringify(ubicObtenida) + "'/>");
+                }).fail(function () {
+                    alert('Error: ');
+                });
+            }
+        }
+
+
+        function putMarker () {
+            if ($('#ubicacion-actual').val() != undefined){
+                var ubicacion = JSON.parse($('#ubicacion-actual').val());
+
+                if (marker != null) {
+                    marker.setMap(null);
+                }
+
+                var imagen = '{{asset("base/img/svg/gps2.png")}}';
+                marker = new google.maps.Marker({
+                    position: {lat:parseFloat(ubicacion.lat),lng:parseFloat(ubicacion.lng)},
+                    title:"Posición actual del vehículo",
+                    icon: imagen
+                });
+
+                // To add the marker to the map, call setMap();
+                marker.setMap(map);
+            }
+        }
+
+        setInterval(update, 5000);
+        setInterval(putMarker, 5000);
+
+        $(document).ready(function () {
             var checked = false;
 
             //Carga de mapa de rutas
@@ -229,18 +340,40 @@
                 e.preventDefault();
 
                 var ruta_id = $(this).attr('value');
+                var ruta_id_crypt = $('#ruta_id-crypt-' + ruta_id).val();
                 var cad = '#ruta_origen-' + ruta_id;
                 var ruta_origen = $('#ruta_origen-' + ruta_id).val();
                 var ruta_destino = $('#ruta_destino-' + ruta_id).val();
 
-                var url = "https://www.google.com/maps/embed/v1/directions?origin=" + ruta_origen + "&destination=" + ruta_destino + "&key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}";
+                var url = "tour/datos_ubicacion_ruta/" + ruta_id_crypt;
 
-                
+                $.get(url, function (res) {
+                    if(!res.success){
+                        alert(
+                            "Error inesperado al solicitar la información.\n\n" +
+                            "MENSAJE DEL SISTEMA:\n" +
+                            res.message + "\n\n"
+                        );
+                        return;  // Finaliza el intento de obtener
+                    }
 
-                $('#iframe-ruta').attr('src', url);
+                    $('#datos-mapa').empty();
+                    $("#datos-mapa").append("<input type='hidden' name='ruta-a-cargar' id='ruta-a-cargar' value='" + ruta_id + "'/>");
+                    $("#datos-mapa").append("<input type='hidden' name='ultima-ubicacion' id='ultima-ubicacion' value='" + res.ubicacion + "'/>");
+                    $("#datos-mapa").append("<input type='hidden' name='datos-origen' id='datos-origen' value='" + res.origen + "'/>");
+                    $("#datos-mapa").append("<input type='hidden' name='datos-destino' id='datos-destino' value='" + res.destino + "'/>");
+                    $("#datos-mapa").append("<input type='hidden' name='centro-mapa' id='centro-mapa' value='" + res.centroMapa + "'/>");
+                    $("#datos-mapa").append("<input type='hidden' name='id-ruta-crypt' id='id-ruta-crypt' value='" + ruta_id_crypt + "'/>");
+                    cargarValoresMapa();
+                    calcRoute();
+                }).fail(function () {
+                    alert('Error: ');
+                });
             });
         });
     </script>
 
-
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.key') }}&callback=initMap&libraries=">
+    </script>
 @endsection

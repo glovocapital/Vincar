@@ -72,11 +72,34 @@ class TourController extends Controller
 
         $ruta = Ruta::findOrFail($ruta_id);
 
-        $ubicacion = Ubicacion::where('ruta_id', $ruta_id)
+        $ultimaUbicacion = Ubicacion::where('ruta_id', $ruta_id)
             ->orderBy('created_at','DESC')
             ->first();
 
-        $ultimaUbicacion = json_encode($ubicacion);
+        $ubicacion = \GoogleMaps::load('nearbysearch')
+            ->setParam([
+                'location' => [
+                    'lat'  => $ultimaUbicacion->ubicacion_latitud,
+                    'lng'  => $ultimaUbicacion->ubicacion_longitud
+                ],
+                'radius' => 10,
+            ])
+            ->get();
+
+
+        if($ultimaUbicacion){
+            $ubicacion = \GoogleMaps::load('nearbysearch')
+            ->setParam([
+                'location' => [
+                    'lat'  => $ultimaUbicacion->ubicacion_latitud,
+                    'lng'  => $ultimaUbicacion->ubicacion_longitud
+                ],
+                'radius' => 10,
+            ])
+            ->get();
+        } else {
+            $ubicacion = null;
+        }
 
         $origen = \GoogleMaps::load('textsearch')
             ->setParam([
@@ -102,10 +125,34 @@ class TourController extends Controller
         return response()->json([
             'success' => true,
             'message' => "Datos de ubicación obtenidos",
-            'ultimaUbicacion' => $ultimaUbicacion,
+            'ubicacion' => $ubicacion,
             'origen' => $origen,
             'destino' => $destino,
             'centroMapa' => $centroMapa,
+        ]);
+    }
+
+    public function ubicacionActual($id_ruta)
+    {
+        try {
+            $ruta_id = Crypt::decrypt($id_ruta);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        $ubicacion = Ubicacion::where('ruta_id', $ruta_id)->orderBy('ubicacion_id', 'DESC')->first();
+
+        if (!$ubicacion) {
+            return response()->json([
+                'success' => false,
+                'message' => "No existen datos de ubicación en este momento.",
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Ubicación encontrada",
+            'ubicacion' => $ubicacion,
         ]);
     }
 
