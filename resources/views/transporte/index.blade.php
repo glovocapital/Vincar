@@ -329,8 +329,8 @@
             }
         }
 
-        setInterval(update, 5000);
-        setInterval(putMarker, 5000);
+        setInterval(update, 20000);
+        setInterval(putMarker, 20000);
 
         $(document).ready(function () {
             var checked = false;
