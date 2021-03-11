@@ -165,6 +165,15 @@
     }
     */
 
+    /* Important part */
+    .modal-dialog{
+        overflow-y: initial !important
+    }
+    .modal-body{
+        height: 450px;
+        overflow-y: auto;
+    }
+
 </style>
 <script  src="{{ asset('base/js/settings.js') }}"></script>
 
