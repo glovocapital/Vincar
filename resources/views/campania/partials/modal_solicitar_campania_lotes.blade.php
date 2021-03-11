@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div id="solicitarCampaniaModalLote" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg" style="overflow-y: scroll;">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -22,7 +22,7 @@
                             <label for="tipo_campanias_lote" >Campañas Disponibles <strong>*</strong></label>
                             {!! Form::select('tipo_campanias[]', $tipo_campanias_array, null,['id' => 'tipo_campanias_lote', 'rows' => '7', 'class'=>'form-control col-sm-12 select-tipo-campanias', 'multiple' => 'multiple', 'required'=>'required']) !!}
                         </div>
-                        
+
                         <label for="campania_fecha_finalizacion_lote">Fecha de finalización de tareas solicitadas</label>
                         <div class="input-group">
                             <input type="date" id="campania_fecha_finalizacion_lote" class="form-control"  name="campania_fecha_finalizacion" required/><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>

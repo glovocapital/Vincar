@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div id="predespachoModalLote" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg" style="overflow-y: scroll;">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -39,10 +39,10 @@
                         <div class="form-group">
                             Tipo de Agendamiento
                             <br/>
-                            <label>Retiro: 
+                            <label>Retiro:
                                 <input type="radio" name="tipo_agendamiento_id" id="agendamiento_lote_tipo_1" value="1">
                             </label>
-                            <label>Traslado: 
+                            <label>Traslado:
                                 <input type="radio" name="tipo_agendamiento_id" id="agendamiento_lote_tipo_2" value="2">
                             </label>
                         </div>
@@ -54,7 +54,7 @@
                             <h4>Datos del usuario</h4>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6" style="display: none;" id="nombre_usuario_lote_1">
                         <div class="form-group">
                             <label for="usuario_nombre" >Nombres </label>

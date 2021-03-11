@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div id="vehiculoN_NModal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg" style="overflow-y: scroll;">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -10,7 +10,7 @@
             {!! Form::open(['route'=> 'vehiculo_nn.registrarVin', 'method'=>'POST', 'id'=>"form-vehiculo-nn"]) !!}
             <div class="modal-body">
                 <div id="messages_n_n"></div>
-                    
+
                 <div class="row row-fluid">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -32,7 +32,7 @@
 
                 <!-- Fotos de Pre-Inspección de VIN -->
                 <div class="col-md-12 mt-3 pb-3" id="fotos_nn">
-                    
+
                 </div>
 
                 <div class="col-lg-12 pb-3">
@@ -87,7 +87,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" id="btn-cerrar-vehiculos-nn" data-dismiss="modal">Cancelar</button>
 
-                <button id="btn-send-vehiculo-n-n" type="submit" class="btn btn-success block full-width m-b">Agregar</button>    
+                <button id="btn-send-vehiculo-n-n" type="submit" class="btn btn-success block full-width m-b">Agregar</button>
             </div>
             {!! Form::close() !!}
         </div>

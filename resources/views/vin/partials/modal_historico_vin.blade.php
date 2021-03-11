@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div id="historicoVin" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg" style="overflow-y: scroll;">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -33,7 +33,7 @@
 
                     <div class="col-md-6">
                             <div class="form-group">
-                                
+
                             </div>
                     </div>
                 </div>
