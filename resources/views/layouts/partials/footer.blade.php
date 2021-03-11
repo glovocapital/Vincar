@@ -18,7 +18,7 @@
     </div>
 </footer>
 <!--Modal cargando-->
-<div class="modal" id="modalCargando" style="z-index: 1500;">
+<div class="modal" id="modalCargando" style="z-index: 1500; height: 450px">
     <div class="modal-dialog modal-lg modal-sm" style="width: 400px;">
         <div class="modal-content modal-sm">
             <div class="modal-header">
