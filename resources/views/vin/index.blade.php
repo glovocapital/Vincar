@@ -273,6 +273,15 @@
 
     <!-- BUSQUEDA DE VIN   -->
     @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 3)
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins text-center">
@@ -345,6 +354,15 @@
 
 
     @if(Auth::user()->rol_id == 4)
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins text-center">
@@ -550,6 +568,24 @@
                 },
                 @endif
                 buttons: ["copy", "print"],
+            });
+
+            const MAXIMO_TAMANO_BYTES = 20000000; // 1MB = 1 millón de bytes
+            const $inputFile = document.querySelector("#guia_vin");
+
+            $inputFile.addEventListener("change", function () {
+                // si no hay archivo, regresa
+                if (this.files.length <= 0) return;
+
+                // Validar el archivo
+                const archivo = this.files[0];
+                if (archivo.size > MAXIMO_TAMANO_BYTES) {
+                    const tamanoEnMb = MAXIMO_TAMANO_BYTES / 1000000;
+                    alert('El máximo tamaño de archivo permitido es ${tamanoEnMb} MB');
+                    // Limpiar el formulario
+                    $inputFile.value = "";
+                    return;
+                }
             });
 
             //Carga de Modal Vehículos N/N

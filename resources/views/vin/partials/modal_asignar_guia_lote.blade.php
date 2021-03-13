@@ -39,6 +39,7 @@
                             <div class="form-group">
                                 <label for="">Cargar Guia del VIN </label>
                                 {!! Form::file('guia_vin', ['id' => 'guia_vin', 'required']); !!}
+                                <small>Tamaño máximo de archivo 20 Mb</small>
                             </div>
                     </div>
 
@@ -47,7 +48,6 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" id='btn-cancelar-carga-guia-lote' data-dismiss="modal">Cancelar</button>
                 {!! Form::submit('Cargar Guia ', ['class' => 'btn btn-primary block full-width m-b', 'id' => 'btn-carga-guia-lote']) !!}
-
             </div>
             {!! Form::close() !!}
         </div>

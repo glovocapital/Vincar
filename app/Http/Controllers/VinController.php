@@ -1224,6 +1224,10 @@ class VinController extends Controller
     // Función para cargar una guía de empresa y relacionarla con los VINs seleccionados de una búsqueda.
     public function storeModalGuiaLote(Request $request)
     {
+        $request->validate([
+            'guia_vin' => 'max:20000',
+        ]);
+
         $date = Carbon::now();
 
         $fecha = $date->toDateString();
