@@ -581,7 +581,7 @@
                 const archivo = this.files[0];
                 if (archivo.size > MAXIMO_TAMANO_BYTES) {
                     const tamanoEnMb = MAXIMO_TAMANO_BYTES / 1000000;
-                    alert('El máximo tamaño de archivo permitido es ${tamanoEnMb} MB');
+                    alert('El máximo tamaño de archivo permitido es ' + tamanoEnMb + ' MB');
                     // Limpiar el formulario
                     $inputFile.value = "";
                     return;

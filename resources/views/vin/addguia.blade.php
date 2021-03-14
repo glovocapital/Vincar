@@ -20,7 +20,7 @@
                                 <label for="guia_fecha" >Fecha de la Guía:</label>
                                 {!! Form::date('guia_fecha', null, ['class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
-                        
+
                         </div>
 
                         <div class="col-md-6">
@@ -30,14 +30,15 @@
                             </div>
                         </div>
 
-                        
+
                     </div>
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="">Cargar Guia del VIN </label>
-                                {!! Form::file('guia_vin', array('required')); !!}
+                                {!! Form::file('guia_vin', ['id' => 'guia_vin', 'required']); !!}
+                                <small>Tamaño máximo de archivo 20 Mb</small>
                             </div>
                         </div>
                     </div>
@@ -54,6 +55,30 @@
 </div>
 
 @stop
+
+@section('local-scripts')
+    <script>
+        $(document).ready(function () {
+            const MAXIMO_TAMANO_BYTES = 20000000; // 1MB = 1 millón de bytes
+            const $inputFile = document.querySelector("#guia_vin");
+
+            $inputFile.addEventListener("change", function () {
+                // si no hay archivo, regresa
+                if (this.files.length <= 0) return;
+
+                // Validar el archivo
+                const archivo = this.files[0];
+                if (archivo.size > MAXIMO_TAMANO_BYTES) {
+                    const tamanoEnMb = MAXIMO_TAMANO_BYTES / 1000000;
+                    alert('El máximo tamaño de archivo permitido es ' + tamanoEnMb + ' MB');
+                    // Limpiar el formulario
+                    $inputFile.value = "";
+                    return;
+                }
+            });
+        });
+    </script>
+@endsection
 
 
 

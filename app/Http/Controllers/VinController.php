@@ -1108,6 +1108,10 @@ class VinController extends Controller
 
     public function addguia(Request $request, $id)
     {
+        $request->validate([
+            'guia_vin' => 'max:20000',
+        ]);
+
         $vin_id =  Crypt::decrypt($id);
         $vin = Vin::findOrfail($vin_id);
 
