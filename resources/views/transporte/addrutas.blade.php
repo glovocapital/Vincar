@@ -80,6 +80,6 @@ function activatePlacesSearch () {
 };
 </script>
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAuv9D5qlHfGojPTq0-XCbV_errPQh_wFg&libraries=places&callback=activatePlacesSearch"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.key') }}&libraries=places&callback=activatePlacesSearch"></script>
 
 @endsection

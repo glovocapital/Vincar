@@ -124,7 +124,7 @@
                 </div>
 
                 <div class="text-right pb-5">
-                
+
 
                 </div>
             </div>
@@ -149,6 +149,6 @@ function activatePlacesSearch () {
 };
 </script>
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=activatePlacesSearch"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.key') }}&libraries=places&callback=activatePlacesSearch"></script>
 
 @endsection
