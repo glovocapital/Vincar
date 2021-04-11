@@ -222,6 +222,7 @@
         let map;
 
         function cargarValoresMapa(){
+            initMap();
             if ($('#ruta-a-cargar').val() != undefined) {
                 ruta_id = $('#ruta-a-cargar').val();
 
