@@ -156,17 +156,14 @@
 @section('local-scripts')
     <script>
         $(function(){
-
             $('.rut').keyup(function(){
                 $("#validador").html('<span style="color:red;" aria-hidden="true">&times;</span>');
-
                 var Ts = $(this).val().split("-");
                 var T = Ts[0];
 
                 var M=0,S=1;
                 for(;T;T=Math.floor(T/10))
                     S=(S+T%10*(9-M++%6))%11;
-                //return S?S-1:'k';
 
                 if(Ts[0].length==7 || Ts[0].length==8){
 
@@ -179,7 +176,11 @@
                     }
                 }
             });
+
+            setTimeout(function(){
+                $('.rut').trigger("keyup");
+            },1000);
         });
 
-        </script>
+    </script>
 @endsection
