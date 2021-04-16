@@ -156,13 +156,13 @@
 
                     if(Ts[0].length==7 || Ts[0].length==8){
 
-                        if(Ts.length ==2){
-                            console.log(S-1);
-                            if(S-1==Ts[1]){
+                        if(Ts.length == 2){
+                            if(S-1 == Ts[1]){
+                                $("#validador").html('<i style="color:green"  class="fa fa-check"></i>');
+                            } else if ((S-1 == -1) && ((Ts[1] == 'K') ||(Ts[1] == 'k'))) {
                                 $("#validador").html('<i style="color:green"  class="fa fa-check"></i>');
                             }
                         }
-
                     }
 
 
