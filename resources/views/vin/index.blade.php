@@ -2,274 +2,14 @@
 @section('title','Vin index')
 @section('custom_styles')
 <link href="{{asset('css/switch_button.css')}}" type="text/css" rel="stylesheet">
+<style>
+.verticalLine {
+    border-left: thin solid lightgrey;
+  }
+</style>
 @endsection
 @section('content')
 @include('flash::message')
-
-     <!--SUPER ADMINISTRADOR y ADMINISTRADOR -->
-    @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 2)
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="ibox float-e-margins">
-                    <div class="card card-default text-center">
-                        <div class="card-header">
-                            <h3 class="card-title text-center">Cargar Vehiculos </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
-                                    <div class="text  pb-3">
-                                        {{ Form::button('<i class="fa fa-briefcase"></i> Registrar vin', ['type' => 'submit', 'class' => 'btn btn-success block full-width m-b'] )  }}
-                                    </div>
-                                    {!! Form::close() !!}
-                                    <div class="text  pb-3">
-                                        <a href="{{ route('vin.download') }}">Descargar formato de archivo de carga</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="ibox float-e-margins">
-                    <div class="card card-default text-center">
-                        <div class="card-header">
-                            <h3 class="card-title">Vehiculos N/N  </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
-                                    <div class="text pb-3">
-                                        {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary btn-vehiculo-n-n block full-width m-b'] )  }}
-                                    </div>
-                                    {!! Form::close() !!}
-                                    <div class="text  pb-3">
-                                        <br><br>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3">
-                <div class="ibox float-e-margins">
-                    <div class="card card-default text-center">
-                        <div class="card-header">
-                            <h3 class="card-title">Exportar Tabla</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</button>
-                                        {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_busqueda_vins_form']) !!}
-                                        {{ Form::button('<i class="fa fa-file-excel"></i>Listado de VINs ', ['id' => 'btn-listado-vins', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-listado-vins', 'disabled'] )  }}
-                                        {!! Form::close() !!}
-                                    </div>
-                                    <div class="text  pb-3">
-                                    Selecciona los VINs y haz click para exportar tu búsqueda
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="ibox float-e-margins">
-                    <div class="card card-default text-center">
-                        <div class="card-header">
-                            <h3 class="card-title">Histórico VINs</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lote</button>
-
-                                        {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
-                                        {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Histórico ', ['id' => 'btn-descargar-historico', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
-                                        {!! Form::close() !!}
-                                    </div>
-                                    <div class="text  pb-3">
-                                    Selecciona los VINs y haz click para exportar histórico por lote
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
-    <!-- OPERADOR LOGISTICO  -->
-    @if(Auth::user()->rol_id == 3)
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="ibox float-e-margins">
-                    <div class="card card-default text-center">
-                        <div class="card-header">
-                            <h3 class="card-title">Vehiculos N/N  </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
-                                    <div class="text pb-3">
-                                        {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary btn-vehiculo-n-n block full-width m-b'] )  }}
-                                    </div>
-                                    {!! Form::close() !!}
-                                    <div class="text  pb-3">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <div class="ibox float-e-margins">
-                    <div class="card card-default text-center">
-                        <div class="card-header">
-                            <h3 class="card-title">Exportar Tabla</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</button>
-                                        <hr />
-                                        <br />
-                                        {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_busqueda_vins_form']) !!}
-                                        {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Listado de VINs ', ['id' => 'btn-listado-vins', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-listado-vins', 'disabled'])  }}
-                                    </div>
-                                    {!! Form::close() !!}
-                                    <div class="text  pb-3">
-                                    Selecciona los VINs y haz click para exportar tu búsqueda
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="ibox float-e-margins">
-                    <div class="card card-default text-center">
-                        <div class="card-header">
-                            <h3 class="card-title">Histórico VINs</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lote</button>
-                                        <hr />
-                                        <br />
-                                        {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
-                                        {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Histórico ', ['id' => 'btn-descargar-historico', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
-                                        {!! Form::close() !!}
-                                    </div>
-                                    <div class="text  pb-3">
-                                    Selecciona los VINs y haz click para exportar histórico por lote
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
-    <!-- CUSTOMERS -->
-    @if(Auth::user()->rol_id == 4)
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="ibox float-e-margins">
-                    <div class="card card-default text-center">
-                        <div class="card-header">
-                            <h3 class="card-title text-center">Cargar Vehiculos </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
-                                    <div class="text  pb-3">
-                                        {{ Form::button('<i class="fa fa-briefcase"></i> Registrar vin', ['type' => 'submit', 'class' => 'btn btn-success block full-width m-b'] )  }}
-                                    </div>
-                                    {!! Form::close() !!}
-                                    <div class="text  pb-3">
-                                        <a href="{{ route('vin.download') }}">Descargar formato de archivo de carga</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <div class="ibox float-e-margins">
-                    <div class="card card-default text-center">
-                        <div class="card-header">
-                            <h3 class="card-title">Exportar Tabla</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_busqueda_vins_form']) !!}
-                                    <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</button>
-                                        <hr />
-                                        <br />
-                                        {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Listado de VINs ', ['id' => 'btn-listado-vins', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-listado-vins', 'disabled'] )  }}
-                                    </div>
-                                    {!! Form::close() !!}
-                                    <div class="text  pb-3">
-                                    Selecciona los VINs y haz click para exportar tu búsqueda
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="ibox float-e-margins">
-                    <div class="card card-default text-center">
-                        <div class="card-header">
-                            <h3 class="card-title">Histórico VINs</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="text pb-3">
-                                        <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lote</button>
-                                        <hr />
-                                        <br />
-                                        {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
-                                        {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Histórico ', ['id' => 'btn-descargar-historico', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
-                                        {!! Form::close() !!}
-                                    </div>
-                                    <div class="text  pb-3">
-                                    Selecciona los VINs y haz click para exportar histórico por lote
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
 
     <!-- BUSQUEDA DE VIN   -->
     @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 3)
@@ -332,7 +72,7 @@
                                 </div>
                             </div>
 
-                            <div class="text-right pb-5" id="botones">
+                            <div class="text-right pb-1" id="botones">
 
                                     <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol12" style="display:none">Asignar para entrega</button>
 
@@ -406,7 +146,7 @@
                                 </div>
                             </div>
 
-                            <div class="text-right pb-5">
+                            <div class="text-right pb-1">
 
                                     <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol4" style="display:none">Asignar para entrega</button>
 
@@ -433,6 +173,112 @@
                 <div class="card card-default">
                     <div class="card-header">
                         <h3 class="card-title">Listado de Vins</h3>
+
+                        <hr />
+
+                        <!--SUPER ADMINISTRADOR y ADMINISTRADOR -->
+                        @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 2)
+                        <div class="row float-right">
+                            <div>
+                                {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                                <div class="text pb-1">
+                                    {{ Form::button('<i class="fa fa-briefcase"></i> Registrar VIN', ['type' => 'submit', 'class' => 'btn btn-success block full-width m-b'] )  }}
+                                </div>
+                                {!! Form::close() !!}
+                            </div>
+
+                            <div class="pl-2">
+                                {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                                <div class="text pb-1">
+                                    {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary btn-vehiculo-n-n block full-width m-b'] )  }}
+                                </div>
+                                {!! Form::close() !!}
+                            </div>
+
+                            <div class="pl-2">
+                                <div class="text pb-1">
+                                    <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</button>
+                                    {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_busqueda_vins_form']) !!}
+                                    {{ Form::button('<i class="fa fa-file-excel"></i>Listado de VINs ', ['id' => 'btn-listado-vins', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-listado-vins', 'disabled'] )  }}
+                                    {!! Form::close() !!}
+                                </div>
+                            </div>
+
+                            <div class="pl-2">
+                                <div class="text pb-1">
+                                    <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lote</button>
+
+                                    {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
+                                    {{ Form::button('<i class="fa fa-file-excel"></i> Histórico Lotes ', ['id' => 'btn-descargar-historico', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
+                                    {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- OPERADOR LOGISTICO  -->
+                        @if(Auth::user()->rol_id == 3)
+                        <div class="row float-right">
+                            <div class="pl-2">
+                                {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                                <div class="text pb-1">
+                                    {{ Form::button('<i class="fa fa-car"></i> Vehiculos N/N', ['type' => 'submit', 'class' => 'btn btn-primary btn-vehiculo-n-n block full-width m-b'] )  }}
+                                </div>
+                                {!! Form::close() !!}
+                            </div>
+
+                            <div class="pl-2">
+                                <div class="text pb-1">
+                                    <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</button>
+                                    {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_busqueda_vins_form']) !!}
+                                    {{ Form::button('<i class="fa fa-file-excel"></i>Listado de VINs ', ['id' => 'btn-listado-vins', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-listado-vins', 'disabled'] )  }}
+                                    {!! Form::close() !!}
+                                </div>
+                            </div>
+
+                            <div class="pl-2">
+                                <div class="text pb-1">
+                                    <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lote</button>
+
+                                    {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
+                                    {{ Form::button('<i class="fa fa-file-excel"></i> Histórico Lotes ', ['id' => 'btn-descargar-historico', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
+                                    {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- CUSTOMERS -->
+                        @if(Auth::user()->rol_id == 4)
+                        <div class="row float-right">
+                            <div>
+                                {!! Form::open(['route'=> 'vin.cargamasiva', 'method'=>'GET']) !!}
+                                <div class="text pb-1">
+                                    {{ Form::button('<i class="fa fa-briefcase"></i> Registrar VIN', ['type' => 'submit', 'class' => 'btn btn-success block full-width m-b'] )  }}
+                                </div>
+                                {!! Form::close() !!}
+                            </div>
+
+                            <div class="pl-2">
+                                <div class="text pb-1">
+                                    <button type="button" class="btn btn-info btn-busqueda-vin-lote btn-rol13" style="display:none">Exportar Lista de VINs</button>
+                                    {!! Form::open(['route'=> 'vin.exportResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_busqueda_vins_form']) !!}
+                                    {{ Form::button('<i class="fa fa-file-excel"></i>Listado de VINs ', ['id' => 'btn-listado-vins', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b btn-listado-vins', 'disabled'] )  }}
+                                    {!! Form::close() !!}
+                                </div>
+                            </div>
+
+                            <div class="pl-2">
+                                <div class="text pb-1">
+                                    <button type="button" class="btn btn-info btn-historico-vin-lote btn-rol13" style="display:none">Exportar Histórico por lote</button>
+
+                                    {!! Form::open(['route'=> 'historico_vin.exportHistoricoVinLote', 'method'=>'post', 'id' => 'historico_lote_form']) !!}
+                                    {{ Form::button('<i class="fa fa-file-excel"></i> Histórico Lotes ', ['id' => 'btn-descargar-historico', 'type' => 'submit', 'class' => 'btn btn-info block full-width m-b', 'disabled'] )  }}
+                                    {!! Form::close() !!}
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                         {!! Form::open(['route'=> 'vin.exportMasivoResultadoBusquedaVins', 'method'=>'POST', 'id' => 'resultado_masivo_busqueda_vins_form']) !!}
                             <input type="hidden" name="vin_ids" value="" id="resultado_busqueda_vins" />
                             {{ Form::button('<i class="fa fa-file-excel"></i> Descargar Todos', ['id' => 'btn-listado-masivo', 'type' => 'submit', 'class' => 'btn btn-success block full-width m-b btn-listado-masivo-vins', 'disabled', 'style' => 'display:none'] )  }}
