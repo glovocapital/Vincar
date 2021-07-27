@@ -35,7 +35,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="card-body">
+                                    <div class="card-body overflow-auto">
                                         <div class="col-lg-12">
                                             {!! Form::open(['route'=> 'entrega.agendadosExport', 'method'=>'POST']) !!}
                                                 <div class="text pb-3">
@@ -62,7 +62,7 @@
                                         </form>
 
                                         <div class="table-responsive">
-                                            <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
+                                            <table class="table table-hover table-sm nowrap" id="dataTableCampanias" width="100%" cellspacing="0">
                                                 <thead>
                                                 <tr>
                                                     <th>Código VIN</th>
@@ -73,7 +73,7 @@
                                                     <th>Empresa</th>
                                                     <th>Patio</th>
                                                     <th>Ubicación</th>
-                                                    
+
                                                     @if(Auth::user()->rol_id != 4)
                                                         <th>Bloquear <br/> Entrega</th>
                                                     @endif
@@ -102,7 +102,7 @@
                                                             <td><small>{{ $vin_agendado->empresa_razon_social }}</small></td>
                                                             <td><small>{{ strtoupper($vin_agendado->patio_nombre) }}</small></td>
                                                             <td><small>BLOQUE: {{ $vin_agendado->bloque_nombre }} <br/> FILA: {{ $vin_agendado->ubic_patio_fila }} <br/> COLUMNA: {{ $vin_agendado->ubic_patio_columna }}</small></td>
-                                                            
+
                                                             @if(Auth::user()->rol_id != 4)
                                                                 <td>
                                                                     <div class="switch-button">
@@ -134,7 +134,7 @@
                                                                     </small>
                                                                 </td>
                                                             @endif
-                                                            
+
                                                         </tr>
                                                     @endif
                                                 @endforeach
@@ -157,7 +157,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="card-body">
+                                    <div class="card-body overflow-auto">
                                         <div class="col-lg-12">
                                             {!! Form::open(['route'=> 'vin.entregaExportResultadoBusquedaVins', 'method'=>'POST']) !!}
                                                 <div class="text pb-3">
@@ -185,7 +185,7 @@
                                             </form>
                                         </div>
                                         <div class="table-responsive">
-                                            <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
+                                            <table class="table table-hover table-sm nowrap" id="dataTableCampanias" width="100%" cellspacing="0">
                                                 <thead>
                                                 <tr>
                                                     <th>Código VIN</th>
@@ -209,11 +209,11 @@
                                                             <td><small>{{ $entregado->vin_color }}</small></td>
                                                             <td><small>{{ $entregado->vin_fecha_agendado }}</small></td>
                                                             <td><small>{{ $entregado->entrega_fecha }}</small></td>
-                                                            
+
                                                             @php($agendado = \Carbon\Carbon::createFromFormat('Y-m-d', $entregado->vin_fecha_agendado))
                                                             @php($fechaEntregado = \Carbon\Carbon::createFromFormat('Y-m-d', $entregado->entrega_fecha))
                                                             <td><small>{{ $agendado->diff($fechaEntregado)->days + 1 }}</small></td>
-                                                            
+
                                                             @if($entregado->origen_texto)
                                                                 <td><small>{{ $entregado->origen_texto }}</small></td>
                                                             @else
@@ -248,7 +248,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="card-body">
+                                    <div class="card-body overflow-auto">
                                         <div class="col-lg-12">
                                             {!! Form::open(['route'=> 'vin.entregaExportResultadoBusquedaVins', 'method'=>'POST']) !!}
                                             <div class="text pb-3">
@@ -257,7 +257,7 @@
                                             {!! Form::close() !!}
                                         </div>
                                         <div class="table-responsive">
-                                            <table class="table table-hover" id="TareaCampanias" width="100%" cellspacing="0">
+                                            <table class="table table-hover table-sm nowrap" id="TareaCampanias" width="100%" cellspacing="0">
                                                 <thead>
                                                 <tr>
                                                     <th>Código VIN</th>
@@ -307,7 +307,7 @@
             var checked = false;
 
             datatablesButtons = $('[id="TablaVins"]').DataTable({
-                responsive: true,
+                responsive: false,
                 lengthChange: !1,
                 pageLength: 100,
                 @if(Session::get('lang')=="es")
@@ -322,7 +322,7 @@
                 //e.preventDefault();
 
                 var vin_id = $(this).val();
-                
+
                 var bloqueado = false;
                 //Si el checkbox está seleccionado
                 if($(this).is(":checked")) {
@@ -349,7 +349,7 @@
                 }).fail(function () {
                     alert('Error: Fallo al intentar bloquear entrega de VIN.');
                 });
-            
+
             });
 
 
@@ -374,7 +374,7 @@
 
 
             });
-            
+
             $('#btn-src').on('click',function(e){
                 e.preventDefault();
 
@@ -441,7 +441,7 @@
 
                     $("#resultado_busqueda_vins").attr('value', array_vin_ids);
                     $("#btn-listado-masivo").removeAttr('disabled')
-                    
+
                     datatablesButtons.columns.adjust().draw();
 
                 }).fail(function () {
@@ -716,7 +716,7 @@
             //e.preventDefault();
 
             var vin_id = $(this).val();
-            
+
             var bloqueado = false;
             //Si el checkbox está seleccionado
             if($(this).is(":checked")) {
@@ -743,7 +743,7 @@
             }).fail(function () {
                 alert('Error: Fallo al intentar bloquear entrega de VIN.');
             });
-        
+
         });
     });
 </script>

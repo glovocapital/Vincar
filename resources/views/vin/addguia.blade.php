@@ -12,7 +12,7 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                         </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     {!! Form::open(['route'=> ['vin.addguia', Crypt::encrypt($vin->vin_id)], 'method'=>'PATCH', 'files' => true]) !!}
                     <div class="row">
                         <div class="col-md-6">

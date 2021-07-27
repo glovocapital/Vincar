@@ -43,9 +43,9 @@
                                 </div>
                             </div>
 
-                            <div class="card-body">
+                            <div class="card-body overflow-auto">
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="TareaCampanias" width="100%" cellspacing="0">
+                                    <table class="table table-hover table-sm nowrap" id="TareaCampanias" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
                                             <th>Código VIN</th>
@@ -80,9 +80,9 @@
                                 </div>
                             </div>
 
-                            <div class="card-body">
+                            <div class="card-body overflow-auto">
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
+                                    <table class="table table-hover table-sm nowrap" id="dataTableCampanias" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
                                             <th>Código VIN</th>
@@ -117,7 +117,7 @@
                                 </div>
                             </div>
 
-                            <div class="card-body">
+                            <div class="card-body overflow-auto">
                                 <div class="col-lg-12">
                                     {!! Form::open(['route'=> 'campania.exportResultadoBusquedaVins', 'method'=>'POST']) !!}
                                     <div class="text pb-3">
@@ -132,7 +132,7 @@
 
                                 </div>
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="TareaCampanias" width="100%" cellspacing="0">
+                                    <table class="table table-hover table-sm nowrap" id="TareaCampanias" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
                                             <th>Código VIN</th>
@@ -168,7 +168,7 @@
         $(document).ready(function () {
 
             datatablesButtons = $('[id="TablaVins"]').DataTable({
-                responsive: true,
+                responsive: false,
                 lengthChange: !1,
                 pageLength: 100,
                 @if(Session::get('lang')=="es")
@@ -181,7 +181,7 @@
 
 
             datatablesTareas = $('[id="TareaCampanias"]').DataTable({
-                responsive: true,
+                responsive: false,
                 lengthChange: !1,
                 pageLength: 100,
                 @if(Session::get('lang')=="es")

@@ -12,7 +12,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-4">
                         {!! Form::open(['route'=> 'usuarios.store', 'method'=>'POST']) !!}
@@ -74,7 +74,7 @@
                         <div class="form-group">
                             <label for="rol_id" >Rol <strong>*</strong></label>
                             {!! Form::select('rol_id', $roles, null,['placeholder'=>'Seleccionar Rol', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                        </div>                            
+                        </div>
                     </div>
                 </div>
 

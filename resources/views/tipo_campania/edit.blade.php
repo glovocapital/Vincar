@@ -12,11 +12,11 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                         </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     <div class="row">
                         <div class="col-md-12">
                             {!! Form::open(['route'=> ['tipo_campania.update', Crypt::encrypt($tipoCampania->tipo_campania_id)], 'method'=>'PATCH']) !!}
-                            
+
                             <div class="form-group">
                                 <label for="tipo_campania_descripcion" >Nombre de la Campaña <strong>*</strong></label>
                                 {!! Form::text('tipo_campania_descripcion', $tipoCampania->tipo_campania_descripcion, ['class'=>'form-control col-sm-9', 'required']) !!}

@@ -14,7 +14,7 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                         </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     <div class="row">
                         <div class="col-md-12">
                             {!! Form::open(['route'=> 'proveedor.store', 'method'=>'POST']) !!}
@@ -53,12 +53,12 @@
                             <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body overflow-auto">
                <!--  <a href="{{  route('proveedor.create') }}" class = 'btn btn-primary'>Crear Tipo de Proveedor</a> -->
 
 
                <div class="table-responsive">
-                    <table class="table table-hover" id="dataTableProveedores" width="100%" cellspacing="0">
+                    <table class="table table-hover table-sm nowrap" id="dataTableProveedores" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Nombre</th>

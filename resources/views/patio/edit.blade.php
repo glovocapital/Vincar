@@ -12,7 +12,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-6">
                         {!! Form::open(['route'=> ['patio.update', Crypt::encrypt($patio->patio_id)], 'method'=>'PATCH', 'files' => true]) !!}
@@ -117,7 +117,7 @@
                 if (id != ''){
 
                     var url = "/patio/obtener_comunas/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){

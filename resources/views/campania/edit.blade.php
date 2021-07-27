@@ -10,7 +10,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             {!! Form::open(['route'=> ['campania.update', Crypt::encrypt($campania->campania_id)], 'method'=>'PATCH']) !!}
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row row-fluid">
                     <div class="col-md-12">
                         <div class="form-group">
@@ -21,7 +21,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="tipo_campanias" >Campañas Disponibles <strong>*</strong></label>                        
+                            <label for="tipo_campanias" >Campañas Disponibles <strong>*</strong></label>
                             <select name="tipo_campanias[]" id="tipo_campanias" class="form-control col-sm-12 select-tipo-campanias" required multiple>
                             @foreach($tipo_campanias_array as $k => $v)
                                 @php($enc = false)
@@ -35,9 +35,9 @@
                                     <option value="{{ $k }}">{{ $v }}</option>
                                 @endif
                             @endforeach
-                            </select>                            
+                            </select>
                         </div>
-                        
+
                         <label for="campania_fecha_finalizacion">Fecha de finalización de tareas solicitadas</label>
                         <div class="input-group">
                             <input type="date" id="campania_fecha_finalizacion" class="form-control"  name="campania_fecha_finalizacion" value="{{ $campania->campania_fecha_finalizacion }}" required/><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>

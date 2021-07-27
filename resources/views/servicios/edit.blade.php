@@ -11,7 +11,7 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     <div class="row">
                         <div class="col-md-3">
                                 {!! Form::open(['route'=> ['servicios.update', Crypt::encrypt($servicio->servicios_id)], 'method'=>'PATCH']) !!}

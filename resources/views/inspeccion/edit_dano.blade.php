@@ -13,7 +13,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-4" style="border-right-style: solid; border-right-color: grey; border-right-width: 1px;">
                         <div class="form-group">
@@ -66,7 +66,7 @@
                         </div>
                     </div>
 
-                    
+
                 </div>
                 <div class="text-right pb-5" id="boton_inspeccion_dano">
                     {!! Form::button('Anexar Foto', ['id'=>'btn-fotos', 'class' => 'btn btn-info block full-width m-b']) !!}
@@ -95,7 +95,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-4" style="border-right-style: solid; border-right-color: grey; border-right-width: 1px;">
                         <div class="form-group">
@@ -112,7 +112,7 @@
                             {!! Form::text('foto[foto_descripcion]', $foto->foto_descripcion, ['placeholder'=>'Descripción Foto', 'class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
-                    
+
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="">Coordenadas</label>
@@ -171,7 +171,7 @@
                 if (id != ''){
 
                     var url = "/vin/obtener_usuarios_empresa/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){
@@ -220,7 +220,7 @@
                 if (id != ''){
 
                     var url = "/vin/obtener_sub_estados/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){

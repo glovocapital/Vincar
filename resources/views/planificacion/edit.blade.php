@@ -10,7 +10,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             {!! Form::open(['route'=> ['planificacion.update', Crypt::encrypt($tarea->tarea_id)], 'method'=>'PATCH']) !!}
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row row-fluid">
                     <div class="col-md-12">
                         <div class="form-group">
@@ -46,7 +46,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tipo_campanias" >Campañas Disponibles <strong>*</strong></label>                        
+                            <label for="tipo_campanias" >Campañas Disponibles <strong>*</strong></label>
                             <select name="tipo_campanias[]" id="tipo_campanias" class="form-control col-sm-12 select-tipo-campanias" multiple disabled>
                             @foreach($tipo_campanias_array as $k => $v)
                                 @php($enc = false)
@@ -60,9 +60,9 @@
                                     <option value="{{ $k }}">{{ $v }}</option>
                                 @endif
                             @endforeach
-                            </select>                            
+                            </select>
                         </div>
-                        
+
                         <label for="tarea_fecha_finalizacion">Fecha de finalización de tareas solicitadas</label>
                         <div class="input-group">
                             <input type="date" id="tarea_fecha_finalizacion" class="form-control"  name="tarea_fecha_finalizacion" value="{{$tarea->tarea_fecha_finalizacion}}" required/><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
@@ -94,7 +94,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="tipo_destino_id" >Destino <strong>*</strong></label>
                             <select name="tipo_destino_id" class="form-control col-sm-12 select-tipo-destino" required>
@@ -107,7 +107,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="tarea_hora_termino" >Hora de Término <strong>*</strong></label>
                             {{ Form::time('tarea_hora_termino', $tarea->tarea_hora_termino, ['class'=>'form-control col-sm-12 select-tipo-destino', 'required' => 'required']) }}

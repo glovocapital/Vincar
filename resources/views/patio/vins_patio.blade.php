@@ -6,7 +6,7 @@
 	    <div class="card-header">
 		    <h5 class="card-title mb-0">{{trans('vins_patio.Mis_Patios')}}</h5>
 		</div>
-		<div class="card-body">
+		<div class="card-body overflow-auto">
 
 <div class="row">
 
@@ -70,7 +70,7 @@
 	    <div class="card-header">
 		    <h5 class="card-title mb-0">{{trans('vins_patio.Patio')}}</h5>
 		</div>
-		<div class="card-body">
+		<div class="card-body overflow-auto">
 
 		<div class='row'>
 		    <div class='col-lg-12 col-xl-5 d-flex'>
@@ -103,7 +103,7 @@
 
         <div class="card">
 
-		<div id="TodosBloques" class="card-body">
+		<div id="TodosBloques" class="card-body overflow-auto">
 
 		</div>
 

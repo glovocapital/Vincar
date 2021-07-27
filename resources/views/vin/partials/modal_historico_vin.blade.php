@@ -10,8 +10,8 @@
             <div class="modal-body">
                 <div class="row row-fluid">
                     <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table class="table table-hover" id="vin_eventos">
+                        <div>
+                            <table class="table table-hover table-sm nowrap" id="vin_eventos">
                                 <thead>
                                     <tr>
                                         <th>VIN</th>

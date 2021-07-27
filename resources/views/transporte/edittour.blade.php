@@ -11,7 +11,7 @@
                     <h3 class="card-title">Modificar Tour</h3>
 
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto">
 
                         {!! Form::open(['route'=> ['tour.update', Crypt::encrypt($tour->tour_id)], 'method'=>'PATCH']) !!}
                         <div class="form-group">

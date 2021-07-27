@@ -59,7 +59,7 @@
                 <div class="row">
                     <div class="col-lg-8 col-xl-8 d-flex">
                         <div class="card map-card" style="width: 100%">
-                            <div class="card-body" style="padding: 0%">
+                            <div class="card-body overflow-auto" style="padding: 0%">
                                 <div id="map"></div>
                             </div>
                         </div>

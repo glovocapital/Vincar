@@ -11,9 +11,9 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
-                <div class="row row-fluid">
-                    <table class="table table-hover">
+            <div class="card-body overflow-auto">
+                <div class="row row-fluid table-responsive">
+                    <table class="table table-hover table-sm nowrap">
                         <thead>
                             <tr>
                                 <th>Fecha</th>

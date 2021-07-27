@@ -12,7 +12,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-4">
                         {!! Form::open(['route'=> 'inspeccion.store_dano', 'method'=>'POST', 'files' => true]) !!}
@@ -40,7 +40,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">                            
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label for="vin_estado_inventario_id" >Estado de Inventario <strong>*</strong></label>
                             {!! Form::text(null, $inspeccion->oneVinEstadoInventario(), ['id' => 'vin_estado_inventario_id', 'class' => 'form-control col-sm-9', 'disabled']) !!}
@@ -69,7 +69,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-4" style="border-right-style: solid; border-right-color: grey; border-right-width: 1px;">
                         <div class="form-group">
@@ -129,7 +129,7 @@
                         </div>
                     </div>
 
-                    
+
                 </div>
                 <div class="text-right pb-5" id="boton_inspeccion_dano">
                     {!! Form::button('Anexar Foto', ['id'=>'btn-fotos', 'class' => 'btn btn-info block full-width m-b']) !!}
@@ -157,7 +157,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-4" style="border-right-style: solid; border-right-color: grey; border-right-width: 1px;">
                         <div class="form-group">
@@ -174,7 +174,7 @@
                             {!! Form::text('foto[foto_descripcion]', null, ['placeholder'=>'Descripción Foto', 'class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
-                    
+
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="">Coordenadas</label>
@@ -228,7 +228,7 @@
                 $(this).hide();
                 $('#boton_inspeccion_dano').hide();
                 $('#boton_inspeccion_dano_fotos').show();
-                $('#bloque_fotos').show(); 
+                $('#bloque_fotos').show();
             });
 
             $(".select-categoria").change(function (e) {
@@ -240,7 +240,7 @@
                 if (id != ''){
 
                     var url = "/inspeccion/obtener_subcategorias_pieza/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){
@@ -288,7 +288,7 @@
                 if (id != ''){
 
                     var url = "/inspeccion/obtener_piezas/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){

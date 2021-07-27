@@ -14,7 +14,7 @@
                 </div>
             </div>
 
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <a href="{{ route('solicitud_campania.index') }}" class = 'btn btn-success'>Regresar a Solicitud Campañas</a>
                 </div>
@@ -22,7 +22,7 @@
                 <br />
 
                 <div class="table-responsive">
-                    <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
+                    <table class="table table-hover table-sm nowrap" id="dataTableCampanias" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Código VIN</th>

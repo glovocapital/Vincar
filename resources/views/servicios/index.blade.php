@@ -13,7 +13,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-3">
                         {!! Form::open(['route'=> 'servicios.store', 'method'=>'POST']) !!}
@@ -91,13 +91,13 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <!--   <div class="col-lg-12 pb-3 pt-2">
                             <a href="{{ route('servicios.create') }}" class = 'btn btn-primary'>Crear nuevo Usuario</a>
                         </div>
                 -->
                 <div class="table-responsive">
-                    <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
+                    <table class="table table-hover table-sm nowrap" id="dataTableAusentismo" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>C. Producto</th>

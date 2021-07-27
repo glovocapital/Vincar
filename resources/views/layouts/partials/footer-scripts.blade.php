@@ -13,7 +13,7 @@
         if ($('[id*="dataTable"]').length > 0) {
 
             var datatablesButtons = $('[id*="dataTable"]').DataTable({
-                responsive: true,
+                responsive: false,
                 lengthChange: !1,
                 pageLength: 100,
                 @if(Session::get('lang')=="es")

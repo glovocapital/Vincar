@@ -13,7 +13,7 @@
                 <h3 class="card-title">Nuevo Tour</h3>
 
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
 
                     {!! Form::open(['route'=> 'tour.store', 'method'=>'POST']) !!}
                     <div class="form-group">
@@ -79,11 +79,11 @@
                             </div>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body">
+                        <div class="card-body overflow-auto">
                                 <hr class="mb-4">
 
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="dataTablePais" width="100%" cellspacing="0">
+                                    <table class="table table-hover table-sm nowrap" id="dataTablePais" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th>Proveedor de Transporte</th>

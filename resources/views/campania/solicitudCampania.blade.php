@@ -10,7 +10,7 @@
                     <h3 class="card-title">Buscar Vin</h3>
 
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     {!! Form::open(['route'=> 'solicitud_campania.index2', 'method'=>'post']) !!}
                     <div class="row">
                         <div class="col-md-4" id="wrapper_2">
@@ -39,7 +39,7 @@
                                     @foreach ($marcas as $marca_id => $marca_nombre)
                                     <option value="{{ $marca_id }}">{{ ucwords($marca_nombre) }}</option>
                                     @endforeach
-                                </select>  
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -74,9 +74,9 @@
                             <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="tab le-responsive">
-                            <table class="table table-hover" id="dataTableCamp" width="100%" cellspacing="0">
+                    <div class="card-body overflow-auto">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm nowrap" id="dataTableCamp" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
@@ -192,9 +192,9 @@
                     </div>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     <div class="table-responsive">
-                        <table class="table table-hover" id="dataTableCampanias" width="100%" cellspacing="0">
+                        <table class="table table-hover table-sm nowrap" id="dataTableCampanias" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>Código VIN</th>
@@ -440,8 +440,8 @@
                         $("#error0_predespacho").show();
                         $("#PredespachoVins")[0].reset();
                     } else {
-                        $("#error1_predespacho").show();  
-                        $("#error1_predespacho").html($dat.mensaje); 
+                        $("#error1_predespacho").show();
+                        $("#error1_predespacho").html($dat.mensaje);
                     }
                 }).fail(function () {
                     alert('Error: ');

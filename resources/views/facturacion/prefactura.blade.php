@@ -11,7 +11,7 @@
                 <h3 class="card-title">Generar Pre Facturacion</h3>
 
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
               <div class="row">
                 <div class="col-md-4">
                   {!! Form::open(['route'=> 'prefacturacion.generar', 'method'=>'POST', 'id' => 'frmGenerarPrefactura']) !!}
@@ -60,7 +60,7 @@
                     <div class="card-header bg-primary text-white">
                       Descuento
                     </div>
-                    <div class="card-body">
+                    <div class="card-body overflow-auto">
                       <div class="form-horizontal">
                         <h5 class="card-title">Ingrese los datos del descuento</h5>
                         <label class="label">Ingrese Tipo de Descuento:</label>

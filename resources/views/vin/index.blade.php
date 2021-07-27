@@ -29,7 +29,7 @@
                         <div class="card-header">
                             <h3 class="card-title">Buscar Vin</h3>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body overflow-auto">
                             <div id="error-msg-busqueda"></div>
                             {!! Form::open(['route'=> 'vin.index3', 'method'=>'post', 'id' => 'VinForm']) !!}
                             <div class="row">
@@ -110,7 +110,7 @@
                         <div class="card-header">
                             <h3 class="card-title">Buscar Vin</h3>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body overflow-auto">
                             <div id="error-msg-busqueda"></div>
                             {!! Form::open(['route'=> 'vin.index2', 'method'=>'post', 'id'=>'VinForm']) !!}
                             <div class="row">
@@ -288,9 +288,9 @@
                             <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body overflow-auto">
                         <div class="table-responsive">
-                            <table class="table table-hover" id="TablaVins" width="100%" cellspacing="0">
+                            <table class="table table-hover table-sm nowrap" id="TablaVins" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
                                     <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
@@ -405,7 +405,10 @@
             var checked = false;
 
             datatablesButtons = $('[id="TablaVins"]').DataTable({
-                responsive: true,
+                searching: true,
+                bSortClasses: false,
+                deferRender:true,
+                responsive: false,
                 lengthChange: !1,
                 pageLength: 100,
                 @if(Session::get('lang')=="es")

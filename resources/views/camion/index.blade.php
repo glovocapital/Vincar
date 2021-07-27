@@ -26,7 +26,7 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                         </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     <div class="row">
                         <div class="col-md-4">
                             {!! Form::open(['route'=> 'camiones.store', 'method'=>'POST', 'files' => true]) !!}
@@ -114,13 +114,13 @@
                             <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body overflow-auto">
                     <!--   <div class="col-lg-12 pb-3 pt-2">
                                 <a href="{{  route('camiones.create') }}" class = 'btn btn-primary'>Crear Camión</a>
                             </div>
                     -->
                     <div class="table-responsive">
-                        <table class="table table-hover" id="dataTableCamion" width="100%" cellspacing="0">
+                        <table class="table table-hover table-sm nowrap" id="dataTableCamion" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>Patente</th>

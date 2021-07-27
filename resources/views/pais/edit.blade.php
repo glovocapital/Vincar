@@ -12,7 +12,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
 
                 <div class="ibox-content col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 mt-4">
                     {!! Form::open(['route'=> ['pais.update', Crypt::encrypt($pais->pais_id)], 'method'=>'PATCH']) !!}

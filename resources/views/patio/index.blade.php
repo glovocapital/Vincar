@@ -14,7 +14,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-6">
                         {!! Form::open(['route'=> 'patio.store', 'method'=>'POST', 'files' => true]) !!}
@@ -118,7 +118,7 @@
                 </div>
             </div>
 
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <!-- <div class="row">
                     <a href=" route('patio.create') " class = 'btn btn-primary'>Nuevo Patio</a>
                 </div>
@@ -126,7 +126,7 @@
                 <br /> -->
 
                 <div class="table-responsive">
-                    <table class="table table-hover" id="dataTableAusentismo" width="100%" cellspacing="0">
+                    <table class="table table-hover table-sm nowrap" id="dataTableAusentismo" width="100%" cellspacing="0">
                         <thead>
                             <tr rowspan=2>
                                 <th>Nombre</th>

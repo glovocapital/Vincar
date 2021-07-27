@@ -13,7 +13,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 {!! Form::open(['route'=>'tour.crearutas', 'method'=>'POST', 'files' => true]) !!}
 
                 <div class="row">
@@ -68,7 +68,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 {!! Form::open(['route'=> ['tour.update_rutas', Crypt::encrypt($tour_id)], 'method'=>'PATCH', 'files' => true]) !!}
 
                 <div class="row">

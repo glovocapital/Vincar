@@ -14,7 +14,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <form method="get" action="{{ url('guia') }}">
                     <div class="row row-filters">
                         <div>
@@ -48,7 +48,7 @@
                     </div>
                 </form>
                 <div class="table-responsive">
-                    <table class="table table-hover" id="dataTableGuias" width="100%" cellspacing="0">
+                    <table class="table table-hover table-sm nowrap" id="dataTableGuias" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Número de Guía</th>

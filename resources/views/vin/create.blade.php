@@ -12,7 +12,7 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                         </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     <div class="row">
                         <div class="col-md-4">
                                 {!! Form::open(['route'=> 'vin.store', 'method'=>'POST']) !!}
@@ -38,7 +38,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">                           
+                        <div class="col-md-4">
                             <div class="form-group">
                                     <label for="vin_color" >Color <strong>*</strong></label>
                                     {!! Form::text('vin_color', null, ['placeholder'=>'Color', 'class'=>'form-control col-sm-9', 'required']) !!}
@@ -60,7 +60,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">                            
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="empresa_id" >Empresa <strong>*</strong></label>
                                 {{-- {!! Form::select('empresa_id', $empresas, null,['placeholder'=>'Seleccionar Empresa', 'class'=>'form-control col-sm-9 select-empresa', 'required'=>'required']) !!} --}}
@@ -125,7 +125,7 @@
                 if (id != ''){
 
                     var url = "/vin/obtener_usuarios_empresa/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){
@@ -174,7 +174,7 @@
                 if (id != ''){
 
                     var url = "/vin/obtener_sub_estados/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){

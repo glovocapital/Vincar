@@ -13,7 +13,7 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     {!! Form::open(['route'=> 'planificacion.index2', 'method'=>'post', 'id'=>'VinForm']) !!}
                     <div class="row">
                         <div class="col-md-4" id="wrapper_2">
@@ -56,9 +56,9 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="tab le-responsive">
-                        <table class="table table-hover" id="TablaVins" width="100%" cellspacing="0">
+                <div class="card-body overflow-auto">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm nowrap" id="TablaVins" width="100%" cellspacing="0">
                             <thead>
                             <tr>
                                 <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
@@ -105,7 +105,7 @@
         $(document).ready(function () {
 
             datatablesButtons = $('[id="TablaVins"]').DataTable({
-                responsive: true,
+                responsive: false,
                 lengthChange: !1,
                 pageLength: 100,
                 @if(Session::get('lang')=="es")

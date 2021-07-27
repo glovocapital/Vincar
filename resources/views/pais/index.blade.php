@@ -11,7 +11,7 @@
                 <h3 class="card-title">Creación de Paises</h3>
 
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
 
                 <div class="ibox-content col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 mt-4">
                     {!! Form::open(['route'=> 'pais.store', 'method'=>'POST']) !!}
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body">
+                        <div class="card-body overflow-auto">
                                 <hr class="mb-4">
                             <!--    <div class="col-lg-12 pb-3 pt-2">
                                     <a href="{{  route('pais.create') }}" class = 'btn btn-primary'>Crear Pais</a>
@@ -55,7 +55,7 @@
                             -->
 
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="dataTablePais" width="100%" cellspacing="0">
+                                    <table class="table table-hover table-sm nowrap" id="dataTablePais" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th>Nombre</th>

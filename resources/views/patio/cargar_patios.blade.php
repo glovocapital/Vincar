@@ -14,7 +14,7 @@
                         <h3 class="card-title">Agregar patios masivamente</h3>
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-body overflow-auto">
                         <form method="POST" action={!!url("patio/store_patios")!!} accept-charset="UTF-8" enctype="multipart/form-data">
 
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">

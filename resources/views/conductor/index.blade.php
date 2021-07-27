@@ -19,7 +19,7 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     <div class="row">
                         <div class="col-md-4">
                             {!! Form::open(['route'=> 'conductores.store', 'method'=>'POST', 'files' => true]) !!}
@@ -75,10 +75,10 @@
                             <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body overflow-auto">
 
                     <div class="table-responsive">
-                        <table class="table table-hover" id="dataTableCamion" width="100%" cellspacing="0">
+                        <table class="table table-hover table-sm nowrap" id="dataTableCamion" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>Conductor</th>

@@ -12,7 +12,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-4">
                         {!! Form::open(['route'=> 'inspeccion.store', 'method'=>'POST', 'files' => true]) !!}
@@ -26,7 +26,7 @@
                                 {!! Form::text(null, $responsable_nombres, ['class'=>'form-control col-sm-9', 'disabled']) !!}
                                 {!! Form::hidden('inspeccion[responsable_id]', $responsable->user_id) !!}
                         </div>
-                  
+
                         <div class="form-group">
                                 <label for="vin_id" >Código VIN <strong>*</strong></label>
                                 {!! Form::select('inspeccion[vin_id]', $vins, null, ['placeholder'=>'Seleccione el Código', 'class'=>'form-control col-sm-9', 'required']) !!}
@@ -62,7 +62,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">                            
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label for="vin_estado_inventario_id" >Estado de Inventario <strong>*</strong></label>
                             {{-- {!! Form::select('vin_estado_inventario_id', $estadosInventario, null,['class'=>'form-control col-sm-9']) !!} --}}
@@ -106,7 +106,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-4" style="border-right-style: solid; border-right-color: grey; border-right-width: 1px;">
                         <div class="form-group">
@@ -166,7 +166,7 @@
                         </div>
                     </div>
 
-                    
+
                 </div>
                 <div class="text-right pb-5" id="boton_inspeccion_dano">
                     {!! Form::button('Anexar Foto', ['id'=>'btn-fotos', 'class' => 'btn btn-info block full-width m-b']) !!}
@@ -194,7 +194,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-4" style="border-right-style: solid; border-right-color: grey; border-right-width: 1px;">
                         <div class="form-group">
@@ -211,7 +211,7 @@
                             {!! Form::text('foto[foto_descripcion]', null, ['placeholder'=>'Descripción Foto', 'class'=>'form-control col-sm-9']) !!}
                         </div>
                     </div>
-                    
+
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="">Coordenadas</label>
@@ -260,19 +260,19 @@
         function d1(button){
             if(button.value == 'false')
             {
-                $('#bloque_dano').hide();             
-                $('#bloque_fotos').hide();             
-                $('#boton_inspeccion').show();                          
-                $('#boton_inspeccion_dano').hide();                          
-                $('#btn-fotos').hide();                          
-                $('#boton_inspeccion_dano_fotos').hide();                          
+                $('#bloque_dano').hide();
+                $('#bloque_fotos').hide();
+                $('#boton_inspeccion').show();
+                $('#boton_inspeccion_dano').hide();
+                $('#btn-fotos').hide();
+                $('#boton_inspeccion_dano_fotos').hide();
             }else if(button.value == 'true')
             {
                 $('#bloque_dano').show();
-                $('#boton_inspeccion').hide();                          
-                $('#boton_inspeccion_dano').show();  
-                $('#btn-fotos').show();                         
-                $('#boton_inspeccion_dano_fotos').show();  
+                $('#boton_inspeccion').hide();
+                $('#boton_inspeccion_dano').show();
+                $('#btn-fotos').show();
+                $('#boton_inspeccion_dano_fotos').show();
             }
         }
         $(document).ready(function () {
@@ -283,7 +283,7 @@
                 $(this).hide();
                 $('#boton_inspeccion_dano').hide();
                 $('#boton_inspeccion_dano_fotos').show();
-                $('#bloque_fotos').show(); 
+                $('#bloque_fotos').show();
             });
 
             $(".select-empresa").change(function (e) {
@@ -295,7 +295,7 @@
                 if (id != ''){
 
                     var url = "/vin/obtener_usuarios_empresa/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){
@@ -336,7 +336,7 @@
             $(".select-estado-inventario").change(function (e) {
 
                 e.preventDefault();
-                
+
                 if($(".select-estado-inventario option:selected").text() == "Disponible para la venta" || $(".select-estado-inventario option:selected").text() == "No disponible para la venta")
                 {
                     //alert($(".select-estado-inventario option:selected").text());
@@ -352,7 +352,7 @@
                 if (id != ''){
 
                     var url = "/vin/obtener_sub_estados/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){
@@ -401,7 +401,7 @@
                 if (id != ''){
 
                     var url = "/inspeccion/obtener_subcategorias_pieza/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){
@@ -449,7 +449,7 @@
                 if (id != ''){
 
                     var url = "/inspeccion/obtener_piezas/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){

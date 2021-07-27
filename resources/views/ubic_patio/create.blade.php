@@ -13,7 +13,7 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-12">
                         {!! Form::open(['route'=> 'ubic_patio.store', 'method'=>'POST', 'files' => true]) !!}
@@ -45,7 +45,7 @@
                                 <option value="2" selected>No</option>
                             </select>
                         </div>
-                    </div>  
+                    </div>
                 </div>
                 <div class="text-right pb-5" id="boton_bloque">
                     {!! Form::submit('Registrar Ubicación', ['class' => 'btn btn-primary block full-width m-b']) !!}

@@ -12,7 +12,7 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                         </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     <div class="row">
                         <div class="col-md-4">
                                 {!! Form::open(['route'=> ['vin.update', Crypt::encrypt($vin->vin_id)], 'method'=>'PATCH']) !!}
@@ -31,11 +31,11 @@
                                     <label for="vin_marca" >Marca <strong>*</strong></label>
                                     {!! Form::text('vin_marca', $vin->vin_marca, ['class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
-                            
+
                             <div class="form-group">
                                     <label for="vin_modelo" >Modelo <strong>*</strong></label>
                                     {!! Form::text('vin_modelo', $vin->vin_modelo, ['class'=>'form-control col-sm-9', 'required']) !!}
-                            </div>                            
+                            </div>
                         </div>
 
                         <div class="col-md-4">
@@ -43,7 +43,7 @@
                                     <label for="vin_color" >Color <strong>*</strong></label>
                                     {!! Form::text('vin_color', $vin->vin_color, ['class'=>'form-control col-sm-9', 'required']) !!}
                             </div>
-                            
+
                             <div class="form-group">
                                 <label for="vin_motor" >Motor <strong>*</strong></label>
                                 {!! Form::text('vin_motor', $vin->vin_motor, ['class'=>'form-control col-sm-9', 'required']) !!}
@@ -60,15 +60,15 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">                        
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="empresa_id" >Empresa <strong>*</strong></label>
                                 {{-- {!! Form::select('empresa_id', $empresas, $user->belongsToEmpresa->empresa_id, ['class'=>'form-control col-sm-9', 'required'=>'required']) !!} --}}
-                                <select name="empresa_id" id="empresa" class="form-control select-empresa">        
+                                <select name="empresa_id" id="empresa" class="form-control select-empresa">
                                     <option value="">Seleccionar Empresa</option>
                                 @foreach($empresas as $k => $v)
                                     @if($k == $user->belongsToEmpresa->empresa_id)
-                                        <option value="{!! Crypt::encrypt($user->belongsToEmpresa->empresa_id) !!}" selected>{{$user->belongsToEmpresa->empresa_razon_social}}</option>    
+                                        <option value="{!! Crypt::encrypt($user->belongsToEmpresa->empresa_id) !!}" selected>{{$user->belongsToEmpresa->empresa_razon_social}}</option>
                                     @else
                                         <option value="{!! Crypt::encrypt($k) !!}">{{$v}}</option>
                                     @endif
@@ -84,18 +84,18 @@
                             <div class="form-group">
                                     <label for="vin_estado_inventario_id" >Estado de Inventario <strong>*</strong></label>
                                     {{-- {!! Form::select('vin_estado_inventario_id', $estadosInventario, $vin->vin_estado_inventario_id,['class'=>'form-control col-sm-9', 'required'=>'required']) !!} --}}
-                                    <select name="vin_estado_inventario_id" id="estado-inventario" class="form-control select-estado-inventario">        
+                                    <select name="vin_estado_inventario_id" id="estado-inventario" class="form-control select-estado-inventario">
                                         <option value="">Seleccione Estado de Inventario</option>
                                     @foreach($estadosInventario as $k => $v)
                                         @if($k == $vin->vin_estado_inventario_id)
-                                            <option value="{!! Crypt::encrypt($vin->vin_estado_inventario_id) !!}" selected>{{$estadosInventario[$vin->vin_estado_inventario_id]}}</option>    
+                                            <option value="{!! Crypt::encrypt($vin->vin_estado_inventario_id) !!}" selected>{{$estadosInventario[$vin->vin_estado_inventario_id]}}</option>
                                         @else
                                             <option value="{!! Crypt::encrypt($k) !!}">{{$v}}</option>
                                         @endif
                                     @endforeach
-                                </select>                                    
+                                </select>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label for="vin_sub_estado_inventario_id" >Sub-Estado de Inventario <strong>*</strong></label>
                                 {!! Form::select('vin_sub_estado_inventario_id', $subEstadosInventario, $vin->vin_sub_estado_inventario_id,['id' => 'vin_sub_estado_inventario_id', 'class'=>'form-control']) !!}
@@ -131,7 +131,7 @@
                 if (id != ''){
 
                     var url = "/vin/obtener_usuarios_empresa/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){
@@ -180,7 +180,7 @@
                 if (id != ''){
 
                     var url = "/vin/obtener_sub_estados/";
-                    
+
                     $.get(url + id, id, function (res) {
                         //Validar primero si algo salió mal
                         if(!res.success){
