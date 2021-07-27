@@ -138,24 +138,6 @@ class VinController extends Controller
                 ]);
             } elseif ($request->has('empresa_id') || $request->has('vin_numero') || $request->has('estadoinventario_id') || $request->has('patio_id') || $request->has('marca_id')){
                 // Segundo caso: Se seleccionó algún criterio de filtro para la búsqueda.
-                $estado = DB::table('vin_estado_inventarios')
-                    ->where('vin_estado_inventario_id', $request->estadoinventario_id)
-                    ->get();
-
-                if(!empty($estado[0]->vin_estado_inventario_id)){
-                    $estado_id = $estado[0]->vin_estado_inventario_id;
-                }else{
-                    $estado_id = 0;
-                }
-
-                $marca = Marca::find($request->marca_id);
-
-                if($marca) {
-                    $marca_nombre = $marca->marca_nombre;
-                }else{
-                    $marca_nombre = 'Sin marca';
-                }
-
                 $users = User::where('empresa_id', $request->empresa_id)->get();
 
                 if(Auth::user()->rol_id == 4) {
@@ -172,85 +154,115 @@ class VinController extends Controller
                     }
                 }
 
-                $patio = Patio::where('patio_id', $request->patio_id)
-                    ->first();
+                if ($request->has('empresa_id') && empty($request->vin_numero) && empty($request->estadoinventario_id) && empty($request->patio_id) && empty($request->marca_id)) {
+                    $query = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas')
+                        ->join('users','users.user_id','=','vins.user_id')
+                        ->join('empresas','users.empresa_id','=','empresas.empresa_id');
 
-                if($patio) {
-                    $patio_id = $patio->patio_id;
-                }else{
-                    $patio_id = 0;
-                }
-
-                if(!empty($request->vin_numero)){
-                    foreach(explode(PHP_EOL,$request->vin_numero) as $row){
-                        $arreglo_vins[] = trim($row);
+                    if(Auth::user()->rol_id == 4 || Auth::user()->rol_id == 4){
+                        $query->where('empresas.empresa_id', $request->empresa_id);
+                    } else {
+                        $query->where('empresas.empresa_id', $user_empresa_id);
                     }
 
-                    $message = [];
+                    $result = $query->get();
 
-                    foreach($arreglo_vins as $v){
-                        $query = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas');
+                    foreach ($result as $vinResult){
+                        array_push($tabla_vins, $vinResult);
+                    }
+                } elseif ($request->has('estadoinventario_id') && empty($request->empresa_id) && empty($request->vin_numero) && empty($request->patio_id) && empty($request->marca_id)) {
+                    $result = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas')
+                        ->where('vin_estado_inventario_id', $request->estadoinventario_id)
+                        ->get();
 
-                        if(Auth::user()->rol_id == 4) {
-                            $validate = Vin::join('users','users.user_id','=','vins.user_id')
-                                ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                                ->where('empresas.empresa_id', $user_empresa_id)
-                                ->where(function ($query) use ($v) {
-                                    $query->where('vin_codigo', $v)
-                                        ->orWhere('vin_patente', $v);
-                                })
-                                ->exists();
-                        } else {
-                            $validate = Vin::where('vin_codigo', $v)
-                                ->orWhere('vin_patente', $v)
-                                ->exists();
+                    foreach ($result as $vinResult){
+                        array_push($tabla_vins, $vinResult);
+                    }
+                } elseif ($request->has('patio_id') && empty($request->empresa_id) && empty($request->vin_numero) && empty($request->estadoinventario_id) && empty($request->marca_id)) {
+                    $patio = Patio::where('patio_id', $request->patio_id)
+                        ->first();
+
+                    $result = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas')
+                        ->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                        ->join('bloques','bloques.bloque_id','=','ubic_patios.bloque_id')
+                        ->join('patios','patios.patio_id','=','bloques.patio_id')
+                        ->where('patios.patio_id', $patio->patio_id)
+                        ->get();
+
+                    foreach ($result as $vinResult){
+                        array_push($tabla_vins, $vinResult);
+                    }
+                } elseif ($request->has('marca_id') && empty($request->empresa_id) && empty($request->vin_numero) && empty($request->estadoinventario_id) && empty($request->patio_id)) {
+                    $result = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas')
+                        ->where('vin_marca', $request->marca_id)
+                        ->get();
+
+                    foreach ($result as $vinResult){
+                        array_push($tabla_vins, $vinResult);
+                    }
+                } else {
+                    $estado = DB::table('vin_estado_inventarios')
+                        ->where('vin_estado_inventario_id', $request->estadoinventario_id)
+                        ->get();
+
+                    if(!empty($estado[0]->vin_estado_inventario_id)){
+                        $estado_id = $estado[0]->vin_estado_inventario_id;
+                    }else{
+                        $estado_id = 0;
+                    }
+
+                    $marca = Marca::find($request->marca_id);
+
+                    if($marca) {
+                        $marca_nombre = $marca->marca_nombre;
+                    }else{
+                        $marca_nombre = 'Sin marca';
+                    }
+
+                    $patio = Patio::where('patio_id', $request->patio_id)
+                        ->first();
+
+                    if($patio) {
+                        $patio_id = $patio->patio_id;
+                    }else{
+                        $patio_id = 0;
+                    }
+
+                    if(!empty($request->vin_numero)){
+                        foreach(explode(PHP_EOL,$request->vin_numero) as $row){
+                            $arreglo_vins[] = trim($row);
                         }
 
-                        if($validate == true){
-                            $query->where(function ($query) use ($v) {
-                                $query->where('vin_codigo', $v)
-                                    ->orWhere('vin_patente', $v);
-                            });
+                        $message = [];
 
-                            if (count($users) > 0) {
-                                $query->join('users', 'users.user_id', 'vins.user_id')
-                                    ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
-                                    ->where('empresas.empresa_id', $user_empresa_id);
-                            }
+                        foreach($arreglo_vins as $v){
+                            $query = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas');
 
-                            if($marca_nombre != 'Sin marca'){
-                                $query->where('vin_marca', $marca->marca_id);
-                            }
-
-                            if($estado_id > 0) {
-                                $query->where('vin_estado_inventario_id', $estado_id);
-                            }
-
-                            $result = $query->first();
-
-                            if ($patio_id > 0){
-                                if ($result->ubicPatio != null){
-                                    if ($patio_id == $result->ubicPatio->oneBloque->onePatio->patio_id){
-                                        array_push($tabla_vins, $result);
-                                    }
-                                }
+                            if(Auth::user()->rol_id == 4) {
+                                $validate = Vin::join('users','users.user_id','=','vins.user_id')
+                                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                                    ->where('empresas.empresa_id', $user_empresa_id)
+                                    ->where(function ($query) use ($v) {
+                                        $query->where('vin_codigo', $v)
+                                            ->orWhere('vin_patente', $v);
+                                    })
+                                    ->exists();
                             } else {
-                                array_push($tabla_vins, $result);
+                                $validate = Vin::where('vin_codigo', $v)
+                                    ->orWhere('vin_patente', $v)
+                                    ->exists();
                             }
-                        } else {
-                            if(count($arreglo_vins) >= 1){
-                                if(Auth::user()->rol_id == 4){
-                                    $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista o no pertenece a la empresa " . Auth::user()->belongsToEmpresa->empresa_id . ".";
-                                } else {
-                                    $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista";
-                                }
-                            } else {
-                                if($user_empresa_id > 0){
-                                    if (count($users) > 0) {
-                                        $query->join('users', 'users.user_id', 'vins.user_id')
-                                            ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
-                                            ->where('empresas.empresa_id', $user_empresa_id);
-                                    }
+
+                            if($validate == true){
+                                $query->where(function ($query) use ($v) {
+                                    $query->where('vin_codigo', $v)
+                                        ->orWhere('vin_patente', $v);
+                                });
+
+                                if (count($users) > 0) {
+                                    $query->join('users', 'users.user_id', 'vins.user_id')
+                                        ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
+                                        ->where('empresas.empresa_id', $user_empresa_id);
                                 }
 
                                 if($marca_nombre != 'Sin marca'){
@@ -258,56 +270,92 @@ class VinController extends Controller
                                 }
 
                                 if($estado_id > 0) {
-                                    $query->where('vins.vin_estado_inventario_id', $estado_id);
+                                    $query->where('vin_estado_inventario_id', $estado_id);
                                 }
 
-                                $result = $query->get();
+                                $result = $query->first();
 
-                                foreach ($result as $vinResult){
-                                    if ($patio_id > 0){
-                                        if ($vinResult->ubicPatio != null){
-                                            if ($patio_id == $vinResult->ubicPatio->oneBloque->onePatio->patio_id){
-                                                array_push($tabla_vins, $result);
-                                            }
+                                if ($patio_id > 0){
+                                    if ($result->ubicPatio != null){
+                                        if ($patio_id == $result->ubicPatio->oneBloque->onePatio->patio_id){
+                                            array_push($tabla_vins, $result);
                                         }
+                                    }
+                                } else {
+                                    array_push($tabla_vins, $result);
+                                }
+                            } else {
+                                if(count($arreglo_vins) >= 1){
+                                    if(Auth::user()->rol_id == 4){
+                                        $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista o no pertenece a la empresa " . Auth::user()->belongsToEmpresa->empresa_id . ".";
                                     } else {
-                                        array_push($tabla_vins, $vinResult);
+                                        $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista";
+                                    }
+                                } else {
+                                    if($user_empresa_id > 0){
+                                        if (count($users) > 0) {
+                                            $query->join('users', 'users.user_id', 'vins.user_id')
+                                                ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
+                                                ->where('empresas.empresa_id', $user_empresa_id);
+                                        }
                                     }
 
+                                    if($marca_nombre != 'Sin marca'){
+                                        $query->where('vin_marca', $marca->marca_id);
+                                    }
+
+                                    if($estado_id > 0) {
+                                        $query->where('vins.vin_estado_inventario_id', $estado_id);
+                                    }
+
+                                    $result = $query->get();
+
+                                    foreach ($result as $vinResult){
+                                        if ($patio_id > 0){
+                                            if ($vinResult->ubicPatio != null){
+                                                if ($patio_id == $vinResult->ubicPatio->oneBloque->onePatio->patio_id){
+                                                    array_push($tabla_vins, $result);
+                                                }
+                                            }
+                                        } else {
+                                            array_push($tabla_vins, $vinResult);
+                                        }
+
+                                    }
                                 }
                             }
                         }
-                    }
-                } else {
-                    $query = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas');
+                    } else {
+                        $query = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas');
 
-                    if($user_empresa_id > 0){
-                        if (count($users) > 0) {
-                            $query->join('users', 'users.user_id', 'vins.user_id')
-                                ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
-                                ->where('empresas.empresa_id', $user_empresa_id);
-                        }
-                    }
-
-                    if($marca_nombre != 'Sin marca'){
-                        $query->where('vin_marca', $marca->marca_id);
-                    }
-
-                    if($estado_id > 0) {
-                        $query->where('vins.vin_estado_inventario_id', $estado_id);
-                    }
-
-                    $resultados = $query->get();
-
-                    foreach($resultados as $registro){
-                        if ($patio_id > 0){
-                            if ($registro->ubicPatio != null){
-                                if ($patio_id == $registro->ubicPatio->oneBloque->onePatio->patio_id){
-                                    array_push($tabla_vins, $registro);
-                                }
+                        if($user_empresa_id > 0){
+                            if (count($users) > 0) {
+                                $query->join('users', 'users.user_id', 'vins.user_id')
+                                    ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
+                                    ->where('empresas.empresa_id', $user_empresa_id);
                             }
-                        } else {
-                            array_push($tabla_vins, $registro);
+                        }
+
+                        if($marca_nombre != 'Sin marca'){
+                            $query->where('vin_marca', $marca->marca_id);
+                        }
+
+                        if($estado_id > 0) {
+                            $query->where('vins.vin_estado_inventario_id', $estado_id);
+                        }
+
+                        $resultados = $query->get();
+
+                        foreach($resultados as $registro){
+                            if ($patio_id > 0){
+                                if ($registro->ubicPatio != null){
+                                    if ($patio_id == $registro->ubicPatio->oneBloque->onePatio->patio_id){
+                                        array_push($tabla_vins, $registro);
+                                    }
+                                }
+                            } else {
+                                array_push($tabla_vins, $registro);
+                            }
                         }
                     }
                 }
