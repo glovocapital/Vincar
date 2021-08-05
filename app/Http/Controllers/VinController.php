@@ -366,55 +366,99 @@ class VinController extends Controller
 
         foreach($tabla_vins as $vin){
             if($vin){
-                if (count($vin->guias()) > 0){
-                    $vin->vin_downloadGuiaN =  "Guia Cargada";
-                } else {
-                    $vin->vin_downloadGuiaN =  "Sin Guia";
-                }
+                $vin_salida = new Vin();
+
+                $vin_salida->vin_id = $vin->vin_id;
+                $vin_salida->vin_id_checkbox = '<input type="checkbox" class="check-tarea" value="' . $vin->vin_id . '" name="checked_vins[]" id="check-vin-' . $vin->vin_id . '">';
+                $vin_salida->vin_codigo = $vin->vin_codigo;
+                $vin_salida->vin_patente = $vin->vin_patente;
 
                 if($vin->oneMarca != null){
-                    $vin->marca_nombre = $vin->oneMarca->marca_nombre;
+                    $vin_salida->marca_nombre = strtoupper($vin->oneMarca->marca_nombre);
                 } else {
-                    $vin->marca_nombre = 'Sin Marca';
+                    $vin_salida->marca_nombre = 'Sin Marca';
                 }
 
-                $vin->vin_downloadGuia =  route('vin.downloadGuia', Crypt::encrypt($vin->vin_id));
-                $vin->vin_encrypt =  Crypt::encrypt($vin->vin_id);
-                $vin->vin_guia =  route('vin.guia', Crypt::encrypt($vin->vin_id));
-                $vin->vin_editarestado =  route('vin.editarestado', Crypt::encrypt($vin->vin_id));
-                $vin->vin_edit =  route('vin.edit', Crypt::encrypt($vin->vin_id));
-                $vin->rol_id = auth()->user()->rol_id;
+                $vin_salida->vin_modelo = $vin->vin_modelo;
+                $vin_salida->vin_color = $vin->vin_color;
+                $vin_salida->vin_segmento = $vin->vin_segmento;
+                $vin_salida->vin_segmento = $vin->vin_segmento;
+                $vin_salida->empresa_razon_social = $vin->oneUser->belongsToEmpresa->empresa_razon_social;
+                $vin_salida->vin_estado_inventario_desc = $vin->estadoInventario->vin_estado_inventario_desc;
 
                 if ($vin->ubicPatio != null){
-                    $vin->patio_nombre = $vin->ubicPatio->oneBloque->onePatio->patio_nombre;
-                    $vin->bloque_nombre = $vin->ubicPatio->oneBloque->bloque_nombre;
-                    $vin->ubic_patio_id = $vin->ubicPatio->ubic_patio_id;
-                    $vin->ubic_patio_fila = $vin->ubicPatio->ubic_patio_fila;
-                    $vin->ubic_patio_columna = $vin->ubicPatio->ubic_patio_columna;
+                    if ($vin->ubicPatio->oneBloque->onePatio->patio_nombre == null) {
+                        $vin_salida->patio_nombre = '';
+                    } else {
+                        $vin_salida->patio_nombre = $vin->ubicPatio->oneBloque->onePatio->patio_nombre;
+                    }
+
+                    if ($vin->ubicPatio->oneBloque->bloque_nombre == null) {
+                        $vin_salida->bloque_nombre = '';
+                    } else {
+                        $vin_salida->bloque_nombre = $vin->ubicPatio->oneBloque->bloque_nombre;
+                    }
+
+                    if ($vin->ubicPatio->ubic_patio_id == null) {
+                        $vin_salida->ubic_patio = "Fila: , Columna: ";
+                    } else {
+                        $vin_salida->ubic_patio = 'Fila: ' . $vin->ubicPatio->ubic_patio_fila . ', Columna: ' . $vin->ubicPatio->ubic_patio_columna;
+                    }
                 }
 
-                $vin->vin_estado_inventario_desc = $vin->estadoInventario->vin_estado_inventario_desc;
-                $vin->empresa_razon_social = $vin->oneUser->belongsToEmpresa->empresa_razon_social;
+                if (count($vin->guias()) > 0){
+                    $vin_salida->color_texto_guia = '<font color="Green">Guía Cargada</font>';
+                } else {
+                    $vin_salida->color_texto_guia = '<font color="Green">Sin Guía</font>';;
+                }
+
+
 
                 if($vin->vin_fec_ingreso != null){
-                    $vin->vin_fec_ingreso = date("d-m-Y", strtotime($vin->vin_fec_ingreso));
+                    $vin_salida->vin_fec_ingreso = date("d-m-Y", strtotime($vin->vin_fec_ingreso));
+                } else {
+                    $vin_salida->vin_fec_ingreso = '';
                 }
+
                 if ($vin->vin_fecha_agendado != null){
-                    $vin->vin_fecha_agendado = date("d-m-Y", strtotime($vin->vin_fecha_agendado));
+                    $vin_salida->vin_fecha_agendado = date("d-m-Y", strtotime($vin->vin_fecha_agendado));
+                } else {
+                    $vin_salida->vin_fecha_agendado = '';
                 }
-                if ($vin->vin_fecha_entrega != null){
-                    $vin->vin_fecha_entrega = date("d-m-Y", strtotime($vin->vin_fecha_entrega));
-                }
+
+                // if ($vin->vin_fecha_entrega != null){
+                //     $vin_salida->vin_fecha_entrega = date("d-m-Y", strtotime($vin->vin_fecha_entrega));
+                // } else {
+                //     $vin_salida->vin_fecha_entrega = null;
+                // }
 
                 if(count($vin->entregas) > 0){
-                    $vin->vin_fecha_entrega = date("d-m-Y", strtotime($vin->entregas[0]->entrega_fecha));
+                    $vin_salida->vin_fecha_entrega = date("d-m-Y", strtotime($vin->entregas[0]->entrega_fecha));
                 } else {
-                    $vin->vin_fecha_entrega = '';
+                    $vin_salida->vin_fecha_entrega = '';
                 }
 
-                array_push($tabla_resultados, $vin);
+                $vin_salida->botones_vin = '<small><a href="#" type="button" class="btn-historico"  value="' . Crypt::encrypt($vin->vin_id) . '" title="Ver Historico"><i class="fas fa-history"></i></a></small>';
+
+                $vin_salida->rol_id = auth()->user()->rol_id;
+
+                if ($vin_salida->rol_id == 1 || $vin_salida->rol_id == 2  || $vin_salida->rol_id == 3) {
+                    $vin_salida->botones_vin .= '<small><a href="' . route('vin.edit', Crypt::encrypt($vin->vin_id)) . '" type="button" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a></small>' .
+                        '<small><a  href="' . route('vin.editarestado', Crypt::encrypt($vin->vin_id)) . '" type="button" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a></small>';
+                }
+
+                if (count($vin->guias()) < 1){
+                    $vin_salida->botones_vin .= '<small><a href="' . route('vin.guia', Crypt::encrypt($vin->vin_id)) . '" type="button" class="btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a></small>';
+
+                } else {
+                    $vin_salida->botones_vin .= '<small><a href="' . route('vin.downloadGuia', Crypt::encrypt($vin->vin_id)) . '" type="button" class="btn-vin btn-download-guias-vin"  title="Descargar Guías"><i class="fas fa fa-barcode2"></i></a></small>';
+                }
+
+                array_push($tabla_resultados, $vin_salida);
             }
         }
+
+        // dd($tabla_resultados); // Arreglar la salida desde la estructura de repetición anterior.
 
         return response()->json(
             $tabla_resultados
