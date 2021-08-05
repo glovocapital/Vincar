@@ -407,7 +407,7 @@
             datatablesButtons = $('[id="TablaVins"]').DataTable({
                 searching: true,
                 bSortClasses: false,
-                deferRender:true,
+		        deferRender:true,
                 responsive: false,
                 lengthChange: !1,
                 pageLength: 100,
@@ -620,6 +620,8 @@
 
                 $('#error-msg-busqueda').empty();
 
+                // $('[id="TablaVins"]').DataTable().clear();
+                // $('[id="TablaVins"]').DataTable().rows().remove();
                 datatablesButtons.rows().remove();
 
                 var_roles=0;
@@ -638,6 +640,8 @@
                         return;
                     }
 
+                    // let array_resultados = [];
+
                     $(res).each(function( index , value ) {
                         array_vin_ids.push(value.vin_id);
 
@@ -655,48 +659,74 @@
                             var_roles=1;
                         }
 
+                        // let array_registro = [
+                        //     value.vin_id_checkbox,
+                        //     value.vin_codigo,
+                        //     value.vin_patente,
+                        //     value.marca_nombre,
+                        //     value.vin_modelo,
+                        //     value.vin_color,
+                        //     value.vin_segmento,
+                        //     value.empresa_razon_social,
+                        //     value.vin_estado_inventario_desc,
+                        //     value.patio_nombre,
+                        //     value.bloque_nombre,
+                        //     value.ubic_patio,
+                        //     value.color_texto_guia,
+                        //     value.vin_fec_ingreso,
+                        //     value.vin_fecha_agendado,
+                        //     value.vin_fecha_entrega,
+                        //     value.botones_vin,
+                        // ];
+
+
+
+                        // array_resultados.push(array_registro);
+
                         datatablesButtons.row.add( [
-                            '<input type="checkbox" class="check-tarea" value="'+value.vin_id+'" name="checked_vins[]" id="check-vin-'+value.vin_id+'">',
+                            value.vin_id_checkbox,
                             value.vin_codigo,
                             value.vin_patente,
-                            value.marca_nombre.toUpperCase(),
+                            value.marca_nombre,
                             value.vin_modelo,
                             value.vin_color,
                             value.vin_segmento,
                             value.empresa_razon_social,
                             value.vin_estado_inventario_desc,
-                            (typeof value.patio_nombre !== 'undefined' && value.patio_nombre !== null)?value.patio_nombre:"",
-                            (typeof value.bloque_nombre !== 'undefined' && value.bloque_nombre !== null)?('<small>BLOQUE: ' + value.bloque_nombre + '</small>'):"<small>BLOQUE: </small>",
-                            (typeof value.ubic_patio_id !== 'undefined' && value.ubic_patio_id !== null)?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):"Fila: , Columna: ",
-                            '<font color="'+((value.vin_downloadGuiaN == "Sin Guia")?"Blue":"Green")+'">'+value.vin_downloadGuiaN+'</font>',
+                            value.patio_nombre,
+                            value.bloque_nombre,
+                            value.ubic_patio,
+                            value.color_texto_guia,
                             value.vin_fec_ingreso,
                             value.vin_fecha_agendado,
                             value.vin_fecha_entrega,
-                            '<small>'+
-                                '<a href="#" type="button" class="btn-historico"  value="'+value.vin_encrypt+'" title="Ver Historico"><i class="fas fa-history"></i></a>'+
-                            '</small>'+
-                            ((value.rol_id == 1 || value.rol_id == 2  || value.rol_id == 3)?(
-
-                            '<small>'+
-                            '<a href="'+value.vin_edit+'" type="button" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>'+
-                            '</small>'+
-                                '<small>'+
-                                '<a  href="'+value.vin_editarestado+'" type="button" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>'+
-                                '</small>'
-
-                            ):"")+
-                            '<small>'+
-                            ((value.vin_downloadGuiaN == "Sin Guia")?'<a href="'+value.vin_guia+'" type="button" class="btn-vin"  title="Cargar Guía"><i class="fas fa fa-barcode"></i></a>':'<a href="'+value.vin_downloadGuia+'" type="button" class="btn-vin btn-download-guias-vin"  title="Descargar Guías"><i class="fas fa fa-barcode2"></i></a>')+
-
-                            '</small>',
+                            value.botones_vin,
                         ]).draw( false );
 
                     });
 
                     $("#resultado_busqueda_vins").attr('value', array_vin_ids);
-                    $("#btn-listado-masivo").removeAttr('disabled')
+                    $("#btn-listado-masivo").removeAttr('disabled');
+
+
+                    // $('[id="TablaVins"]').DataTable({
+                    //     data: array_resultados,
+                    //     searching: true,
+                    //     bSortClasses: false,
+                    //     deferRender:true,
+                    //     responsive: false,
+                    //     lengthChange: !1,
+                    //     pageLength: 100,
+                    //     @if(Session::get('lang')=="es")
+                    //     language: {
+                    //     "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                    //     },
+                    //     @endif
+                    //     buttons: ["copy", "print"],
+                    // });
 
                     datatablesButtons.columns.adjust().draw();
+                    // $('[id="TablaVins"]').DataTable().columns.adjust().draw();
 
                 }).fail(function () {
                     alert('Error: ');
