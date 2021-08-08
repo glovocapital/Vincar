@@ -159,7 +159,7 @@ class VinController extends Controller
                         ->join('users','users.user_id','=','vins.user_id')
                         ->join('empresas','users.empresa_id','=','empresas.empresa_id');
 
-                    if(Auth::user()->rol_id == 4 || Auth::user()->rol_id == 4){
+                    if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 2 || Auth::user()->rol_id == 3){
                         $query->where('empresas.empresa_id', $request->empresa_id);
                     } else {
                         $query->where('empresas.empresa_id', $user_empresa_id);
@@ -171,9 +171,16 @@ class VinController extends Controller
                         array_push($tabla_vins, $vinResult);
                     }
                 } elseif ($request->has('estadoinventario_id') && empty($request->empresa_id) && empty($request->vin_numero) && empty($request->patio_id) && empty($request->marca_id)) {
-                    $result = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas')
-                        ->where('vin_estado_inventario_id', $request->estadoinventario_id)
-                        ->get();
+                    $query = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas')
+                        ->where('vin_estado_inventario_id', $request->estadoinventario_id);
+
+                    if(Auth::user()->rol_id == 4){
+                        $query->join('users','users.user_id','=','vins.user_id')
+                            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                            ->where('empresas.empresa_id', $user_empresa_id);
+                    }
+
+                    $result = $query->get();
 
                     foreach ($result as $vinResult){
                         array_push($tabla_vins, $vinResult);
@@ -182,20 +189,34 @@ class VinController extends Controller
                     $patio = Patio::where('patio_id', $request->patio_id)
                         ->first();
 
-                    $result = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas')
+                    $query = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas')
                         ->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                         ->join('bloques','bloques.bloque_id','=','ubic_patios.bloque_id')
                         ->join('patios','patios.patio_id','=','bloques.patio_id')
-                        ->where('patios.patio_id', $patio->patio_id)
-                        ->get();
+                        ->where('patios.patio_id', $patio->patio_id);
+
+                        if(Auth::user()->rol_id == 4){
+                            $query->join('users','users.user_id','=','vins.user_id')
+                                ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                                ->where('empresas.empresa_id', $user_empresa_id);
+                        }
+
+                    $result = $query->get();
 
                     foreach ($result as $vinResult){
                         array_push($tabla_vins, $vinResult);
                     }
                 } elseif ($request->has('marca_id') && empty($request->empresa_id) && empty($request->vin_numero) && empty($request->estadoinventario_id) && empty($request->patio_id)) {
-                    $result = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas')
-                        ->where('vin_marca', $request->marca_id)
-                        ->get();
+                    $query = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas')
+                        ->where('vin_marca', $request->marca_id);
+
+                    if(Auth::user()->rol_id == 4){
+                        $query->join('users','users.user_id','=','vins.user_id')
+                            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                            ->where('empresas.empresa_id', $user_empresa_id);
+                    }
+
+                    $result = $query->get();
 
                     foreach ($result as $vinResult){
                         array_push($tabla_vins, $vinResult);
@@ -328,13 +349,18 @@ class VinController extends Controller
                     } else {
                         $query = Vin::with('oneMarca', 'ubicPatio', 'oneUser', 'entregas');
 
-                        if($user_empresa_id > 0){
-                            if (count($users) > 0) {
-                                $query->join('users', 'users.user_id', 'vins.user_id')
-                                    ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
-                                    ->where('empresas.empresa_id', $user_empresa_id);
-                            }
+                        if(Auth::user()->rol_id == 4){
+                            $query->join('users','users.user_id','=','vins.user_id')
+                                ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                                ->where('empresas.empresa_id', $user_empresa_id);
                         }
+                        // if($user_empresa_id > 0){
+                        //     if (count($users) > 0) {
+                        //         $query->join('users', 'users.user_id', 'vins.user_id')
+                        //             ->join('empresas', 'empresas.empresa_id', 'users.empresa_id')
+                        //             ->where('empresas.empresa_id', $user_empresa_id);
+                        //     }
+                        // }
 
                         if($marca_nombre != 'Sin marca'){
                             $query->where('vin_marca', $marca->marca_id);
@@ -404,6 +430,10 @@ class VinController extends Controller
                     } else {
                         $vin_salida->ubic_patio = 'Fila: ' . $vin->ubicPatio->ubic_patio_fila . ', Columna: ' . $vin->ubicPatio->ubic_patio_columna;
                     }
+                } else {
+                    $vin_salida->patio_nombre = '';
+                    $vin_salida->bloque_nombre = '';
+                    $vin_salida->ubic_patio = "Fila: , Columna: ";
                 }
 
                 if (count($vin->guias()) > 0){
