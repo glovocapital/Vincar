@@ -2060,8 +2060,7 @@ class VinController extends Controller
     public function traspasovin()
     {
         $empresas = Empresa::select('empresa_id', 'empresa_razon_social')
-            ->orderBy('empresa_id')
-            ->where('deleted_at', null)
+            ->orderBy('empresa_razon_social', 'ASC')
             ->pluck('empresa_razon_social', 'empresa_id')
             ->all();
 

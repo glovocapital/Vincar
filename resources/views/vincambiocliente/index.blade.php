@@ -3,6 +3,16 @@
 @section('content')
     @include('flash::message')
 
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="card card-default">
@@ -14,6 +24,7 @@
                     </div>
                 </div>
                 <div class="card-body overflow-auto">
+                    <div id="error-msg-busqueda" class="alert alert-danger alert-dismissible"></div>
                     {!! Form::open(['route'=> 'planificacion.index2', 'method'=>'post', 'id'=>'VinForm']) !!}
                     <div class="row">
                         <div class="col-md-4" id="wrapper_2">
@@ -127,6 +138,13 @@
                 var_roles=0;
 
                 $.post("{{route('planificacion.index5_json')}}", $("#VinForm").serialize(), function (res) {
+                    if (res.error == 1){
+                        $('#error-msg-busqueda').append('<font color="white">' + res.message + '</font>');
+
+                        return;
+                    } else {
+                        $('#error-msg-busqueda').remove();
+                    }
 
                     $("#resultado_busqueda_vins").val(JSON.stringify(res));
 
@@ -140,22 +158,39 @@
                         }
 
                         datatablesButtons.row.add( [
-                            '<input type="checkbox" class="check-tarea" value="'+value.vin_id+'" name="checked_vins[]" id="check-vin-'+value.vin_id+'">',
+                            value.vin_id_checkbox,
                             value.vin_codigo,
                             value.vin_patente,
-                            value.marca_nombre.toUpperCase(),
+                            value.marca_nombre,
                             value.vin_modelo,
                             value.vin_color,
                             value.vin_segmento,
                             value.vin_fec_ingreso,
                             value.empresa_razon_social,
                             value.vin_estado_inventario_desc,
+                            value.patio_nombre,
+                            value.bloque_nombre,
+                            value.ubic_patio,
+                            value.botones_vin,
+                        ]).draw( false );
 
-                            (typeof value.patio_nombre !== 'undefined')?value.patio_nombre:"",
-                            (typeof value.bloque_nombre !== 'undefined')?value.bloque_nombre:"",
-                            (typeof value.ubic_patio_id !== 'undefined')?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):""
+                        // datatablesButtons.row.add( [
+                        //     '<input type="checkbox" class="check-tarea" value="'+value.vin_id+'" name="checked_vins[]" id="check-vin-'+value.vin_id+'">',
+                        //     value.vin_codigo,
+                        //     value.vin_patente,
+                        //     value.marca_nombre.toUpperCase(),
+                        //     value.vin_modelo,
+                        //     value.vin_color,
+                        //     value.vin_segmento,
+                        //     value.vin_fec_ingreso,
+                        //     value.empresa_razon_social,
+                        //     value.vin_estado_inventario_desc,
 
-                        ] ).draw( false );
+                        //     (typeof value.patio_nombre !== 'undefined')?value.patio_nombre:"",
+                        //     (typeof value.bloque_nombre !== 'undefined')?value.bloque_nombre:"",
+                        //     (typeof value.ubic_patio_id !== 'undefined')?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):""
+
+                        // ] ).draw( false );
 
                     });
 
