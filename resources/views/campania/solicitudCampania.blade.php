@@ -3,7 +3,7 @@
 @section('content')
 @include('flash::message')
 <div class="row">
-<div class="col-lg-12">
+    <div class="col-lg-12">
         <div class="ibox float-e-margins text-center">
             <div class="card card-default">
                 <div class="card-header">
@@ -16,28 +16,32 @@
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                     <label for="vin_numero" >Vin / Patente</label>
-                                    {!! Form::textarea('vin_numero', null, ['placeholder'=>'Ingrese VIN', 'id' => 'vin_numero','rows' => 4, 'class'=>"form-control"]) !!}
+                                    {!! Form::textarea('vin_numero', isset($request)?$request->vin_numero:null, ['placeholder'=>'Ingrese VIN', 'id' => 'vin_numero','rows' => 4, 'class'=>"form-control"]) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                 <label for="estado_nombre" >Seleccionar Estado </label>
-                                {!! Form::select('estadoinventario_id', $estadosInventario, null,['id' => 'estadoinventario', 'placeholder'=>'Estado', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                {!! Form::select('estadoinventario_id', $estadosInventario, isset($request)?$request->estadoinventario_id:null,['id' => 'estadoinventario', 'placeholder'=>'Estado', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                         </div>
 
                         <div class="col-md-4" id="wrapper_2">
                             <div class="form-group">
                                     <label for="user_id" >Seleccionar Patio </label>
-                                    {!! Form::select('patio_id', $patios, null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente']) !!}
+                                    {!! Form::select('patio_id', $patios, isset($request)?$request->patio_id:null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
                             <div class="form-group">
                                 <label for="marca_id" >Seleccionar Marca </label>
                                 <select name="marca_id" id="marca" class="form-control col-sm-9 select-cliente" placeholder="Marca">
                                     <option value="">Marca</option>
                                     @foreach ($marcas as $marca_id => $marca_nombre)
+                                    @if($marca_id == (isset($request)?$request->marca_id:null))
+                                    <option value="{{ $request->marca_id }}" selected>{{ ucwords($marca_nombre) }}</option>
+                                    @else
                                     <option value="{{ $marca_id }}">{{ ucwords($marca_nombre) }}</option>
+                                    @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -60,113 +64,113 @@
 
 
 <div class="row">
- <div class="col-lg-12">
-            <div class="ibox float-e-margins">
-                <div class="card card-default">
-                    <div class="card-header">
-                        <h3 class="card-title">Listado de Vin</h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                        </div>
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title">Listado de Vin</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                     </div>
-                    <div class="card-body overflow-auto">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-sm nowrap" id="dataTableCamp" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
-                                        <th>Vin</th>
-                                        <th>Patente</th>
+                </div>
+                <div class="card-body overflow-auto">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm nowrap" id="dataTableCamp" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" class="check-all" />Seleccionar Todos</th>
+                                    <th>Vin</th>
+                                    <th>Patente</th>
 
-                                        <th>Marca</th>
-                                        <th>Modelo</th>
-                                        <th>Color</th>
-                                       <!-- <th>Motor</th> -->
-                                        <th>Segmento</th>
-                                        <th>Fecha de Ingreso</th>
-                                        <th>Cliente</th>
-                                        <th>Estado</th>
-                                        <th>Patio</th>
-                                        <th>Bloque</th>
-                                        <th>Ubicación</th>
-                                        <th>Acciones de VIN</th>
+                                    <th>Marca</th>
+                                    <th>Modelo</th>
+                                    <th>Color</th>
+                                    <!-- <th>Motor</th> -->
+                                    <th>Segmento</th>
+                                    <th>Fecha de Ingreso</th>
+                                    <th>Cliente</th>
+                                    <th>Estado</th>
+                                    <th>Patio</th>
+                                    <th>Bloque</th>
+                                    <th>Ubicación</th>
+                                    <th>Acciones de VIN</th>
 
-                                    </tr>
-                                </thead>
-                                <tbody>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                @foreach($tabla_vins as $vin)
-                                    @if(isset($vin))
-                                    <tr>
-                                        <td><input type="checkbox" class="check-campania" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
-                                        <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
-                                        <td><small>{{ $vin->vin_patente }}</small></td>
-                                        <td><small>{{ strtoupper($vin->marca_nombre) }}</small></td>
-                                        <td><small>{{ $vin->vin_modelo }}</small></td>
-                                        <td><small>{{ $vin->vin_color }}</small></td>
-                                    <!-- <td><small>{{ $vin->vin_motor }}</small></td> -->
-                                        <td><small>{{ $vin->vin_segmento }}</small></td>
-                                        <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
-                                        <td><small>{{ $vin->empresa_razon_social }}</small></td>
-                                        <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
-                                        @if(isset($vin->patio_nombre))
-                                        <td><small>{{ $vin->patio_nombre }}</small></td>
-                                        @else
-                                        <td><small></small></td>
-                                        @endif
-                                        @if(isset($vin->bloque_nombre))
-                                        <td><small>{{ $vin->bloque_nombre }}</small></td>
-                                        @else
-                                        <td><small></small></td>
-                                        @endif
-                                        @if(isset($vin->ubic_patio_id))
-                                        <td><small>Fila: {{ $vin->ubic_patio_fila }}, Columna: {{ $vin->ubic_patio_columna }}</small></td>
-                                        @else
-                                        <td><small></small></td>
-                                        @endif
-
-                                    <!--   <td>
-
-
-                                            <small>
-                                                <a href = "{{ route('vin.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
-                                            </a>
-                                            </small>
-
-                                        </td> -->
-
-                                        <td>
-
-                                            <small>
-                                                <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
-                                            </small>
-
-                                            <small>
-
-                                                <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
-
-                                            </small>
-
-                                            <small>
-                                                <a type="button" value="{{ $vin->vin_id }}" class="btn-campania-modal"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></a>
-                                            </small>
-                                            <!-- <small>
-                                                <a type="button"  value="{{ $vin->vin_id }}" class="btn-agendar"  title="Agendar Entrega"><i class="far fa-address-book"></i></a>
-                                            </small> -->
-
-                                        </td>
-                                    </tr>
+                            @foreach($tabla_vins as $vin)
+                                @if(isset($vin))
+                                <tr>
+                                    <td><input type="checkbox" class="check-campania" value="{{ $vin->vin_id }}" name="checked_vins[]" id="check-vin-{{ $vin->vin_id }}"></td>
+                                    <td id="vin-codigo-{{ $vin->vin_id }}"><small>{{ $vin->vin_codigo }}</small></td>
+                                    <td><small>{{ $vin->vin_patente }}</small></td>
+                                    <td><small>{{ strtoupper($vin->marca_nombre) }}</small></td>
+                                    <td><small>{{ $vin->vin_modelo }}</small></td>
+                                    <td><small>{{ $vin->vin_color }}</small></td>
+                                <!-- <td><small>{{ $vin->vin_motor }}</small></td> -->
+                                    <td><small>{{ $vin->vin_segmento }}</small></td>
+                                    <td><small>{{ $vin->vin_fec_ingreso }}</small></td>
+                                    <td><small>{{ $vin->empresa_razon_social }}</small></td>
+                                    <td><small>{{ $vin->vin_estado_inventario_desc }}</small></td>
+                                    @if(isset($vin->patio_nombre))
+                                    <td><small>{{ $vin->patio_nombre }}</small></td>
+                                    @else
+                                    <td><small></small></td>
                                     @endif
-                                @endforeach
+                                    @if(isset($vin->bloque_nombre))
+                                    <td><small>{{ $vin->bloque_nombre }}</small></td>
+                                    @else
+                                    <td><small></small></td>
+                                    @endif
+                                    @if(isset($vin->ubic_patio_id))
+                                    <td><small>Fila: {{ $vin->ubic_patio_fila }}, Columna: {{ $vin->ubic_patio_columna }}</small></td>
+                                    @else
+                                    <td><small></small></td>
+                                    @endif
+
+                                <!--   <td>
 
 
-                                </tbody>
-                            </table>
-                        </div>
+                                        <small>
+                                            <a href = "{{ route('vin.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
+                                        </a>
+                                        </small>
+
+                                    </td> -->
+
+                                    <td>
+
+                                        <small>
+                                            <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
+                                        </small>
+
+                                        <small>
+
+                                            <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
+
+                                        </small>
+
+                                        <small>
+                                            <a type="button" value="{{ $vin->vin_id }}" class="btn-campania-modal"  title="Solicitar Campaña"><i class="fas fa-lightbulb"></i></a>
+                                        </small>
+                                        <!-- <small>
+                                            <a type="button"  value="{{ $vin->vin_id }}" class="btn-agendar"  title="Agendar Entrega"><i class="far fa-address-book"></i></a>
+                                        </small> -->
+
+                                    </td>
+                                </tr>
+                                @endif
+                            @endforeach
+
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 </div>
 

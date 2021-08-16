@@ -683,11 +683,18 @@ class CampaniaController extends Controller
                     }
                 }
             }else{
-                $query = Vin::join('users','users.user_id','=','vins.user_id')
-                    ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                    ->join('marcas','vins.vin_marca','=','marcas.marca_id')
-                    ->where('empresas.empresa_id', $user_empresa_id);
+                if($user_rol_id == 1 || $user_rol_id == 2 || $user_rol_id == 3){
+                    $query = Vin::join('users','users.user_id','=','vins.user_id')
+                        ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
+                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                        ->join('marcas','vins.vin_marca','=','marcas.marca_id');
+                } elseif($user_rol_id == 4) {
+                    $query = Vin::join('users','users.user_id','=','vins.user_id')
+                        ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
+                        ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                        ->join('marcas','vins.vin_marca','=','marcas.marca_id')
+                        ->where('empresas.empresa_id', $user_empresa_id);
+                }
 
                 if($marca_nombre != 'Sin marca'){
                     $query->where('vin_marca', $marca->marca_id);
@@ -715,7 +722,7 @@ class CampaniaController extends Controller
             }
         } // Arreglar la vista de campañas para que los valores pasados por formulario permanezcan
 
-        return view('campania.solicitudCampania', compact('tabla_vins', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
+        return view('campania.solicitudCampania', compact('request', 'tabla_vins', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
     }
 
 
