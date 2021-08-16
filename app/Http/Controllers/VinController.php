@@ -195,11 +195,11 @@ class VinController extends Controller
                         ->join('patios','patios.patio_id','=','bloques.patio_id')
                         ->where('patios.patio_id', $patio->patio_id);
 
-                        if(Auth::user()->rol_id == 4){
-                            $query->join('users','users.user_id','=','vins.user_id')
-                                ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                                ->where('empresas.empresa_id', $user_empresa_id);
-                        }
+                    if(Auth::user()->rol_id == 4){
+                        $query->join('users','users.user_id','=','vins.user_id')
+                            ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                            ->where('empresas.empresa_id', $user_empresa_id);
+                    }
 
                     $result = $query->get();
 

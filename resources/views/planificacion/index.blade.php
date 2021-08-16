@@ -512,7 +512,7 @@
                         }
 
                         datatablesButtons.row.add( [
-                            '<input type="checkbox" class="check-tarea" value="'+value.vin_id+'" name="checked_vins[]" id="check-vin-'+value.vin_id+'">',
+                            value.vin_id_checkbox,
                             value.vin_codigo,
                             value.vin_patente,
                             value.marca_nombre,
@@ -523,27 +523,45 @@
                             value.vin_fecha_entrega,
                             value.empresa_razon_social,
                             value.vin_estado_inventario_desc,
+                            value.patio_nombre,
+                            value.bloque_nombre,
+                            value.ubic_patio,
+                            value.botones_vin,
+                        ]).draw( false );
 
-                            (typeof value.patio_nombre !== 'undefined')?value.patio_nombre:"",
-                            (typeof value.bloque_nombre !== 'undefined')?value.bloque_nombre:"",
-                            (typeof value.ubic_patio_id !== 'undefined')?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):"",
+                        // datatablesButtons.row.add( [
+                        //     '<input type="checkbox" class="check-tarea" value="'+value.vin_id+'" name="checked_vins[]" id="check-vin-'+value.vin_id+'">',
+                        //     value.vin_codigo,
+                        //     value.vin_patente,
+                        //     value.marca_nombre,
+                        //     value.vin_modelo,
+                        //     value.vin_color,
+                        //     value.vin_segmento,
+                        //     value.vin_fec_ingreso,
+                        //     value.vin_fecha_entrega,
+                        //     value.empresa_razon_social,
+                        //     value.vin_estado_inventario_desc,
 
-                                '<small>'+
-                                '<a target="_blank" href="'+value.vin_edit+'" type="button" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>'+
-                                '</small>'+
-                                '<small>'+
-                                '<a target="_blank" href="'+value.vin_editarestado+'" type="button" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>'+
-                                '</small>'+
+                        //     (typeof value.patio_nombre !== 'undefined')?value.patio_nombre:"",
+                        //     (typeof value.bloque_nombre !== 'undefined')?value.bloque_nombre:"",
+                        //     (typeof value.ubic_patio_id !== 'undefined')?('Fila: '+value.ubic_patio_fila+', Columna: '+value.ubic_patio_columna):"",
+
+                        //         '<small>'+
+                        //         '<a target="_blank" href="'+value.vin_edit+'" type="button" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>'+
+                        //         '</small>'+
+                        //         '<small>'+
+                        //         '<a target="_blank" href="'+value.vin_editarestado+'" type="button" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>'+
+                        //         '</small>'+
 
 
-                                '<small>'+
-                                '<a href="#" type="button" class="btn-tarea" vin_codigo="'+value.vin_codigo+'"  value="'+value.vin_encrypt+'" title="Solicitar Tarea"><i class="fas fa fa-lightbulb"></i></a>'+
-                                '</small>'
+                        //         '<small>'+
+                        //         '<a href="#" type="button" class="btn-tarea" vin_codigo="'+value.vin_codigo+'"  value="'+value.vin_encrypt+'" title="Solicitar Tarea"><i class="fas fa fa-lightbulb"></i></a>'+
+                        //         '</small>'
 
 
 
 
-                        ] ).draw( false );
+                        // ] ).draw( false );
 
                     });
 

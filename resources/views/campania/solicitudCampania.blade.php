@@ -50,12 +50,8 @@
                         @endif
 
                         {!! Form::submit('Buscar vin ', ['class' => 'btn btn-primary block full-width m-b', 'id'=>'btn-src']) !!}
-
-                        {!! Form::close() !!}
-
                     </div>
-
-
+                    {!! Form::close() !!}
                 </div>
             </div>
         </div>
