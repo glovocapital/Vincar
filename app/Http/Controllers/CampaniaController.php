@@ -619,19 +619,17 @@ class CampaniaController extends Controller
                             $query->where('vins.vin_estado_inventario_id', $estado_id);
 
                             if($estado_id == 4 || $estado_id == 5 || $estado_id == 6) {
-                                $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
-                                    ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
-                                    ->join('patios','bloques.patio_id','=','patios.patio_id')
-                                    ->where('patios.patio_id', $patio_id);
-                            }
-                        } else {
-                            $vin_estado_id = Vin::where('vin_codigo', $v)
-                                ->orWhere('vin_patente', $v)
-                                ->value('vin_estado_inventario_id');
-
-                            $query->where('vins.vin_estado_inventario_id', $vin_estado_id);
-
-                            if($vin_estado_id == 4 || $vin_estado_id == 5 || $vin_estado_id == 6) {
+                                if($patio_id > 0){
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                        ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                        ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->where('patios.patio_id', $patio_id);
+                                } else {
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                        ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                        ->join('patios','bloques.patio_id','=','patios.patio_id');
+                                }
+                            } else {
                                 if($patio_id > 0){
                                     $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
                                         ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
@@ -643,6 +641,23 @@ class CampaniaController extends Controller
                                         ->join('patios','bloques.patio_id','=','patios.patio_id');
                                 }
                             }
+                        } else {
+                            $vin_estado_id = Vin::where('vin_codigo', $v)
+                                ->orWhere('vin_patente', $v)
+                                ->value('vin_estado_inventario_id');
+
+                            $query->where('vins.vin_estado_inventario_id', $vin_estado_id);
+
+                            if($patio_id > 0){
+                                $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                    ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                    ->where('patios.patio_id', $patio_id);
+                            } else {
+                                $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                    ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                    ->join('patios','bloques.patio_id','=','patios.patio_id');
+                            }
                         }
 
                         array_push($tabla_vins, $query->first());
@@ -650,11 +665,18 @@ class CampaniaController extends Controller
                         if(count($arreglo_vins) >= 1){
                             $message[$v] = "Vin o patente: " . $v . " no se encuentra en la lista, o no pertenece a la empresa.";
                         } else {
-                            $query = Vin::join('users','users.user_id','=','vins.user_id')
-                                ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
-                                ->join('empresas','users.empresa_id','=','empresas.empresa_id')
-                                ->join('marcas','vins.vin_marca','=','marcas.marca_id')
-                                ->where('vins.user_id',$user_empresa_id);
+                            if($user_rol_id == 1 || $user_rol_id == 2 || $user_rol_id == 3){
+                                $query = Vin::join('users','users.user_id','=','vins.user_id')
+                                    ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
+                                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                                    ->join('marcas','vins.vin_marca','=','marcas.marca_id');
+                            } elseif($user_rol_id == 4) {
+                                $query = Vin::join('users','users.user_id','=','vins.user_id')
+                                    ->join('vin_estado_inventarios','vins.vin_estado_inventario_id','=','vin_estado_inventarios.vin_estado_inventario_id')
+                                    ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                                    ->join('marcas','vins.vin_marca','=','marcas.marca_id')
+                                    ->where('empresas.empresa_id', $user_empresa_id);
+                            }
 
                             if($marca_nombre != 'Sin marca'){
                                 $query->where('vin_marca', $marca->marca_id);
@@ -675,6 +697,17 @@ class CampaniaController extends Controller
                                             ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                             ->join('patios','bloques.patio_id','=','patios.patio_id');
                                     }
+                                }
+                            } else {
+                                if($patio_id > 0){
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                        ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                        ->join('patios','bloques.patio_id','=','patios.patio_id')
+                                        ->where('patios.patio_id', $patio_id);
+                                } else {
+                                    $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                                        ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                                        ->join('patios','bloques.patio_id','=','patios.patio_id');
                                 }
                             }
 
@@ -715,6 +748,17 @@ class CampaniaController extends Controller
                                 ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
                                 ->join('patios','bloques.patio_id','=','patios.patio_id');
                         }
+                    }
+                } else {
+                    if($patio_id > 0){
+                        $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                            ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                            ->join('patios','bloques.patio_id','=','patios.patio_id')
+                            ->where('patios.patio_id', $patio_id);
+                    } else {
+                        $query->join('ubic_patios','ubic_patios.vin_id','=','vins.vin_id')
+                            ->join('bloques','ubic_patios.bloque_id','=','bloques.bloque_id')
+                            ->join('patios','bloques.patio_id','=','patios.patio_id');
                     }
                 }
 
