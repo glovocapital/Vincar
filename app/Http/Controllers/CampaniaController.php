@@ -764,7 +764,7 @@ class CampaniaController extends Controller
 
                 $tabla_vins = $query->get();
             }
-        } // Arreglar la vista de campañas para que los valores pasados por formulario permanezcan
+        }
 
         return view('campania.solicitudCampania', compact('request', 'tabla_vins', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
     }
