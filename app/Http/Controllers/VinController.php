@@ -353,7 +353,12 @@ class VinController extends Controller
                             $query->join('users','users.user_id','=','vins.user_id')
                                 ->join('empresas','users.empresa_id','=','empresas.empresa_id')
                                 ->where('empresas.empresa_id', $user_empresa_id);
+                        } elseif(!empty($request->empresa_id)) {
+                            $query->join('users','users.user_id','=','vins.user_id')
+                                ->join('empresas','users.empresa_id','=','empresas.empresa_id')
+                                ->where('empresas.empresa_id', $request->empresa_id);
                         }
+
                         // if($user_empresa_id > 0){
                         //     if (count($users) > 0) {
                         //         $query->join('users', 'users.user_id', 'vins.user_id')
