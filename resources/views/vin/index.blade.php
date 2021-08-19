@@ -402,22 +402,7 @@
 @section('local-scripts')
     <script>
         $(document).ready(function () {
-            var checked = false;
-
-            datatablesButtons = $('[id="TablaVins"]').DataTable({
-                searching: true,
-                bSortClasses: false,
-		        deferRender:true,
-                responsive: false,
-                lengthChange: !1,
-                pageLength: 100,
-                @if(Session::get('lang')=="es")
-                language: {
-                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-                },
-                @endif
-                buttons: ["copy", "print"],
-            });
+            let checked = false;
 
             const MAXIMO_TAMANO_BYTES = 20000000; // 1MB = 1 millón de bytes
             const $inputFile = document.querySelector("#guia_vin");
@@ -453,15 +438,15 @@
                         );
                         return;  // Finaliza el intento de obtener
                     }
-                    var arr_vins = $.map(res.vins, function (e1) {
+                    let arr_vins = $.map(res.vins, function (e1) {
                         return e1;
                     });
 
-                    var arr_vin_ids = $.map(res.vin_ids, function (e1) {
+                    let arr_vin_ids = $.map(res.vin_ids, function (e1) {
                         return e1;
                     });
 
-                    for (var i = 0; i < arr_vins.length; i++){
+                    for (let i = 0; i < arr_vins.length; i++){
                         $("#vin_id_nn").append("<option value=" + arr_vin_ids[i] + ">" + arr_vins[i] + "</option>");
                     }
 
@@ -475,12 +460,12 @@
             $('#vin_id_nn').on('change', function(e) {
                 e.preventDefault();
 
-                var sel = $(this).val();
+                let sel = $(this).val();
 
                 if($.isNumeric(sel)) {
                     $('#fotos_nn').empty();
 
-                    var url = "vehiculo_nn/" + sel +"/data_vin_nn";
+                    let url = "vehiculo_nn/" + sel +"/data_vin_nn";
 
                     $.get(url, function (res) {
                         if(!res.success){
@@ -495,7 +480,7 @@
                         $("#user_id_nn").val(res.user.user_id);
                         $("#usuario_responsable_nn").val(res.user.user_nombre + ' ' + res.user.user_apellido);
 
-                        var arr_fotos = $.map(res.fotos, function (e1) {
+                        let arr_fotos = $.map(res.fotos, function (e1) {
                             return e1;
                         });
 
@@ -505,7 +490,7 @@
                             $('#fotos_nn').append('<table class="table table-borderless table-hover" id="thumbnail_nn"></table>');
                         }
 
-                        for (var i = 0; i < arr_fotos.length; i++){
+                        for (let i = 0; i < arr_fotos.length; i++){
                             if (i == 0){
                                 $("#thumbnail_nn").empty();
                             }
@@ -599,13 +584,13 @@
             $('.btn-busqueda-vin-lote').click(function (e){
                 e.preventDefault();
 
-                var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
+                let vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
                 }).get();
 
                 if(vin_ids.length > 0){
                     $("#resultado_busqueda_vins_form").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
-                    for (var i = 1; i < vin_ids.length; i++){
+                    for (let i = 1; i < vin_ids.length; i++){
                         $("#resultado_busqueda_vins_form").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
                     }
                     $("#btn-listado-vins").removeAttr("disabled");
@@ -620,19 +605,10 @@
 
                 $('#error-msg-busqueda').empty();
 
-                // $('[id="TablaVins"]').DataTable().clear();
-                // $('[id="TablaVins"]').DataTable().rows().remove();
-                datatablesButtons.rows().remove();
-
                 var_roles=0;
 
-                // console.log($("#VinForm").serialize());
-
                 $.post("{{route('vin.index_json')}}", $("#VinForm").serialize(), function (res) {
-
-                    var array_vin_ids = [];
-
-                    // $("#tableRows").empty();
+                    let array_vin_ids = [];
 
                     if (res.error == 1){
                         $('#error-msg-busqueda').append('<font color="red">' + res.message + '</font>');
@@ -640,7 +616,7 @@
                         return;
                     }
 
-                    // let array_resultados = [];
+                    let array_resultados = [];
 
                     $(res).each(function( index , value ) {
                         array_vin_ids.push(value.vin_id);
@@ -659,31 +635,7 @@
                             var_roles=1;
                         }
 
-                        // let array_registro = [
-                        //     value.vin_id_checkbox,
-                        //     value.vin_codigo,
-                        //     value.vin_patente,
-                        //     value.marca_nombre,
-                        //     value.vin_modelo,
-                        //     value.vin_color,
-                        //     value.vin_segmento,
-                        //     value.empresa_razon_social,
-                        //     value.vin_estado_inventario_desc,
-                        //     value.patio_nombre,
-                        //     value.bloque_nombre,
-                        //     value.ubic_patio,
-                        //     value.color_texto_guia,
-                        //     value.vin_fec_ingreso,
-                        //     value.vin_fecha_agendado,
-                        //     value.vin_fecha_entrega,
-                        //     value.botones_vin,
-                        // ];
-
-
-
-                        // array_resultados.push(array_registro);
-
-                        datatablesButtons.row.add( [
+                        let array_registro = [
                             value.vin_id_checkbox,
                             value.vin_codigo,
                             value.vin_patente,
@@ -701,33 +653,126 @@
                             value.vin_fecha_agendado,
                             value.vin_fecha_entrega,
                             value.botones_vin,
-                        ]).draw( false );
+                        ];
 
+                        array_resultados.push(array_registro);
                     });
 
                     $("#resultado_busqueda_vins").attr('value', array_vin_ids);
                     $("#btn-listado-masivo").removeAttr('disabled');
 
+                    if (array_resultados.length > 0) {
+                        $('[id="TablaVins"]').DataTable().destroy();
+                        let tabla = $('[id="TablaVins"]').DataTable({
+                            searching: true,
+                            bSortClasses: false,
+                            deferRender:true,
+                            responsive: false,
+                            pageLength: 50,
+                            buttons: ["copy", "print"],
+                            data: array_resultados,
+                            order: [[1, "asc"]],
+                            columns: [
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_id_checkbox
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_codigo
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_patente
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.marca_nombre
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_modelo
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_color
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_segmento
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.empresa_razon_social
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_estado_inventario_desc
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.patio_nombre
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.bloque_nombre
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.ubic_patio
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.color_texto_guia
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_fec_ingreso
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_fecha_agendado
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_fecha_entrega
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.botones_vin
+                                }
+                            ],
+                            language: {
+                                sProcessing: "Procesando...",
+                                sLengthMenu: "Mostrar _MENU_ registros",
+                                sZeroRecords: "No se encontraron resultados",
+                                sEmptyTable: "Ningún dato disponible en esta tabla",
+                                sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+                                sInfoPostFix: "",
+                                sSearch: "Buscar:",
+                                sUrl: "",
+                                sInfoThousands: ",",
+                                sLoadingRecords: "Cargando...",
+                                oPaginate: {
+                                    sFirst: "Primero",
+                                    sLast: "Último",
+                                    sNext: "Siguiente",
+                                    sPrevious: "Anterior"
+                                },
+                                oAria: {
+                                    sSortAscending: ": Activar para ordenar la columna de manera ascendente",
+                                    sSortDescending: ": Activar para ordenar la columna de manera descendente"
+                                }
+                            }
+                        });
 
-                    // $('[id="TablaVins"]').DataTable({
-                    //     data: array_resultados,
-                    //     searching: true,
-                    //     bSortClasses: false,
-                    //     deferRender:true,
-                    //     responsive: false,
-                    //     lengthChange: !1,
-                    //     pageLength: 100,
-                    //     @if(Session::get('lang')=="es")
-                    //     language: {
-                    //     "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-                    //     },
-                    //     @endif
-                    //     buttons: ["copy", "print"],
-                    // });
-
-                    datatablesButtons.columns.adjust().draw();
-                    // $('[id="TablaVins"]').DataTable().columns.adjust().draw();
-
+                        tabla.responsive.recalc().columns.adjust().draw();
+                    } else {
+                        $('[id="TablaVins"]').DataTable().clear();
+                        $('[id="TablaVins"]').DataTable().draw();
+                    }
                 }).fail(function () {
                     alert('Error: ');
                 });
@@ -745,11 +790,11 @@
 
             $('.btn-edo-vins').click(function (e){
                 e.preventDefault();
-                var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
+                let vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
                 }).get();
-                var url = "planificacion/obtener_codigos_vins";
-                var request = {
+                let url = "planificacion/obtener_codigos_vins";
+                let request = {
                     _token: $("input[name='_token']").attr("value"),
                     vin_ids: vin_ids,
                 };
@@ -763,12 +808,12 @@
                         );
                         return;  // Finaliza el intento de obtener
                     }
-                    var arr_codigos = $.map(res.codigos, function (e1) {
+                    let arr_codigos = $.map(res.codigos, function (e1) {
                         return e1;
                     });
                     $("#vin_codigo_edo_lote").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
                     $("#vin_codigo_edo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
-                    for (var i = 1; i < arr_codigos.length; i++){
+                    for (let i = 1; i < arr_codigos.length; i++){
                         $("#vin_codigo_edo_lote").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
                         $("#vin_codigo_edo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
                     }
@@ -790,8 +835,8 @@
             //Modal Solicitar Tarea
             $('.btn-edo_tarea').click(function (e) {
                 e.preventDefault();
-                var vin_id = $(this).val();
-                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
+                let vin_id = $(this).val();
+                let vin_codigo = $("#vin-codigo-" + vin_id).children().html();
                 $(".vin-id").val(vin_id);
                 $("#vin_codigo_edo").html("<h4>VIN: " + vin_codigo + "</h4>");
                 $("#cambiarEdoModalLote").modal('show');
@@ -801,11 +846,11 @@
              //modal predespacho
             $('.btn-predespacho-vins').click(function (e){
                 e.preventDefault();
-                var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
+                let vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
                 }).get();
-                var url = "planificacion/obtener_codigos_vins";
-                var request = {
+                let url = "planificacion/obtener_codigos_vins";
+                let request = {
                     _token: $("input[name='_token']").attr("value"),
                     vin_ids: vin_ids,
                 };
@@ -819,12 +864,12 @@
                         );
                         return;  // Finaliza el intento de obtener
                     }
-                    var arr_codigos = $.map(res.codigos, function (e1) {
+                    let arr_codigos = $.map(res.codigos, function (e1) {
                         return e1;
                     });
                     $("#vin_codigo_predespacho").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
                     $("#vin_codigo_predespacho").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
-                    for (var i = 1; i < arr_codigos.length; i++){
+                    for (let i = 1; i < arr_codigos.length; i++){
                         $("#vin_codigo_predespacho").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
                         $("#vin_codigo_predespacho").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
                     }
@@ -839,8 +884,8 @@
             //Modal Histórico del VIN
             $('#TablaVins tbody').on('click', '.btn-historico', function (e) {
                 e.preventDefault();
-                var id_vin = $(this).attr("value");
-                var url = "/historico_vin/historicoVin/" + id_vin;
+                let id_vin = $(this).attr("value");
+                let url = "/historico_vin/historicoVin/" + id_vin;
                 $.get(url, function (res) {
                     //Validar primero si algo salió mal
                     if(!res.success){
@@ -851,12 +896,12 @@
                         );
                         return;  // Finaliza el intento de obtener
                     }
-                    var arr_eventos = $.map(res.historico_vin, function (e1) {
+                    let arr_eventos = $.map(res.historico_vin, function (e1) {
                         return e1;
                     });
                     // Limpiar la tabla del modal antes de mostrar el historial del vin
                     $("#eventos_vin").empty();
-                    for (var i = 0; i < arr_eventos.length; i++){
+                    for (let i = 0; i < arr_eventos.length; i++){
                         $("#eventos_vin").append("<tr>");
                         $("#eventos_vin").append("<td>" + arr_eventos[i]['vin_codigo'] + "</td>");
                         $("#eventos_vin").append("<td>" + arr_eventos[i]['historico_fecha'] + "</td>");
@@ -878,7 +923,7 @@
 
     <script>
         $(document).ready(function () {
-            var checked = false;
+            let checked = false;
             $('.check-all').on('click',function(){
                 if(checked == false) {
                     $('.check-tarea').prop('checked', true);
@@ -892,11 +937,11 @@
             // Carga de guías por lotes
             $('.btn-lote-vins').click(function (e){
                 e.preventDefault();
-                var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
+                let vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
                 }).get();
-                var url = "planificacion/obtener_codigos_vins";
-                var request = {
+                let url = "planificacion/obtener_codigos_vins";
+                let request = {
                     _token: $("input[name='_token']").attr("value"),
                     vin_ids: vin_ids,
                 };
@@ -910,14 +955,14 @@
                         );
                         return;  // Finaliza el intento de obtener
                     }
-                    var arr_codigos = $.map(res.codigos, function (e1) {
+                    let arr_codigos = $.map(res.codigos, function (e1) {
                         return e1;
                     });
                     $("#form-carga-guia-lote")[0].reset();
 
                     $("#vin_codigo_lote").html("<h6>VIN: " + arr_codigos[0] + "</h6>");
                     $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
-                    for (var i = 1; i < arr_codigos.length; i++){
+                    for (let i = 1; i < arr_codigos.length; i++){
                         $("#vin_codigo_lote").append("<h6>VIN: " + arr_codigos[i] + "</h6>");
                         $("#vin_codigo_lote").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
                     }
@@ -1079,8 +1124,8 @@
             //Modal Solicitar Tarea
             $('.btn-tarea').click(function (e) {
                 e.preventDefault();
-                var vin_id = $(this).val();
-                var vin_codigo = $("#vin-codigo-" + vin_id).children().html();
+                let vin_id = $(this).val();
+                let vin_codigo = $("#vin-codigo-" + vin_id).children().html();
                 $(".vin-id").val(vin_id);
                 $("#vin_codigo").html("<h4>VIN: " + vin_codigo + "</h4>");
                 $("#asignarTareaModal").modal('show');
@@ -1090,13 +1135,13 @@
             $('.btn-historico-vin-lote').click(function (e){
                 e.preventDefault();
 
-                var vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
+                let vin_ids = $('[name="checked_vins[]"]:checked').map(function(){
                     return this.value;
                 }).get();
 
                 if(vin_ids.length > 0){
                     $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[0] +  "' name='vin_ids[" + 0 + "]'  value='" + vin_ids[0] + "'/>");
-                    for (var i = 1; i < vin_ids.length; i++){
+                    for (let i = 1; i < vin_ids.length; i++){
                         $("#historico_lote_form").append("<input type='hidden' class='vin-id-" + vin_ids[i] +  "' name='vin_ids[" + i + "]' value='" + vin_ids[i] + "'/>");
                     }
                     $("#btn-descargar-historico").removeAttr("disabled");
