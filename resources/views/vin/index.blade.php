@@ -669,7 +669,6 @@
                             deferRender:true,
                             responsive: false,
                             pageLength: 50,
-                            buttons: ["copy", "print"],
                             data: array_resultados,
                             order: [[1, "asc"]],
                             columns: [
