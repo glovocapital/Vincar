@@ -326,6 +326,11 @@ Route::group(['middleware' => ['CheckRol:SuperAdministrador,Operador Logistico,C
 
     Route::get('planificacion', 'CampaniaController@index3')->name('planificacion.index');
 
+    // Funciones Ajax para vista principal de Planificación
+    Route::get('planificacion/finalizadas', 'CampaniaController@tareasFinalizadasAjax')->name('planificacion.tareasFinalizadasAjax');
+    Route::get('planificacion/historico', 'CampaniaController@historicoTareasAjax')->name('planificacion.historicoTareasAjax');
+
+    // Exportación de resultados de búsqueda de VINs en vista de planificación
     Route::post('planificacion/export', 'CampaniaController@exportResultadoBusquedaVins')->name('campania.exportResultadoBusquedaVins');
 
     //Ruta para la funcionalidad por POST

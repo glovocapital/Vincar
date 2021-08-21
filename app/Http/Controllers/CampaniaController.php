@@ -451,9 +451,172 @@ class CampaniaController extends Controller
             array_push($arrayTCampanias, $tCampanias);
         }
 
-        return view('planificacion.index', compact('tareas', 'tareas_finalizadas', 'tareas_historicas' ,'tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
+        return view('planificacion.index', compact('tareas', 'tareas_historicas' ,'tabla_vins', 'users','empresas', 'estadosInventario', 'subEstadosInventario', 'patios', 'marcas', 'responsables_array', 'tipo_tareas_array', 'tipo_destinos_array', 'tipo_campanias_array', 'campanias', 'tipo_campanias', 'arrayTCampanias'));
     }
 
+
+    // Obtención de tareas finalizadas por Ajax para la vista de Planificación->Tareas
+    public function tareasFinalizadasAjax()
+    {
+        $user = Auth::user();
+
+        if ($user->rol_id == 4) {
+            $user_empresa_id = Auth::user()->belongsToEmpresa->empresa_id;
+
+            $tareasFinalizadas = Tarea::join('vins', 'vins.vin_id', 'tareas.vin_id')
+                ->join('users','users.user_id','=','vins.user_id')
+                ->join('empresas','empresas.empresa_id','=','users.empresa_id')
+                ->where('tarea_finalizada', true)
+                ->where('tareas.updated_at',  '>', Carbon::now()->subDays(1)->toDateTimeString())
+                ->where('empresas.empresa_id', $user_empresa_id)
+                ->orderBy('tarea_id')
+                ->get();
+        } else {
+            $tareasFinalizadas = Tarea::where('tarea_finalizada', true)
+                ->where('updated_at',  '>', Carbon::now()->subDays(1)->toDateTimeString())
+                ->orderBy('tarea_id')
+                ->get();
+        }
+
+        $arraySalidaTareasFinalizadas = [];
+
+        foreach($tareasFinalizadas as $tareaFinalizada) {
+            $tareaSalida = new Tarea();
+
+            $tareaSalida->tarea_id = $tareaFinalizada->tarea_id;
+            $tareaSalida->vin_codigo = $tareaFinalizada->oneVin->vin_codigo;
+
+            if ($tareaFinalizada->tarea_prioridad == 0) {
+                $tareaSalida->tarea_prioridad = 'Baja';
+            } elseif ($tareaFinalizada->tarea_prioridad == 1) {
+                $tareaSalida->tarea_prioridad = 'Media';
+            } elseif ($tareaFinalizada->tarea_prioridad == 2) {
+                $tareaSalida->tarea_prioridad = 'Alta';
+            } elseif ($tareaFinalizada->tarea_prioridad == 3) {
+                $tareaSalida->tarea_prioridad = 'Urgente';
+            } else {
+                $tareaSalida->tarea_prioridad = 'Sin prioridad';
+            }
+
+            $tareaSalida->tarea_fecha_finalizacion = $tareaFinalizada->tarea_fecha_finalizacion;
+            $tareaSalida->tarea_hora_termino = $tareaFinalizada->tarea_hora_termino;
+            $tareaSalida->tarea_responsable = $tareaFinalizada->nombreResponsable();
+
+            if ($tareaFinalizada->tarea_finalizada) {
+                $tareaSalida->tarea_finalizada = 'Sí';
+            } else {
+                $tareaSalida->tarea_finalizada = 'No';
+            }
+
+            $tareaSalida->tarea_tipo_tarea = $tareaFinalizada->oneTipoTarea();
+            $tareaSalida->tarea_tipo_destino = $tareaFinalizada->oneTipoDestino();
+
+            $tareaSalida->rol_id = auth()->user()->rol_id;
+
+            if ($tareaSalida->rol_id == 1 || $tareaSalida->rol_id == 2  || $tareaSalida->rol_id == 3) {
+                $tareaSalida->botones_tarea = '<small><a href="' . route('planificacion.edit', Crypt::encrypt($tareaFinalizada->tarea_id)) . '" class="btn-bloque" title="Editar Tarea"><i class="fas fa-edit"></i></a></small><small><a href="'
+                    . route('planificacion.destroy', Crypt::encrypt($tareaFinalizada->tarea_id))
+                    . '" onclick="return confirm(\'¿Esta seguro que desea eliminar este elemento?\')" class="btn-bloque"  title="Eliminar tarea"><i class="far fa-trash-alt"></i></a></small>';
+            } else {
+                $tareaSalida->botones_tarea = '';
+            }
+
+            array_push($arraySalidaTareasFinalizadas, $tareaSalida);
+        }
+
+        if (count($arraySalidaTareasFinalizadas) == 0) {
+            return response()->json([
+                'success' => false,
+                'error' => 1,
+                'message' => 'Sin datos de tareas finalizadas para el último día'
+            ]);
+        }
+
+        return response()->json(
+            $arraySalidaTareasFinalizadas
+        );
+    }
+
+    // Obtención del histórico de tareaspor Ajax para la vista de Planificación->Tareas
+    public function historicoTareasAjax()
+    {
+        $user = Auth::user();
+
+        if ($user->rol_id == 4) {
+            $user_empresa_id = Auth::user()->belongsToEmpresa->empresa_id;
+
+            $tareasHistoricas = Tarea::join('vins', 'vins.vin_id', 'tareas.vin_id')
+                ->join('users','users.user_id','=','vins.user_id')
+                ->join('empresas','empresas.empresa_id','=','users.empresa_id')
+                ->where('tarea_finalizada', true)
+                ->where('empresas.empresa_id', $user_empresa_id)
+                ->orderBy('tarea_id')
+                ->get();
+        } else {
+            $tareasHistoricas = Tarea::where('tarea_finalizada', true)
+                ->orderBy('tarea_id')
+                ->get();
+        }
+
+        $arraySalidaHistoricoTareas = [];
+
+        foreach($tareasHistoricas as $tareaHistorica) {
+            $tareaSalida = new Tarea();
+
+            $tareaSalida->tarea_id = $tareaHistorica->tarea_id;
+            $tareaSalida->vin_codigo = $tareaHistorica->oneVin->vin_codigo;
+
+            if ($tareaHistorica->tarea_prioridad == 0) {
+                $tareaSalida->tarea_prioridad = 'Baja';
+            } elseif ($tareaHistorica->tarea_prioridad == 1) {
+                $tareaSalida->tarea_prioridad = 'Media';
+            } elseif ($tareaHistorica->tarea_prioridad == 2) {
+                $tareaSalida->tarea_prioridad = 'Alta';
+            } elseif ($tareaHistorica->tarea_prioridad == 3) {
+                $tareaSalida->tarea_prioridad = 'Urgente';
+            } else {
+                $tareaSalida->tarea_prioridad = 'Sin prioridad';
+            }
+
+            $tareaSalida->tarea_fecha_finalizacion = $tareaHistorica->tarea_fecha_finalizacion;
+            $tareaSalida->tarea_hora_termino = $tareaHistorica->tarea_hora_termino;
+            $tareaSalida->tarea_responsable = $tareaHistorica->nombreResponsable();
+
+            if ($tareaHistorica->tarea_finalizada) {
+                $tareaSalida->tarea_finalizada = 'Sí';
+            } else {
+                $tareaSalida->tarea_finalizada = 'No';
+            }
+
+            $tareaSalida->tarea_tipo_tarea = $tareaHistorica->oneTipoTarea();
+            $tareaSalida->tarea_tipo_destino = $tareaHistorica->oneTipoDestino();
+
+            $tareaSalida->rol_id = auth()->user()->rol_id;
+
+            array_push($arraySalidaHistoricoTareas, $tareaSalida);
+        }
+
+        if (count($arraySalidaHistoricoTareas) == 0) {
+            if ($user->rol_id == 4) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 1,
+                    'message' => 'Sin datos de histórico de tareas finalizadas para la empresa.'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'error' => 1,
+                    'message' => 'Sin datos de histórico de tareas finalizadas.'
+                ]);
+            }
+
+        }
+
+        return response()->json(
+            $arraySalidaHistoricoTareas
+        );
+    }
 
     /**
      * Replica de la funión index2 para el método POST
@@ -1441,7 +1604,8 @@ class CampaniaController extends Controller
         );
     }
 
-    public function vinCodigos(Request $request){
+    public function vinCodigos(Request $request)
+    {
 
         if ($request->ajax()){
             $vin_codigos = [];

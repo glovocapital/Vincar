@@ -317,8 +317,9 @@
                             </div>
 
                             <div class="card-body overflow-auto">
+                                <div id="error-msg-tareas-finalizadas"></div>
                                 <div class="table-responsive">
-                                    <table class="table table-hover table-sm nowrap" id="dataTableCampanias" width="100%" cellspacing="0">
+                                    <table class="table table-hover table-sm nowrap" id="dataTablesTareasFinalizadas" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
                                             <th>Código VIN</th>
@@ -333,38 +334,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($tareas_finalizadas as $tarea_finalizada)
-                                            <tr>
-                                                <td><small>{{ $tarea_finalizada->codigoVin() }}</small></td>
-                                                @if($tarea_finalizada->tarea_prioridad == 0)
-                                                    <td><small>Baja</small></td>
-                                                @elseif($tarea_finalizada->tarea_prioridad == 1)
-                                                    <td><small>Media</small></td>
-                                                @elseif($tarea_finalizada->tarea_prioridad == 2)
-                                                    <td><small>Alta</small></td>
-                                                @else
-                                                    <td><small>Sin prioridad</small></td>
-                                                @endif
-                                                <td><small>{{ $tarea_finalizada->tarea_fecha_finalizacion }}</small></td>
-                                                <td><small>{{ $tarea_finalizada->tarea_hora_termino }}</small></td>
-                                                <td><small>{{ $tarea_finalizada->nombreResponsable() }}</small></td>
-                                                @if($tarea_finalizada->tarea_finalizada)
-                                                    <td><small>Sí</small></td>
-                                                @else
-                                                    <td><small>No</small></td>
-                                                @endif
-                                                <td><small>{{ $tarea_finalizada->oneTipoTarea() }}</small></td>
-                                                <td><small>{{ $tarea_finalizada->oneTipoDestino() }}</small></td>
-                                                <td>
-                                                    <small>
-                                                        <a href="{{ route('planificacion.edit', Crypt::encrypt($tarea_finalizada->tarea_id)) }}" class="btn-bloque" title="Editar Tarea"><i class="far fa-edit"></i></a>
-                                                    </small>
-                                                    <small>
-                                                        <a href = "{{ route('planificacion.destroy', Crypt::encrypt($tarea_finalizada->tarea_id)) }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-bloque" title="Eliminar tarea"><i class="far fa-trash-alt"></i></a>
-                                                    </small>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                            {{-- Listado de tareas finalizadas --}}
                                         </tbody>
                                     </table>
                                 </div>
@@ -398,8 +368,9 @@
                                     {!! Form::close() !!}
 
                                 </div>
+                                <div id="error-msg-historico-tareas"></div>
                                 <div class="table-responsive">
-                                    <table class="table table-hover table-sm nowrap" id="TareaCampanias" width="100%" cellspacing="0">
+                                    <table class="table table-hover table-sm nowrap" id="dataTablesHistoricoTareas" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
                                             <th>Código VIN</th>
@@ -414,33 +385,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($tareas_historicas as $htarea)
-                                            <tr>
-                                                <td><small>{{ $htarea->codigoVin() }}</small></td>
-                                                @if($htarea->tarea_prioridad == 0)
-                                                    <td><small>Baja</small></td>
-                                                @elseif($htarea->tarea_prioridad == 1)
-                                                    <td><small>Media</small></td>
-                                                @elseif($htarea->tarea_prioridad == 2)
-                                                    <td><small>Alta</small></td>
-                                                @elseif($htarea->tarea_prioridad == 3)
-                                                    <td><small>Urgente</small></td>
-                                                @else
-                                                    <td><small>Sin prioridad</small></td>
-                                                @endif
-                                                <td><small>{{ $htarea->tarea_fecha_finalizacion }}</small></td>
-                                                <td><small>{{ $htarea->tarea_hora_termino }}</small></td>
-                                                <td><small>{{ $htarea->nombreResponsable() }}</small></td>
-                                                @if($htarea->tarea_finalizada)
-                                                    <td><small>Sí</small></td>
-                                                @else
-                                                    <td><small>No</small></td>
-                                                @endif
-                                                <td><small>{{ $htarea->oneTipoTarea() }}</small></td>
-                                                <td><small>{{ $htarea->oneTipoDestino() }}</small></td>
-
-                                            </tr>
-                                        @endforeach
+                                            {{-- Listado de histórico de tareas --}}
                                         </tbody>
                                     </table>
                                 </div>
@@ -701,6 +646,225 @@
                 $(".vin-id").val(vin_id);
                 $("#vin_codigo").html("<h4>VIN: " + vin_codigo + "</h4>");
                 $("#asignarTareaModal").modal('show');
+            });
+
+            $('#tareas-finalizadas-tab').on('click', (e) => {
+                e.preventDefault();
+
+                $('#error-msg-tareas-finalizadas').empty();
+
+                $.get("{{route('planificacion.tareasFinalizadasAjax')}}", (res) => {
+                    if (res.error == 1){
+                        $('#error-msg-tareas-finalizadas').append('<font color="red">' + res.message + '</font>');
+
+                        return;
+                    }
+
+                    let array_resultados = [];
+
+                    $(res).each(function( index , value ) {
+                        let array_registro = [
+                            value.vin_codigo,
+                            value.tarea_prioridad,
+                            value.tarea_fecha_finalizacion,
+                            value.tarea_hora_termino,
+                            value.tarea_responsable,
+                            value.tarea_finalizada,
+                            value.tarea_tipo_tarea,
+                            value.tarea_tipo_destino,
+                            value.botones_tarea
+                        ];
+
+                        array_resultados.push(array_registro);
+                    });
+
+                    if (array_resultados.length > 0) {
+                        $('[id="dataTablesTareasFinalizadas"]').DataTable().destroy();
+                        let tabla = $('[id="dataTablesTareasFinalizadas"]').DataTable({
+                            searching: true,
+                            bSortClasses: false,
+                            deferRender:true,
+                            responsive: false,
+                            pageLength: 50,
+                            data: array_resultados,
+                            order: [[1, "asc"]],
+                            columns: [
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_codigo
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_prioridad
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_fecha_finalizacion
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_hora_termino
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_responsable
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_finalizada
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_tipo_tarea
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_tipo_destino
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.botones_tarea
+                                }
+                            ],
+                            language: {
+                                sProcessing: "Procesando...",
+                                sLengthMenu: "Mostrar _MENU_ registros",
+                                sZeroRecords: "No se encontraron resultados",
+                                sEmptyTable: "Ningún dato disponible en esta tabla",
+                                sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+                                sInfoPostFix: "",
+                                sSearch: "Buscar:",
+                                sUrl: "",
+                                sInfoThousands: ",",
+                                sLoadingRecords: "Cargando...",
+                                oPaginate: {
+                                    sFirst: "Primero",
+                                    sLast: "Último",
+                                    sNext: "Siguiente",
+                                    sPrevious: "Anterior"
+                                },
+                                oAria: {
+                                    sSortAscending: ": Activar para ordenar la columna de manera ascendente",
+                                    sSortDescending: ": Activar para ordenar la columna de manera descendente"
+                                }
+                            }
+                        });
+
+                        tabla.responsive.recalc().columns.adjust().draw();
+                    } else {
+                        $('[id="dataTablesTareasFinalizadas"]').DataTable().clear();
+                        $('[id="dataTablesTareasFinalizadas"]').DataTable().draw();
+                    }
+                });
+            });
+
+            $('#tareas-historicos-tab').on('click', (e) => {
+                e.preventDefault();
+
+                $('#error-msg-historico-tareas').empty();
+
+                $.get("{{route('planificacion.historicoTareasAjax')}}", (res) => {
+                    if (res.error == 1){
+                        $('#error-msg-historico-tareas').append('<font color="red">' + res.message + '</font>');
+
+                        return;
+                    }
+
+                    let array_resultados = [];
+
+                    $(res).each(function( index , value ) {
+                        let array_registro = [
+                            value.vin_codigo,
+                            value.tarea_prioridad,
+                            value.tarea_fecha_finalizacion,
+                            value.tarea_hora_termino,
+                            value.tarea_responsable,
+                            value.tarea_finalizada,
+                            value.tarea_tipo_tarea,
+                            value.tarea_tipo_destino
+                        ];
+
+                        array_resultados.push(array_registro);
+                    });
+
+                    if (array_resultados.length > 0) {
+                        $('[id="dataTablesHistoricoTareas"]').DataTable().destroy();
+                        let tabla = $('[id="dataTablesHistoricoTareas"]').DataTable({
+                            searching: true,
+                            bSortClasses: false,
+                            deferRender:true,
+                            responsive: false,
+                            pageLength: 50,
+                            data: array_resultados,
+                            order: [[1, "asc"]],
+                            columns: [
+                                {
+                                    width: "1%",
+                                    data: array_resultados.vin_codigo
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_prioridad
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_fecha_finalizacion
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_hora_termino
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_responsable
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_finalizada
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_tipo_tarea
+                                },
+                                {
+                                    width: "1%",
+                                    data: array_resultados.tarea_tipo_destino
+                                }
+                            ],
+                            language: {
+                                sProcessing: "Procesando...",
+                                sLengthMenu: "Mostrar _MENU_ registros",
+                                sZeroRecords: "No se encontraron resultados",
+                                sEmptyTable: "Ningún dato disponible en esta tabla",
+                                sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+                                sInfoPostFix: "",
+                                sSearch: "Buscar:",
+                                sUrl: "",
+                                sInfoThousands: ",",
+                                sLoadingRecords: "Cargando...",
+                                oPaginate: {
+                                    sFirst: "Primero",
+                                    sLast: "Último",
+                                    sNext: "Siguiente",
+                                    sPrevious: "Anterior"
+                                },
+                                oAria: {
+                                    sSortAscending: ": Activar para ordenar la columna de manera ascendente",
+                                    sSortDescending: ": Activar para ordenar la columna de manera descendente"
+                                }
+                            }
+                        });
+
+                        tabla.responsive.recalc().columns.adjust().draw();
+                    } else {
+                        $('[id="dataTablesHistoricoTareas"]').DataTable().clear();
+                        $('[id="dataTablesHistoricoTareas"]').DataTable().draw();
+                    }
+                });
             });
         });
     </script>
