@@ -228,9 +228,11 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="tareas-finalizadas-tab" data-toggle="tab" href="#tareas-finalizadas" role="tab" aria-controls="tareas-finalizadas" aria-selected="false">Tareas Finalizadas</a>
+                    <input type="hidden" id='tareas-finalizadas-cargadas' value="false" />
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="tareas-historicos-tab" data-toggle="tab" href="#tareas-historicos" role="tab" aria-controls="tareas-historicos" aria-selected="false">Histórico  Tareas</a>
+                    <input type="hidden" id='tareas-historicas-cargadas' value="false" />
                 </li>
             </ul>
 
@@ -648,116 +650,122 @@
                 $("#asignarTareaModal").modal('show');
             });
 
+
+
             $('#tareas-finalizadas-tab').on('click', (e) => {
                 e.preventDefault();
 
                 $('#error-msg-tareas-finalizadas').empty();
+                let cargada = $('#tareas-finalizadas-cargadas').val();
 
-                $.get("{{route('planificacion.tareasFinalizadasAjax')}}", (res) => {
-                    if (res.error == 1){
-                        $('#error-msg-tareas-finalizadas').append('<font color="red">' + res.message + '</font>');
+                if (cargada == 'false') {
+                    $.get("{{route('planificacion.tareasFinalizadasAjax')}}", (res) => {
+                        if (res.error == 1){
+                            $('#error-msg-tareas-finalizadas').append('<font color="red">' + res.message + '</font>');
 
-                        return;
-                    }
+                            return;
+                        }
 
-                    let array_resultados = [];
+                        let array_resultados = [];
 
-                    $(res).each(function( index , value ) {
-                        let array_registro = [
-                            value.vin_codigo,
-                            value.tarea_prioridad,
-                            value.tarea_fecha_finalizacion,
-                            value.tarea_hora_termino,
-                            value.tarea_responsable,
-                            value.tarea_finalizada,
-                            value.tarea_tipo_tarea,
-                            value.tarea_tipo_destino,
-                            value.botones_tarea
-                        ];
+                        $(res).each(function( index , value ) {
+                            let array_registro = [
+                                value.vin_codigo,
+                                value.tarea_prioridad,
+                                value.tarea_fecha_finalizacion,
+                                value.tarea_hora_termino,
+                                value.tarea_responsable,
+                                value.tarea_finalizada,
+                                value.tarea_tipo_tarea,
+                                value.tarea_tipo_destino,
+                                value.botones_tarea
+                            ];
 
-                        array_resultados.push(array_registro);
-                    });
-
-                    if (array_resultados.length > 0) {
-                        $('[id="dataTablesTareasFinalizadas"]').DataTable().destroy();
-                        let tabla = $('[id="dataTablesTareasFinalizadas"]').DataTable({
-                            searching: true,
-                            bSortClasses: false,
-                            deferRender:true,
-                            responsive: false,
-                            pageLength: 50,
-                            data: array_resultados,
-                            order: [[1, "asc"]],
-                            columns: [
-                                {
-                                    width: "1%",
-                                    data: array_resultados.vin_codigo
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_prioridad
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_fecha_finalizacion
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_hora_termino
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_responsable
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_finalizada
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_tipo_tarea
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_tipo_destino
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.botones_tarea
-                                }
-                            ],
-                            language: {
-                                sProcessing: "Procesando...",
-                                sLengthMenu: "Mostrar _MENU_ registros",
-                                sZeroRecords: "No se encontraron resultados",
-                                sEmptyTable: "Ningún dato disponible en esta tabla",
-                                sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                                sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
-                                sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
-                                sInfoPostFix: "",
-                                sSearch: "Buscar:",
-                                sUrl: "",
-                                sInfoThousands: ",",
-                                sLoadingRecords: "Cargando...",
-                                oPaginate: {
-                                    sFirst: "Primero",
-                                    sLast: "Último",
-                                    sNext: "Siguiente",
-                                    sPrevious: "Anterior"
-                                },
-                                oAria: {
-                                    sSortAscending: ": Activar para ordenar la columna de manera ascendente",
-                                    sSortDescending: ": Activar para ordenar la columna de manera descendente"
-                                }
-                            }
+                            array_resultados.push(array_registro);
                         });
 
-                        tabla.responsive.recalc().columns.adjust().draw();
-                    } else {
-                        $('[id="dataTablesTareasFinalizadas"]').DataTable().clear();
-                        $('[id="dataTablesTareasFinalizadas"]').DataTable().draw();
-                    }
-                });
+                        if (array_resultados.length > 0) {
+                            $('[id="dataTablesTareasFinalizadas"]').DataTable().destroy();
+                            let tabla = $('[id="dataTablesTareasFinalizadas"]').DataTable({
+                                searching: true,
+                                bSortClasses: false,
+                                deferRender:true,
+                                responsive: false,
+                                pageLength: 50,
+                                data: array_resultados,
+                                order: [[1, "asc"]],
+                                columns: [
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.vin_codigo
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_prioridad
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_fecha_finalizacion
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_hora_termino
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_responsable
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_finalizada
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_tipo_tarea
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_tipo_destino
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.botones_tarea
+                                    }
+                                ],
+                                language: {
+                                    sProcessing: "Procesando...",
+                                    sLengthMenu: "Mostrar _MENU_ registros",
+                                    sZeroRecords: "No se encontraron resultados",
+                                    sEmptyTable: "Ningún dato disponible en esta tabla",
+                                    sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                    sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                    sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+                                    sInfoPostFix: "",
+                                    sSearch: "Buscar:",
+                                    sUrl: "",
+                                    sInfoThousands: ",",
+                                    sLoadingRecords: "Cargando...",
+                                    oPaginate: {
+                                        sFirst: "Primero",
+                                        sLast: "Último",
+                                        sNext: "Siguiente",
+                                        sPrevious: "Anterior"
+                                    },
+                                    oAria: {
+                                        sSortAscending: ": Activar para ordenar la columna de manera ascendente",
+                                        sSortDescending: ": Activar para ordenar la columna de manera descendente"
+                                    }
+                                }
+                            });
+
+                            $('#tareas-finalizadas-cargadas').val('true');
+                            tabla.responsive.recalc().columns.adjust().draw();
+                        } else {
+                            $('[id="dataTablesTareasFinalizadas"]').DataTable().clear();
+                            $('[id="dataTablesTareasFinalizadas"]').DataTable().draw();
+                        }
+                    });
+                }
             });
 
             $('#tareas-historicos-tab').on('click', (e) => {
@@ -765,106 +773,111 @@
 
                 $('#error-msg-historico-tareas').empty();
 
-                $.get("{{route('planificacion.historicoTareasAjax')}}", (res) => {
-                    if (res.error == 1){
-                        $('#error-msg-historico-tareas').append('<font color="red">' + res.message + '</font>');
+                let cargada = $('#tareas-historicas-cargadas').val();
 
-                        return;
-                    }
+                if (cargada == 'false') {
+                    $.get("{{route('planificacion.historicoTareasAjax')}}", (res) => {
+                        if (res.error == 1){
+                            $('#error-msg-historico-tareas').append('<font color="red">' + res.message + '</font>');
 
-                    let array_resultados = [];
+                            return;
+                        }
 
-                    $(res).each(function( index , value ) {
-                        let array_registro = [
-                            value.vin_codigo,
-                            value.tarea_prioridad,
-                            value.tarea_fecha_finalizacion,
-                            value.tarea_hora_termino,
-                            value.tarea_responsable,
-                            value.tarea_finalizada,
-                            value.tarea_tipo_tarea,
-                            value.tarea_tipo_destino
-                        ];
+                        let array_resultados = [];
 
-                        array_resultados.push(array_registro);
-                    });
+                        $(res).each(function( index , value ) {
+                            let array_registro = [
+                                value.vin_codigo,
+                                value.tarea_prioridad,
+                                value.tarea_fecha_finalizacion,
+                                value.tarea_hora_termino,
+                                value.tarea_responsable,
+                                value.tarea_finalizada,
+                                value.tarea_tipo_tarea,
+                                value.tarea_tipo_destino
+                            ];
 
-                    if (array_resultados.length > 0) {
-                        $('[id="dataTablesHistoricoTareas"]').DataTable().destroy();
-                        let tabla = $('[id="dataTablesHistoricoTareas"]').DataTable({
-                            searching: true,
-                            bSortClasses: false,
-                            deferRender:true,
-                            responsive: false,
-                            pageLength: 50,
-                            data: array_resultados,
-                            order: [[1, "asc"]],
-                            columns: [
-                                {
-                                    width: "1%",
-                                    data: array_resultados.vin_codigo
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_prioridad
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_fecha_finalizacion
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_hora_termino
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_responsable
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_finalizada
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_tipo_tarea
-                                },
-                                {
-                                    width: "1%",
-                                    data: array_resultados.tarea_tipo_destino
-                                }
-                            ],
-                            language: {
-                                sProcessing: "Procesando...",
-                                sLengthMenu: "Mostrar _MENU_ registros",
-                                sZeroRecords: "No se encontraron resultados",
-                                sEmptyTable: "Ningún dato disponible en esta tabla",
-                                sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                                sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
-                                sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
-                                sInfoPostFix: "",
-                                sSearch: "Buscar:",
-                                sUrl: "",
-                                sInfoThousands: ",",
-                                sLoadingRecords: "Cargando...",
-                                oPaginate: {
-                                    sFirst: "Primero",
-                                    sLast: "Último",
-                                    sNext: "Siguiente",
-                                    sPrevious: "Anterior"
-                                },
-                                oAria: {
-                                    sSortAscending: ": Activar para ordenar la columna de manera ascendente",
-                                    sSortDescending: ": Activar para ordenar la columna de manera descendente"
-                                }
-                            }
+                            array_resultados.push(array_registro);
                         });
 
-                        tabla.responsive.recalc().columns.adjust().draw();
-                    } else {
-                        $('[id="dataTablesHistoricoTareas"]').DataTable().clear();
-                        $('[id="dataTablesHistoricoTareas"]').DataTable().draw();
-                    }
-                });
+                        if (array_resultados.length > 0) {
+                            $('[id="dataTablesHistoricoTareas"]').DataTable().destroy();
+                            let tabla = $('[id="dataTablesHistoricoTareas"]').DataTable({
+                                searching: true,
+                                bSortClasses: false,
+                                deferRender:true,
+                                responsive: false,
+                                pageLength: 50,
+                                data: array_resultados,
+                                order: [[1, "asc"]],
+                                columns: [
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.vin_codigo
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_prioridad
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_fecha_finalizacion
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_hora_termino
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_responsable
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_finalizada
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_tipo_tarea
+                                    },
+                                    {
+                                        width: "1%",
+                                        data: array_resultados.tarea_tipo_destino
+                                    }
+                                ],
+                                language: {
+                                    sProcessing: "Procesando...",
+                                    sLengthMenu: "Mostrar _MENU_ registros",
+                                    sZeroRecords: "No se encontraron resultados",
+                                    sEmptyTable: "Ningún dato disponible en esta tabla",
+                                    sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                    sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                    sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+                                    sInfoPostFix: "",
+                                    sSearch: "Buscar:",
+                                    sUrl: "",
+                                    sInfoThousands: ",",
+                                    sLoadingRecords: "Cargando...",
+                                    oPaginate: {
+                                        sFirst: "Primero",
+                                        sLast: "Último",
+                                        sNext: "Siguiente",
+                                        sPrevious: "Anterior"
+                                    },
+                                    oAria: {
+                                        sSortAscending: ": Activar para ordenar la columna de manera ascendente",
+                                        sSortDescending: ": Activar para ordenar la columna de manera descendente"
+                                    }
+                                }
+                            });
+
+                            $('#tareas-historicas-cargadas').val('true');
+                            tabla.responsive.recalc().columns.adjust().draw();
+                        } else {
+                            $('[id="dataTablesHistoricoTareas"]').DataTable().clear();
+                            $('[id="dataTablesHistoricoTareas"]').DataTable().draw();
+                        }
+                    });
+                }
             });
         });
     </script>
