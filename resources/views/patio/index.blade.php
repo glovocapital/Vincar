@@ -126,7 +126,7 @@
                 <br /> -->
 
                 <div class="table-responsive">
-                    <table class="table table-hover table-sm nowrap" id="dataTableAusentismo" width="100%" cellspacing="0">
+                    <table class="table table-hover table-sm nowrap" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr rowspan=2>
                                 <th>Nombre</th>

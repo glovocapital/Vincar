@@ -97,8 +97,8 @@
 </div>
 @stop
 
-<script>
+{{-- <script>
        $(document).ready(function() {
     $('#dataTableDestino').DataTable();
 } );
-</script>
+</script> --}}

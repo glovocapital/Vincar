@@ -256,7 +256,7 @@
 @section("local-scripts")
 <script>
        $(document).ready(function() {
-    $('#dataTableCamion').DataTable();
+    // $('#dataTableCamion').DataTable();
     cargaAlertas();
 } );
 function cargaAlertas(){

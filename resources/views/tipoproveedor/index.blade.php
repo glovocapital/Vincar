@@ -96,8 +96,8 @@
 
 
 
-<script>
+{{-- <script>
        $(document).ready(function() {
     $('#dataTableProveedores').DataTable();
 } );
-</script>
+</script> --}}
