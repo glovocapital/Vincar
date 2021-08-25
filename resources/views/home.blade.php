@@ -185,7 +185,7 @@
 
                                 <tr>
                                     <td class="text-center">
-                                        <img style="max-width:70%" src="{{asset('base/img/svg/car.svg')}}" class="img-fluid" />
+                                        <img style="max-width:70%" src="{{asset('base/img/svg/carro.svg')}}" class="img-fluid" />
                                         {{trans('comun.Parking')}}
                                     </td>
                                     <td style='width: 90%' class="text-right">
@@ -289,16 +289,22 @@
 
 
     <script>
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("base_map"), {
+                // center: { lat: ubicacionData.position.lat, lng: ubicacionData.position.lng },
+                center: {lat: -33.455105935358176, lng: -70.65376861595341}, // Santiago de Chile.
+                zoom: 11,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+        }
+
         $(function(){
-
-
-
             $.ajax({
                 url: '{{ route('home.dashboard') }}',
                 type: 'GET',
                 dataType: 'json', // added data type
                 success: function(res) {
-                    console.log(res);
+                    // console.log(res);
                     $("#Tareas_progress").width(res.Tareas+"%");
                     $("#DyP_progress").width(res.DyP+"%");
                     $("#Lavados_progress").width(res.Lavados+"%");
@@ -324,27 +330,23 @@
                 }
             });
 
+            // var defaultMap = {
+            //     zoom: 14,
+            //     center: {
+            //         lat: 40.712784,
+            //         lng: -74.005941
+            //     },
+            //     mapTypeId: google.maps.MapTypeId.ROADMAP
+            // };
 
+            // if(!(typeof google === 'undefined'))
 
-            var defaultMap = {
-                zoom: 14,
-                center: {
-                    lat: 40.712784,
-                    lng: -74.005941
-                },
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-
-            
-            if(!(typeof google === 'undefined'))
-
-            google.maps.Map(document.getElementById("base_map"), defaultMap);
-
+            // google.maps.Map(document.getElementById("base_map"), defaultMap);
         });
     </script>
 
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key={{config('googlemaps.GOOGLE_MAPS_API_KEY')}}">
+            src="https://maps.googleapis.com/maps/api/js?key={{config('googlemaps.key')}}&callback=initMap&libraries=">
     </script>
 
 
