@@ -61,7 +61,7 @@
 
 
             <div class="table-responsive">
-                <table class="table table-hover table-sm nowrap" id="dataTableDestino" width="100%" cellspacing="0">
+                <table class="table table-hover table-sm nowrap" id="dataTableDestinos" width="100%" cellspacing="0">
                     <thead>
 	                    <tr>
                             <th>Código</th>
@@ -97,8 +97,22 @@
 </div>
 @stop
 
-{{-- <script>
-       $(document).ready(function() {
-    $('#dataTableDestino').DataTable();
-} );
-</script> --}}
+@section('local-scripts')
+<script>
+    $(document).ready(function() {
+        $('#dataTableDestinos').DataTable({
+            searching: true,
+            bSortClasses: false,
+            deferRender:true,
+            responsive: false,
+            lengthChange: !1,
+            pageLength: 10,
+            @if(Session::get('lang')=="es")
+            language: {
+                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+            },
+            @endif
+        });
+    });
+</script>
+@endsection
