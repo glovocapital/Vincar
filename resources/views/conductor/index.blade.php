@@ -78,7 +78,7 @@
                     <div class="card-body overflow-auto">
 
                     <div class="table-responsive">
-                        <table class="table table-hover table-sm nowrap" id="dataTableCamion" width="100%" cellspacing="0">
+                        <table class="table table-hover table-sm nowrap" id="dataTableConductores" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>Conductor</th>
@@ -176,10 +176,22 @@
 @stop
 @section("local-scripts")
 <script>
-       $(document).ready(function() {
-    $('#dataTableCamion').DataTable();
-    cargaAlertas();
-} );
+    $(document).ready(function() {
+        $('#dataTableConductores').DataTable({
+            searching: true,
+            bSortClasses: false,
+            deferRender:true,
+            responsive: false,
+            lengthChange: !1,
+            pageLength: 50,
+            @if(Session::get('lang')=="es")
+            language: {
+                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+            },
+            @endif
+        });
+        cargaAlertas();
+    });
 function cargaAlertas(){
   if(@php echo $alertas @endphp > 0){
     $("#nroAlertas").html(@php echo $alertas @endphp);
