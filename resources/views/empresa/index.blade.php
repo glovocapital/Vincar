@@ -253,6 +253,6 @@
         });
     } );
 
-    </script>
+</script>
 <!--Fin Funcion para ocultar y mostrar input segun seleccion-->
 @endsection

@@ -25,8 +25,9 @@ class PaisController extends Controller
      */
     public function index()
     {
-        $pais = Pais::all();
-        return view('pais.index', compact('pais'));
+        $paises = Pais::all();
+
+        return view('pais.index', compact('paises'));
     }
 
     /**
