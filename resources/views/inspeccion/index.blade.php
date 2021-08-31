@@ -22,7 +22,7 @@
                 <br />
 
                 <div class="table-responsive">
-                    <table class="table table-hover table-sm nowrap" id="dataTableAusentismo" width="100%" cellspacing="0">
+                    <table class="table table-hover table-sm nowrap" id="dataTableInspecciones" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Fecha Inspección</th>
@@ -98,3 +98,21 @@
 
 @stop
 
+@section('local-scripts')
+    <script>
+        $(document).ready(function () {
+            var checked = false;
+
+            datatablesButtons = $('[id="dataTableInspecciones"]').DataTable({
+                responsive: false,
+                lengthChange: !1,
+                pageLength: 50,
+                @if(Session::get('lang')=="es")
+                language: {
+                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                },
+                @endif
+            });
+        });
+    </script>
+@endsection

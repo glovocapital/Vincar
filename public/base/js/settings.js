@@ -169,7 +169,7 @@
             n(66), n(252), n(49);
             var t = n(40), r = n.n(t);
             var o, i, l = document.createElement("link");
-            l.href = "css/" + (o = function (e) {
+            l.href = "../css/" + (o = function (e) {
                     for (var t = e + "=", n = document.cookie.split(";"), r = 0; r < n.length; r++) {
                         for (var o = n[r]; " " == o.charAt(0);)o = o.substring(1, o.length);
                         if (0 == o.indexOf(t))return o.substring(t.length, o.length)
