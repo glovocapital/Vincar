@@ -41,7 +41,7 @@
                         </div>
                 -->
                     <div class="table-responsive">
-                        <table class="table table-hover table-sm nowrap" id="dataTableAusentismo" width="100%" cellspacing="0">
+                        <table class="table table-hover table-sm nowrap" id="dataTableUsuarios" width="100%" cellspacing="0">
                             <thead>
                             <tr>
                                 <th>Nombres</th>
@@ -117,6 +117,17 @@
             $("#formNuevoUsuario")[0].reset();
 
             $("#nuevoUsuario").modal('show');
+        });
+
+        datatablesButtons = $('[id="dataTableUsuarios"]').DataTable({
+            responsive: false,
+            lengthChange: !1,
+            pageLength: 10,
+            @if(Session::get('lang')=="es")
+            language: {
+            "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+            },
+            @endif
         });
     } );
     </script>

@@ -101,8 +101,6 @@
 @section('local-scripts')
     <script>
         $(document).ready(function () {
-            var checked = false;
-
             datatablesButtons = $('[id="dataTableInspecciones"]').DataTable({
                 responsive: false,
                 lengthChange: !1,
