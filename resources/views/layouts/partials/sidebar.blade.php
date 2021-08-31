@@ -49,7 +49,7 @@
 
 
 
-      <li class="nav-item dropdown">
+      {{-- <li class="nav-item dropdown">
         <a class="nav-flag dropdown-toggle" href="#" id="languageDropdown" data-toggle="dropdown">
           @if(Session::get('lang')=="en")
             <img src="{{ asset('base/img/flags/us.png') }}" alt="Spanish" />
@@ -69,7 +69,7 @@
           </a>
 
         </div>
-      </li>
+      </li> --}}
       <li class="nav-item dropdown">
         <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-toggle="dropdown">
           <i class="align-middle" data-feather="settings"></i>
@@ -85,7 +85,7 @@
         <div class="dropdown-menu dropdown-menu-right">
 
 
-          <a class="dropdown-item" href="#">{{trans('menu.Ayuda')}}</a>
+          {{-- <a class="dropdown-item" href="#">{{trans('menu.Ayuda')}}</a> --}}
 
           <a class="dropdown-item" href="{{ route('logout') }}"
              onclick="event.preventDefault();
