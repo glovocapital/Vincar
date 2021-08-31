@@ -120,6 +120,9 @@
         });
 
         datatablesButtons = $('[id="dataTableUsuarios"]').DataTable({
+            searching: true,
+            bSortClasses: false,
+            deferRender:true,
             responsive: false,
             lengthChange: !1,
             pageLength: 10,

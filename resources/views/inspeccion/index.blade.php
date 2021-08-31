@@ -102,6 +102,9 @@
     <script>
         $(document).ready(function () {
             datatablesButtons = $('[id="dataTableInspecciones"]').DataTable({
+                searching: true,
+                bSortClasses: false,
+                deferRender:true,
                 responsive: false,
                 lengthChange: !1,
                 pageLength: 50,
