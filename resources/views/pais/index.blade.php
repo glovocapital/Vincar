@@ -8,12 +8,12 @@
         <div class="ibox float-e-margins">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Creación de Paises</h3>
+                    <h3 class="card-title">Creación de Países</h3>
                 </div>
 
+                {!! Form::open(['route'=> 'pais.store', 'method'=>'POST']) !!}
                 <div class="card-body overflow-auto">
                     <div class="ibox-content col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 mt-4">
-                        {!! Form::open(['route'=> 'pais.store', 'method'=>'POST']) !!}
                         <div class="form-group">
                             <div class="row">
                                 <label for="pais_nombre" class="col-sm-3">Nombre del País <strong>*</strong></label>
@@ -23,7 +23,6 @@
 
                         <div class="text-right pb-5">
                             {!! Form::submit('Registrar País ', ['class' => 'btn btn-primary block full-width m-b']) !!}
-                            {!! Form::close() !!}
                         </div>
 
                         <div class="text-center texto-leyenda">
@@ -31,6 +30,7 @@
                         </div>
                     </div>
                 </div>
+                {!! Form::close() !!}
             </div>
         </div>
     </div>
@@ -68,6 +68,7 @@
                             @foreach($paises as $pais)
                                 <tr>
                                     <td><small>{{ $pais->pais_nombre }}</small></td>
+
                                     <td>
                                         <small>
                                             <a href="{{ route('pais.edit', Crypt::encrypt($pais->pais_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
@@ -78,7 +79,6 @@
                                         </small>
                                     </td>
                                 </tr>
-
                             @endforeach
                             </tbody>
                         </table>
@@ -99,7 +99,7 @@
             deferRender:true,
             responsive: false,
             lengthChange: !1,
-            pageLength: 25,
+            pageLength: 10,
             @if(Session::get('lang')=="es")
             language: {
                 "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"

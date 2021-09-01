@@ -147,43 +147,46 @@
                                 $interval = date_diff($f1, $f2);
                                 $signo = $interval->format('%R');
                                 $dias = $interval->format('%a');
-                                if ($signo == '-' || $dias <= 30){
-                                $color = 'text-danger';
-                                $alertas ++;
-                                $alerta = new stdClass();
-                                $alerta->patente = $remolque->remolque_patente;
-                                if($signo == '+'){
-                                    $texto = "faltan";
+
+                                if ($signo == '-' || $dias <= 30) {
+                                    $color = 'text-danger';
+                                    $alertas ++;
+                                    $alerta = new stdClass();
+                                    $alerta->patente = $remolque->remolque_patente;
+
+                                    if($signo == '+') {
+                                        $texto = "faltan";
+                                    } else {
+                                        $texto = "atrasado";
+                                    }
+
+                                    $alerta->descripcion = "Permiso de Circulación (".$texto." ".$dias." días)";
+                                    array_push($arregloAlertas, $alerta);
+                                } else {
+                                    $color = '';
                                 }
-                                else{
-                                    $texto = "atrasado";
-                                }
-                                $alerta->descripcion = "Permiso de Circulación (".$texto." ".$dias." días)";
-                                array_push($arregloAlertas, $alerta);
-                                }
-                                else{
-                                $color = '';
-                                }
+
                                 $f2 = date_create($remolque->remolque_fecha_revision);
                                 $interval2 = date_diff($f1, $f2);
                                 $signo2 = $interval2->format('%R');
                                 $dias2 = $interval2->format('%a');
-                                if ($signo2 == '-' || $dias2 <= 30){
-                                $color2 = 'text-danger';
-                                $alertas ++;
-                                $alerta = new stdClass();
-                                $alerta->patente = $remolque->remolque_patente;
-                                if($signo2 == '+'){
-                                    $texto = "faltan";
-                                }
-                                else{
-                                    $texto = "atrasado";
-                                }
-                                $alerta->descripcion = "Revisión Técnica (".$texto." ".$dias2." días)";
-                                array_push($arregloAlertas, $alerta);
-                                }
-                                else{
-                                $color2 = '';
+
+                                if ($signo2 == '-' || $dias2 <= 30) {
+                                    $color2 = 'text-danger';
+                                    $alertas ++;
+                                    $alerta = new stdClass();
+                                    $alerta->patente = $remolque->remolque_patente;
+
+                                    if($signo2 == '+') {
+                                        $texto = "faltan";
+                                    } else {
+                                        $texto = "atrasado";
+                                    }
+
+                                    $alerta->descripcion = "Revisión Técnica (".$texto." ".$dias2." días)";
+                                    array_push($arregloAlertas, $alerta);
+                                } else {
+                                    $color2 = '';
                                 }
                             @endphp
                             <tr>
@@ -223,6 +226,7 @@
     <div class="modal-dialog modal-lg" >
         <div class="modal-content">
             <div class="modal-header bg-warning"> <h4 class="modal-title text-white" id="myModalLabel">Alertas Actuales</h4></div>
+
             <div class="modal-body">
                 <table id="tblayudantes" class="table-hover nowrap lineas" style="width: 100%;">
                     <thead>
@@ -239,6 +243,7 @@
                     @endforeach
                 </table>
             </div>
+
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close" aria-hidden="true"></i>&nbsp;Cerrar</button>
             </div>
@@ -266,10 +271,10 @@
             },
             @endif
         });
-    } );
+    });
 
     function cargaAlertas(){
-        if(@php echo $alertas @endphp > 0){
+        if(@php echo $alertas @endphp > 0) {
             $("#nroAlertas").html(@php echo $alertas @endphp);
             $("#btnAlertas").addClass("btn-warning");
             $("#nroAlertas").addClass("blink");
@@ -282,8 +287,8 @@
         }
     }
 
-    function mostrarAlertas(){
-        if(@php echo $alertas @endphp > 0){
+    function mostrarAlertas() {
+        if(@php echo $alertas @endphp > 0) {
             $("#modalAlertas").modal("show");
         } else {
             alert("Actualmente no hay alertas");

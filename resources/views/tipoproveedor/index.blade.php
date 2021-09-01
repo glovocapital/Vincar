@@ -19,7 +19,6 @@
                 <div class="card-body overflow-auto">
                     <div class="row">
                         <div class="col-md-12">
-
                             <div class="form-group">
                                 <label for="tipo_proveedor_desc" >Nombre del Proveedor <strong>*</strong></label>
                                 {!! Form::text('tipo_proveedor_desc', null, ['placeholder'=>'Nombre del Proveedor', 'class'=>'form-control col-sm-9', 'required']) !!}
@@ -97,7 +96,7 @@
             deferRender:true,
             responsive: false,
             lengthChange: !1,
-            pageLength: 25,
+            pageLength: 10,
             @if(Session::get('lang')=="es")
             language: {
                 "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"

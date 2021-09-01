@@ -11,29 +11,22 @@
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                     <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                    </div>
+                </div>
             </div>
+
+            {!! Form::open(['route'=> 'empresa.store', 'method'=>'POST']) !!}
             <div class="card-body overflow-auto">
                 <div class="row">
                     <div class="col-md-4">
-                        {!! Form::open(['route'=> 'empresa.store', 'method'=>'POST']) !!}
-
                         <label for="user_rut" >Rut <strong>*</strong></label>
-
                         <div class="input-group" >
-
                             {!! Form::text('empresa_rut', null, ['placeholder'=>'Rut del usuario', 'class'=>'form-control col-sm-9 rut', 'required']) !!}
-
-
                             <div class="input-group-append">
-                                    <span class="input-group-text" id="validador">
-                                        <span style="color:red;" aria-hidden="true">&times;</span>
-                                    </span>
-
+                                <span class="input-group-text" id="validador">
+                                    <span style="color:red;" aria-hidden="true">&times;</span>
+                                </span>
                             </div>
                         </div>
-
-
 
                         <div class="form-group">
                             <label for="empresa_nombre" >Razón Social <strong>*</strong></label>
@@ -74,10 +67,6 @@
                             {!! Form::email('empresa_email_contacto', null, ['placeholder'=>'Email', 'class'=>'form-control col-sm-9']) !!}
                         </div>
 
-
-
-
-
                         <div class="form-group">
                             <label for="es_proveedor" >Es proveedor? </label>
                             <label>Sí</label>
@@ -94,22 +83,20 @@
                         </div>
                     </div>
                 </div>
-<br />
+                <br />
 
                 <div class="text-right pb-5">
-                        {!! Form::submit('Registrar Empresa ', ['class' => 'btn btn-primary block full-width m-b']) !!}
-                        {!! Form::close() !!}
-                    </div>
+                    {!! Form::submit('Registrar Empresa ', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                </div>
 
-                    <div class="text-center texto-leyenda">
-                        <p><strong>*</strong> Campos obligatorios</p>
-                    </div>
-
+                <div class="text-center texto-leyenda">
+                    <p><strong>*</strong> Campos obligatorios</p>
+                </div>
             </div>
+            {!! Form::close() !!}
         </div>
     </div>
 </div>
-
 
 <div class="col-lg-12">
     <div class="ibox float-e-margins">
@@ -138,12 +125,10 @@
                                 <th>Teléfono</th>
                                 <th>Email</th>
                                 <th>Acci&oacute;n</th>
-
                             </tr>
                         </thead>
                         <tbody>
                         @foreach($empresa as $emp)
-
                             <tr>
                                 <td><small>{{ $emp->empresa_razon_social }}</small></td>
                                 <td><small>{{ $emp->empresa_giro }}</small></td>
@@ -158,12 +143,11 @@
                                         <a href="{{ route('empresa.edit', Crypt::encrypt($emp->empresa_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
                                     </small>
                                     <small>
-                                            <a href = "{{ route('empresa.destroy', Crypt::encrypt($emp->empresa_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
-                                            </a>
+                                        <a href = "{{ route('empresa.destroy', Crypt::encrypt($emp->empresa_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-empresa"><i class="far fa-trash-alt"></i>
+                                        </a>
                                     </small>
                                 </td>
                             </tr>
-
                         @endforeach
                         </tbody>
                     </table>
@@ -172,61 +156,44 @@
         </div>
     </div>
 </div>
-
 @stop
-
 
 <!--Funcion para ocultar y mostrar input segun seleccion-->
 @section('local-scripts')
 <script language="javascript" type="text/javascript">
-
-    function d1(button){
-        if(button.value == 'false')
-        {
+    function d1(button) {
+        if(button.value == 'false') {
             $('#bloque_archivo').hide();
             // document.getElementById('archivo').disabled = true;
-        }else if(button.value == 'true')
-        {
+        } else if (button.value == 'true') {
             $('#bloque_archivo').show();
-
         // document.getElementById('archivo').disabled = false;
         }
     }
 
-    $(function(){
-
+    $(function() {
         $('.rut').keyup(function(){
-
             $("#validador").html('<span style="color:red;" aria-hidden="true">&times;</span>');
-
 
             var Ts = $(this).val().split("-");
             var T = Ts[0];
-
-
             var M=0,S=1;
-            for(;T;T=Math.floor(T/10))
+
+            for(;T;T=Math.floor(T/10)) {
                 S=(S+T%10*(9-M++%6))%11;
+            }
             //return S?S-1:'k';
 
-            if(Ts[0].length==7 || Ts[0].length==8){
-
-                if(Ts.length == 2){
-                    if(S-1 == Ts[1]){
+            if(Ts[0].length==7 || Ts[0].length==8) {
+                if(Ts.length == 2) {
+                    if(S-1 == Ts[1]) {
                         $("#validador").html('<i style="color:green"  class="fa fa-check"></i>');
                     } else if ((S-1 == -1) && ((Ts[1] == 'K') ||(Ts[1] == 'k'))) {
                         $("#validador").html('<i style="color:green"  class="fa fa-check"></i>');
                     }
                 }
             }
-
-
-
-
-
-
         });
-
     });
 
     $(document).ready(function() {
@@ -251,8 +218,7 @@
             },
             @endif
         });
-    } );
-
+    });
 </script>
 <!--Fin Funcion para ocultar y mostrar input segun seleccion-->
 @endsection
