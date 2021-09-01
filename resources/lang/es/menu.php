@@ -17,7 +17,7 @@ return [
 
     'Inicio'=>'Inicio',
     'Administrador'=>'Administrador',
-    'Usuario'=>'Usuarios',
+    'Usuarios'=>'Usuarios',
     'Clientes'=>'Clientes',
     'Camiones'=>'Camiones',
     'Remolques'=>'Remolques',
