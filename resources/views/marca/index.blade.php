@@ -67,7 +67,6 @@
                 </div>
 
                 <!-- /.card-header -->
-
                 <div class="card-body overflow-auto">
                     <div class="table-responsive">
                         <table class="table table-hover table-sm nowrap" id="dataTableMarcas" width="100%" cellspacing="0">
@@ -84,7 +83,6 @@
                                 <tr>
                                     <td><small>{{ $p->marca_codigo }}</small></td>
                                     <td><small>{{ ucfirst(strtolower($p->marca_nombre)) }}</small></td>
-
                                     <td style="text-align: center">
                                         <small>
                                         @if ($p->img!="")
@@ -92,7 +90,6 @@
                                         @endif
                                         </small>
                                     </td>
-
                                     <td>
                                         <small>
                                             <a href="{{ route('marcas.edit', Crypt::encrypt($p->marca_id)) }}" class="btn-empresa"  title="Editar"><i class="far fa-edit"></i></a>
@@ -123,7 +120,7 @@
             deferRender:true,
             responsive: false,
             lengthChange: !1,
-            pageLength: 25,
+            pageLength: 10,
             @if(Session::get('lang')=="es")
             language: {
                 "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
