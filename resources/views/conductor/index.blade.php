@@ -7,74 +7,13 @@
     <div class="ibox float-e-margins">
         <div class="card card-default">
             <div class="card-header">
-                <div class="d-flex justify-content-between align-items-end">
-                    <h3 class="card-title pb-3">Registro de Conductores</h3>
-                    <p>
-                        <a href="{{ route('conductores.create_conductor') }}" type="button" class="btn btn-success">Crear Conductor</a>
-                    </p>
+                <div class="card-title float-left mt-3">Conductores</div>
+                <div class="float-right mt-3">
+                    <button id='nuevo_conductor' class="btn btn-primary block full-width m-b mb-3">Nuevo Conductor</button>
                 </div>
-
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                </div>
-            </div>
-
-            {!! Form::open(['route'=> 'conductores.store', 'method'=>'POST', 'files' => true]) !!}
-            <div class="card-body overflow-auto">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="user_id" >Conductor <strong>*</strong></label>
-                            {!! Form::select('user_id', $usuario, null,['placeholder'=>'Seleccione','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="">Foto del Documento <strong>*</strong></label>
-                            {!! Form::file('conductor_foto_documento'); !!}
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="tipo_licencia_id" >Tipo de Licencia <strong>*</strong></label>
-                            {!! Form::select('tipo_licencia_id', $tipo_licencia, null,['placeholder'=>'Seleccione','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="conductor_fecha_vencimiento" >Fecha de vencimiento <strong>*</strong></label>
-                            {!! Form::date('conductor_fecha_vencimiento', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-right pb-5">
-                    {!! Form::submit('Registrar Licencia ', ['class' => 'btn btn-primary block full-width m-b']) !!}
-                </div>
-
-                <div class="text-center texto-leyenda">
-                    <p><strong>*</strong> Campos obligatorios</p>
-                </div>
-            </div>
-            {!! Form::close() !!}
-        </div>
-    </div>
-</div>
-
-<div class="col-lg-12">
-    <div class="ibox float-e-margins">
-        <div class="card card-default">
-            <div class="card-header">
-                <h3 class="card-title">Listado de Conductores</h3>
-                <button class="btn float-right" onclick="mostrarAlertas();" id="btnAlertas">
+                <button class="btn block float-right mt-3 mb-3 mr-2" onclick="mostrarAlertas();" id="btnAlertas">
                     Alertas&nbsp;<span id="nroAlertas" class="label label-default">0</span>
                 </button>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                </div>
             </div>
 
             <div class="card-body overflow-auto">
@@ -175,11 +114,20 @@
         </div>
     </div>
 </div>
+@include('conductor.partials.modal_nuevo_conductor')
 @stop
 
 @section("local-scripts")
 <script>
     $(document).ready(function() {
+        $('#nuevo_conductor').on('click', (e) => {
+            e.preventDefault();
+
+            $("#formNuevoConductor")[0].reset();
+
+            $("#nuevoConductor").modal('show');
+        });
+
         $('#dataTableConductores').DataTable({
             searching: true,
             bSortClasses: false,

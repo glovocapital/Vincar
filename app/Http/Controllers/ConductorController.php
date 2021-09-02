@@ -7,6 +7,7 @@ use DB;
 use Illuminate\Support\Facades\Auth;
 use App\Conductor;
 use App\Empresa;
+use App\Rol;
 use App\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
@@ -22,10 +23,11 @@ class ConductorController extends Controller
     {
         $conductor = Conductor::all();
 
+        $tipoTransportista = Rol::where('rol_desc', 'Transportista')->value('rol_id');
 
         $usuario = User::select(DB::raw("CONCAT(user_nombre,' ',user_apellido) AS nombre"),'users.user_id', 'conductors.created_at')
             ->leftJoin('conductors', 'conductors.user_id', 'users.user_id')
-            ->where('rol_id', 5)
+            ->where('rol_id', $tipoTransportista)
             ->where('conductors.created_at', null)
             ->pluck('nombre', 'user_id');
 
