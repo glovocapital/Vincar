@@ -19,93 +19,13 @@
     <div class="ibox float-e-margins">
         <div class="card card-default">
             <div class="card-header">
-                <h3 class="card-title">Nuevo Camión</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                    </div>
-            </div>
-
-            {!! Form::open(['route'=> 'camiones.store', 'method'=>'POST', 'files' => true]) !!}
-            <div class="card-body overflow-auto">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="camion_patente" >Patente <strong>*</strong></label>
-                            {!! Form::text('camion_patente', null, ['placeholder'=>'Patente', 'class'=>'form-control col-sm-9', 'required']) !!}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="camion_anio" >Año <strong>*</strong></label>
-                            {!! Form::number('camion_anio', '2020', ['min' => '1980','placeholder'=>'Año', 'class'=>'form-control col-sm-9', 'required']) !!}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="camion_fecha_revision" >Próxima Revisión <strong>*</strong></label>
-                                {!! Form::date('camion_fecha_revision', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="marca_id" >Marca <strong>*</strong></label>
-                            <select name="marca_id" id="marca_id" class="form-control col-sm-9" placeholder="Marca">
-                                <option value="">Marca</option>
-                                @foreach ($marcas as $marca_id => $marca_nombre)
-                                <option value="{{ $marca_id }}"{{ old('marca_id', $marca_id) == $marca_id ? ' selected' : ''}} required>{{ ucwords($marca_nombre) }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="empresa_id">Empresa <strong>*</strong></label>
-                            {!! Form::select('empresa_id', $empresas, null,['placeholder'=>'Empresa','class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="">Foto del documento del Camión</label>
-                            {!! Form::file('camion_foto_documento'); !!}
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="camion_modelo">Modelo <strong>*</strong></label>
-                            {!! Form::text('camion_modelo', null, ['placeholder'=>'Modelo', 'class'=>'form-control col-sm-9', 'required']) !!}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="camion_fecha_circulacion" >Permiso de Circulación <strong>*</strong></label>
-                                {!! Form::date('camion_fecha_circulacion', null, [ 'class'=>'form-control col-sm-9', 'required']) !!}
-                        </div>
-                    </div>
+                <div class="card-title float-left mt-3">Camiones</div>
+                <div class="float-right mt-3">
+                    <button id='nuevo_camion' class="btn btn-primary block full-width m-b mb-3">Nuevo Camión</button>
                 </div>
-
-                <div class="text-right pb-5">
-                    {!! Form::submit('Registrar Camión ', ['class' => 'btn btn-primary block full-width m-b']) !!}
-                </div>
-
-                <div class="text-center texto-leyenda">
-                    <p><strong>*</strong> Campos obligatorios</p>
-                </div>
-            </div>
-            {!! Form::close() !!}
-        </div>
-    </div>
-</div>
-
-<div class="col-lg-12">
-    <div class="ibox float-e-margins">
-        <div class="card card-default">
-            <div class="card-header">
-                <h3 class="card-title">Listado de Camiones</h3>
-                <button class="btn float-right" onclick="mostrarAlertas();" id="btnAlertas">
+                <button class="btn block float-right mt-3 mb-3 mr-2" onclick="mostrarAlertas();" id="btnAlertas">
                     Alertas&nbsp;<span id="nroAlertas" class="label label-default">0</span>
                 </button>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                </div>
             </div>
 
             <div class="card-body overflow-auto">
@@ -242,11 +162,20 @@
         </div>
     </div>
 </div>
+@include('camion.partials.modal_nuevo_camion')
 @stop
 
 @section("local-scripts")
 <script>
     $(document).ready(function() {
+        $('#nuevo_camion').on('click', (e) => {
+            e.preventDefault();
+
+            $("#formNuevoCamion")[0].reset();
+
+            $("#nuevoCamion").modal('show');
+        });
+
         datatablesButtons = $('[id="dataTableCamiones"]').DataTable({
             searching: true,
             bSortClasses: false,

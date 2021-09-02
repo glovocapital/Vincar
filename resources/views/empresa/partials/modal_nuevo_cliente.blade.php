@@ -87,9 +87,10 @@
                     <p><strong>*</strong> Campos obligatorios</p>
                 </div>
             </div>
+            {!! Form::close() !!}
+
             <div class="modal-footer">
             </div>
-            {!! Form::close() !!}
         </div>
     </div>
 </div>

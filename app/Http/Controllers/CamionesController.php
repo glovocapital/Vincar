@@ -82,7 +82,7 @@ class CamionesController extends Controller
         try {
 
             $camion = new Camion();
-            
+
             $camion->camion_patente = $request->camion_patente;
             $camion->camion_modelo = $request->camion_modelo;
             $camion->camion_marca = $request->marca_id;
@@ -176,7 +176,7 @@ class CamionesController extends Controller
             $camion->camion_fecha_circulacion = $request->camion_fecha_circulacion;
             $camion->camion_fecha_revision = $request->camion_fecha_revision;
             $camion->empresa_id = $request->empresa_id;
-            
+
             if(!is_null($request->camion_foto_documento)){
                 $fotoCamion = $request->file('camion_foto_documento');
                 $extensionFoto = $fotoCamion->extension();
@@ -205,7 +205,7 @@ class CamionesController extends Controller
 
         try{
             $camion = Camion::where('camion_id', $camion_id)->firstOrFail();
-        
+
             $camion->delete();
 
             flash('Los datos del camión han sido eliminados satisfactoriamente.')->success();
@@ -223,7 +223,7 @@ class CamionesController extends Controller
 
         try{
             $camion = Camion::onlyTrashed()->where('camion_id', $camion_id)->firstOrFail();
-            
+
             $camkion->restore();
 
             flash('Datos del camión restaurados satisfactoriamente.')->success();
