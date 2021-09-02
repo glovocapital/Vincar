@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <div class="text-right pb-5">
+                <div class="text-center pb-5">
                     {!! Form::submit('Registrar Camión ', ['class' => 'btn btn-primary block full-width m-b']) !!}
                 </div>
 
