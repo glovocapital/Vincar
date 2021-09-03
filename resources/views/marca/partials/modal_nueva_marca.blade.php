@@ -34,12 +34,12 @@
                 </div>
 
                 <br />
-                        <br />
-                        <br />
-                        <br />
+                <br />
+                <br />
+                <br />
 
-                        <div class="text-center pb-5">
-                    {!! Form::submit('Agregar Marca ', ['class' => 'btn btn-primary block full-width m-b']) !!}
+                <div class="text-center pb-5">
+                    {!! Form::submit('Registrar Marca ', ['class' => 'btn btn-primary block full-width m-b']) !!}
                 </div>
 
                 <div class="text-center texto-leyenda">
