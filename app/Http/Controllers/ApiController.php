@@ -336,11 +336,6 @@ class ApiController extends Controller
                     'vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id',
                     'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id','vin_predespacho','vin_bloqueado_entrega');
 
-            $propietario = User::join('empresas', 'users.empresa_id', 'empresas.empresa_id')
-                ->where('user_id', $Vin->user_id)
-                ->select('empresa_razon_social')
-                ->value('empresa_razon_social');
-
             if(strlen($vins_id)==6){
                 $Vin->where('vins.vin_codigo', 'like', '%'.$vins_id);
                 $Vin->orWhere('vins.vin_patente', '=', $vins_id);
@@ -352,9 +347,7 @@ class ApiController extends Controller
             $vin = $Vin->get();
 
             if(count($vin)>0){
-
                 foreach ($vin as $vins) {
-
                     $tarea = DB::table('tareas')
                         ->join('tipo_destinos', 'tipo_destinos.tipo_destino_id', '=', 'tareas.tipo_destino_id')
                         ->select('tipo_destino_descripcion as destino')
@@ -457,6 +450,11 @@ class ApiController extends Controller
                         $vins->HabilitadoArribo = false;
                         $vins->HabilitadoEntregarVeh = false;
                     }
+
+                    $propietario = User::join('empresas', 'users.empresa_id', 'empresas.empresa_id')
+                        ->where('user_id', $vins->user_id)
+                        ->select('empresa_razon_social')
+                        ->value('empresa_razon_social');
 
                 }
 
