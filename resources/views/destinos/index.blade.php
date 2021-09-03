@@ -58,7 +58,6 @@
             e.preventDefault();
 
             $("#formNuevoDestino")[0].reset();
-
             $("#nuevoDestino").modal('show');
         });
 

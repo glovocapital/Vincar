@@ -64,7 +64,6 @@
             e.preventDefault();
 
             $("#formNuevoPais")[0].reset();
-
             $("#nuevoPais").modal('show');
         });
 

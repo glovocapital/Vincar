@@ -172,7 +172,6 @@
             e.preventDefault();
 
             $("#formNuevoCamion")[0].reset();
-
             $("#nuevoCamion").modal('show');
         });
 

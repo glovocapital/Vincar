@@ -124,7 +124,6 @@
             e.preventDefault();
 
             $("#formNuevoConductor")[0].reset();
-
             $("#nuevoConductor").modal('show');
         });
 

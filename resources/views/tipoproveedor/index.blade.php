@@ -57,7 +57,6 @@
             e.preventDefault();
 
             $("#formNuevoTipoProveedor")[0].reset();
-
             $("#nuevoTipoProveedor").modal('show');
         });
 

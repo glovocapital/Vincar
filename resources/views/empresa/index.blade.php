@@ -107,7 +107,6 @@
             e.preventDefault();
 
             $("#formNuevoCliente")[0].reset();
-
             $("#nuevoCliente").modal('show');
         });
 

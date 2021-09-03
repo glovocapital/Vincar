@@ -178,7 +178,6 @@
             e.preventDefault();
 
             $("#formNuevoRemolque")[0].reset();
-
             $("#nuevoRemolque").modal('show');
         });
 

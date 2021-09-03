@@ -92,7 +92,6 @@
             e.preventDefault();
 
             $("#formNuevoUsuario")[0].reset();
-
             $("#nuevoUsuario").modal('show');
         });
 
