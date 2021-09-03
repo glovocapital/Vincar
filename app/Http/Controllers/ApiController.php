@@ -332,9 +332,14 @@ class ApiController extends Controller
                 ->join("marcas", "marcas.marca_id","=","vins.vin_marca")
                 ->join('vin_estado_inventarios','vin_estado_inventarios.vin_estado_inventario_id','=', 'vins.vin_estado_inventario_id')
                 ->leftJoin('ubic_patios', 'ubic_patios.vin_id', '=', 'vins.vin_id' )
-                ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.created_at as fecha'
-                    ,'vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id',
+                ->select('vins.vin_id as vin_id','vins.vin_codigo as vin','vins.vin_modelo as modelo','marca_nombre as marca', 'vins.user_id', 'vins.created_at as fecha',
+                    'vin_estado_inventario_desc as estado', 'vins.vin_color as color','vins.vin_estado_inventario_id as vin_estado_inventario_id',
                     'ubic_patios.ubic_patio_fila', 'ubic_patios.ubic_patio_columna','ubic_patios.bloque_id','vin_predespacho','vin_bloqueado_entrega');
+
+            $propietario = User::join('empresas', 'users.empresa_id', 'empresas.empresa_id')
+                ->where('user_id', $Vin->user_id)
+                ->select('empresa_razon_social')
+                ->value('empresa_razon_social');
 
             if(strlen($vins_id)==6){
                 $Vin->where('vins.vin_codigo', 'like', '%'.$vins_id);
@@ -455,7 +460,7 @@ class ApiController extends Controller
 
                 }
 
-                $usersf = Array("Err"=>0,"items"=>$vin, "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
+                $usersf = Array("Err"=>0,"items"=>$vin, "propietario"=>$propietario, "patios"=>$patios, "bloques"=>$bloques, "ubicados"=>$ubicados);
             } else {
                 $usersf = Array("Err" => 1, "Msg" => "No se encuentra el Vin");
             }
