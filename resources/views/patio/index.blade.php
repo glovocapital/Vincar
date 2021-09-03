@@ -3,117 +3,28 @@
 @section('content')
 @include('flash::message')
 
-<!-- Registrar datos básicos de un patio -->
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Registrar Patio</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                    <div class="card-title float-left mt-3">Patios</div>
+
+                    <div class="float-right mt-3 mr-2">
+                        <button id='nuevo_patio' class="btn btn-primary block full-width m-b mb-3">Nuevo Patio</button>
+                    </div>
+
+                    <div class="block float-right mt-3 mb-3 mr-2">
+                        {!! Form::open(['route'=> 'patio.download', 'method'=>'GET']) !!}
+                        {!! Form::submit('Descargar planilla ', ['class' => 'btn btn-warning full-width']) !!}
+                        {!! Form::close() !!}
+                    </div>
+
+                    <div class="block float-right mt-3 mb-3 mr-2">
+                    <a href="{{ route('patio.cargar_patios') }}" class = 'btn btn-success'>Carga de Patios</a>
                     </div>
                 </div>
 
-                <div class="card-body overflow-auto">
-                    {!! Form::open(['route'=> 'patio.store', 'method'=>'POST', 'files' => true]) !!}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="" >Datos Básicos</label>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="patio_nombre" >Nombre del Patio <strong>*</strong></label>
-                                {!! Form::text('patio_nombre', null, ['class'=>'form-control col-sm-9', 'required']) !!}
-                            </div>
-
-                            <div class="form-group">
-                                <label for="patio_bloques" >Cantidad de Bloques <strong>*</strong></label>
-                                {!! Form::text('patio_bloques', null, ['class'=>'form-control col-sm-9', 'required']) !!}
-                            </div>
-
-                            <br />
-                            <br />
-                            <br />
-
-                            <div class="form-group">
-                                <label for="" >Coordenadas Geográficas</label>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="patio_coord_lat" >Latitud <strong>*</strong></label>
-                                {!! Form::text('patio_coord_lat', null, ['class'=>'form-control col-sm-9', 'required']) !!}
-                            </div>
-
-                            <div class="form-group">
-                                <label for="patio_coord_lon" >Longitud <strong>*</strong></label>
-                                {!! Form::text('patio_coord_lon', null, ['class'=>'form-control col-sm-9', 'required']) !!}
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="" >Datos de Ubicación</label>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="region_id" >Region <strong>*</strong></label>
-                                <select name="region_id" id="region" class="form-control select-region" required>
-                                    <option value="" selected>Seleccione Región</option>
-                                @foreach($regiones as $k => $v)
-                                    <option value="{!! Crypt::encrypt($k) !!}">{{$v}}</option>
-                                @endforeach
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="comuna_id" >Seleccionar Comuna <strong>*</strong></label>
-                                {!! Form::select('comuna_id', ['placeholder' => 'Seleccionar Comuna'], null, ['id' => 'comuna_id', 'class' => 'form-control']) !!}
-                            </div>
-
-                            <br />
-
-                            <div class="form-group">
-                                <label for="patio_direccion" >Dirección <strong>*</strong></label>
-                                {!! Form::textarea('patio_direccion', null,['class'=>'form-control col-sm-9', 'required']) !!}
-                            </div>
-                        </div>
-
-                        <div class="text-right pb-5" id="boton_patio">
-                            {!! Form::submit('Registrar Patio', ['class' => 'btn btn-primary block full-width m-b']) !!}
-                        </div>
-                    </div>
-                    {!! Form::close() !!}
-
-                    <div class="text-center texto-leyenda">
-                        <p><strong>*</strong> Campos obligatorios</p>
-                    </div>
-
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-2">
-                                <a href="{{ route('patio.cargar_patios') }}" class = 'btn btn-success'>Carga de Patios</a>
-                            </div>
-
-                            <div class="col-lg-2">
-                                {!! Form::open(['route'=> 'patio.download', 'method'=>'GET']) !!}
-                                {!! Form::submit('Descargar planilla ', ['class' => 'btn btn-warning block full-width m-b']) !!}
-                                {!! Form::close() !!}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="ibox float-e-margins">
-            <div class="card card-default">
                 <div class="card-header">
                     <h3 class="card-title">Listado de Patios</h3>
                     <div class="card-tools">
@@ -186,12 +97,20 @@
         </div>
     </div>
 </div>
+@include('patio.partials.modal_nuevo_patio')
 @stop
 
 @section('local-scripts')
     <script>
         $(document).ready(function () {
-            $('#dataTablePatios').DataTable({
+            $('#nuevo_patio').on('click', (e) => {
+            e.preventDefault();
+
+            $("#formNuevoPatio")[0].reset();
+            $("#nuevoPatio").modal('show');
+        });
+
+        $('#dataTablePatios').DataTable({
                 searching: true,
                 bSortClasses: false,
                 deferRender:true,
