@@ -8,43 +8,9 @@
         <div class="ibox float-e-margins">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Creación de Países</h3>
-                </div>
-
-                {!! Form::open(['route'=> 'pais.store', 'method'=>'POST']) !!}
-                <div class="card-body overflow-auto">
-                    <div class="ibox-content col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 mt-4">
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="pais_nombre" class="col-sm-3">Nombre del País <strong>*</strong></label>
-                                {!! Form::text('pais_nombre', null, ['placeholder'=>'Nombre del País', 'class'=>'form-control col-sm-9', 'required']) !!}
-                            </div>
-                        </div>
-
-                        <div class="text-right pb-5">
-                            {!! Form::submit('Registrar País ', ['class' => 'btn btn-primary block full-width m-b']) !!}
-                        </div>
-
-                        <div class="text-center texto-leyenda">
-                            <p><strong>*</strong> Campos obligatorios</p>
-                        </div>
-                    </div>
-                </div>
-                {!! Form::close() !!}
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="ibox float-e-margins">
-            <div class="card card-default">
-                <div class="card-header">
-                    <h3 class="card-title">Listado de Paises</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                    <div class="card-title float-left mt-3">Países</div>
+                    <div class="float-right mt-3">
+                        <button id='nuevo_pais' class="btn btn-primary block full-width m-b mb-3">Nuevo País</button>
                     </div>
                 </div>
 
@@ -88,11 +54,20 @@
         </div>
     </div>
 </div>
+@include('pais.partials.modal_nuevo_pais')
 @stop
 
 @section('local-scripts')
 <script>
     $(document).ready(function() {
+        $('#nuevo_pais').on('click', (e) => {
+            e.preventDefault();
+
+            $("#formNuevoPais")[0].reset();
+
+            $("#nuevoPais").modal('show');
+        });
+
         $('#dataTablePaises').DataTable({
             searching: true,
             bSortClasses: false,
