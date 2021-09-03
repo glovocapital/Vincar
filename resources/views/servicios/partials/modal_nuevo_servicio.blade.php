@@ -55,6 +55,10 @@
                     </div>
                 </div>
 
+                <br />
+                <br />
+                <br />
+
                 <div class="text-center pb-5">
                     {!! Form::submit('Registrar servicio', ['class' => 'btn btn-primary block full-width m-b']) !!}
                 </div>
