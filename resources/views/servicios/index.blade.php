@@ -8,83 +8,9 @@
         <div class="ibox float-e-margins">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Nuevo Servicio</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                    </div>
-                </div>
-
-                {!! Form::open(['route'=> 'servicios.store', 'method'=>'POST']) !!}
-                <div class="card-body overflow-auto">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="producto_id" >Código Producto <strong>*</strong></label>
-                                {!! Form::select('producto_id', $producto, null,['placeholder'=>'Código de Produto', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                            </div>
-
-                            <div class="form-group">
-                                <label for="divisa_id" >Divisa <strong>*</strong></label>
-                                {!! Form::select('divisa_id', $divisa, null,['placeholder'=>'Divisa', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="cliente_id" >Cliente <strong>*</strong></label>
-                                {!! Form::select('cliente_id', $cliente, null,['placeholder'=>'Cliente', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                            </div>
-
-                            <div class="form-group">
-                                <label for="marca_id" >Caracteristicas <strong>*</strong></label>
-                                {!! Form::select('caracteristica_id', $caracteristicasvin, null,['placeholder'=>'Caracteristicas', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="valor_asociado_id" >Valor Asociado <strong>*</strong></label>
-                                {!! Form::select('valor_asociado_id', $valor_asociado, null,['placeholder'=>'Valor Asociado', 'class'=>'form-control col-sm-9', 'required'=>'required']) !!}
-                            </div>
-
-                            <div class="form-group">
-                                <label for="marca_id" >Marca </label>
-                                {!! Form::select('marca_id', $marca, null,['placeholder'=>'Marca', 'class'=>'form-control col-sm-9']) !!}
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="" >Costo Servicio <strong>*</strong></label>
-                                {{ Form::number('servicio_costo','0', ['min' => '0','placeholder'=>'Costo', 'class'=>'form-control col-sm-9', 'required'=>'required','step' => '0.1']) }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-right pb-5">
-                        {!! Form::submit('Asignar servicio', ['class' => 'btn btn-primary block full-width m-b']) !!}
-                    </div>
-
-                    <div class="text-center texto-leyenda">
-                        <p><strong>*</strong> Campos obligatorios</p>
-                    </div>
-                </div>
-                {!! Form::close() !!}
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="ibox float-e-margins">
-            <div class="card card-default">
-                <div class="card-header">
-                    <h3 class="card-title">Listado de servicios</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                    <div class="card-title float-left mt-3">Servicios</div>
+                    <div class="float-right mt-3">
+                        <button id='nuevo_servicio' class="btn btn-primary block full-width m-b mb-3">Nuevo Servicio</button>
                     </div>
                 </div>
 
@@ -135,11 +61,19 @@
         </div>
     </div>
 </div>
+@include('servicios.partials.modal_nuevo_servicio')
 @stop
 
 @section('local-scripts')
 <script>
     $(document).ready(function() {
+        $('#nuevo_servicio').on('click', (e) => {
+            e.preventDefault();
+
+            $("#formNuevoServicio")[0].reset();
+            $("#nuevoServicio").modal('show');
+        });
+
         $('#dataTableServicios').DataTable({
             searching: true,
             bSortClasses: false,
