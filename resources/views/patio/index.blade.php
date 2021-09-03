@@ -104,13 +104,13 @@
     <script>
         $(document).ready(function () {
             $('#nuevo_patio').on('click', (e) => {
-            e.preventDefault();
+                e.preventDefault();
 
-            $("#formNuevoPatio")[0].reset();
-            $("#nuevoPatio").modal('show');
-        });
+                $("#formNuevoPatio")[0].reset();
+                $("#nuevoPatio").modal('show');
+            });
 
-        $('#dataTablePatios').DataTable({
+            $('#dataTablePatios').DataTable({
                 searching: true,
                 bSortClasses: false,
                 deferRender:true,

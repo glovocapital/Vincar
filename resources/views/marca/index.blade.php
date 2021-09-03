@@ -8,61 +8,9 @@
         <div class="ibox float-e-margins">
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Nueva Marca</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
-                    </div>
-                </div>
-
-                {!! Form::open(['route'=> 'marcas.store', 'method'=>'POST','files' => true]) !!}
-                <div class="card-body overflow-auto">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="marca_nombre" >Nombre de la marca <strong>*</strong></label>
-                                {!! Form::text('marca_nombre', null, ['placeholder'=>'Nombre', 'class'=>'form-control col-sm-9', 'required']) !!}
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="marca_nombre" >Código de la marca</label>
-                                {!! Form::text('marca_codigo', null, ['placeholder'=>'Código', 'class'=>'form-control col-sm-9']) !!}
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="">Logo de la marca (Extensión SVG) </label>
-                                {!! Form::file('logo_marca') !!}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-right pb-5">
-                        {!! Form::submit('Agregar Marca ', ['class' => 'btn btn-primary block full-width m-b']) !!}
-                    </div>
-
-                    <div class="text-center texto-leyenda">
-                        <p><strong>*</strong> Campos obligatorios</p>
-                    </div>
-                </div>
-                {!! Form::close() !!}
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="ibox float-e-margins">
-            <div class="card card-default">
-                <div class="card-header">
-                    <h3 class="card-title">Listado de Marcas</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                    <div class="card-title float-left mt-3">Marcas</div>
+                    <div class="float-right mt-3 mr-2">
+                        <button id='nueva_marca' class="btn btn-primary block full-width m-b mb-3">Nueva Marca</button>
                     </div>
                 </div>
 
@@ -109,11 +57,19 @@
         </div>
     </div>
 </div>
+@include('marca.partials.modal_nueva_marca')
 @stop
 
 @section('local-scripts')
 <script>
     $(document).ready(function() {
+        $('#nueva_marca').on('click', (e) => {
+            e.preventDefault();
+
+            $("#formNuevaMarca")[0].reset();
+            $("#nuevaMarca").modal('show');
+        });
+
         $('#dataTableMarcas').DataTable({
             searching: true,
             bSortClasses: false,
