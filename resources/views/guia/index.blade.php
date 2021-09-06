@@ -4,7 +4,6 @@
 @include('flash::message')
 
 <div class="col-lg-12">
-
     <div class="ibox float-e-margins">
         <div class="card card-default">
             <div class="card-header">
@@ -62,7 +61,6 @@
                         </thead>
                         <tbody>
                         @foreach($guias as $guia)
-
                             <tr>
                                 <td><small>{{ $guia->guia_numero }}</small></td>
                                 <td><small>{{ $guia->guia_fecha }}</small></td>
@@ -92,10 +90,8 @@
                                     <small>
                                         <a href="{{ route('guia.delete', Crypt::encrypt($guia->guia_id)) }}" type="button" onclick="return confirm('¿Está seguro que desea anular esta guía?')" class="btn-guia"  title="Anular Guía"><i class="far fa-trash-alt"></i></a>
                                     </small>
-
                                 </td>
                             </tr>
-
                         @endforeach
                         </tbody>
                     </table>
@@ -106,3 +102,23 @@
 </div>
 
 @stop
+
+@section('local-scripts')
+<script>
+    $(document).ready(function() {
+        $('#dataTableGuias').DataTable({
+            searching: true,
+            bSortClasses: false,
+            deferRender:true,
+            responsive: false,
+            lengthChange: !1,
+            pageLength: 15,
+            @if(Session::get('lang')=="es")
+            language: {
+                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+            },
+            @endif
+        });
+    });
+</script>
+@endsection
