@@ -8,8 +8,8 @@
             <div class="card card-default">
                 <div class="card-header">
                     <h3 class="card-title">Buscar Vin</h3>
-
                 </div>
+
                 <div class="card-body overflow-auto">
                     {!! Form::open(['route'=> 'solicitud_campania.index2', 'method'=>'post']) !!}
                     <div class="row">
@@ -32,6 +32,7 @@
                                     <label for="user_id" >Seleccionar Patio </label>
                                     {!! Form::select('patio_id', $patios, isset($request)?$request->patio_id:null,['id' => 'patio', 'placeholder'=>'Patio', 'class'=>'form-control col-sm-9 select-cliente']) !!}
                             </div>
+
                             <div class="form-group">
                                 <label for="marca_id" >Seleccionar Marca </label>
                                 <select name="marca_id" id="marca" class="form-control col-sm-9 select-cliente" placeholder="Marca">
@@ -47,6 +48,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="text-right pb-5">
                         @if(count($tabla_vins) > 0)
                         <button type="button" class="btn btn-danger btn-predespacho-vins btn-rol12">Agendar entrega por lote</button>
@@ -62,7 +64,6 @@
     </div>
 </div>
 
-
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
@@ -74,6 +75,7 @@
                         <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
                     </div>
                 </div>
+
                 <div class="card-body overflow-auto">
                     <div class="table-responsive">
                         <table class="table table-hover table-sm nowrap" id="dataTableCamp" width="100%" cellspacing="0">
@@ -131,25 +133,19 @@
                                     @endif
 
                                 <!--   <td>
-
-
                                         <small>
                                             <a href = "{{ route('vin.destroy', Crypt::encrypt($vin->vin_id))  }}" onclick="return confirm('¿Esta seguro que desea eliminar este elemento?')" class="btn-vin"><i class="far fa-trash-alt"></i>
                                         </a>
                                         </small>
-
                                     </td> -->
 
                                     <td>
-
                                         <small>
                                             <a href="{{ route('vin.edit', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Editar"><i class="far fa-edit"></i></a>
                                         </small>
 
                                         <small>
-
                                             <a href="{{ route('vin.editarestado', Crypt::encrypt($vin->vin_id)) }}" class="btn-vin"  title="Cambiar Estado"><i class="fas fa-flag-checkered"></i></a>
-
                                         </small>
 
                                         <small>
@@ -158,12 +154,10 @@
                                         <!-- <small>
                                             <a type="button"  value="{{ $vin->vin_id }}" class="btn-agendar"  title="Agendar Entrega"><i class="far fa-address-book"></i></a>
                                         </small> -->
-
                                     </td>
                                 </tr>
                                 @endif
                             @endforeach
-
 
                             </tbody>
                         </table>
@@ -173,8 +167,6 @@
         </div>
     </div>
 </div>
-
-
 
 @include('campania.partials.modal_solicitud_campania')
 @include('campania.partials.modal_solicitar_campania_lotes')
@@ -241,9 +233,8 @@
 </div>
 
 @stop
+
 @section('local-scripts')
-
-
 <script>
         $(document).ready(function () {
             $('#dataTableCamp').DataTable({
@@ -259,6 +250,7 @@
                 },
                 @endif
             });
+
             //Modal Solicitar Campaña
 
             $("#dataTableCamp tbody").on("click",".btn-campania-modal", function (e) {

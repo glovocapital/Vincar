@@ -83,7 +83,7 @@
                                 <hr class="mb-4">
 
                                 <div class="table-responsive">
-                                    <table class="table table-hover table-sm nowrap" id="dataTablePais" width="100%" cellspacing="0">
+                                    <table class="table table-hover table-sm nowrap" id="dataTableTours" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th>Proveedor de Transporte</th>
@@ -197,6 +197,20 @@
 @section('local-scripts')
     <script>
         $(document).ready(function () {
+            $('#dataTableTours').DataTable({
+                searching: true,
+                bSortClasses: false,
+                deferRender:true,
+                responsive: false,
+                lengthChange: !1,
+                pageLength: 10,
+                @if(Session::get('lang')=="es")
+                language: {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                },
+                @endif
+            });
+
             $(".switch-button1__checkbox").change(function() {
                 // e.preventDefault();
 
