@@ -137,25 +137,25 @@
     @endif
 
     @if(auth()->user()->rol_id == 1)
-        <li class="sidebar-item">
+        {{-- <li class="sidebar-item">
             <a href="#KPI" data-toggle="collapse" class="sidebar-link collapsed">
                 <i class="align-middle" data-feather="grid"></i> <span class="align-middle">KPI</span>
             </a>
             <ul id="KPI" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
               <li class="sidebar-item"><a class="sidebar-link" href="{{ route('kpi.index') }}">{{trans('menu.KPI')}}</a></li>
             </ul>
-        </li>
+        </li> --}}
     @endif
 
     @if(auth()->user()->rol_id == 1)
-        <li class="sidebar-item">
+        {{-- <li class="sidebar-item">
             <a href="#Estadisticas" data-toggle="collapse" class="sidebar-link collapsed">
                 <i class="align-middle" data-feather="bar-chart"></i> <span class="align-middle">{{trans('menu.Estadisticas')}}</span>
             </a>
             <ul id="Estadisticas" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
 
             </ul>
-        </li>
+        </li> --}}
      @endif
 
     <!-- FIN DE MENU-->
