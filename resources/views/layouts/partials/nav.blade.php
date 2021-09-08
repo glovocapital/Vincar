@@ -100,9 +100,9 @@
                     <a class="sidebar-link" href="{{ route('solicitud_campania.index') }}">Campañas</a>
                 </li>
             @endif
-            @if(auth()->user()->rol_id == 1)
+            {{-- @if(auth()->user()->rol_id == 1)
                 <li class="sidebar-item"><a class="sidebar-link" href="">{{trans('menu.Rutas_entrega')}}</a></li>
-            @endif
+            @endif --}}
         </ul>
       </li>
 
