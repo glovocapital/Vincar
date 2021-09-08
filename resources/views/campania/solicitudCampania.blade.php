@@ -246,6 +246,19 @@
 
 <script>
         $(document).ready(function () {
+            $('#dataTableCamp').DataTable({
+                searching: true,
+                bSortClasses: false,
+                deferRender:true,
+                responsive: false,
+                lengthChange: !1,
+                pageLength: 25,
+                @if(Session::get('lang')=="es")
+                language: {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                },
+                @endif
+            });
             //Modal Solicitar Campaña
 
             $("#dataTableCamp tbody").on("click",".btn-campania-modal", function (e) {

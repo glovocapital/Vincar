@@ -68,3 +68,23 @@
 </div>
 
 @stop
+
+@section('local-scripts')
+    <script>
+        $(document).ready(function () {
+            $('#dataTableCampanias').DataTable({
+                searching: true,
+                bSortClasses: false,
+                deferRender:true,
+                responsive: false,
+                lengthChange: !1,
+                pageLength: 25,
+                @if(Session::get('lang')=="es")
+                language: {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                },
+                @endif
+            });
+        });
+    </script>
+@endsection
