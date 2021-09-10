@@ -53,6 +53,11 @@ class GuiaController extends Controller
             $query->where('guia_numero', $request->guia_numero);
         }
 
+        // Filtro de búsqueda VIN
+        if($request->vin_numero){
+            $query->where('vin_codigo', $request->vin_numero);
+        }
+
         // Filtro de búsqueda por empresa
         if($request->empresa_id){
             $query->where('empresa_id', $request->empresa_id);

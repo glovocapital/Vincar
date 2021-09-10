@@ -18,29 +18,39 @@
                     <div class="row row-filters">
                         <div>
                             <h6 class="pb-2">Buscar en histórico de guías</h6>
-                            <div class="form-inline form-dates pb-3">
+
+                            <div class="form-inline pb-3">
                                 <label for="from" class="form-label-sm">Desde</label>&nbsp;
                                 <div class="input-group">
-                                    <input type="date" class="form-control form-control-sm" name="from" id="from" placeholder="Desde" value="{{ request('from') }}">
+                                    <input type="date" class="form-control" name="from" id="from" placeholder="Desde" value="{{ request('from') }}">
                                 </div>
+
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                 <label for="from" class="form-label-sm">Hasta</label>&nbsp;
                                 <div class="input-group">
-                                    <input type="date" class="form-control form-control-sm" name="to" id="to" placeholder="Hasta" value="{{ request('to') }}">
+                                    <input type="date" class="form-control" name="to" id="to" placeholder="Hasta" value="{{ request('to') }}">
                                 </div>
+
                                 &nbsp;&nbsp;&nbsp;&nbsp;
-                                <label for="guia_numero" class="form-label-sm">Nro. de Guía</label>
+                                <label for="guia_numero" class="form-label-sm ">Nro. de Guía</label>
                                 &nbsp;
                                 <div class="input-group">
-                                    <input type="text" class="form-control form-control-sm" name="guia_numero" id="guia_numero" placeholder="Nro. de Guía" value="{{ request('guia_numero') }}">
+                                    <input type="text" class="form-control" name="guia_numero" id="guia_numero" placeholder="Nro. de Guía" value="{{ request('guia_numero') }}">
                                 </div>
                             </div>
+
                             <div class="form-inline pb-3">
+                                <label for="vin_numero" class="form-label-sm">Vin <strong>*</strong></label>
+                                &nbsp;&nbsp;
+                                {!! Form::text('vin_numero', null, ['placeholder'=>'Ingrese VIN', 'id' => 'vin_numero', 'class'=>"form-control"]) !!}
+
+                                &nbsp;&nbsp;&nbsp;
                                 <label for="empresa" class="form-label-sm">Empresa</label>
                                 &nbsp;
                                 <div class="input-group">
-                                {!! Form::select('empresa_id', $empresas, request('empresa_id'),['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control form-control-sm col-sm-9 select-cliente']) !!}
+                                {!! Form::select('empresa_id', $empresas, request('empresa_id'),['id' => 'cliente', 'placeholder'=>'Cliente', 'class'=>'form-control col-sm-10 select-cliente']) !!}
                                 </div>
+
                                 <button type="submit" class="btn btn-sm btn-primary">Filtrar</button>
                             </div>
                         </div>
@@ -107,7 +117,7 @@
 <script>
     $(document).ready(function() {
         $('#dataTableGuias').DataTable({
-            searching: true,
+            searching: false,
             bSortClasses: false,
             deferRender:true,
             responsive: false,
