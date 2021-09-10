@@ -6,6 +6,7 @@ use App\Empresa;
 use App\Guia;
 use App\GuiaVin;
 use App\Http\Middleware\CheckSession;
+use App\Vin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
