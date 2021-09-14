@@ -24,13 +24,9 @@ Route::group(['middleware' => 'guest'], function () {
 /***Usuarios logueados****/
 
 Route::group(['middleware' => 'auth'], function () {
-
     Route::any('logout', 'Auth\LoginController@logout');
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('homeDashboard', 'HomeController@dashboard')->name('home.dashboard');
-
-
-
 });
 
 //Jc

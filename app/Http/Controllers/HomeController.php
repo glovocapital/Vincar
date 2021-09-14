@@ -27,6 +27,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if (!Auth::user()){
+            return view('auth.login');
+        }
+
         $date = Carbon::now();
         $rol_id = Auth::user()->rol_id;
         $empresa_id = Auth::user()->empresa_id;
@@ -52,6 +56,9 @@ class HomeController extends Controller
 
     public function dashboard()
     {
+        if (!Auth::user()){
+            return view('auth.login');
+        }
 
         $rol_desc=Auth::user()->oneRol->rol_desc;
         $empresa_id=Auth::user()->empresa_id;
