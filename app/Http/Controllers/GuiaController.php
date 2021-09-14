@@ -64,6 +64,8 @@ class GuiaController extends Controller
                 $guia = Guia::where('guia_id', $guia_vin->guia_id)->first();
 
                 $query->where('guia_id', $guia->guia_id);
+            } else {
+                $query->where('guia_id', 0);
             }
         }
 
