@@ -60,10 +60,8 @@ class GuiaController extends Controller
             $vin_id = Vin::where('vin_codigo', $request->vin_numero)->value('vin_id');
 
             if ($vin_id) {
-                $guia_vin = GuiaVin::where('vin_id', $vin_id)->first();
-                $guia = Guia::where('guia_id', $guia_vin->guia_id)->first();
-
-                $query->where('guia_id', $guia->guia_id);
+                $guias = $query->join('guia_vins', 'guia_vins.guia_id', 'guias.guia_id')
+                    ->where('guia_vins.vin_id', $vin_id);
             } else {
                 $query->where('guia_id', 0);
             }
