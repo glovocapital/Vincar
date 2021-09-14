@@ -58,10 +58,13 @@ class GuiaController extends Controller
         // Filtro de búsqueda VIN
         if($request->vin_numero){
             $vin_id = Vin::where('vin_codigo', $request->vin_numero)->value('vin_id');
-            $guia_vin = GuiaVin::where('vin_id', $vin_id)->first();
-            $guia = Guia::where('guia_id', $guia_vin->guia_id)->first();
 
-            $query->where('guia_id', $guia->guia_id);
+            if ($vin_id) {
+                $guia_vin = GuiaVin::where('vin_id', $vin_id)->first();
+                $guia = Guia::where('guia_id', $guia_vin->guia_id)->first();
+
+                $query->where('guia_id', $guia->guia_id);
+            }
         }
 
         // Filtro de búsqueda por empresa
